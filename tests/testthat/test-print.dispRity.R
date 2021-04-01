@@ -28,7 +28,7 @@ test_that("normal printing", {
     expect_equal(capture.output(test), 
         c(
         " ---- dispRity object ---- ",
-        "2 discrete time subsets for 50 elements in one matrix:",
+        "2 discrete time subsets for 50 elements in one matrix with 1 phylogenetic tree",
         "    100 - 90, 90 - 50."
     ))
 
@@ -37,7 +37,7 @@ test_that("normal printing", {
     expect_equal(capture.output(test), 
         c(
         " ---- dispRity object ---- ",
-        "7 continuous (acctran) time subsets for 99 elements in one matrix:",
+        "7 continuous (acctran) time subsets for 99 elements in one matrix with 1 phylogenetic tree",
         "     100, 90, 80, 70, 50 ..."
     ))
 
@@ -67,7 +67,7 @@ test_that("normal printing", {
     expect_equal(capture.output(test), 
         c(
         " ---- dispRity object ---- ",
-        "2 discrete time subsets for 50 elements in one matrix with 48 dimensions:",
+        "2 discrete time subsets for 50 elements in one matrix with 48 dimensions with 1 phylogenetic tree",
         "    100 - 90, 90 - 50.",
         "Data was bootstrapped 100 times (method:\"full\")."
     ))
@@ -87,7 +87,7 @@ test_that("normal printing", {
     expect_equal(capture.output(disparity), 
         c(
         " ---- dispRity object ---- ",
-        "7 continuous (acctran) time subsets for 99 elements in one matrix with 97 dimensions:",
+        "7 continuous (acctran) time subsets for 99 elements in one matrix with 97 dimensions with 1 phylogenetic tree",
         "     90, 80, 70, 60, 50 ...",
         "Data was bootstrapped 100 times (method:\"full\") and rarefied to 20, 15, 10, 5 elements.",
         "Disparity was calculated as: c(median, centroids)."
@@ -122,11 +122,11 @@ test_that("randtest printing", {
 
     expect_equal(capture.output(test),
         c("Monte-Carlo test", "Call: [1] \"dispRity::null.test\"",
-        "", "Observation: 0.02463073 ", 
+        "", "Observation: 0.5953437 ", 
         "", "Based on 100 replicates", 
-        "Simulated p-value: 0.07920792 ", "Alternative hypothesis: two-sided ", 
+        "Simulated p-value: 0.00990099 ", "Alternative hypothesis: two-sided ", 
         "", "    Std.Obs Expectation    Variance ",
-        "  -1.842882    5.338100    8.313070 "))
+        "-7.40795128  2.01104000  0.03652111 "))
 
   
     ## Running the test on multiple subsets (may take some time!)
@@ -154,7 +154,7 @@ test_that("randtest printing", {
         "Alternative hypothesis: two-sided "  ,
         ""                                    ,
         "    Std.Obs Expectation    Variance ",
-        " -34.623901   47.841400    1.744226 ",
+        " 4.76544417  1.00621000  0.05402978 ",
         ""                                    ,
         "$V1.2"                               ,
         "Monte-Carlo test"                    ,
@@ -167,7 +167,7 @@ test_that("randtest printing", {
         "Alternative hypothesis: two-sided "  ,
         ""                                    ,
         "    Std.Obs Expectation    Variance ",
-        " -33.531312   48.068600    1.860014 ",
+        "  6.6577026   1.0230700   0.0389972 ",
         ""                                    ,
         "$V1.3"                               ,
         "Monte-Carlo test"                    ,
@@ -180,7 +180,7 @@ test_that("randtest printing", {
         "Alternative hypothesis: two-sided "  ,
         ""                                    ,
         "    Std.Obs Expectation    Variance ",
-        " -35.684854   48.116700    1.634665 ",
+        "  7.0287024   1.0098500   0.0444776 ",
         ""                                    ,
         "$V1.4"                               ,
         "Monte-Carlo test"                    ,
@@ -193,7 +193,7 @@ test_that("randtest printing", {
         "Alternative hypothesis: two-sided "  ,
         ""                                    ,
         "    Std.Obs Expectation    Variance ",
-        " -32.322690   48.021700    1.976796 ",
+        " 9.67511662  0.97469000  0.02740854 ",
         ""
         )
     )
@@ -268,9 +268,9 @@ test_that("print.dispRity with model.test data", {
         c("Disparity evolution model fitting:",
          "Call: model.test(data = model_test_data, model = models, time.split = 65, fixed.optima = TRUE, verbose = FALSE) ",
          "",
-         "         aicc delta_aicc weight_aicc",
-         "BM -10.708521   0.000000   0.7856166",
-         "OU  -8.111115   2.597406   0.2143834",
+         "        aicc delta_aicc weight_aicc",
+         "BM -31.29071   0.000000   0.7856167",
+         "OU -28.69331   2.597407   0.2143833",
          "",
          "Use x$full.details for displaying the models details",
          "or summary(x) for summarising them."
@@ -301,10 +301,10 @@ test_that("print.dispRity with model.test data", {
           "",
           "Model simulated (10 times):",
           "    aicc log.lik param ancestral state sigma squared",
-          "BM -10.7   7.627     2           7.119         0.005",
+          "BM -31.3   17.92     2           3.099         0.002",
           "",
           "Rank envelope test",
-          " p-value of the test: 0.4090909 (ties method: midrank)",
-          " p-interval         : (0.09090909, 0.7272727)" 
+          " p-value of the test: 0.3636364 (ties method: midrank)",
+          " p-interval         : (0.09090909, 0.6363636)" 
         ))
 })

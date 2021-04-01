@@ -321,11 +321,11 @@ test_that("Output format is correct", {
     ## Length
     expect_equal(
         length(out_test)
-        , 3)
+        , 4)
     ## Names
     expect_equal(
         names(out_test)
-        , c("matrix", "call", "subsets")
+        , c("matrix", "tree", "call", "subsets")
         )
 })
 
@@ -342,7 +342,7 @@ test_that("Example works", {
     ex1 <- chrono.subsets(data = BeckLee_mat50, tree = BeckLee_tree, method = "discrete", time = c(120, 80, 40), inc.nodes = FALSE, FADLAD = BeckLee_ages)
     expect_equal(
         length(ex1)
-        , 3)
+        , 4)
     expect_is(
         ex1$matrix[[1]]
         ,"matrix")
@@ -359,7 +359,7 @@ test_that("Example works", {
     ex2 <- chrono.subsets(data = BeckLee_mat99, tree = BeckLee_tree, method = "discrete", time = c(120, 80, 40), inc.nodes = TRUE, FADLAD = BeckLee_ages)
     expect_equal(
         length(ex2)
-        , 3)
+        , 4)
     expect_is(
         ex2$matrix[[1]]
         ,"matrix")
@@ -376,7 +376,7 @@ test_that("Example works", {
     ex3 <- chrono.subsets(data = BeckLee_mat99, tree = BeckLee_tree, method = "continuous", model = "acctran", time = 5, FADLAD = BeckLee_ages)
     expect_equal(
         length(ex3)
-        , 3)
+        , 4)
     expect_is(
         ex3$matrix[[1]]
         ,"matrix")
@@ -429,6 +429,10 @@ test_that("chrono.subsets works without tree", {
             all(sort(unlist(no_tree$subsets[[sub]])) == sort(unlist(with_tree$subsets[[sub]])))
             )
     }
+
+    ## Tree is saved accordingly
+    expect_null(no_tree$tree[[1]])
+    expect_is(with_tree$tree[[1]], "phylo")
 })
 
 test_that("t0 works", {
@@ -558,7 +562,7 @@ test_that("chrono.subsets works with multiPhylo", {
     test <- chrono.subsets(data, tree, method = "continuous", time = 3, model = "proximity")
 
     expect_is(test, "dispRity")
-    expect_equal(names(test), c("matrix", "call", "subsets"))
+    expect_equal(names(test), c("matrix", "tree", "call", "subsets"))
     expect_equal(names(test$subsets), c("9.31", "4.66", "0"))
     expect_equal(unique(unlist(lapply(test$subsets, names), use.names = FALSE)), "elements")
     expect_equal(unlist(lapply(test$subsets, lapply, dim), use.names = FALSE), c(3, 2, 5, 2, 10, 2))
@@ -573,6 +577,12 @@ test_that("chrono.subsets works with multiPhylo", {
     test <- chrono.subsets(data, tree, method = "continuous", time = 3, model = "gradual.split")
     expect_is(test, "dispRity")
     expect_equal(unlist(lapply(test$subsets, lapply, dim), use.names = FALSE), c(3, 6, 7, 6, 10, 6))
+
+    ## The output saves the tree
+    expect_is(test$tree, "multiPhylo")
+    expect_equal(test$tree[[1]]$edge.length, tree[[1]]$edge.length)
+    expect_equal(test$tree[[2]]$edge.length, tree[[2]]$edge.length)
+
 })
 
 test_that("chrono.subsets works with multiple matrices", {
@@ -597,11 +607,11 @@ test_that("chrono.subsets works with multiple matrices", {
     test <- chrono.subsets(matrices, tree = trees[[1]], time = 3, method = "continuous", model = "acctran", t0 = 5)
     expect_is(test, "dispRity")
     test_print <- capture_output(print(test))
-    expect_equal(test_print, " ---- dispRity object ---- \n3 continuous (acctran) time subsets for 19 elements in 3 matrices:\n    5, 2.5, 0.")
+    expect_equal(test_print, " ---- dispRity object ---- \n3 continuous (acctran) time subsets for 19 elements in 3 matrices with 1 phylogenetic tree\n    5, 2.5, 0.")
     test <- chrono.subsets(matrices[[1]], tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5)
     expect_is(test, "dispRity")
     test_print <- capture_output(print(test))
-    expect_equal(test_print, " ---- dispRity object ---- \n3 continuous (acctran) time subsets for 19 elements in one matrix:\n    5, 2.5, 0.")
+    expect_equal(test_print, " ---- dispRity object ---- \n3 continuous (acctran) time subsets for 19 elements in one matrix with 3 phylogenetic trees\n    5, 2.5, 0.")
 
 
     matrices_wrong1 <- matrices_wrong2 <- matrices
@@ -620,10 +630,17 @@ test_that("chrono.subsets works with multiple matrices", {
     expect_is(test$matrix, "list")
     expect_equal(length(test$matrix), 3)
     expect_is(test$matrix[[1]], "matrix")
-    expect_equal(rownames(test$matrix[[1]]), sort(c(trees[[1]]$tip.label, trees[[1]]$node.label)))
+    expect_equal(rownames(test$matrix[[1]]), rownames(matrices[[1]]))
     expect_is(test$subsets, "list")
     expect_equal(length(test$subsets), 3)
     expect_equal(dim(test$subsets$`5`$elements), c(7, 3))
+
+    ## The output saves the tree
+    expect_is(test$tree, "multiPhylo")
+    expect_equal(test$tree[[1]]$edge.length, trees[[1]]$edge.length)
+    expect_equal(test$tree[[2]]$edge.length, trees[[2]]$edge.length)
+    expect_equal(test$tree[[3]]$edge.length, trees[[3]]$edge.length)
+
 })
 
 test_that("fast internal functions work", {
@@ -797,4 +814,3 @@ test_that("infinite loop blocker for get.percent.age", {
     error <- capture_error(chrono.subsets(matrix, test_tree, method = "continuous", time = 5, model = "acctran"))
     expect_equal(error[[1]], "Impossible to find a starting point to slice the tree. This can happen if the tree has no branch length or has a \"ladder\" structure. You can try to fix that by setting specific slicing times.")
 })
-

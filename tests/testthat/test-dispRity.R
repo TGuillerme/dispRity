@@ -18,7 +18,7 @@ test_that("get.dispRity.metric.handle", {
     
     ## Level1
     test <- get.dispRity.metric.handle(sum, match_call, data.dim = c(5,4))
-    expect_equal(names(test), c("levels", "between.groups"))
+    expect_equal(names(test), c("levels", "between.groups", "tree.metrics"))
     test <- test$levels
     expect_is(test, "list")
     expect_null(test[[1]])
@@ -27,7 +27,7 @@ test_that("get.dispRity.metric.handle", {
 
     ## Level2
     test <- get.dispRity.metric.handle(ranges, match_call, data.dim = c(5,4))
-    expect_equal(names(test), c("levels", "between.groups"))
+    expect_equal(names(test), c("levels", "between.groups", "tree.metrics"))
     test <- test$levels
     expect_is(test, "list")
     expect_null(test[[1]])
@@ -37,7 +37,7 @@ test_that("get.dispRity.metric.handle", {
     ## Level3
     expect_error(test <- get.dispRity.metric.handle(var, match_call, data.dim = c(5,4)))
     test <- get.dispRity.metric.handle(c(sd, var), match_call, data.dim = c(5,4))
-    expect_equal(names(test), c("levels", "between.groups"))
+    expect_equal(names(test), c("levels", "between.groups", "tree.metrics"))
     test <- test$levels
     expect_is(test, "list")
     expect_is(test[[1]], "function")
@@ -96,9 +96,9 @@ test_that("decompose.matrix.wrapper", {
     decomp_matrix <- decompose.matrix.wrapper(one_bs_matrix[,1:bs_max], fun = variances, data = data, use_array = FALSE)
 
     expect_is(decomp_array, "array")
-    expect_equal(dim(decomp_array), c(data$call$dimensions, data$call$dimensions, bs_max))
+    expect_equal(dim(decomp_array), c(length(data$call$dimensions), length(data$call$dimensions), bs_max))
     expect_is(decomp_matrix, "matrix")
-    expect_equal(dim(decomp_matrix), c(data$call$dimensions, bs_max))
+    expect_equal(dim(decomp_matrix), c(length(data$call$dimensions), bs_max))
 })
 
 test_that("disparity.bootstraps internal works", {
@@ -119,7 +119,7 @@ test_that("disparity.bootstraps internal works", {
     ## which should be recorded by the way
     expect_equal(
         dim(test0)
-        ,as.numeric(c(data$call$dimensions, data$call$dimensions, data$call$bootstrap[[1]])))
+        ,as.numeric(c(length(data$call$dimensions), length(data$call$dimensions), data$call$bootstrap[[1]])))
 
     metrics_list <- list("level3.fun" = NULL, "level2.fun" = variances, "level1.fun" = NULL)
     matrix_decomposition = TRUE
@@ -137,7 +137,7 @@ test_that("disparity.bootstraps internal works", {
     ## which should be recorded by the way
     expect_equal(
         dim(test1)
-        ,as.numeric(c(data$call$dimensions, data$call$bootstrap[[1]])))
+        ,as.numeric(c(length(data$call$dimensions), data$call$bootstrap[[1]])))
 
     ## Without matrix decomposition
     matrix_decomposition = FALSE
@@ -198,12 +198,11 @@ test_that("Sanitizing works", {
     )
     expect_equal(
         dispRity(data, c(sum, ranges), dimensions = 0.533333)$call$dimensions
-        , 26
+        , 1:26
     )
 
-    warn <- capture_warnings(dim <- dispRity(data, c(sum, ranges), dimensions = 100)$call$dimensions)
-    expect_equal(dim, 48)
-    expect_equal(warn , "Dimension number too high: set to 48.")
+    error <- capture_error(dim <- dispRity(data, c(sum, ranges), dimensions = 100)$call$dimensions)
+    expect_equal(error[[1]] , "Number of dimensions cannot be more than the number of columns in the matrix.")
 
     # Cannot stack metric level 1 on level 2:
     data(disparity)
@@ -468,9 +467,9 @@ test_that("dispRity deals with probabilities subsets", {
     expect_equal(summary(test2)$n, c(11,20))
     expect_equal(summary(test3)$n, c(15,21))
 
-    expect_equal(as.vector(summary(test1)$obs), c(0.006, 0.001))
-    expect_equal(as.vector(summary(test2)$obs), c(-0.002, 0.011))
-    expect_equal(as.vector(summary(test3)$obs), c(0.007, 0.004))
+    expect_equal(as.vector(summary(test1)$obs), c(-0.005, -0.003))
+    expect_equal(as.vector(summary(test2)$obs), c(-0.005, 0.002))
+    expect_equal(as.vector(summary(test3)$obs), c(-0.005, 0.003))
 })
 
 test_that("dispRity works with function recycling", {
@@ -594,7 +593,7 @@ test_that("dispRity works with multiple matrices from chrono.subsets", {
     expect_is(test$matrix, "list")
     expect_equal(length(test$matrix), 3)
     expect_is(test$matrix[[1]], "matrix")
-    expect_equal(rownames(test$matrix[[1]]), sort(c(trees[[1]]$tip.label, trees[[1]]$node.label)))
+    expect_equal(rownames(test$matrix[[1]]), rownames(matrices[[1]]))
     expect_is(test$subsets, "list")
     expect_equal(length(test$subsets), 3)
     expect_equal(dim(test$subsets$`5`$elements), c(7, 9))
@@ -662,6 +661,14 @@ test_that("dispRity works with multiple matrices from chrono.subsets", {
               mean(means$matrix[[3]][means$subsets[[3]]$elements[,3],]))
     )
 
+    ## Works with unpaired number of trees and matrices
+    test <- chrono.subsets(matrices[[1]], tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5, bind.data = FALSE)
+    means <- dispRity(test, metric = mean, na.rm = TRUE)
+    expect_is(means, "dispRity")
+    test <- chrono.subsets(matrices, tree = trees[[1]], time = 3, method = "continuous", model = "acctran", t0 = 5, bind.data = FALSE)
+    means <- dispRity(test, metric = mean, na.rm = TRUE)
+    expect_is(means, "dispRity")
+
     ## Works with recycling dispRity objects
     vars <- dispRity(test, metric = variances)
     sumvars <- dispRity(test, metric = c(sum, variances))
@@ -721,6 +728,162 @@ test_that("dispRity works with multiple matrices from chrono.subsets", {
     expect_equal(dim(bs_unbou$disparity[[1]]$elements), c(3,3))
     expect_equal(dim(bs_bound$disparity[[1]]$elements), c(1,3))
 })
+
+test_that("dispRity works with the tree component", {
+
+    ## A ladderized tree
+    set.seed(1)
+    tree <- read.tree(text = "((((((A,B), C), D), E), F), G);")
+    tree$edge.length <- rep(1, 7+6)
+    tree$node.label <- letters[1:6]
+    ## An empty matrix (with the right elements)
+    matrix <- matrix(rnorm((7+6)*2), nrow = 7+6, ncol = 2)
+    rownames(matrix) <- c(tree$tip.label, tree$node.label)
+
+    ## Simple test
+    test <- dispRity(data = matrix, metric = edge.length.tree, tree = tree)
+    expect_equal(c(test$disparity[[1]][[1]]), edge.length.tree(matrix, tree))
+
+    ## More complex metric test
+    test <- dispRity(data = matrix, metric = projections.tree, tree = tree, type = c("root","ancestor"))
+    expect_equal(c(test$disparity[[1]][[1]]), projections.tree(matrix, tree))
+
+    ## Simple test with custom subsets
+    data <- custom.subsets(matrix, group = list(LETTERS[1:5], letters[1:5]))
+    test <- dispRity(data = data, metric = edge.length.tree, tree = tree)
+    expect_equal(c(test$disparity[[1]][[1]]), edge.length.tree(matrix[LETTERS[1:5], ], tree))
+    expect_equal(c(test$disparity[[2]][[1]]), edge.length.tree(matrix[letters[1:5], ],tree))
+
+    ## Simple test with custom subsets and bootstraps
+    data <- custom.subsets(matrix, group = list(LETTERS[1:5], letters[1:5]))
+    test <- dispRity(data = boot.matrix(data, rarefaction = 4), metric = edge.length.tree, tree = tree)
+    expect_null(plot(test))
+
+    ## Test from previous metric
+    ntips <- function(matrix, tree) {
+        Ntip(tree)
+    }
+    data <- dispRity(data = matrix, metric = centroids)
+    expect_equal(sort(data$disparity[[1]][[1]]), unname(sort(centroids(matrix))))
+    test <- dispRity(data = data, metric = ntips, tree = tree)
+    expect_equal(test$disparity[[1]][[1]][[1]], Ntip(tree))
+
+    ## From inherited tree
+    data <- custom.subsets(matrix, group = list(LETTERS[1:5], letters[1:5]), tree = tree)
+    test <- dispRity(data = data, metric = edge.length.tree)
+    expect_equal(c(test$disparity[[1]][[1]]), edge.length.tree(matrix[LETTERS[1:5], ], tree))
+    expect_equal(c(test$disparity[[2]][[1]]), edge.length.tree(matrix[letters[1:5], ],tree))
+
+    ## More complex metric test
+    test <- dispRity(data = data, metric = projections.tree)
+    expect_equal(c(test$disparity[[1]][[1]]), projections.tree(matrix[LETTERS[1:5], ], tree, reference.data = matrix))
+    expect_equal(c(test$disparity[[2]][[1]]), projections.tree(matrix[letters[1:5], ], tree, reference.data = matrix))
+
+    ## Works with multiple matrices and single tree
+    set.seed(1)
+    mulmatrix <- list(matrix, matrix, matrix)
+    mulmatrix[[1]][] <- rnorm((7+6)*2)
+    mulmatrix[[2]][] <- rnorm((7+6)*2)
+    mulmatrix[[3]][] <- rnorm((7+6)*2)
+    test <- dispRity(data = mulmatrix, metric = projections.tree, tree = tree)
+    expect_equal(c(test$disparity[[1]][[1]][,1]), projections.tree(mulmatrix[[1]], tree))
+    expect_equal(c(test$disparity[[1]][[1]][,2]), projections.tree(mulmatrix[[2]], tree))
+    expect_equal(c(test$disparity[[1]][[1]][,3]), projections.tree(mulmatrix[[3]], tree))
+
+    ## Works with multiple trees and single matrix
+    set.seed(1)
+    tree2 <- rtree(dim(matrix)[1]/2+1)
+    tree3 <- rtree(dim(matrix)[1]/2+1)
+    tree2$tip.label <- tree3$tip.label <- LETTERS[1:7]
+    tree2$node.label <- tree3$node.label <- letters[1:6]
+
+    multree <- c(tree, tree2, tree3)
+    test <- dispRity(data = matrix, metric = projections.tree, tree = multree)
+    expect_equal(c(test$disparity[[1]][[1]][,1]), projections.tree(matrix, tree))
+    expect_equal(c(test$disparity[[1]][[1]][,2]), projections.tree(matrix, tree2))    
+    expect_equal(c(test$disparity[[1]][[1]][,3]), projections.tree(matrix, tree3))
+
+    ## Works with multiple matrices and trees
+    test <- dispRity(data = mulmatrix, metric = projections.tree, tree = multree)
+    expect_equal(c(test$disparity[[1]][[1]][,1]), projections.tree(mulmatrix[[1]], tree))
+    expect_equal(c(test$disparity[[1]][[1]][,2]), projections.tree(mulmatrix[[2]], tree2))    
+    expect_equal(c(test$disparity[[1]][[1]][,3]), projections.tree(mulmatrix[[3]], tree3))
+
+
+    ## Test with between groups and tree
+    between.groups.edge.length.tree <- function(matrix, matrix2, tree) {
+        return(edge.length.tree(matrix, tree) - edge.length.tree(matrix2, tree))
+    }
+    data <- custom.subsets(matrix, group = list(LETTERS[1:5], letters[1:5]), tree = tree)
+    ## Working with matrix decomposition
+    test <- dispRity(data = data, metric = between.groups.edge.length.tree, tree = tree, between.groups = TRUE)
+    expect_equal(unlist(c(unname(summary(test)))), c("1:2", "5", "5", "3", "-0.8", "1", "5", "5.9"))
+})
+
+
+# test_that("dispRity compact works", {
+
+#     compact.matrix <- function(matrix_list) {
+        
+#         ## Finding the rows in common
+#         common_names <- lapply(matrix_list, rownames)
+#         while(length(common_names) > 2) {
+#             common_names[[1]] <- intersect(common_names[[1]], common_names[[2]])
+#             common_names[[2]] <- NULL
+#         }
+#         common_names <- common_names[[1]]
+
+#         ## Finding the equal rows
+#         get.equal.rows <- function(other_matrices, first_matrix, common_names) {
+#             apply(other_matrices[common_names, ] == first_matrix[common_names, ], 1, all)
+#         }
+#         common_values <- lapply(matrix_list[-1], get.equal.rows, matrix_list[[1]], common_names)
+#         while(length(common_values) > 2) {
+#             common_values[[1]] <- common_values[[1]] & common_values[[2]]
+#             common_values[[2]] <- NULL
+#         }
+#         common_values <- common_values[[1]]
+
+#         ## Separating the matrices
+#         remove.common <- function(matrix, common_values) {
+#             return(matrix[!(rownames(matrix) %in% c(names(which(common_values)))), ])
+#         }
+#         common_matrix <- matrix_list[[1]][names(which(common_values)), ]
+#         other_matrices <- lapply(matrix_list, remove.common, common_values)
+#         return(unlist(list(list("common" = common_matrix), other_matrices), recursive = FALSE))
+#     }
+
+#     expand.matrix <- function(matrix_list) {
+#         ## Simply return the matrix
+#         if(names(matrix_list)[[1]] != "common") {
+#             return(matrix_list)
+#         } else {
+#             return(lapply(matrix_list[-1], rbind, matrix_list$common))
+#         }
+#     }
+
+    ##TODO: implementation: search/replace ...$matrix -> expand.matrix(...$matrix)
+
+
+#     mat1 <- matrix(rnorm(20), 10, 2)
+#     mat2 <- matrix(rnorm(20), 10, 2)
+#     mat3 <- matrix(rnorm(24), 12, 2)
+#     rownames(mat1) <- rownames(mat2) <- letters[1:10]
+#     rownames(mat2)[10] <- "root"
+#     rownames(mat3) <- letters[1:12]
+#     ## a b d and e are common within all matrices
+#     mat1[c("a", "b", "d", "e"),] -> mat2[c("a", "b", "d", "e"),] -> mat3[c("a", "b", "d", "e"),]
+
+#     matrix_list <- list(mat1, mat2, mat3)
+
+#     test <- compact.matrix(matrix_list)
+#     test <- expand.matrix(test)
+# })
+
+
+
+
+
 
 
 # test_that("dispRity works in parallel", {

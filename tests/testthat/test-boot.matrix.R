@@ -111,13 +111,13 @@ test_that("No bootstraps", {
         , "dispRity")
     expect_equal(
         length(test)
-        , 3)
+        , 4)
     expect_equal(
         as.vector(test$subsets[[1]][[1]])
         , seq(1:nrow(test$matrix[[1]])))
     expect_equal(
         test$call$dimensions
-        , ncol(test$matrix[[1]]))
+        , 1:ncol(test$matrix[[1]]))
     expect_equal(
         length(test$subsets[[1]])
         ,1)
@@ -133,10 +133,10 @@ test_that("No bootstraps", {
 test_that("Remove dimensions", {
     expect_equal(
         boot.matrix(data, bootstraps = 0, dimensions = 0.5)$call$dimensions
-        ,24)
+        ,1:24)
     expect_equal(
         boot.matrix(data, bootstraps = 0, dimensions = 24)$call$dimensions
-        ,24)
+        , 24)
 })
 
 ## Bootstraps = 5
@@ -147,10 +147,10 @@ test_that("5 bootstraps", {
         , "dispRity")
     expect_equal(
         length(test)
-        , 3)
+        , 4)
     expect_equal(
         test$call$dimensions
-        , ncol(test$matrix[[1]]))
+        , 1:ncol(test$matrix[[1]]))
     expect_equal(
         dim(test$subsets[[1]][[1]])
         ,c(50,1))
@@ -172,10 +172,10 @@ test_that("5 bootstraps, rarefaction = 5", {
         , "dispRity")
     expect_equal(
         length(test)
-        , 3)
+        , 4)
     expect_equal(
         test$call$dimensions
-        , ncol(test$matrix[[1]]))
+        , 1:ncol(test$matrix[[1]]))
     expect_equal(
         dim(test$subsets[[1]][[2]])
         ,c(50,5))
@@ -233,10 +233,10 @@ test_that("5 bootstraps, rarefaction = 5,6, subsets", {
         , "dispRity")
     expect_equal(
         length(test)
-        , 3)
+        , 4)
     expect_equal(
         test$call$dimensions
-        , ncol(test$matrix[[1]]))
+        , 1:ncol(test$matrix[[1]]))
     expect_equal(
         length(test$subsets)
         ,2)

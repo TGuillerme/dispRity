@@ -136,6 +136,11 @@ expect_equal_round <- function(x, y, digits) {
     testthat::expect_equal(round(x, digits), round(y, digits))
 }
 
+## Function for automatically add rownames (used in both branches below)
+add.rownames <- function(x) {
+    rownames(x) <- seq(1:nrow(x))
+    return(x)
+}
 ## Checks whether the data is a matrix or a list
 check.dispRity.data <- function(data) {
     match_call <- match.call()
@@ -147,11 +152,7 @@ check.dispRity.data <- function(data) {
         data <- as.matrix(data)
     }
 
-    ## Function for automatically add rownames (used in both branches below)
-    add.rownames <- function(x) {
-        rownames(x) <- seq(1:nrow(x))
-        return(x)
-    }
+    ## Adding rownames
     row_warning <- paste0("Row names have been automatically added to ", as.expression(match_call$data), ".")
 
     ## Switch between cases
@@ -179,8 +180,9 @@ check.dispRity.data <- function(data) {
             if(length(check_rows) != all_dim[1]) {
                 stop.call(match_call$data, is_error)
             }
-            ## Sort the rownames
-            data <- lapply(data, function(x) x[order(rownames(x)), exact = TRUE, drop = FALSE])
+            ## Sort the rownames softly (i.e. in the order of the first matrix)
+            data <- lapply(data, function(x, order) x[order, , drop = FALSE], order = rownames(data[[1]]))
+            # data <- lapply(data, function(x) x[order(rownames(x)), exact = TRUE, drop = FALSE])
         }
     } else {
         ## Eventually add rownames
@@ -193,3 +195,47 @@ check.dispRity.data <- function(data) {
     return(data)
 }
 
+## Checks whether the tree is in the correct format
+check.dispRity.tree <- function(tree, data, bind.trees = FALSE) {
+    
+    ## Check class
+    tree_class <- check.class(tree, c("phylo", "multiPhylo"))
+    ## Convert into a list (not multiPhylo if it's a single tree)
+    if(tree_class == "phylo") {
+        tree <- list(tree)
+        class(tree) <- "multiPhylo"
+    }
+
+    ## Inc.nodes toggle
+    inc.nodes <- unique(unlist(lapply(tree, function(x) !is.null(x$node.label))))
+    if(length(inc.nodes) > 1) {
+        stop("All trees should have node labels or no node labels.", call. = FALSE)
+    }
+
+    ## Make the data into "dispRity" format for testing
+    if(!missing(data) && is(data, "matrix")) {
+        if(!is(data, "dispRity")) {
+            data <- list(matrix = list(data))
+        }
+    }
+
+    ## Match with the data
+    if(!missing(data) && !is.null(data$matrix[[1]])) {
+        ## Match the data and the trees?
+        pass.fun <- function(cleaned) return(!all(is.na(cleaned$dropped_tips), is.na(cleaned$dropped_rows)))
+        if(!bind.trees) {
+            cleanings <- lapply(data$matrix, clean.data, tree, inc.nodes = inc.nodes)
+        } else {
+            if(length(tree) != length(data$matrix)) {
+                stop("The number of matrices and trees must be the same to bind them.", call. = FALSE)
+            }
+            cleanings <- mapply(cleand.data, data$matrix, tree, MoreArgs = c(inc.nodes = inc.nodes), SIMPLIFY = FALSE)
+        }
+        if(any(not_pass <- unlist(lapply(cleanings, pass.fun)))) {
+            ## Stop!
+            stop("The data is not matching the tree labels (you can use ?clean.data to match both data and tree).", call. = FALSE)
+        }
+    }
+
+    return(tree)
+}

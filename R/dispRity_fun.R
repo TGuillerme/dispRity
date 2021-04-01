@@ -1,9 +1,7 @@
-get.dispRity.metric.handle <- function(metric, match_call, data.dim, ...) {
+get.dispRity.metric.handle <- function(metric, match_call, data.dim, tree = NULL, ...) {
     level3.fun <- level2.fun <- level1.fun <- NULL
-    between.groups <- rep(FALSE, 3)
-
+    tree.metrics <- between.groups <- rep(FALSE, 3)
     length_metric <- length(metric)
-
     ## Get the metric handle
     if(length_metric == 1) {
         if(!is(metric, "list")) {
@@ -15,10 +13,11 @@ get.dispRity.metric.handle <- function(metric, match_call, data.dim, ...) {
             metric <- metric[[1]]
         }
         ## Which level is the metric?
-        test_level <- make.metric(metric, silent = TRUE, check.between.groups = TRUE, data.dim = data.dim, ...)
+        test_level <- make.metric(metric, silent = TRUE, check.between.groups = TRUE, data.dim = data.dim, tree = tree, ...)
         # warning("DEBUG dispRity_fun") ; test_level <- make.metric(metric, silent = TRUE, check.between.groups = TRUE, data.dim = data.dim)
         level <- test_level$type
         between.groups[as.numeric(gsub("level", "", test_level$type))] <- test_level$between.groups
+        tree.metrics[as.numeric(gsub("level", "", test_level$type))] <- test_level$tree
 
         switch(level,
             level3 = {
@@ -40,38 +39,42 @@ get.dispRity.metric.handle <- function(metric, match_call, data.dim, ...) {
         }
         ## Sorting the metrics by levels
         ## getting the metric levels
-        test_level <- lapply(metric, make.metric, silent = TRUE, data.dim = data.dim, check.between.groups = TRUE)
+        test_level <- lapply(metric, make.metric, silent = TRUE, data.dim = data.dim, check.between.groups = TRUE, tree = tree)
         levels <- unlist(lapply(test_level, `[[` , 1))
         btw_groups <- unlist(lapply(test_level, `[[` , 2))
+        tree_metrics <- unlist(lapply(test_level, `[[` , 3))
 
         ## can only unique levels
-        if(length(levels) != length(unique(levels))) stop("Some functions in metric are of the same dimension-level.\nTry combining them in a single function.\nFor more information, see:\n?make.metric()")
+        if(length(levels) != length(unique(levels))) stop("Some functions in metric are of the same dimension-level.\nTry combining them in a single function.\nFor more information, see:\n?make.metric()", call. = FALSE)
 
         ## At least one level 1 or level 2 metric is required
         if(length(levels) == 1 && levels[[1]] == "level3") {
-            stop("At least one metric must be dimension-level 1 or dimension-level 2\n.For more information, see:\n?make.metric()")
+            stop("At least one metric must be dimension-level 1 or dimension-level 2\n.For more information, see:\n?make.metric()", call. = FALSE)
         }
         
         ## Get the level 1 metric
         if(!is.na(match("level1", levels))) {
             level1.fun <- metric[[match("level1", levels)]]
             between.groups[1] <- btw_groups[match("level1", levels)]
+            tree.metrics[1] <- tree_metrics[match("level1", levels)]
         }
 
         ## Get the level 2 metric
         if(!is.na(match("level2", levels))) {
             level2.fun <- metric[[match("level2", levels)]]
             between.groups[2] <- btw_groups[match("level2", levels)]
+            tree.metrics[2] <- tree_metrics[match("level2", levels)]
         }
 
         ## Get the level 3 metric
         if(!is.na(match("level3", levels))) {
             level3.fun <- metric[[match("level3", levels)]]
             between.groups[3] <- btw_groups[match("level3", levels)]
+            tree.metrics[3] <- tree_metrics[match("level3", levels)]
         }
     }
 
-    return(list("levels" = list("level3.fun" = level3.fun, "level2.fun" = level2.fun, "level1.fun" = level1.fun), "between.groups" = between.groups))
+    return(list(levels = list("level3.fun" = level3.fun, "level2.fun" = level2.fun, "level1.fun" = level1.fun), between.groups = between.groups, tree.metrics = tree.metrics))
 }
 
 ## Getting the first metric
@@ -100,6 +103,10 @@ get.row.col <- function(x, row, col = NULL) {
 
 
 ## Applying the function to one matrix (or two if nrow is not null)
+# one_matrix <- data$matrix[[1]] ; warning("DEBUG: dispRity_fun")
+# bootstrap <- na.omit(one_subsets_bootstrap) ; warning("DEBUG: dispRity_fun")
+# fun <- first_metric ; warning("DEBUG: dispRity_fun")
+# dimensions <- data$call$dimensions ; warning("DEBUG: dispRity_fun")
 decompose <- function(one_matrix, bootstrap, dimensions, fun, nrow, ...) {
     if(is.null(nrow)) {
         ## Normal decompose
@@ -113,30 +120,81 @@ decompose <- function(one_matrix, bootstrap, dimensions, fun, nrow, ...) {
             )
     }
 }
+## Same as decompose but including the tree argument
+# one_matrix <- matrices[[1]] ; warning("DEBUG: dispRity_fun")
+# one_tree <- trees[[1]] ; warning("DEBUG: dispRity_fun")
+# bootstrap <- na.omit(one_subsets_bootstrap) ; warning("DEBUG: dispRity_fun")
+# fun <- first_metric ; warning("DEBUG: dispRity_fun")
+# dimensions <- data$call$dimensions ; warning("DEBUG: dispRity_fun")
+decompose.tree <- function(one_matrix, one_tree, bootstrap, dimensions, fun, nrow, ...) {
+    ## Check if fun has a "reference.data" argument
+    if(!("reference.data" %in% formalArgs(fun))) {
+        ##Does not use reference.data
+        if(is.null(nrow)) {
+            ## Normal decompose
+            return(fun(one_matrix[bootstrap, dimensions, drop = FALSE], tree = one_tree, ...))
+        } else {
+            ## Serial decompose
+            return(
+                fun(matrix  = one_matrix[bootstrap[1:nrow], dimensions, drop = FALSE],
+                    matrix2 = one_matrix[bootstrap[-c(1:nrow)], dimensions, drop = FALSE],
+                    tree    = one_tree, ...)
+                )
+        }
+    } else {
+        ## Uses reference.data
+        if(is.null(nrow)) {
+            ## Normal decompose
+            return(fun(one_matrix[bootstrap, dimensions, drop = FALSE], tree = one_tree, reference.data = one_matrix, ...))
+        } else {
+            ## Serial decompose
+            return(
+                fun(matrix  = one_matrix[bootstrap[1:nrow], dimensions, drop = FALSE],
+                    matrix2 = one_matrix[bootstrap[-c(1:nrow)], dimensions, drop = FALSE],
+                    tree    = one_tree,
+                    reference.data = one_matrix, ...)
+                )
+        }
+    }
+}
 
 ## Calculates disparity from a bootstrap table
-decompose.matrix <- function(one_subsets_bootstrap, fun, data, nrow, ...) {
+# fun <- first_metric ; warning("DEBUG: dispRity_fun")
+decompose.matrix <- function(one_subsets_bootstrap, fun, data, nrow, use_tree, ...) {
 
     ## Return NA if no data
     if(length(na.omit(one_subsets_bootstrap)) < 2) {
         return(NA)
     }
 
-    ## Apply the fun, bootstrap and dimension on each matrix
-    return(unlist(lapply(data$matrix,
-                        decompose,
-                        bootstrap = na.omit(one_subsets_bootstrap),
-                        dimensions = 1:data$call$dimensions,
-                        fun,
-                        nrow = nrow,
-                        ...),
-                  recursive = FALSE)
-            )#, use.names = FALSE))
-            # return(fun( data$matrix[na.omit(one_subsets_bootstrap), 1:data$call$dimensions], ...))
+    ## Some compactify/decompactify thingy can happen here for a future version of the package where lapply(data$matrix, ...) can be lapply(decompact(data$matrix), ...)
+
+    if(!use_tree) {
+        ## Apply the fun, bootstrap and dimension on each matrix
+        return(unlist(lapply(data$matrix, decompose,
+                            bootstrap  = na.omit(one_subsets_bootstrap),
+                            dimensions = data$call$dimensions,
+                            fun        = fun,
+                            nrow       = nrow,
+                            ...),
+                      recursive = FALSE))
+    } else {
+        ## Check whether the number of trees and matrices match
+        ## Applying the decomposition to all trees and all matrices
+        return(do.call(cbind,
+            mapply(decompose.tree, data$matrix, data$tree,
+                    MoreArgs = list(bootstrap  = na.omit(one_subsets_bootstrap),
+                                   dimensions = data$call$dimensions,
+                                   fun        = fun,
+                                   nrow       = nrow,
+                                   ...),
+                    SIMPLIFY = FALSE)))
+    }
 }
 
 ## Apply decompose matrix
-decompose.matrix.wrapper <- function(one_subsets_bootstrap, fun, data, use_array, ...) {
+# fun = first_metric ; warning("DEBUG: dispRity_fun")
+decompose.matrix.wrapper <- function(one_subsets_bootstrap, fun, data, use_array, use_tree = FALSE, ...) {
    
     if(is(one_subsets_bootstrap)[[1]] == "list") {
         ## Isolating the matrix into it's two components if the "matrix" is actually a list
@@ -148,11 +206,16 @@ decompose.matrix.wrapper <- function(one_subsets_bootstrap, fun, data, use_array
 
     ## Decomposing the matrix
     if(use_array) {
-        return(array(apply(one_subsets_bootstrap, 2, decompose.matrix, fun = fun, data = data, nrow = nrow, ...), dim = c(data$call$dimensions, data$call$dimensions, ncol(one_subsets_bootstrap))))
+        return(array(apply(one_subsets_bootstrap, 2, decompose.matrix, fun = fun, data = data, nrow = nrow, use_tree = use_tree, ...), dim = c(length(data$call$dimensions), length(data$call$dimensions), ncol(one_subsets_bootstrap))))
+ 
     } else {
 
         ## one_subsets_bootstrap is a list (in example) on a single matrix
-        results_out <- apply(one_subsets_bootstrap, 2, decompose.matrix, fun = fun, data = data, nrow = nrow, ...)
+        results_out <- apply(one_subsets_bootstrap, 2, decompose.matrix, fun = fun, data = data, nrow = nrow, use_tree = use_tree, ...)
+
+        # one_subsets_bootstrap <- cbind(one_subsets_bootstrap, one_subsets_bootstrap)
+        # decompose.matrix(one_subsets_bootstrap[,1], fun = fun, data = data, nrow = nrow, use_tree = use_tree)
+
 
         ## Return the results
         if(is(results_out, "matrix")) {
@@ -171,8 +234,11 @@ decompose.matrix.wrapper <- function(one_subsets_bootstrap, fun, data, use_array
     }
 }
 
-## Calculating the disparity for a bootstrap matrix 
-disparity.bootstraps <- function(one_subsets_bootstrap, metrics_list, data, matrix_decomposition, metric_is_between.groups, ...){# verbose, ...) {
+## Calculating the disparity for a bootstrap matrix
+# one_subsets_bootstrap <- lapply_loop[[1]][[1]] ; warning("DEBUG: dispRity_fun")
+# subsets <- lapply_loop[[1]] ; warning("DEBUG: dispRity_fun")
+# one_subsets_bootstrap <- subsets[[1]] ; warning("DEBUG: dispRity_fun")
+disparity.bootstraps <- function(one_subsets_bootstrap, metrics_list, data, matrix_decomposition, metric_has_tree = rep(FALSE, length(metrics_list)), ...){# verbose, ...) {
     ## 1 - Decomposing the matrix (if necessary)
     verbose_place_holder <- NULL
     if(matrix_decomposition) {
@@ -180,27 +246,41 @@ disparity.bootstraps <- function(one_subsets_bootstrap, metrics_list, data, matr
         use_array <- !is.null(metrics_list$level3.fun)
         ## Getting the first metric
         first_metric <- get.first.metric(metrics_list)
-        # level <- first_metric[[3]] 
         metrics_list <- first_metric[[2]]
+        use_tree     <- metric_has_tree[first_metric[[3]]]
         first_metric <- first_metric[[1]]
+
         ## Decompose the metric using the first metric
-        disparity_out <- decompose.matrix.wrapper(one_subsets_bootstrap, fun = first_metric, data = data, use_array = use_array, ...)
+        disparity_out <- decompose.matrix.wrapper(one_subsets_bootstrap, fun = first_metric, data = data, use_array = use_array, use_tree = use_tree, ...)
     } else {
         disparity_out <- one_subsets_bootstrap
     }
 
+    #TODO: handle tree metrics after the matrix decomposition
+
     ## 2 - Applying the metrics to the decomposed matrix
     if(!is.null(metrics_list$level3.fun)) {
-        disparity_out <- apply(disparity_out, 2, metrics_list$level3.fun, ...)
+        if(!metric_has_tree[3]) {
+            disparity_out <- apply(disparity_out, 2, metrics_list$level3.fun, ...)
+        } else {
+            disparity_out <- apply(disparity_out, 2, metrics_list$level3.fun, tree = data$tree, ...)
+        }
     }
 
     if(!is.null(metrics_list$level2.fun)) {
-        disparity_out <- apply(disparity_out, 3, metrics_list$level2.fun, ...)
+        if(!metric_has_tree[2]) {
+            disparity_out <- apply(disparity_out, 3, metrics_list$level2.fun, ...)
+        } else {
+            disparity_out <- apply(disparity_out, 3, metrics_list$level2.fun, tree = data$tree, ...)
+        }
     }
 
     if(!is.null(metrics_list$level1.fun)) {
-        margin <- length(dim(disparity_out))
-        disparity_out <- apply(disparity_out, margin, metrics_list$level1.fun, ...)
+        if(!metric_has_tree[1]) {
+            disparity_out <- apply(disparity_out, MARGIN = length(dim(disparity_out)), metrics_list$level1.fun, ...)
+        } else {
+            disparity_out <- apply(disparity_out, MARGIN = length(dim(disparity_out)), metrics_list$level1.fun, tree = data$tree, ...)
+        }
         disparity_out <- t(as.matrix(disparity_out))
     }
 
@@ -209,15 +289,16 @@ disparity.bootstraps <- function(one_subsets_bootstrap, metrics_list, data, matr
 
 
 ## Lapply wrapper for disparity.bootstraps function
-lapply.wrapper <- function(subsets, metrics_list, data, matrix_decomposition, verbose, metric_is_between.groups = FALSE, ...) {
+# subsets <- lapply_loop[[1]] ; warning("DEBUG: dispRity_fun")
+lapply.wrapper <- function(subsets, metrics_list, data, matrix_decomposition, verbose, metric_has_tree = rep(FALSE, length(metrics_list)), ...) {
     if(verbose) {
         ## Making the verbose version of disparity.bootstraps
         body(disparity.bootstraps)[[2]] <- substitute(message(".", appendLF = FALSE))
     }
-    return(lapply(subsets, disparity.bootstraps, metrics_list, data, matrix_decomposition, metric_is_between.groups, ...))
+    return(lapply(subsets, disparity.bootstraps, metrics_list, data, matrix_decomposition, metric_has_tree, ...))
 }
-mapply.wrapper <- function(lapply_loop, data, metrics_list, matrix_decomposition, verbose, ...) {
-    return(lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, ...))
+mapply.wrapper <- function(lapply_loop, data, metrics_list, matrix_decomposition, verbose, metric_has_tree, ...) {
+    return(lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, metric_has_tree, ...))
 }
 
 ## Split the lapply_loop for bound tree/matrices
@@ -235,11 +316,23 @@ split.lapply_loop <- function(lapply_loop, n_trees) {
 
 ## Split the data for bound tree/matrices
 split.data <- function(data) {
-    ## Splitting the different matrices
-    return(lapply(data$matrix, function(X)
-        list("matrix" = list(X),
-             "call" = list("dimensions" = data$call$dimensions))))
+
+    ## Extract the necessary variables
+    matrices   <- data$matrix
+    trees      <- data$tree
+
+    if((n_matrices <- length(matrices)) != (n_trees <- length(trees))) {
+        ## Match the trees and the matrices by multiplying them
+        matrices <- unlist(replicate(n_trees, matrices, simplify = FALSE), recursive = FALSE)
+        trees <- unlist(replicate(n_matrices, trees, simplify = FALSE), recursive = FALSE)
+    }
+    ## Splitting the different matrices and trees
+    return(mapply(function(matrix, tree, data) {return(list("matrix" = list(matrix), "tree" = c(tree), "call" = list("dimensions" = data$call$dimensions)))},
+        matrix = matrices,
+        tree   = trees,
+        MoreArgs = list(data = data), SIMPLIFY = FALSE))
 }
+
 ## Merge the data for bound tree/matrices
 recursive.merge <- function(list, bind = cbind) {
     while(length(list) > 1) {

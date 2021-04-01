@@ -1,5 +1,5 @@
 #' @name dispRity.metric
-#' @aliases dimension.level3.fun dimension.level2.fun dimension.level1.fun between.groups.fun variances ranges centroids mode.val ellipse.volume convhull.surface convhull.volume diagonal ancestral.dist pairwise.dist span.tree.length n.ball.volume radius neighbours displacements quantiles func.eve func.div angles deviations group.dist point.dist phylo.projections projections
+#' @aliases dimension.level3.fun dimension.level2.fun dimension.level1.fun between.groups.fun variances ranges centroids mode.val ellipse.volume edge.length.tree convhull.surface convhull.volume diagonal ancestral.dist pairwise.dist span.tree.length n.ball.volume radius neighbours displacements quantiles func.eve func.div angles deviations group.dist point.dist projections projections.tree
 #' @title Disparity metrics
 #'
 #' @description Different implemented disparity metrics.
@@ -50,31 +50,21 @@
 #' 
 #' The currently implemented dimension-level 2 metrics are:
 #' \itemize{
-#'   \item \code{ancestral.dist}: calculates the distance between each tip and node and their ancestral. This function needs either (1) \code{matrix}/\code{list} from \code{\link{nodes.coordinates}}; or a \code{tree} (\code{"phylo"}) and \code{full} (\code{"logical"}) argument to calculate the node coordinates for the direct descendants (\code{full = FALSE}) or all descendants down to the root (\code{full = TRUE}). NOTE: distance is calculated as \code{"euclidean"} by default, this can be changed using the \code{method} argument.
+#'   \item \code{ancestral.dist}: calculates the distance between each elements coordinates in the matrix and their ancestors' coordinates (if \code{to.root = FALSE}; default) or to the root coordinates (if \code{to.root = TRUE}) for a given \code{tree}. The distance is calculate as Euclidean by default but can be changed through the \code{methods} argument (\code{method = "euclidean"}; default). Note that the matrix must contain data for both tips and nodes in the \code{tree}, otherwise you must provide a matrix to the argument \code{reference.data} that contains them. Note that if the function is used in \code{\link{dispRity}}, both the \code{tree} and \code{reference.data} can be automatically recycled from the \code{dispRity} object (if present).
 #' 
 #'   \item \code{angles}: calculates the angles of the main axis of variation per dimension in a \code{matrix}. The angles are calculated using the least square algorithm from the \code{\link[stats]{lm}} function. The unit of the angle can be changed through the \code{unit} argument (either \code{"degree"} (default), \code{radian} or \code{slope}) and a base angle to measure the angle from can be passed through the \code{base} argument (by default \code{base = 0}, measuring the angle from the horizontal line (not that the \code{base} argument has to be passed in the same unit as \code{unit}). When estimating the slope through \code{\link[stats]{lm}}, you can use the option \code{significant} to only consider significant slopes (\code{TRUE}) or not (\code{FALSE} - default).
 #' 
 #'   \item \code{centroids}: calculates the distance between each row and the centroid of the matrix (Lalibert'{e} 2010). This function can take an optional arguments \code{centroid} for defining the centroid (if missing (default), the centroid of the matrix is used). This argument can be either a subset of coordinates matching the matrix's dimensions (e.g. \code{c(0, 1, 2)} for a matrix with three columns) or a single value to be the coordinates of the centroid (e.g. \code{centroid = 0} will set the centroid coordinates to \code{c(0, 0, 0)} for a three dimensional matrix). NOTE: distance is calculated as \code{"euclidean"} by default, this can be changed using the \code{method} argument.
 #'
-#' \item \code{deviations}: calculates the minimal Euclidean distance between each element in and the hyperplane (or line if 2D, or a plane if 3D). You can specify equation of hyperplane of \emph{d} dimensions in the \eqn{intercept + ax + by + ... + nd = 0} format. For example the line \eqn{y = 3x + 1} should be entered as \code{c(1, 3, -1)} or the plane \eqn{x + 2y - 3z = 44} as \code{c(44, 1, 2, -3,)}. If missing the \code{hyperplane} (default) is calculated using a least square regression using a gaussian \code{\link[stats]{glm}}. Extract arguments can be passed to \code{\link[stats]{glm}} through \code{...}. When estimating the hyperplane, you can use the option \code{significant} to only consider significant slopes (\code{TRUE}) or not (\code{FALSE} - default).
+#' \item \code{deviations}: calculates the minimal Euclidean distance between each element in and the hyperplane (or line if 2D, or a plane if 3D). You can specify equation of hyperplane of \emph{d} dimensions in the \eqn{intercept + ax + by + ... + nd = 0} format. For example the line \eqn{y = 3x + 1} should be entered as \code{c(1, 3, -1)} or the plane \eqn{x + 2y - 3z = 44} as \code{c(44, 1, 2, -3)}. If missing the \code{hyperplane} (default) is calculated using a least square regression using a gaussian \code{\link[stats]{glm}}. Extract arguments can be passed to \code{\link[stats]{glm}} through \code{...}. When estimating the hyperplane, you can use the option \code{significant} to only consider significant slopes (\code{TRUE}) or not (\code{FALSE} - default).
 #'   \item \code{displacements}: calculates the ratio between the distance to the centroid (see \code{centroids} above) and the distance from a reference (by default the origin of the space). The reference can be changed through the \code{reference} argument. NOTE: distance is calculated as \code{"euclidean"} by default, this can be changed using the \code{method} argument.
+#' 
+#'   \item \code{edge.length.tree}: calculates the edge length from a given tree for each elements present in the matrix. Each edge length is either measured between the element and the root of the tree (\code{to.root = TRUE} ; default) or between the element and its last ancestor (\code{to.root = FALSE}))
+#' 
 #'
 #'   \item \code{neighbours}: calculates the distance to a neighbour (Foote 1990). By default this is the distance to the nearest neighbour (\code{which = min}) but can be set to any dimension level - 1 function (e.g. \code{which = mean} gives the distance to the most average neighbour). NOTE: distance is calculated as \code{"euclidean"} by default, this can be changed using the \code{method} argument. 
 #'
 #'   \item \code{pairwise.dist}: calculates the pairwise distance between elements - calls \code{vegdist(matrix, method = method, diag = FALSE, upper = FALSE, ...)} (Foote 1990). The distance type can be changed via the \code{method} argument (see \code{\link[vegan]{vegdist}} - default: \code{method = "euclidean"}). This function outputs a vector of pairwise comparisons in the following order: d(A,B), d(A,C), d(B,C) for three elements A, B and C. NOTE: distance is calculated as \code{"euclidean"} by default, this can be changed using the \code{method} argument.
-#'
-#' 
-#'   \item \code{phylo.projections}: calculates the \code{projections} metric but drawing the vectors from a phylogenetic tree. This metric can intake any argument from \code{projections} (see below) but for \code{point1} and \code{point2} that are replaced by the argument \code{type}. \code{type} is a \code{vector} or a \code{list} of two elements that designates which vector to draw and can be any pair of the following options (the first element being the origin of the vector and the second where the vector points to):
-#'      \itemize{
-#'          \item \code{"root"}: the root of the tree (the first element in phy$node.label);
-#'          \item \code{"ancestor"}: the element's most recent ancestor;
-#'          \item \code{"tips"}: the centroid of the tips;
-#'          \item \code{"nodes"}: the centroid of all the nodes;
-#'          \item \code{"livings"}: the centroid of the tips the furthest from the root;
-#'          \item \code{"fossils"}: the centroid of all the tips that are not the furthest from the root;
-#'          \item any numeric values that can be interpreted as \code{point1} and \code{point2} in \code{\link{projections}};
-#'          \item or a user defined function that with the inputs \code{matrix} and \code{phy} and \code{row} (the element's ID, i.e. the row number in \code{matrix}). 
-#'      }
 #' 
 #'   \item \code{projections}: projects each element on a vector defined as (\code{point1}, \code{point2}) and measures some aspect of this projection. The different aspects that can be measured are:
 #'  \itemize{
@@ -86,6 +76,19 @@
 #' By default, \code{point1} is the centre of the space (coordinates \code{0, 0, 0, ...}) and \code{point2} is the centroid of the space (coordinates \code{colMeans(matrix)}). Coordinates for \code{point1} and \code{point2} can be given as a single value to be repeated (e.g. \code{point1 = 1} is translated into \code{point1 = c(1, 1, ...)}) or a specific set of coordinates.
 #' Furtheremore, by default, the space is scaled so that the vector (\code{point1}, \code{point2}) becomes the unit vector (distance (\code{point1}, \code{point2}) is set to 1; option \code{scale = TRUE}; default). You can use the unit vector of the space using the option \code{scale = FALSE}.
 #'
+#'   \item \code{projections.tree}: calculates the \code{projections} metric but drawing the vectors from a phylogenetic tree. This metric can intake any argument from \code{projections} (see below) but for \code{point1} and \code{point2} that are replaced by the argument \code{type}. \code{type} is a \code{vector} or a \code{list} of two elements that designates which vector to draw and can be any pair of the following options (the first element being the origin of the vector and the second where the vector points to):
+#'      \itemize{
+#'          \item \code{"root"}: the root of the tree (the first element in tree$node.label);
+#'          \item \code{"ancestor"}: the element's most recent ancestor;
+#'          \item \code{"tips"}: the centroid of the tips;
+#'          \item \code{"nodes"}: the centroid of all the nodes;
+#'          \item \code{"livings"}: the centroid of the tips the furthest from the root;
+#'          \item \code{"fossils"}: the centroid of all the tips that are not the furthest from the root;
+#'          \item any numeric values that can be interpreted as \code{point1} and \code{point2} in \code{\link{projections}};
+#'          \item or a user defined function that with the inputs \code{matrix} and \code{tree} and \code{row} (the element's ID, i.e. the row number in \code{matrix}). 
+#'      }
+#' \emph{NOTE:} the elements to calculate the origin and end points of the vector are calculated by default on the provided input \code{matrix} which can be missing data from the tree if used with \code{\link{custom.subsets}} or \code{\link{chrono.subsets}}. You can always provide the full matrix using the option \code{reference.data = my_matrix}.
+#' 
 #'   \item \code{quantiles}: calculates the quantile range of each axis of the matrix. The quantile can be changed using the \code{quantile} argument (default is \code{quantile = 95}, i.e. calculating the range on each axis that includes 95\% of the data). An optional argument, \code{k.root}, can be set to \code{TRUE} to scale the ranges by using its \eqn{kth} root (where \eqn{k} are the number of dimensions). By default, \code{k.root = FALSE}.
 #'
 #'   \item \code{radius}: calculates a distance from the centre of each axis. The \code{type} argument is the function to select which distance to calculate. By default \code{type = max} calculates the maximum distance between the elements and the centre for each axis (i.e. the radius for each dimensions)
@@ -134,14 +137,11 @@
 #' rand_tree <- rtree(5) ; rand_tree$node.label <- paste0("n", 1:4)
 #' ## Adding the tip and node names to the matris
 #' rownames(dummy_matrix) <- c(rand_tree$tip.label, rand_tree$node.label)
-#' ## Calculating the direct ancestral nodes
-#' direct_anc_centroids <- nodes.coordinates(dummy_matrix, rand_tree, full = FALSE)
-#' ## Calculating all the ancestral nodes
-#' all_anc_centroids <- nodes.coordinates(dummy_matrix, rand_tree, full = TRUE)
-#' ## Calculating the distances from the direct ancestral nodes
-#' ancestral.dist(dummy_matrix, nodes.coords = direct_anc_centroids)
-#' ## Calculating the distances from all the ancestral nodes
-#' ancestral.dist(dummy_matrix, nodes.coords = all_anc_centroids)
+#' ## Calculating the distances to the ancestors
+#' ancestral.dist(dummy_matrix, tree = rand_tree)
+#' ## Calculating the manhattan distances to the root
+#' ancestral.dist(dummy_matrix, tree = rand_tree,
+#'                to.root = TRUE, method = "manhattan")
 #' 
 #' ## angles
 #' ## The angles in degrees of each axis
@@ -184,6 +184,19 @@
 #' displacements(dummy_matrix, reference = c(1,2,3,4,5,6,7,8,9,10))
 #' ## displacement ratios from the centre (manhattan distance)
 #' displacements(dummy_matrix, method = "manhattan")
+#' 
+#' ## edge.length.tree
+#' ## Making a dummy tree with node labels
+#' dummy_tree <- makeNodeLabel(rtree((nrow(dummy_matrix)/2)+1))
+#' ## Naming the elements in the matrix
+#' named_matrix <- dummy_matrix
+#' rownames(named_matrix) <- c(dummy_tree$tip.label,
+#'                             dummy_tree$node.label)
+#' ## The total edge length of each element in the matrix (to the root)
+#' edge.length.tree(named_matrix, tree = dummy_tree)
+#' 
+#' ## The edge lengths for each edge leading to the elements in the matrix
+#' edge.length.tree(named_matrix, tree = dummy_tree, to.root = FALSE)
 #' 
 #' ## ellipse.volume
 #' ## Ellipsoid volume of a matrix
@@ -242,32 +255,6 @@
 #' ## to the standard deviation of dummy_matrix2
 #' point.dist(dummy_matrix, dummy_matrix2, point = sd, method = "manhattan")
 #' 
-#' ## phylo.projections
-#' ## Making a dummy tree with node labels
-#' dummy_tree <- makeNodeLabel(rtree((nrow(dummy_matrix)/2)+1))
-#' ## Naming the elements in the matrix
-#' named_matrix <- dummy_matrix
-#' rownames(named_matrix) <- c(dummy_tree$tip.label,
-#'                             dummy_tree$node.label)
-#' ## The projection on the vector defined from the root of
-#' ## the tree to the ancestor of each element in the matrix
-#' phylo.projections(named_matrix, dummy_tree,
-#'                   type = c("root", "ancestor"))
-#' ## The rejection from the vector defined from the centroid
-#' ## of the nodes to the centroids of the tips
-#' phylo.projections(named_matrix, dummy_tree,
-#'                   type = c("nodes", "tips"),
-#'                   measure = "distance")
-#' ## A user function that define coordinates based on the 
-#' ## centroid of the three first nodes
-#' user.fun <- function(matrix, phy, row = NULL) {
-#'      return(colMeans(matrix[phy$node.label[1:3], ]))
-#' }
-#' ## The projection on the vector defined by the coordinates
-#' ## 0,0,0 and a user defined function
-#' phylo.projections(named_matrix, dummy_tree,
-#'                   type = c(0, user.fun))
-#' 
 #' ## projections
 #' ## The distances on the vector defined from the centre of
 #' ## the matrix to its centroid (default)
@@ -279,6 +266,32 @@
 #'             point1 = dummy_matrix[3, ],
 #'             point2 = 1)
 #'
+#' ## projections.tree
+#' ## Making a dummy tree with node labels
+#' dummy_tree <- makeNodeLabel(rtree((nrow(dummy_matrix)/2)+1))
+#' ## Naming the elements in the matrix
+#' named_matrix <- dummy_matrix
+#' rownames(named_matrix) <- c(dummy_tree$tip.label,
+#'                             dummy_tree$node.label)
+#' ## The projection on the vector defined from the root of
+#' ## the tree to the ancestor of each element in the matrix
+#' projections.tree(named_matrix, dummy_tree,
+#'                   type = c("root", "ancestor"))
+#' ## The rejection from the vector defined from the centroid
+#' ## of the nodes to the centroids of the tips
+#' projections.tree(named_matrix, dummy_tree,
+#'                   type = c("nodes", "tips"),
+#'                   measure = "distance")
+#' ## A user function that define coordinates based on the 
+#' ## centroid of the three first nodes
+#' user.fun <- function(matrix, tree, row = NULL) {
+#'      return(colMeans(matrix[tree$node.label[1:3], ]))
+#' }
+#' ## The projection on the vector defined by the coordinates
+#' ## 0,0,0 and a user defined function
+#' projections.tree(named_matrix, dummy_tree,
+#'                   type = c(0, user.fun))
+#' 
 #' ## quantiles
 #' ## The 95 quantiles
 #' quantiles(dummy_matrix)
@@ -321,40 +334,41 @@ dimension.level3.fun <- function(matrix, ...) {
 }
 
 dimension.level2.fun <- function(matrix, ...) {
-    cat("Dimension level 2 functions implemented in dispRity:\n")
-    cat("?ancestral.dist\n")
-    cat("?angles\n")
-    cat("?centroids\n")
-    cat("?deviations\n")
-    cat("?displacements\n")
-    cat("?neighbours\n")
-    cat("?pairwise.dist\n")
-    cat("?point.dist\n")
-    cat("?phylo.projections\n")
-    cat("?projections\n")
-    cat("?ranges\n")
-    cat("?radius\n")
-    cat("?variances\n")
-    cat("?span.tree.length\n")
+    cat("Dimension level 2 functions implemented in dispRity:")
+    cat("\n?ancestral.dist")
+    cat("\n?angles")
+    cat("\n?centroids")
+    cat("\n?deviations")
+    cat("\n?displacements")
+    cat("\n?edge.length.tree")
+    cat("\n?neighbours")
+    cat("\n?pairwise.dist")
+    cat("\n?point.dist")
+    cat("\n?projections")
+    cat("\n?projections.tree")
+    cat("\n?ranges")
+    cat("\n?radius")
+    cat("\n?variances")
+    cat("\n?span.tree.length")
 }
 
 dimension.level1.fun <- function(matrix, ...) {
-    cat("Dimension level 1 functions implemented in dispRity:\n")
-    cat("?convhull.surface\n")
-    cat("?convhull.volume\n")
-    cat("?diagonal\n")
-    cat("?ellipse.volume\n")
-    cat("?func.div\n")
-    cat("?func.eve\n")
-    cat("?group.dist\n")
-    cat("?mode.val\n")
-    cat("?n.ball.volume\n")
+    cat("Dimension level 1 functions implemented in dispRity:")
+    cat("\n?convhull.surface")
+    cat("\n?convhull.volume")
+    cat("\n?diagonal")
+    cat("\n?ellipse.volume")
+    cat("\n?func.div")
+    cat("\n?func.eve")
+    cat("\n?group.dist")
+    cat("\n?mode.val")
+    cat("\n?n.ball.volume")
 }
 
 between.groups.fun <- function(matrix, matrix2, ...) {
-    cat("Between groups functions implemented in dispRity:\n")
-    cat("?group.dist # level 1\n")
-    cat("?point.dist # level 2\n")
+    cat("Between groups functions implemented in dispRity:")
+    cat("\n?group.dist # level 1")
+    cat("\n?point.dist # level 2")
 }
 
 ## kth root scaling
@@ -448,7 +462,7 @@ neighbours <- function(matrix, which = min, method = "euclidean") {
 
 
 ## Calculate the mode of a vector
-mode.val <- function(matrix){
+mode.val <- function(matrix, ...){
     return(as.numeric(names(sort(-table(matrix))[1])))
 }
 
@@ -510,7 +524,7 @@ diagonal <- function(matrix) {
 }
 
 ## Calculating the distance from the ancestral nodes
-ancestral.dist <- function(matrix, nodes.coords, tree, full, method = "euclidean", ...) {
+ancestral.dist.deprecated <- function(matrix, nodes.coords, tree, full, method = "euclidean", ...) {
 
     ## Select the fun distance
     fun.dist <- select.method(method)
@@ -518,7 +532,7 @@ ancestral.dist <- function(matrix, nodes.coords, tree, full, method = "euclidean
     ## Checking if the nodes.coords is available
     if(missing(nodes.coords)) {
         if(!missing(tree) && !missing(full)) {
-            nodes.coords <- nodes.coordinates(matrix, tree, full)
+            nodes.coords <- nodes.coordinates(matrix, tree = tree, full = full)
         } else {
             warning("Missing tree and full argument for nodes.coordinates.\nSee ?nodes.coordinates manual.\nThe centroids function was applied instead.")
             return(centroids(matrix, ...))
@@ -562,6 +576,35 @@ ancestral.dist <- function(matrix, nodes.coords, tree, full, method = "euclidean
         }
     )
 }
+
+## Get the distance for each row
+get.ancestor.dist <- function(row, tree, data, fun.dist) {
+    ## Get the ancestor
+    ancestor <- c(tree$tip.label, tree$node.label)[tree$edge[tree$edge[,2] %in% which(c(tree$tip.label, tree$node.label) %in% row), 1]]
+    ## Get the distance
+    return(fun.dist(data[row, ], data[ancestor, ]))
+}
+get.root.dist <- function(row, tree, data, fun.dist) {
+    ## Get the distance
+    return(fun.dist(data[row, ], data[tree$node.label[1], ]))
+}
+ancestral.dist <- function(matrix, tree, to.root = FALSE, method = "euclidean", reference.data = matrix) {
+    if(!to.root) {
+        ## Get the distance between each tip/node and their ancestor
+        return(sapply(rownames(matrix), get.ancestor.dist, tree = tree, data = reference.data, fun.dist = select.method(method)))
+    } else {
+        ## Get the distance between each tip/node and the root
+        return(sapply(rownames(matrix), get.root.dist, tree = tree, data = reference.data, fun.dist = select.method(method)))
+    }
+}
+
+
+
+
+
+
+
+
 
 ## Calculates the hyperbox volume (or hypercube if cube = TRUE)
 span.tree.length <- function(matrix, toolong = 0, method = "euclidean") {
@@ -732,7 +775,17 @@ deviations <- function(matrix, hyperplane, ..., significant = FALSE) {
     return(apply(matrix, 1, FUN = distance, hyperplane, dimensions))
 }
 
-
+## Edge length tree
+edge.length.tree <- function(matrix, tree, to.root = TRUE) {
+    if(to.root) {
+        ## Get the distances to the root
+        out <- castor::get_all_distances_to_root(tree)[match(rownames(matrix), c(tree$tip.label, tree$node.label))]
+    } else {
+        ## Get just the edge length
+        out <- tree$edge.length[match(match(rownames(matrix), c(tree$tip.label, tree$node.label)), tree$edge[,2])]
+    }
+    return(ifelse(is.na(out),0, out))
+}
 
 ## Functions for the group.distance function
 ## Function for centreing a matrix on one specific centroid
@@ -892,46 +945,47 @@ projections <- function(matrix, point1 = 0, point2 = colMeans(matrix), measure =
 }
 
 ## Select the root coords
-get.root <- function(matrix, phy, row = NULL) {
-    return(matrix[phy$node.label[1], ])
+get.root <- function(matrix, tree, row = NULL) {
+    return(matrix[tree$node.label[1], ])
 }
 ## Select the elements' ancestor coords
-get.ancestor <- function(matrix, phy, row) {
+get.ancestor <- function(matrix, tree, row) {
     ## Get the row name
     row_name <- rownames(matrix)[row]
-    if(row_name == phy$node.label[1]) {
+    if(row_name == tree$node.label[1]) {
         ## If the row is the root, return itself
-        return(matrix[phy$node.label[1], ])
+        return(matrix[tree$node.label[1], ])
     } else {
         ## Return the ancestor
-        return(matrix[phy$node.label[phy$edge[phy$edge[,2] %in% which(c(phy$tip.label, phy$node.label) %in% row_name), 1] - Ntip(phy)], ])
+        return(matrix[tree$node.label[tree$edge[tree$edge[,2] %in% which(c(tree$tip.label, tree$node.label) %in% row_name), 1] - Ntip(tree)], ])
     }
 }
 ## Select the tips centroid coords
-get.tips <- function(matrix, phy, row = NULL) {
-    return(colMeans(matrix[phy$tip.label, ]))
+get.tips <- function(matrix, tree, row = NULL) {
+    return(colMeans(matrix[tree$tip.label, ]))
 }
 ## Select the nodes centroid coords
-get.nodes <- function(matrix, phy, row = NULL) {
-    return(colMeans(matrix[phy$node.label, ]))
+get.nodes <- function(matrix, tree, row = NULL) {
+    return(colMeans(matrix[tree$node.label, ]))
 }
 ## Select the livings centroid coords
-get.livings <- function(matrix, phy, row = NULL) {
-    elements_depths <- node.depth.edgelength(phy)
+get.livings <- function(matrix, tree, row = NULL) {
+    elements_depths <- node.depth.edgelength(tree)
     return(colMeans(matrix[which(elements_depths == max(elements_depths)), , drop = FALSE]))
 }
 ## Select the fossils centroid coords
-get.fossils <- function(matrix, phy, row = NULL) {
-    elements_depths <- node.depth.edgelength(phy)
+get.fossils <- function(matrix, tree, row = NULL) {
+    elements_depths <- node.depth.edgelength(tree)
     return(colMeans(matrix[which(elements_depths != max(elements_depths)), , drop = FALSE]))
 }
-## sapply wrapper for phylo.projections
-sapply.projections <- function(row, matrix, phy, from, to, ...) {
-    return(projections(matrix[row, , drop = FALSE], point1 = from(matrix, phy, row), point2 = to(matrix, phy, row), ...))
+## sapply wrapper for projections.tree
+sapply.projections <- function(row, matrix, tree, from, to, reference.data = matrix
+    , ...) {
+    return(projections(matrix[row, , drop = FALSE], point1 = from(reference.data, tree, row), point2 = to(reference.data, tree, row), ...))
 }
 
 ## Projection of elements on an axis
-phylo.projections <- function(matrix, phy, type = c("root","ancestor"), ...) {
+projections.tree <- function(matrix, tree, type = c("root","ancestor"), reference.data = matrix, ...) {
  
     ## Tracking whether the from_to is invariable or not
     invariables <- c(FALSE, FALSE)
@@ -959,7 +1013,7 @@ phylo.projections <- function(matrix, phy, type = c("root","ancestor"), ...) {
                     n_dim <- ncol(matrix)
                     var_out <- rep(type[[i]], n_dim)[1:n_dim]
                     ## Type is a number: functionise type
-                    from_to[[i]] <- function(matrix, phy, row) {
+                    from_to[[i]] <- function(matrix, tree, row) {
                         return(var_out)
                     }
                     invariables[[i]] <- TRUE
@@ -972,10 +1026,10 @@ phylo.projections <- function(matrix, phy, type = c("root","ancestor"), ...) {
 
     if(all(invariables)) {
         ## Point1 and point2 are invariant
-        return(projections(matrix, point1 = from_to[[1]](matrix, phy), point2 = from_to[[2]](matrix, phy), ...))
+        return(projections(matrix, point1 = from_to[[1]](reference.data, tree), point2 = from_to[[2]](reference.data, tree), ...))
     } else {
         ## Apply the to and from to each row
-        return(sapply(1:nrow(matrix), sapply.projections, matrix = matrix, phy =phy, from = from_to[[1]], to = from_to[[2]], ...))
+        return(sapply(1:nrow(matrix), sapply.projections, matrix = matrix, tree = tree, from = from_to[[1]], to = from_to[[2]], reference.data, ...))
     }
 }
 

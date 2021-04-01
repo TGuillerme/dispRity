@@ -41,7 +41,7 @@ test_that("get.plot.params works", {
     ## The plotting options
     expect_equal(plot_params$options$xlab, "Time (Mya)")
     expect_equal(plot_params$options$ylab, "c(median, centroids)")
-    expect_equal_round(plot_params$options$ylim, c(2.248737, 2.918863), 6)
+    expect_equal_round(plot_params$options$ylim, c(1.546577, 2.012542), 6)
     expect_equal(plot_params$options$col, c("black", "#BEBEBE", "#D3D3D3"))
     ## Observed data
     expect_equal(names(plot_params$observed_args), c("observed", "col", "names", "data", "pch", "cex"))
@@ -133,9 +133,6 @@ test_that("get.plot.params works", {
                                   observed_args = list(observed = TRUE),
                                   ylab = c("1","2", "3")))
     expect_equal(error[[1]], "ylab can have maximum of two elements.")
-
-
-
 })
 
 test_that("get.shift works", {
@@ -333,4 +330,36 @@ test_that("plot.dispRity with model.test data", {
     ## Works with adding the plot
     expect_null(plot(model_test_data))
     expect_null(plot(model_simulation_inherit, add = TRUE))
+})
+
+test_that("preview works with fuzzy matrices and tres", {
+
+  ## Get some bound data
+  load("bound_test_data.Rda")
+  data <- bound_test_data$matrices
+  ## Simple plot
+  expect_null(plot(make.dispRity(data[[1]])))
+  expect_null(plot(make.dispRity(data)))
+
+  ## Plot with groups
+  data <- custom.subsets(data, group = list(tips = bound_test_data$tree[[1]]$tip.label, nodes = bound_test_data$tree[[1]]$node.label))
+
+  ## Plot with one tree
+  expect_null(plot(data))
+  expect_null(plot(data, specific.args = list(matrix = 1)))
+
+  ## Plot with multiple trees
+  data <- bound_test_data$matrices
+  tree <- bound_test_data$trees
+  expect_null(plot(make.dispRity(data[[1]], tree[[1]]), specific.args = list(tree = TRUE)))
+  expect_null(plot(make.dispRity(data[[1]], tree), specific.args = list(tree = TRUE)))
+  expect_null(plot(make.dispRity(data, tree[[1]]), specific.args = list(tree = TRUE)))
+
+  ## Plot with groups
+  data <- custom.subsets(data, group = list(tips = bound_test_data$tree[[1]]$tip.label, nodes = bound_test_data$tree[[1]]$node.label), tree = tree)
+
+  ## Plot with one tree
+  expect_null(plot(data))
+  expect_null(plot(data, specific.args = list(tree = TRUE)))
+  expect_null(plot(data, specific.args = list(matrix = 1, tree = 1)))
 })

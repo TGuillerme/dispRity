@@ -5,7 +5,7 @@
 #' @param data A \code{matrix} or a list of matrices (typically output from \link{chrono.subsets} or \link{custom.subsets} - see details).
 #' @param bootstraps The number of bootstrap pseudoreplicates (\code{default = 100}).
 #' @param rarefaction Either a \code{logical} value whether to fully rarefy the data, a set of \code{numeric} values used to rarefy the data or \code{"min"} to rarefy at the minimum level (see details).
-#' @param dimensions Optional, a \code{numeric} value or proportion of the dimensions to keep.
+#' @param dimensions Optional, a vector of \code{numeric} value(s) or the proportion of the dimensions to keep.
 #' @param verbose A \code{logical} value indicating whether to be verbose or not.
 #' @param boot.type The bootstrap algorithm to use (\code{default = "full"}; see details).
 #' @param prob Optional, a \code{matrix} or a \code{vector} of probabilities for each element to be selected during the bootstrap procedure. The \code{matrix} or the \code{vector} must have a row names or names attribute that corresponds to the elements in \code{data}.
@@ -113,14 +113,14 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
         }
 
         ## Must be correct format
-        check.length(data, 3, " must be either a matrix or an output from the chrono.subsets or custom.subsets functions.")
+        check.length(data, 4, " must be either a matrix or an output from the chrono.subsets or custom.subsets functions.")
         
         ## With the correct names
         data_names <- names(data)
         if(is.null(data_names)) {
             stop.call(match_call$data, " must be either a matrix or an output from the chrono.subsets or custom.subsets functions.")
         } else {
-            if(data_names[[1]] != "matrix" | data_names[[2]] != "call" | data_names[[3]] != "subsets") {
+            if(data_names[[1]] != "matrix" | data_names[[2]] != "tree" | data_names[[3]] != "call" | data_names[[4]] != "subsets") {
                 stop.call(match_call$data, "must be either a matrix or an output from the chrono.subsets or custom.subsets functions.")
             }
         }
@@ -303,18 +303,19 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
     ## If TRUE, set automatic threshold at 0.95
     if(!missing(dimensions)) {
         ## Else must be a single numeric value (proportional)
-        check.class(dimensions, "numeric", " must be a proportional threshold value.")
-        check.length(dimensions, 1, " must be a proportional threshold value.", errorif = FALSE)
-        if(dimensions < 0) {
-            stop.call("", "Number of dimensions to remove cannot be less than 0.")
-        }
-        if(dimensions < 1) dimensions <- round(dimensions * ncol(data$matrix[[1]]))
-        if(dimensions > ncol(data$matrix[[1]])) {
+        check.class(dimensions, c("numeric", "integer"), " must be a proportional threshold value.")
+        if(length(dimensions == 1)) {
+            if(dimensions < 0) {
+                stop.call("", "Number of dimensions to remove cannot be less than 0.")
+            }
+            if(dimensions < 1) dimensions <- 1:round(dimensions * ncol(data$matrix[[1]]))
+        } 
+        if(any(dimensions > ncol(data$matrix[[1]]))) {
             stop.call("", "Number of dimensions to remove cannot be more than the number of columns in the matrix.")
         }
         data$call$dimensions <- dimensions
     } else {
-        data$call$dimensions <- ncol(data$matrix[[1]])
+        data$call$dimensions <- 1:ncol(data$matrix[[1]])
     }
 
     ## Return object if BS = 0

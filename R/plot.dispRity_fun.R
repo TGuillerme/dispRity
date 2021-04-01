@@ -20,11 +20,11 @@ get.plot.params <- function(data, data_params, cent.tend, quantiles, rarefaction
     ## Set up the plotting data
     ## Summarise the data
     if(is.null(data_params$model.sim)) {
-        if((!is.na(data$call$subsets["trees"])) && (as.numeric(data$call$subsets["trees"]) > 1)) {
+        # if((!is.na(data$call$subsets["trees"])) && (as.numeric(data$call$subsets["trees"]) > 1)) {
+        #     summarised_data <- summary.dispRity(data, quantiles = quantiles, cent.tend = cent.tend, digits = 5, na.rm = TRUE)
+        # } else {
             summarised_data <- summary.dispRity(data, quantiles = quantiles, cent.tend = cent.tend, digits = 5, na.rm = TRUE)
-        } else {
-            summarised_data <- summary.dispRity(data, quantiles = quantiles, cent.tend = cent.tend, digits = 5)
-        }
+        # }
     } else {
         summarised_data <- summary.dispRity(data, quantiles = quantiles, cent.tend = cent.tend, digits = 5)
         ## Making a fake obs column
@@ -660,10 +660,13 @@ plot.preview <- function(data, specific.args, ...) {
     gg.color.hue <- function(n) {
         grDevices::hcl(h = seq(15, 375, length = n + 1), l = 65, c = 100)[1:n]
     }
+    make.transparent <- function(colour, levels) {
+        grDevices::adjustcolor(colour, alpha.f = (1/levels) + 1/3)
+    }
 
     ## Set up the specific args
     if(is.null(specific.args$matrix)) {
-        specific.args$matrix <- 1
+        specific.args$matrix <- c(1:length(data$matrix))
     }
     if(is.null(specific.args$dimensions)) {
         specific.args$dimensions <- c(1,2)
@@ -680,16 +683,28 @@ plot.preview <- function(data, specific.args, ...) {
             legend_args <- specific.args$legend
         }
     }
+    if(is.null(specific.args$tree) || is.null(data$tree[[1]])) {
+        ## Don't plot trees
+        plot_trees <- FALSE
+    } else {
+        if(is(specific.args$tree, "logical")) {
+            ## Toggle plot_trees
+            plot_trees <- specific.args$tree
+            if(plot_trees) {
+                ## Select the trees to plot
+                specific.args$tree <- 1:length(data$tree)
+            }
+        } else {
+            ## Specific args must be the specific trees to plot
+            plot_trees <- TRUE
+        }
+    }
 
     ## Capturing the dots options
-    plot_args <- list(...)
-
-    ## Setting the dimensions
-    plot_args$x <- data$matrix[[specific.args$matrix]][, specific.args$dimensions[1]]
-    plot_args$y <- data$matrix[[specific.args$matrix]][, specific.args$dimensions[2]]
+    plot_args <- list(x = NULL, y = NULL, ...)
 
     ## Getting the loadings
-    loading <- apply(data$matrix[[specific.args$matrix]], 2, var, na.rm = TRUE)
+    loading <- apply(do.call(rbind, lapply(data$matrix[specific.args$matrix], function(matrix) apply(matrix, 2, var, na.rm = TRUE))), 2, mean)
     loading <- round(loading/sum(loading)*100, 2)
 
     ## Setting the labels
@@ -701,17 +716,12 @@ plot.preview <- function(data, specific.args, ...) {
     }
 
     ## Setting plot limits
-    plot_lim <- range(as.vector(c(data$matrix[[specific.args$matrix]][, specific.args$dimensions])))
+    plot_lim <- range(unlist(lapply(data$matrix[specific.args$matrix], function(matrix, dim) c(matrix[, dim]), dim = specific.args$dimensions)))
     if(is.null(plot_args$xlim)) {
         plot_args$xlim <- plot_lim
     }
     if(is.null(plot_args$ylim)) {
         plot_args$ylim <- plot_lim
-    }
-
-    ## Setting the pch
-    if(is.null(plot_args$pch)) {
-        plot_args$pch <- 19
     }
 
     ## Get the number of colour groups
@@ -731,18 +741,93 @@ plot.preview <- function(data, specific.args, ...) {
         }
     }
 
-    ## Make a colour classifier
-    col_order <- plot_args$col
-    if(n_groups > 1) {
-        classifier <- rep(NA, nrow(data$matrix[[specific.args$matrix]]))
-        for(class in 1:n_groups) {
-            classifier[data$subsets[[class]]$elements[,1]] <- class
-        }
-        plot_args$col <- plot_args$col[classifier]
+    ## Setting the pch
+    if(is.null(plot_args$pch)) {
+        plot_args$pch <- 19
+    }
+    if(length(plot_args$pch) != n_groups) {
+        plot_args$pch <- rep(plot_args$pch, n_groups)
     }
 
-    ## Plot the results
+    ## Make a colour and pch classifier
+    col_order <- plot_args$col
+    pch_order <- plot_args$pch
+    if(n_groups > 1) {
+        ## Get the list of subsets
+        subsets <- unlist(data$subsets, recursive = FALSE)
+        ## Make an empty classifier
+        classifier <- rep(NA, nrow(data$matrix[[1]]))
+        for(class in 1:n_groups) {
+            ## Store the selected subsets in the classifier (potentially overriding)
+            if(dim(subsets[[1]])[2] == 1) {
+                classifier[c(subsets[[class]])] <- class 
+            } else {
+                classifier[c(elements.sampler(subsets[[class]]))] <- class
+            }
+        }
+        plot_args$col <- plot_args$col[classifier]
+        plot_args$pch <- plot_args$pch[classifier]
+    }
+
+    ## Plot the empty plot
     do.call(plot, plot_args)
+
+    ## Plot the trees
+    if(plot_trees) {
+        ## Plotting one edge
+        plot.edge <- function(one_edge, points_data, params) {
+            params$x <- points_data[one_edge, 1] 
+            params$y <- points_data[one_edge, 2] 
+            do.call(lines, params)
+        }
+
+        ## Get the lines arguments
+        lines_args <- plot_args
+        lines_args$col <- "grey"
+        if(length(specific.args$tree) > 1) {
+            lines_args$col <- make.transparent(lines_args$col, levels = length(specific.args$tree))
+        }
+        if(is.null(lines_args$lwd)) {
+            lines_args$lwd <- 1
+        }
+        if(is.null(lines_args$lty)) {
+            lines_args$lty <- 1
+        }
+
+        ## Plotting each tree
+        for(one_tree in specific.args$tree) {
+
+            ## Select the right data
+            if(length(data$matrix) == length(specific.args$tree)) {
+                data_matrix <- data$matrix[[one_tree]]
+            } else {
+                data_matrix <- data$matrix[[1]]
+            }
+
+            ## Selecting the origin points for the tree
+            points_data <- data_matrix[, specific.args$dimensions][c(data$tree[[one_tree]]$tip.label, data$tree[[one_tree]]$node.label), ] 
+            ## Plotting all the edges
+            apply(data$tree[[one_tree]]$edge, 1, plot.edge,
+                  points_data = points_data,
+                  params = lines_args)
+        }
+    }
+
+    ## Plot the points
+    for(matrix in specific.args$matrix) {
+        point_args <- plot_args
+        ## Transparentize the colour
+        if(length(specific.args$matrix) > 1) {
+            point_args$col <- make.transparent(point_args$col, levels = length(specific.args$matrix)*2)
+        }
+        ## Add the points per matrix
+        point_args$x <- data$matrix[[specific.args$matrix[matrix]]][, specific.args$dimensions[1]]
+        point_args$y <- data$matrix[[specific.args$matrix[matrix]]][, specific.args$dimensions[2]]
+        ## Call the points
+        do.call(points, point_args)
+    }
+
+    ## Plot the legend
     if(n_groups > 1 && plot_legend) {
 
         ## Set the legend arguments
@@ -756,7 +841,7 @@ plot.preview <- function(data, specific.args, ...) {
             legend_args$col <- col_order
         }
         if(is.null(legend_args$pch)) {
-            legend_args$pch <- plot_args$pch
+            legend_args$pch <- pch_order
         }
         if(is.null(legend_args$cex)) {
             legend_args$cex <- 0.666
@@ -893,7 +978,7 @@ plot.dtt <- function(data, quantiles, cent.tend, density, ...) {
         ## Check the central tendency
         check.class(cent.tend, "function")
         ## The function must work
-        if(make.metric(cent.tend, silent = TRUE) != "level1") {
+        if(make.metric(cent.tend, silent = TRUE)$type != "level1") {
             stop.call("", "cent.tend argument must be a function that outputs a single numeric value.")
         }
 

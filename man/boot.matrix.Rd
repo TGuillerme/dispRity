@@ -21,7 +21,7 @@ boot.matrix(
 
 \item{rarefaction}{Either a \code{logical} value whether to fully rarefy the data, a set of \code{numeric} values used to rarefy the data or \code{"min"} to rarefy at the minimum level (see details).}
 
-\item{dimensions}{Optional, a \code{numeric} value or proportion of the dimensions to keep.}
+\item{dimensions}{Optional, a vector of \code{numeric} value(s) or the proportion of the dimensions to keep.}
 
 \item{verbose}{A \code{logical} value indicating whether to be verbose or not.}
 

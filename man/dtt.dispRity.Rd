@@ -20,7 +20,7 @@ dtt.dispRity(
 
 \item{metric}{The disparity metric to be passed to \code{\link{dispRity}}.}
 
-\item{tree}{A \code{phylo} object matching the data and with a \code{root.time} element.}
+\item{tree}{A \code{phylo} object matching the data and with a \code{root.time} element. Can be missing if \code{data} has a \code{tree} component.}
 
 \item{nsim}{The number of simulations to calculate null disparity-through-time.}
 

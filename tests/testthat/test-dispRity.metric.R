@@ -4,7 +4,7 @@
 
 test_that("dimension generic", {
     expect_equal(capture_output(dimension.level3.fun()), "No implemented Dimension level 3 functions implemented in dispRity!\nYou can create your own by using: ?make.metric")
-    expect_equal(capture_output(dimension.level2.fun()), "Dimension level 2 functions implemented in dispRity:\n?ancestral.dist\n?angles\n?centroids\n?deviations\n?displacements\n?neighbours\n?pairwise.dist\n?point.dist\n?phylo.projections\n?projections\n?ranges\n?radius\n?variances\n?span.tree.length")
+    expect_equal(capture_output(dimension.level2.fun()), "Dimension level 2 functions implemented in dispRity:\n?ancestral.dist\n?angles\n?centroids\n?deviations\n?displacements\n?edge.length.tree\n?neighbours\n?pairwise.dist\n?point.dist\n?projections\n?projections.tree\n?ranges\n?radius\n?variances\n?span.tree.length")
     expect_equal(capture_output(dimension.level1.fun()), "Dimension level 1 functions implemented in dispRity:\n?convhull.surface\n?convhull.volume\n?diagonal\n?ellipse.volume\n?func.div\n?func.eve\n?group.dist\n?mode.val\n?n.ball.volume")
     expect_equal(capture_output(between.groups.fun()), "Between groups functions implemented in dispRity:\n?group.dist # level 1\n?point.dist # level 2")
 })
@@ -371,26 +371,40 @@ test_that("ancestral.dist", {
     direct_anc_centroids <- nodes.coordinates(matrix, tree, full = FALSE)
     all_anc_centroids <- nodes.coordinates(matrix, tree, full = TRUE)
 
-    test1 <- ancestral.dist(matrix, nodes.coords = direct_anc_centroids)
-    test2 <- ancestral.dist(matrix, nodes.coords = all_anc_centroids)
+    ## Old version (deprecated!)
+
+    test1 <- ancestral.dist.deprecated(matrix, nodes.coords = direct_anc_centroids)
+    test2 <- ancestral.dist.deprecated(matrix, nodes.coords = all_anc_centroids)
 
     expect_equal(test1[6], c("n1" = 0))
     expect_equal(test2[6], c("n1" = 0))
     expect_lt(test1[1], test2[1])
     expect_equal(test1[7], test2[7])
 
-
     ## Ancestral dist without node coordinates
-    test3 <- ancestral.dist(matrix, tree = tree, full = TRUE)
-    expect_warning(test4 <- ancestral.dist(matrix))
+    test3 <- ancestral.dist.deprecated(matrix, tree = tree, full = TRUE)
+    expect_warning(test4 <- ancestral.dist.deprecated(matrix))
     expect_equal(names(test3), c(tree$tip.label, tree$node.label))
     expect_equal(names(test4), c(tree$tip.label, tree$node.label))
     expect_equal(test4, centroids(matrix))
     
     ## Ancestral dist with fixed node coordinates
-    test5 <- ancestral.dist(matrix, nodes.coords = rep(0, ncol(matrix)))
+    test5 <- ancestral.dist.deprecated(matrix, nodes.coords = rep(0, ncol(matrix)))
     expect_equal(test5, centroids(matrix, 0))
+    
+    ## New version
+    expect_equal_round(ancestral.dist(matrix, tree), c(t3 = 3.226549, t5 = 4.014473, t4 = 3.392561, t2 = 3.963446, t1 = 4.389945, n1 = 0.000000, n2 = 4.938898, n3 = 3.490736, n4 = 2.746763), 6)
+    expect_equal_round(ancestral.dist(matrix, tree, to.root = TRUE), c(t3 = 4.354400, t5 = 3.845289, t4 = 4.391939, t2 = 4.875274, t1 = 4.490714, n1 = 0.000000, n2 = 4.938898, n3 = 3.490736, n4 = 3.300742), 6)
+    ## Test with a dispRity object
+    test <- dispRity(matrix, metric = ancestral.dist, tree = tree)
+    expect_equal(c(test$disparity[[1]][[1]]), unname(ancestral.dist(matrix, tree)))
 
+    ## Works with time slices!
+    data(BeckLee_mat99)
+    data(BeckLee_tree)
+    data <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", model = "acctran", time = 5)
+    test <- dispRity(data, metric = ancestral.dist)
+    expect_equal(summary(test)$obs.median, c(2.457, 2.538, 2.677, 2.746, 2.741))
 })
 
 
@@ -504,24 +518,6 @@ test_that("neighbours", {
         )
 })
 
-test_that("neighbours", {
-    set.seed(1)
-    matrix <- matrix(rnorm(50), 5, 10)
-    
-    ## Default behaviour
-    expect_equal(
-        round(neighbours(matrix), digits = 5),
-        round(c(2.63603, 2.31036, 2.58740, 4.00868, 2.31036), digits = 5)
-        )
-    expect_equal(
-        round(neighbours(matrix, method = "manhattan"), digits = 5),
-        round(c(6.14827, 6.14827, 7.44352, 9.98804, 6.40357), digits = 5)
-        )
-    expect_equal(
-        round(neighbours(matrix, which = max), digits = 5),
-        round(c(5.943374, 4.515470, 4.008678, 5.943374, 5.059321), digits = 5)
-        )
-})
 
 test_that("func.eve", {
     set.seed(1)
@@ -778,7 +774,7 @@ test_that("point.dist", {
     data(BeckLee_mat99)
     test <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", model = "equal.split", time = 10)
     test2 <- dispRity(test, metric = point.dist, between.groups = TRUE)
-    expect_equal(summary(test2)$obs.median, c(2.852, 2.691, 2.757, 2.854, 2.741, 2.837, 2.950, 2.756, 3.016))
+    expect_equal(summary(test2)$obs.median, c(1.869, 1.775, 1.824, 1.945, 1.831, 1.928, 2.004, 1.887, 2.072))
 })
 
 test_that("projections", {
@@ -828,40 +824,40 @@ test_that("projections", {
     expect_equal_round(test_res, c(1.100621, 1.177726, 1.069398, 1.146989, 1.079798), 3)
 })
 
-test_that("phylo.projections", {
+test_that("projections.tree ", {
     
     set.seed(1)
     matrix <- matrix(rnorm(90), 9, 10)
-    phy <- rtree(5)
-    phy <- makeNodeLabel(phy, prefix = "n")
-    phy2 <- root(phy, 1)
-    rownames(matrix) <- c(phy$tip.label, phy$node.label)
+    tree <- rtree(5)
+    tree <- makeNodeLabel(tree, prefix = "n")
+    tree2 <- root(tree, 1)
+    rownames(matrix) <- c(tree$tip.label, tree$node.label)
     ## Test get.root
-    expect_equal(get.root(row = 1, matrix = matrix, phy = phy), matrix["n1", ])
-    expect_equal(get.root(row = 6, matrix = matrix, phy = phy), matrix["n1", ])
-    expect_equal(get.root(row = 6, matrix = matrix, phy = phy2), matrix["n2", ])
+    expect_equal(get.root(row = 1, matrix = matrix, tree = tree), matrix["n1", ])
+    expect_equal(get.root(row = 6, matrix = matrix, tree = tree), matrix["n1", ])
+    expect_equal(get.root(row = 6, matrix = matrix, tree = tree2), matrix["n2", ])
     ## Test get.anc
-    expect_equal(get.ancestor(row = 1, matrix = matrix, phy = phy), matrix["n2", ])
-    expect_equal(get.ancestor(row = 2, matrix = matrix, phy = phy), matrix["n2", ])
-    expect_equal(get.ancestor(row = 3, matrix = matrix, phy = phy), matrix["n3", ])
+    expect_equal(get.ancestor(row = 1, matrix = matrix, tree = tree), matrix["n2", ])
+    expect_equal(get.ancestor(row = 2, matrix = matrix, tree = tree), matrix["n2", ])
+    expect_equal(get.ancestor(row = 3, matrix = matrix, tree = tree), matrix["n3", ])
     ## Root is root
-    expect_equal(get.ancestor(row = 6, matrix = matrix, phy = phy), matrix["n1", ])
+    expect_equal(get.ancestor(row = 6, matrix = matrix, tree = tree), matrix["n1", ])
     ## Test get.tips
-    expect_equal(get.tips(row = 1, matrix = matrix, phy = phy), colMeans(matrix[1:5, ]))
-    expect_equal(get.tips(row = 2, matrix = matrix, phy = phy), colMeans(matrix[1:5, ]))
+    expect_equal(get.tips(row = 1, matrix = matrix, tree = tree), colMeans(matrix[1:5, ]))
+    expect_equal(get.tips(row = 2, matrix = matrix, tree = tree), colMeans(matrix[1:5, ]))
     ## Test get.nodes
-    expect_equal(get.nodes(row = 1, matrix = matrix, phy = phy), colMeans(matrix[-c(1:5), ]))
-    expect_equal(get.nodes(row = 2, matrix = matrix, phy = phy), colMeans(matrix[-c(1:5), ]))
+    expect_equal(get.nodes(row = 1, matrix = matrix, tree = tree), colMeans(matrix[-c(1:5), ]))
+    expect_equal(get.nodes(row = 2, matrix = matrix, tree = tree), colMeans(matrix[-c(1:5), ]))
     ## Test get.livings
-    expect_equal(get.livings(row = 1, matrix = matrix, phy = phy), matrix["t1", ])
-    expect_equal(get.livings(row = 2, matrix = matrix, phy = phy), matrix["t1", ])
+    expect_equal(get.livings(row = 1, matrix = matrix, tree = tree), matrix["t1", ])
+    expect_equal(get.livings(row = 2, matrix = matrix, tree = tree), matrix["t1", ])
     ## Test get.fossils
-    expect_equal(get.fossils(row = 1, matrix = matrix, phy = phy), colMeans(matrix[-5, ]))
-    expect_equal(get.fossils(row = 2, matrix = matrix, phy = phy), colMeans(matrix[-5, ]))
+    expect_equal(get.fossils(row = 1, matrix = matrix, tree = tree), colMeans(matrix[-5, ]))
+    expect_equal(get.fossils(row = 2, matrix = matrix, tree = tree), colMeans(matrix[-5, ]))
     ## Test sapply.projections
-    expect_equal(sapply.projections(row = 1, matrix = matrix, phy = phy, from = get.root, to = get.livings),
-                projections(matrix[1, , drop = FALSE], point1 = get.root(matrix, phy), point2 = get.livings(matrix, phy)))
-    expect_equal(sapply.projections(row = 5, matrix = matrix, phy = phy, from = get.root, to = get.livings), 1)
+    expect_equal(sapply.projections(row = 1, matrix = matrix, tree = tree, from = get.root, to = get.livings),
+                projections(matrix[1, , drop = FALSE], point1 = get.root(matrix, tree), point2 = get.livings(matrix, tree)))
+    expect_equal(sapply.projections(row = 5, matrix = matrix, tree = tree, from = get.root, to = get.livings), 1)
     ## Test fun
 
     ## Making a dummy tree with node labels
@@ -871,12 +867,31 @@ test_that("phylo.projections", {
     named_matrix <- dummy_matrix
     rownames(named_matrix) <- c(dummy_tree$tip.label,
                                 dummy_tree$node.label)
-    expect_equal_round(phylo.projections(named_matrix, dummy_tree, type = c("root", "ancestor")) , c(1.025, 0.309, 0.236, 0.532, 0.330,   NaN, NaN, NaN, 0.487), 3)
-    expect_equal_round(phylo.projections(named_matrix, dummy_tree, type = c("nodes", "tips"), measure = "distance"), c(1.383, 0.860, 1.656, 0.886, 1.391, 1.080, 1.466, 1.366, 1.674), 3)
-    user.fun <- function(matrix, phy, row = NULL) {
-         return(colMeans(matrix[phy$node.label[1:3], ]))
+    expect_equal_round(projections.tree (named_matrix, dummy_tree, type = c("root", "ancestor")) , c(1.025, 0.309, 0.236, 0.532, 0.330,   NaN, NaN, NaN, 0.487), 3)
+    expect_equal_round(projections.tree (named_matrix, dummy_tree, type = c("nodes", "tips"), measure = "distance"), c(1.383, 0.860, 1.656, 0.886, 1.391, 1.080, 1.466, 1.366, 1.674), 3)
+    user.fun <- function(matrix, tree, row = NULL) {
+         return(colMeans(matrix[tree$node.label[1:3], ]))
     }
-    expect_equal_round(phylo.projections(named_matrix, dummy_tree, type = c(0, user.fun)), c(0.287, -0.293, 0.772, 0.304, -2.609, 0.732, 1.720, 0.548, -0.165), 3)
+    expect_equal_round(projections.tree (named_matrix, dummy_tree, type = c(0, user.fun)), c(0.287, -0.293, 0.772, 0.304, -2.609, 0.732, 1.720, 0.548, -0.165), 3)
+})
 
+test_that("edge.length.tree works", {
+    ## A ladderized tree
+    tree <- read.tree(text = "((((((A,B), C), D), E), F), G);")
+    tree$edge.length <- rep(1, 7+6)
+    tree$node.label <- letters[1:6]
+    ## An empty matrix (with the right elements)
+    matrix1 <- matrix(NA, nrow = 7, ncol = 2)
+    rownames(matrix1) <- tree$tip.label
+    matrix2 <- matrix(NA, nrow = 7+6, ncol = 2)
+    rownames(matrix2) <- c(tree$tip.label, tree$node.label)
 
+    expect_equal(edge.length.tree(matrix1, tree), c(6,6,5,4,3,2,1))
+    expect_equal(edge.length.tree(matrix2, tree), c(6,6,5,4,3,2,1,0,1,2,3,4,5))
+    expect_equal(edge.length.tree(matrix2[c(1,3,5,7,10),], tree), c(6,6,5,4,3,2,1,0,1,2,3,4,5)[c(1,3,5,7,10)])
+    expect_equal(edge.length.tree(matrix1, tree, to.root = FALSE), rep(1, 7))
+    expect_equal(edge.length.tree(matrix2, tree, to.root = FALSE), c(rep(1, 7), 0, rep(1,5)))
+    expect_equal(edge.length.tree(matrix1[c(1,2), ], tree, to.root = FALSE), c(1,1))
+    tree$edge.length[c(3,7)] <- 10
+    expect_equal(edge.length.tree(matrix1[c(1,2), ], tree, to.root = FALSE), c(1,10))
 })

@@ -146,13 +146,13 @@ randtest.dispRity <- function(data, subsets, metric, replicates = 100, resample 
 
     ## Fixed variables from dispRity
     matrix_decomposition <- TRUE
-    verbose <- metric_is_between.groups <- FALSE
+    verbose <- FALSE
 
     ## Make the lapply loop
     lapply_loop <- lapply(subsets, make.lapply.loop, replicates, pop_size)
     
     ## Calculate all the disparity values
-    disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, metric_is_between.groups, ...)
+    disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, ...)
 
     ## Get the observed values
     results <- lapply(disparity, one.randtest, replicates, resample, alter, get.p.value, match_call)

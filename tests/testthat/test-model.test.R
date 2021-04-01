@@ -258,7 +258,7 @@ test_that("model.test.wrapper example works", {
     ## Check test
     expect_is(test, "matrix")
     expect_equal(dim(test), c(4, 13))
-    expect_equal(rownames(test), c("Trend", "BM", "multi.OU", "OU"))
+    expect_equal(rownames(test), c("Trend", "multi.OU", "BM", "OU"))
     expect_equal(colnames(test), c("aicc", "delta_aicc", "weight_aicc", "log.lik", "param", "ancestral state", "sigma squared", "alpha", "optima.2", "trend", "median p value", "lower p value",  "upper p value"))
 
     ## Testing with a single model

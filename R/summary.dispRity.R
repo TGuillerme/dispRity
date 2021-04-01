@@ -69,7 +69,7 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
     #Must be a function
     check.class(cent.tend, "function")
     #The function must work
-    if(make.metric(cent.tend, silent = TRUE) != "level1") {
+    if(make.metric(cent.tend, silent = TRUE)$type != "level1") {
         stop.call(match_call$cent.tend, " cannot be used for measuring the central tendency.")
     }
     ## Update match_call if argument is empty

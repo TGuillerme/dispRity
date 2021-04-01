@@ -97,7 +97,7 @@ test_that("custom.subsets works", {
         , "dispRity")
     expect_equal(
         length(test)
-        , 3)
+        , 4)
     expect_is(
         test$matrix[[1]]
         , "matrix")
@@ -128,7 +128,7 @@ test_that("Different group inputs gives the same output", {
         , "dispRity")
     expect_equal(
         unique(unlist(lapply(list(cust1, cust2, cust3), length)))
-        , 3)
+        , 4)
 
     expect_true(
         all(as.vector(cust1$subsets[[1]]$elements) == as.vector(cust2$subsets[[1]]$elements))
@@ -224,6 +224,10 @@ test_that("clade subsets works", {
     ## Both first groups contain all the data (root)
     expect_equal(nrow(without_nodes$subsets[[1]]$elements), nrow(BeckLee_mat50))
     expect_equal(nrow(with_nodes$subsets[[1]]$elements), nrow(BeckLee_mat99))
+
+    ## Expect the trees are present
+    expect_is(without_nodes$tree[[1]], "phylo")
+    expect_is(with_nodes$tree[[1]], "phylo")
 })
 
 
@@ -238,3 +242,18 @@ test_that("custom.subsets detects distance matrices", {
     expect_equal(msg, "custom.subsets is applied on what seems to be a distance matrix.\nThe resulting matrices won't be distance matrices anymore!")
 })
 
+
+test_that("custom.subsets works with tree", {
+    data(BeckLee_mat50)
+    data(BeckLee_mat99)
+    data(BeckLee_tree)
+    test <- custom.subsets(data = BeckLee_mat50, group = list(c(1:5), c(5,7)), tree = BeckLee_tree)
+    expect_is(test$tree[[1]], "phylo")
+    expect_equal(length(test$tree), 1)
+    test <- custom.subsets(data = BeckLee_mat99, group = list(c(1:5), c(5,7)), tree = BeckLee_tree)
+    expect_is(test$tree[[1]], "phylo")
+    expect_equal(length(test$tree), 1)
+    test <- custom.subsets(data = BeckLee_mat99, group = list(c(1:5), c(5,7)), tree = c(BeckLee_tree, BeckLee_tree, BeckLee_tree))
+    expect_is(test$tree[[1]], "phylo")
+    expect_equal(length(test$tree), 3)
+})
