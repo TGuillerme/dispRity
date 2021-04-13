@@ -128,7 +128,7 @@ For example [here is how the core function `dispRity`](https://github.com/TGuill
 All these tests are run every time a change is made to the package and you can always see for yourself how much a single function is covered (i.e. what percentage of the function is actually covered by at least one test).
 You can always see the global coverage [here](https://app.codecov.io/gh/TGuillerme/dispRity) or the specific coverage for each function [here](https://codecov.io/gh/TGuillerme/dispRity/tree/master/R).
 
-Finally, this package is build on the shoulders of the whole open science philosophy so when bugs do occur and are caught by myself or the package users, they are quickly fixed and notified in the [`NEWS.md` file](https://github.com/TGuillerme/dispRity/blob/master/NEWS.md). 
+Finally, this package is build on the shoulders of the whole open science philosophy so when bugs do occur and are caught by myself or the package users, they are quickly fixed and notified in the [`NEWS.md` file](https://github.com/TGuillerme/dispRity/blob/master/NEWS.md). And all the changes to the package are [public and annotated](https://github.com/TGuillerme/dispRity/commits/master) so there's that too...
 
 
 ## Help
