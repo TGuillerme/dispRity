@@ -100,12 +100,16 @@ You can also find more information in the [`dispRity` manual](https://rawcdn.git
 
 Previous patch notes and notes for the *next version* can be seen [here](https://github.com/TGuillerme/dispRity/blob/master/NEWS.md).
 
-Authors and contributors
+Authors
 -------
 
 * [Thomas Guillerme](http://tguillerme.github.io)
 * [Natalie Cooper](http://nhcooper123.github.io)
 * [Mark Puttick](https://puttickbiology.wordpress.com/)
+
+#### Contributors (bug fixes, pull requests and suggestions)
+
+[Dave Bapst](https://github.com/dwbapst/), [Mario Corio](https://mariocoiro.wordpress.com/), [Armin Elsler](https://research-information.bris.ac.uk/en/persons/armin-elsler), [Graeme Lloyd](http://graemetlloyd.com/) ([#104](https://github.com/TGuillerme/dispRity/pull/104)), [Jari Oksanen](https://github.com/jarioksa) ([#85](https://github.com/TGuillerme/dispRity/pull/85)), [Emmanuel Paradis](https://github.com/emmanuelparadis), [Abigail Pastore](https://github.com/aipastore), [Ashley Reaney](https://www.researchgate.net/profile/Ashley-Reaney), [Gavin Thomas](https://github.com/ghthomas).
 
 Citations
 -------
