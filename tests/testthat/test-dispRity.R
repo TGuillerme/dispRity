@@ -661,7 +661,7 @@ test_that("dispRity works with multiple matrices from chrono.subsets", {
               mean(means$matrix[[3]][means$subsets[[3]]$elements[,3],]))
     )
 
-    ## Works with unpaired number of trees and matrices
+    ## Works with unpaired number of trees and matrices
     test <- chrono.subsets(matrices[[1]], tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5, bind.data = FALSE)
     means <- dispRity(test, metric = mean, na.rm = TRUE)
     expect_is(means, "dispRity")
