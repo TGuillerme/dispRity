@@ -74,7 +74,7 @@ get.dispRity.metric.handle <- function(metric, match_call, data.dim, tree = NULL
         }
     }
 
-    return(list(levels = list("level3.fun" = level3.fun, "level2.fun" = level2.fun, "level1.fun" = level1.fun), between.groups = between.groups, tree.metrics = tree.metrics))
+    return(list(levels = list("level3.fun" = level3.fun, "level2.fun" = level2.fun, "level1.fun" = level1.fun), between.groups = rev(between.groups), tree.metrics = rev(tree.metrics)))
 }
 
 ## Getting the first metric
@@ -260,7 +260,7 @@ disparity.bootstraps <- function(one_subsets_bootstrap, metrics_list, data, matr
 
     ## 2 - Applying the metrics to the decomposed matrix
     if(!is.null(metrics_list$level3.fun)) {
-        if(!metric_has_tree[3]) {
+        if(!metric_has_tree[1]) {
             disparity_out <- apply(disparity_out, 2, metrics_list$level3.fun, ...)
         } else {
             disparity_out <- apply(disparity_out, 2, metrics_list$level3.fun, tree = data$tree, ...)
@@ -276,7 +276,7 @@ disparity.bootstraps <- function(one_subsets_bootstrap, metrics_list, data, matr
     }
 
     if(!is.null(metrics_list$level1.fun)) {
-        if(!metric_has_tree[1]) {
+        if(!metric_has_tree[3]) {
             disparity_out <- apply(disparity_out, MARGIN = length(dim(disparity_out)), metrics_list$level1.fun, ...)
         } else {
             disparity_out <- apply(disparity_out, MARGIN = length(dim(disparity_out)), metrics_list$level1.fun, tree = data$tree, ...)
