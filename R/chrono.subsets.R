@@ -178,12 +178,13 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
         ## Default tree list
         is_multiPhylo <- FALSE
 
-        ## If the data has a tree attached, use that one
-        if(!is.null(data$tree[[1]])) {
-            tree <- data$tree
-            tree.age_tree <- lapply(tree, tree.age)
-            is_multiPhylo <- length(data$tree) > 1
-        }
+        # ## If the data has a tree attached, use that one
+        # TG: this is not supposed to happen
+        # if(!is.null(data$tree[[1]])) {
+        #     tree <- data$tree
+        #     tree.age_tree <- lapply(tree, tree.age)
+        #     is_multiPhylo <- length(data$tree) > 1
+        # }
     }
 
     ## METHOD

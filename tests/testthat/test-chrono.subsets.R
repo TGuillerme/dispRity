@@ -814,3 +814,18 @@ test_that("infinite loop blocker for get.percent.age", {
     error <- capture_error(chrono.subsets(matrix, test_tree, method = "continuous", time = 5, model = "acctran"))
     expect_equal(error[[1]], "Impossible to find a starting point to slice the tree. This can happen if the tree has no branch length or has a \"ladder\" structure. You can try to fix that by setting specific slicing times.")
 })
+
+test_that("tree Sanitizing works", {
+
+    data(BeckLee_mat99)
+    data(BeckLee_mat50)
+    data(BeckLee_tree)
+    ## t0 = true
+    test <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", time = 5, model = "acctran", t0 = TRUE)
+    expect_is(test, "dispRity")
+
+    BeckLee_tree_wrong <- BeckLee_tree
+    BeckLee_tree_wrong$tip.label[1] <- "hahahaha"
+    error <- capture_error(chrono.subsets(BeckLee_mat50, BeckLee_tree_wrong, method = "discrete", time = 5, inc.nodes = FALSE))
+    expect_equal(error[[1]], "The labels in the matrix and in the tree do not match!\nTry using clean.data() to match both tree and data or make sure whether nodes should be included or not (inc.nodes = FALSE by default).")    
+})

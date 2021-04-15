@@ -246,6 +246,9 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
 
     ## Change the names and subsets if between groups
     if(data$call$disparity$metrics$between.groups) {
+
+        names(elements) <- gsub(":", ";", names(elements))
+
         ## Groups names
         names <- names(data$disparity)
 

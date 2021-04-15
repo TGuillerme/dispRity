@@ -790,13 +790,13 @@ point.dist <- function(matrix, matrix2, point = colMeans, method = "euclidean", 
 }
 
 ## Angle between two vectors
-vector.angle <- function(v1, v2, degree = TRUE) {
+vector.angle <- function(v1, v2){#, degree = TRUE) {
     angle <- acos(geometry::dot(v1, v2, d = 1) / (sqrt(sum(v1^2))*sqrt(sum(v2^2))))
-    if(degree) {
+    # if(degree) {
         return(angle *180/pi)
-    } else {
-        angle
-    }
+    # } else {
+    #     angle
+    # }
 }
 ## Rotate a matrix along one axis (y)
 get.rotation.matrix <- function(x, y){
@@ -963,9 +963,10 @@ projections.tree <- function(matrix, tree, type = c("root","ancestor"), referenc
                         return(var_out)
                     }
                     invariables[[i]] <- TRUE
-                } else {
-                    stop("type must be a list of containing functions, numeric values or one of the following inbuilt: \"root\", \"ancestor\", \"tips\", \"nodes\", \"livings\" or \"fossils\".", call. = FALSE)
                 }
+                # else {
+                #     stop("type must be a list of containing functions, numeric values or one of the following inbuilt: \"root\", \"ancestor\", \"tips\", \"nodes\", \"livings\" or \"fossils\".", call. = FALSE)
+                # }
             }
         }
     }

@@ -101,6 +101,22 @@ test_that("Sanitizing works correctly", {
     bootstrap_done <- boot.matrix(data, bootstraps = 3)
     error <- capture_error(boot.matrix(bootstrap_done))
     expect_equal(error[[1]], "bootstrap_done was already bootstrapped.")
+
+    ## Error from already made dispRity objects
+    data(BeckLee_tree)
+    data <- custom.subsets(BeckLee_mat50, group = crown.stem(BeckLee_tree, inc.nodes = FALSE))
+    ## Works
+    test <- boot.matrix(data)
+    expect_is(test, "dispRity")
+    ## Doesn't work
+    data_wrong <- data
+    names(data_wrong) <- NULL
+    error <- capture_error(boot.matrix(data_wrong))
+    expect_equal(error[[1]], "data_wrong must be either a matrix or an output from the chrono.subsets or custom.subsets functions.")
+    data_wrong <- data
+    data_wrong$tree <- NULL
+    error <- capture_error(boot.matrix(data_wrong))
+    expect_equal(error[[1]], "data must be either a matrix or an output from the chrono.subsets or custom.subsets functions.")
 })
 
 ## No bootstrap (is equal to the matrix)

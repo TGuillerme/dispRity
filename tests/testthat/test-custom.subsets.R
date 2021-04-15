@@ -83,6 +83,11 @@ test_that("Sanitizing works", {
     error <- capture_error(custom.subsets(data_wrong, tree))
     expect_equal(error[[1]], "Some tips in the tree are not matching the data.\nSee ?clean.data for matching the tree and the data.")
 
+    ## Wrong names as list
+    error <- capture_error(custom.subsets(data, group = list(letters[1:5], letters[20:25])))
+    expect_equal(error[[1]], "Row names in data and group arguments don't match.")    
+    error <- capture_error(custom.subsets(data, group = list(1:5, 20:25)))
+    expect_equal(error[[1]], "Row numbers in group don't match the row numbers in data.")
 })
 
 ## Results

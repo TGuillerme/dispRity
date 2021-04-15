@@ -49,13 +49,20 @@ test_that("dispRity works for between.groups metrics", {
     custom_wrong_names <- custom.subsets(matrix, group = list("A" = c(1:5), "B:" = c(6:8), ":::" = c(9:12)))
     warning <- capture_warning(dispRity(custom_wrong_names, metric = between.groups.simple, between.groups = TRUE))
     expect_equal(warning[[1]],  "The subset names: B:, ::: were changed to B;, ;;;. The \":\" character is reserved for between groups comparisons.")
-
+    expect_warning(test <- dispRity(custom_wrong_names, metric = between.groups.simple, between.groups = TRUE))
+    expect_equal(summary(test)$subsets, c("A:B;", "A:;;;", "B;:;;;"))
 
     ## Serial works for level 1
     test <- dispRity(custom, metric = between.groups.simple)
     expect_false(test$call$disparity$metrics$between.groups)
     test <- dispRity(custom, metric = between.groups.simple, between.groups = TRUE)
     expect_true(test$call$disparity$metrics$between.groups)
+
+    ## Works for specified groups
+    test <- dispRity(custom, metric = between.groups.simple, between.groups = list(c(1,2), c(1,1)))
+    expect_equal(summary(test)$subsets, c("1:2", "1:1"))
+
+
 
     ## Custom normal
     test <- dispRity(custom, metric = between.groups.complex, between.groups = TRUE)

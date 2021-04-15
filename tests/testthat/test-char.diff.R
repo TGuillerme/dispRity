@@ -70,6 +70,29 @@ test_that("convert.bitwise works", {
         ,c(3, NA, 10, 11, 8))
 })
 
+
+test_that("sanitizing", {
+    A <- c(1,0,0,0,0)
+    B <- c(0,1,1,1,1)
+
+    error <- capture_error(char.diff(list(A)))
+    expect_equal(error[[1]], "When matrix argument is a list, it must contain only two elements.\nYou can convert list(A) to a matrix using:\nlist(A) <- do.call(rbind, list(A))")
+
+    Aa <- A
+    Aa[1] <- "@"
+    error <- capture_error(char.diff(list(Aa, B)))
+    expect_equal(error[[1]],  "The matrix cannot contain the character '@' since it is reserved for the dispRity::char.diff function.")
+
+    error <- capture_error(char.diff(list(A, B), special.tokens = c("incorrect" = "@")))
+    expect_equal(error[[1]], "special.tokens cannot contain the character '@' since it is reserved for the dispRity::char.diff function.")
+
+    error <- capture_error(char.diff(list(A, B), special.tokens = c("ok" = "£", "notok" = "£")))
+    expect_equal(error[[1]], "special.tokens cannot contain duplicated tokens.")
+
+
+})
+
+
 test_that("char.diff pair", {
     A <- c(1,0,0,0,0)
     B <- c(0,1,1,1,1)
@@ -229,6 +252,14 @@ test_that("order works as a logical vector", {
     ## Handling multi ordering
     # char.diff(matrix_multi, by.col = TRUE, order = c(T, T, T, T, F, F, F))
 
+
+})
+
+test_that("working with more that 26 symbols", {
+
+    A <- c(letters, c("99","123a","42a"))
+    B <- c(letters, c("42a","42a","42a"))
+    expect_equal(char.diff(list(A, B)), 1)
 
 })
 

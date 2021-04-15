@@ -10,6 +10,14 @@ test_that("dimension generic", {
 })
 
 
+test_that("select.method sanitizing works", {
+    test <- select.method("euclidean")
+    expect_is(test, "function")
+    expect_error(select.method(NULL))
+    error <- capture_error(select.method("NULL"))
+    expect_equal(error[[1]], "method argument can only be \"euclidean\" or \"manhattan\".")
+
+})
 
 #Testing the metrics
 test_that("k.root", {
@@ -761,6 +769,8 @@ test_that("projections", {
     rownames(test) <- letters[1:5]
     test_res <- projections(test, measure = "position", point1 = colMeans(test), point2 = test["a",])
     expect_equal_round(test_res, c(1, -0.324, -0.141, -0.269, -0.265), 3)
+    test_res <- projections(test, measure = "position", point1 = 1, point2 = 2)
+    expect_equal_round(test_res, c(-1.0742616, -0.9673474, -1.0096280, -1.0909205, -0.9276176), 3)
     test_res <- projections(test, measure = "distance", point1 = colMeans(test), point2 = test["c",])
     expect_equal_round(test_res, c(1.023, 1.007, 0, 1.005, 0.953), 3)
     test_res <- projections(test, measure = "degree", point1 = colMeans(test), point2 = test["e",])
@@ -812,6 +822,8 @@ test_that("projections.tree ", {
     named_matrix <- dummy_matrix
     rownames(named_matrix) <- c(dummy_tree$tip.label,
                                 dummy_tree$node.label)
+    error <- capture_error(projections.tree (named_matrix, dummy_tree, type = c("boot", "ancestor")))
+
     expect_equal_round(projections.tree (named_matrix, dummy_tree, type = c("root", "ancestor")) , c(1.025, 0.309, 0.236, 0.532, 0.330,   NaN, NaN, NaN, 0.487), 3)
     expect_equal_round(projections.tree (named_matrix, dummy_tree, type = c("nodes", "tips"), measure = "distance"), c(1.383, 0.860, 1.656, 0.886, 1.391, 1.080, 1.466, 1.366, 1.674), 3)
     user.fun <- function(matrix, tree, row = NULL) {
