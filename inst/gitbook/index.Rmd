@@ -20,17 +20,17 @@ knitr::opts_chunk$set(echo = TRUE)
 ## master version
 version_raw <- RCurl::getURL("https://raw.githubusercontent.com/TGuillerme/dispRity/master/DESCRIPTION")
 version_master <- strsplit(strsplit(version_raw, split = "Version: ")[[1]][2], split = "\nDate:")[[1]][1]
-version_master <- 1.5
+version_master <- 1.6
 
 ## release version
 version_raw <- RCurl::getURL("https://raw.githubusercontent.com/TGuillerme/dispRity/release/DESCRIPTION")
 version_release <- strsplit(strsplit(version_raw, split = "Version: ")[[1]][2], split = "\nDate:")[[1]][1]
-version_release <- 1.5
+version_release <- 1.6
 
 ## CRAN version
 version_raw <- RCurl::getURL("https://cran.r-project.org/web/packages/dispRity/index.html")
 version_CRAN <- strsplit(strsplit(version_raw, split = "\n<td>Version:</td>\n<td>")[[1]][2], split = "</td>\n</tr>\n<tr>\n<td>Depends:")[[1]][1]
-version_CRAN <- 1.5
+version_CRAN <- 1.6
 ```
 
 # `dispRity`

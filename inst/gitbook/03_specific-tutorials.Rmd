@@ -586,8 +586,8 @@ $Ancestor_{n}$ is the coordinates of the ancestor of element $n$,
 $f(\mathbf{v}k)$ is function to select one value from the vector $\mathbf{v}$ of the dimension $k$ (e.g. it's maximum, minimum, mean, etc.),
 *R* is the radius of the sphere or the product of the radii of each dimensions ($\displaystyle\prod_{i=1}^{k}R_{i}$ - for a hyper-ellipsoid),
 $Reference_{k}$ is an arbitrary point's coordinates (usually 0),
-\overrightarrow{b} is the vector defined by (`(point1, point2)`),
-and \overrightarrow{i} is the vector defined by (`(point1, i)` where `i` is any row of the matrix).
+$\overrightarrow{b}$ is the vector defined by (`(point1, point2)`),
+and $\overrightarrow{i}$ is the vector defined by (`(point1, i)` where `i` is any row of the matrix).
 
 ### Using the different disparity metrics
 Here is a brief demonstration of the main metrics implemented in `dispRity`.
@@ -777,7 +777,8 @@ Therefore this function needs a matrix that contains tips and nodes and a tree a
 my_tree <- makeNodeLabel(rtree(5), prefix = "n")
 ## Adding the tip and node names to the matrix
 dummy_space2 <- dummy_space[-1,]
-rownames(dummy_space2) <- c(tree$tip.label, tree$node.label)
+rownames(dummy_space2) <- c(my_tree$tip.label,
+                            my_tree$node.label)
 
 ## Calculating the distances from the ancestral nodes
 ancestral_dist <- dispRity(dummy_space2, metric = ancestral.dist,
@@ -919,7 +920,7 @@ dummy_tree$node.label <- rownames(tree_space)[rev(7:11)]
 ## Measuring the disparity as the projection of each element
 ## on its root-ancestor vector
 summary(dispRity(tree_space, metric = projections.tree,
-                             phy    = dummy_tree,
+                             tree   = dummy_tree,
                              type   = c("root", "ancestor")))
 ```
 
@@ -928,14 +929,14 @@ Of course you can also use any other options from the projections function:
 ```{r}
 ## A user defined function that's returns the centroid of
 ## the first three nodes
-fun.root <- function(matrix, phy, row = NULL) {
-  return(colMeans(matrix[phy$node.label[1:3], ]))
+fun.root <- function(matrix, tree, row = NULL) {
+  return(colMeans(matrix[tree$node.label[1:3], ]))
 }
 ## Measuring the unscaled rejection from the vector from the
 ## centroid of the three first nodes
 ## to the coordinates of the first tip
 summary(dispRity(tree_space, metric  = projections.tree,
-                             phy     = dummy_tree,
+                             tree    = dummy_tree,
                              measure = "distance",
                              type    = list(fun.root,
                                             tree_space[1, ])))

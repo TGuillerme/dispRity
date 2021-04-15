@@ -24,7 +24,7 @@
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie), Mark Puttick (marknputtick@gmail.com) and Natalie Cooper (natalie.cooper@nhm.ac.uk)" />
 
 
-<meta name="date" content="2020-11-10" />
+<meta name="date" content="2021-04-15" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -137,9 +137,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#installing-and-running-the-package"><i class="fa fa-check"></i><b>1.2</b> Installing and running the package</a></li>
 <li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#version"><i class="fa fa-check"></i><b>1.3</b> Which version do I choose?</a></li>
-<li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#help"><i class="fa fa-check"></i><b>1.4</b> Help</a></li>
-<li class="chapter" data-level="1.5" data-path="index.html"><a href="index.html#citations"><i class="fa fa-check"></i><b>1.5</b> Citations</a><ul>
-<li class="chapter" data-level="1.5.1" data-path="index.html"><a href="index.html#why-is-it-important-to-cite-us"><i class="fa fa-check"></i><b>1.5.1</b> Why is it important to cite us?</a></li>
+<li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#disprity-is-always-changing-how-do-i-know-its-not-broken"><i class="fa fa-check"></i><b>1.4</b> <code>dispRity</code> is always changing, how do I know it’s not broken?</a></li>
+<li class="chapter" data-level="1.5" data-path="index.html"><a href="index.html#help"><i class="fa fa-check"></i><b>1.5</b> Help</a></li>
+<li class="chapter" data-level="1.6" data-path="index.html"><a href="index.html#citations"><i class="fa fa-check"></i><b>1.6</b> Citations</a><ul>
+<li class="chapter" data-level="1.6.1" data-path="index.html"><a href="index.html#why-is-it-important-to-cite-us"><i class="fa fa-check"></i><b>1.6.1</b> Why is it important to cite us?</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="2" data-path="glossary.html"><a href="glossary.html"><i class="fa fa-check"></i><b>2</b> Glossary</a><ul>
@@ -194,6 +195,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.8" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-distribution"><i class="fa fa-check"></i><b>4.8</b> Disparity as a distribution</a></li>
 <li class="chapter" data-level="4.9" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#other-matrices"><i class="fa fa-check"></i><b>4.9</b> Disparity from other matrices</a></li>
 <li class="chapter" data-level="4.10" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#multi.input"><i class="fa fa-check"></i><b>4.10</b> Disparity from multiple matrices (and multiple trees!)</a></li>
+<li class="chapter" data-level="4.11" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-with-trees-dispritree"><i class="fa fa-check"></i><b>4.11</b> Disparity with trees: <em>dispRitree!</em></a></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="making-stuff-up.html"><a href="making-stuff-up.html"><i class="fa fa-check"></i><b>5</b> Making stuff up!</a><ul>
 <li class="chapter" data-level="5.1" data-path="making-stuff-up.html"><a href="making-stuff-up.html#simulating-discrete-morphological-data"><i class="fa fa-check"></i><b>5.1</b> Simulating discrete morphological data</a><ul>
@@ -286,14 +288,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p class="author"><em>Thomas Guillerme (<a href="mailto:guillert@tcd.ie">guillert@tcd.ie</a>),
 Mark Puttick (<a href="mailto:marknputtick@gmail.com">marknputtick@gmail.com</a>) and
 Natalie Cooper (<a href="mailto:natalie.cooper@nhm.ac.uk">natalie.cooper@nhm.ac.uk</a>)</em></p>
-<p class="date"><em>2020-11-10</em></p>
+<p class="date"><em>2021-04-15</em></p>
 </div>
 <div id="disprity" class="section level1">
 <h1><span class="header-section-number">1</span> <code>dispRity</code></h1>
 <p>This is a package for measuring disparity (aka multidimensional space occupancy) in <code>R</code>.
 It allows users to summarise matrices as representations as multidimensional spaces into a single value or distribution describing a specific aspect of this multidimensional space (the disparity).
 Multidimensional spaces can be ordinated matrices from MDS, PCA, PCO, PCoA but the package is <em>not</em> restricted to any type of matrices!
-This manual is based on the version 1.5.</p>
+This manual is based on the version 1.6.</p>
 <div id="what-is-disprity" class="section level2">
 <h2><span class="header-section-number">1.1</span> What is <code>dispRity</code>?</h2>
 <p>This is a modular package for measuring disparity in <code>R</code>.
@@ -318,7 +320,7 @@ This will allow you to finely tune your multidimensional analysis to the needs o
 <a class="sourceLine" id="cb2-3" data-line-number="3"></a>
 <a class="sourceLine" id="cb2-4" data-line-number="4"><span class="co">## Installing the latest released version directly from GitHub</span></a>
 <a class="sourceLine" id="cb2-5" data-line-number="5"><span class="kw">install_github</span>(<span class="st">&quot;TGuillerme/dispRity&quot;</span>, <span class="dt">ref =</span> <span class="st">&quot;release&quot;</span>)</a></code></pre></div>
-<p>Note this uses the <code>release</code> branch (1.5).
+<p>Note this uses the <code>release</code> branch (1.6).
 For the piping-hot (but potentially unstable) version, you can change the argument <code>ref = release</code> to <code>ref = master</code>.
 <code>dispRity</code> depends mainly on the <code>ape</code> package and uses functions from several other packages (<code>ade4</code>, <code>geometry</code>, <code>grDevices</code>, <code>hypervolume</code>, <code>paleotree</code>, <code>snow</code>, <code>Claddis</code>, <code>geomorph</code> and <code>RCurl</code>).</p>
 </div>
@@ -335,14 +337,38 @@ For the the GitHub version, the differences are that the <code>release</code> on
 <p>If you want the latest-latest version of the package I suggest using the GitHub <code>master</code> one, especially if you recently emailed me reporting a minor bug or wanting a new functionality!
 Note however that <em>it can happen</em> that the <code>master</code> version can sometimes be bugged (especially when there are major <code>R</code> and <code>R</code> packages updates), however, the status of the package state on both the <code>release</code> and the <code>master</code> version is constantly displayed on the <a href="https://github.com/TGuillerme/dispRity/"><code>README</code> page</a> of the package with the nice badges displaying these different (and constantly tested) information.</p>
 </div>
+<div id="disprity-is-always-changing-how-do-i-know-its-not-broken" class="section level2">
+<h2><span class="header-section-number">1.4</span> <code>dispRity</code> is always changing, how do I know it’s not broken?</h2>
+<p>This is a really common a legitimate question in software development. Like <code>R</code> itself:</p>
+<blockquote>
+<p><code>dispRity</code> is free software and comes with ABSOLUTELY NO WARRANTY.</p>
+</blockquote>
+<p>So you are using it at your own risk.</p>
+<p><strong>HOWEVER</strong>, there are two points that can be used as objective-ish markers on why it’s OK to use <code>dispRity</code>.</p>
+<p>First, the package has been use in a number of <a href="https://scholar.google.co.uk/scholar?oi=bibs&amp;hl=en&amp;cites=13311379491028410826,7753828186872068057">peer reviewed</a> publications (the majority of them independently) which could be taken as warranty.</p>
+<p>Second, I spend a lot of time and attention in making sure that every function in every version actually does what I think it is supposed to do.
+This is done through <a href="https://en.wikipedia.org/wiki/Continuous_integration">CI; continuous integration development</a>, the <a href="https://cran.r-project.org/web/checks/check_results_dispRity.html">CRAN check</a>, and <a href="https://en.wikipedia.org/wiki/Unit_testing">unit testing</a>.
+The two first checks (CRAN and CI) ensure that the version you are using is not bugged (the <a href="https://cran.r-project.org/web/checks/check_results_dispRity.html">CRAN check</a> if you are using the CRAN version and the <a href="https://travis-ci.org/TGuillerme/dispRity">Travis CI</a> if you are using a GitHub version).
+The third check, unit testing, is checking that every function is doing what it is supposed to do. For a real basic example, it is testing that the following expression should always return the same thing no matter what changes in the package.</p>
+<pre><code>&gt; mean(c(1,2,3))
+[1] 2</code></pre>
+<p>Or, more formally:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">testthat<span class="op">::</span><span class="kw">expect_equal</span>(<span class="dt">object =</span> <span class="kw">mean</span>(<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>)),</a>
+<a class="sourceLine" id="cb4-2" data-line-number="2">                       <span class="dt">expected =</span> <span class="dv">2</span>)</a></code></pre></div>
+<p>You can always access what is actually tested in the <a href="https://github.com/TGuillerme/dispRity/tree/master/tests/testthat"><code>test/testthat</code></a> sub-folder.
+For example <a href="https://github.com/TGuillerme/dispRity/blob/master/tests/testthat/test-dispRity.R">here is how the core function <code>dispRity</code></a> is tested (through &gt; 500 tests!).
+All these tests are run every time a change is made to the package and you can always see for yourself how much a single function is covered (i.e. what percentage of the function is actually covered by at least one test).
+You can always see the global coverage <a href="https://app.codecov.io/gh/TGuillerme/dispRity">here</a> or the specific coverage for each function <a href="https://codecov.io/gh/TGuillerme/dispRity/tree/master/R">here</a>.</p>
+<p>Finally, this package is build on the shoulders of the whole open science philosophy so when bugs do occur and are caught by myself or the package users, they are quickly fixed and notified in the <a href="https://github.com/TGuillerme/dispRity/blob/master/NEWS.md"><code>NEWS.md</code> file</a>. And all the changes to the package are <a href="https://github.com/TGuillerme/dispRity/commits/master">public and annotated</a> so there’s that too…</p>
+</div>
 <div id="help" class="section level2">
-<h2><span class="header-section-number">1.4</span> Help</h2>
+<h2><span class="header-section-number">1.5</span> Help</h2>
 <p>If you need help with the package, hopefully the following manual will be useful.
 However, parts of this package are still in development and some other parts are probably not covered.
 Thus if you have suggestions or comments on on what has already been developed or will be developed, please send me an email (<a href="mailto:guillert@tcd.ie">guillert@tcd.ie</a>) or if you are a GitHub user, directly create an issue on the <a href="https://github.com/TGuillerme/dispRity">GitHub page</a>.</p>
 </div>
 <div id="citations" class="section level2">
-<h2><span class="header-section-number">1.5</span> Citations</h2>
+<h2><span class="header-section-number">1.6</span> Citations</h2>
 <p>To cite the package, this manual or some specific functionalities, you can use the following references:</p>
 <p>The package main paper:</p>
 <blockquote>
@@ -365,7 +391,7 @@ Thus if you have suggestions or comments on on what has already been developed o
 <p>Paradis E. &amp; Schliep K. 2019. ape 5.0: an environment for modern phylogenetics and evolutionary analyses in R. Bioinformatics 35: 526-528.</p>
 </blockquote>
 <div id="why-is-it-important-to-cite-us" class="section level3">
-<h3><span class="header-section-number">1.5.1</span> Why is it important to cite us?</h3>
+<h3><span class="header-section-number">1.6.1</span> Why is it important to cite us?</h3>
 <p>Aside from how science works (if you’re using a method from a specific paper, cite that specific paper to refer to that specific method), why is it important to also cite the package and the manual?</p>
 <p>All the people involve in making the <code>dispRity</code> package happened to do it enthusiastically, freely and most amazingly without asking anything in return!
 I created the package with this idea in mind and I am still sticking to it.

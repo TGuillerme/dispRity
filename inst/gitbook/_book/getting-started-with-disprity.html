@@ -24,7 +24,7 @@
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie), Mark Puttick (marknputtick@gmail.com) and Natalie Cooper (natalie.cooper@nhm.ac.uk)" />
 
 
-<meta name="date" content="2020-11-10" />
+<meta name="date" content="2021-04-15" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -137,9 +137,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#installing-and-running-the-package"><i class="fa fa-check"></i><b>1.2</b> Installing and running the package</a></li>
 <li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#version"><i class="fa fa-check"></i><b>1.3</b> Which version do I choose?</a></li>
-<li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#help"><i class="fa fa-check"></i><b>1.4</b> Help</a></li>
-<li class="chapter" data-level="1.5" data-path="index.html"><a href="index.html#citations"><i class="fa fa-check"></i><b>1.5</b> Citations</a><ul>
-<li class="chapter" data-level="1.5.1" data-path="index.html"><a href="index.html#why-is-it-important-to-cite-us"><i class="fa fa-check"></i><b>1.5.1</b> Why is it important to cite us?</a></li>
+<li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#disprity-is-always-changing-how-do-i-know-its-not-broken"><i class="fa fa-check"></i><b>1.4</b> <code>dispRity</code> is always changing, how do I know it’s not broken?</a></li>
+<li class="chapter" data-level="1.5" data-path="index.html"><a href="index.html#help"><i class="fa fa-check"></i><b>1.5</b> Help</a></li>
+<li class="chapter" data-level="1.6" data-path="index.html"><a href="index.html#citations"><i class="fa fa-check"></i><b>1.6</b> Citations</a><ul>
+<li class="chapter" data-level="1.6.1" data-path="index.html"><a href="index.html#why-is-it-important-to-cite-us"><i class="fa fa-check"></i><b>1.6.1</b> Why is it important to cite us?</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="2" data-path="glossary.html"><a href="glossary.html"><i class="fa fa-check"></i><b>2</b> Glossary</a><ul>
@@ -194,6 +195,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.8" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-distribution"><i class="fa fa-check"></i><b>4.8</b> Disparity as a distribution</a></li>
 <li class="chapter" data-level="4.9" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#other-matrices"><i class="fa fa-check"></i><b>4.9</b> Disparity from other matrices</a></li>
 <li class="chapter" data-level="4.10" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#multi.input"><i class="fa fa-check"></i><b>4.10</b> Disparity from multiple matrices (and multiple trees!)</a></li>
+<li class="chapter" data-level="4.11" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-with-trees-dispritree"><i class="fa fa-check"></i><b>4.11</b> Disparity with trees: <em>dispRitree!</em></a></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="making-stuff-up.html"><a href="making-stuff-up.html"><i class="fa fa-check"></i><b>5</b> Making stuff up!</a><ul>
 <li class="chapter" data-level="5.1" data-path="making-stuff-up.html"><a href="making-stuff-up.html#simulating-discrete-morphological-data"><i class="fa fa-check"></i><b>5.1</b> Simulating discrete morphological data</a><ul>
@@ -302,17 +304,17 @@ You can also use distance matrices or any other matrix type that suits your ques
 <h3><span class="header-section-number">3.2.1</span> Ordination matrices from <code>geomorph</code></h3>
 <p>You can also easily use data from <code>geomorph</code> using the <code>geomorph.ordination</code> function.
 This function simply takes Procrustes aligned data and performs an ordination:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw">require</span>(geomorph)</a>
-<a class="sourceLine" id="cb3-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb3-3" data-line-number="3"><span class="co">## Loading the plethodon dataset</span></a>
-<a class="sourceLine" id="cb3-4" data-line-number="4"><span class="kw">data</span>(plethodon)</a>
-<a class="sourceLine" id="cb3-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb3-6" data-line-number="6"><span class="co">## Performing a Procrustes transform on the landmarks</span></a>
-<a class="sourceLine" id="cb3-7" data-line-number="7">procrustes &lt;-<span class="st"> </span><span class="kw">gpagen</span>(plethodon<span class="op">$</span>land, <span class="dt">PrinAxes =</span> <span class="ot">FALSE</span>,</a>
-<a class="sourceLine" id="cb3-8" data-line-number="8">                     <span class="dt">print.progress =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb3-9" data-line-number="9"></a>
-<a class="sourceLine" id="cb3-10" data-line-number="10"><span class="co">## Ordinating this data</span></a>
-<a class="sourceLine" id="cb3-11" data-line-number="11"><span class="kw">geomorph.ordination</span>(procrustes)[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]</a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw">require</span>(geomorph)</a>
+<a class="sourceLine" id="cb5-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb5-3" data-line-number="3"><span class="co">## Loading the plethodon dataset</span></a>
+<a class="sourceLine" id="cb5-4" data-line-number="4"><span class="kw">data</span>(plethodon)</a>
+<a class="sourceLine" id="cb5-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb5-6" data-line-number="6"><span class="co">## Performing a Procrustes transform on the landmarks</span></a>
+<a class="sourceLine" id="cb5-7" data-line-number="7">procrustes &lt;-<span class="st"> </span><span class="kw">gpagen</span>(plethodon<span class="op">$</span>land, <span class="dt">PrinAxes =</span> <span class="ot">FALSE</span>,</a>
+<a class="sourceLine" id="cb5-8" data-line-number="8">                     <span class="dt">print.progress =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb5-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb5-10" data-line-number="10"><span class="co">## Ordinating this data</span></a>
+<a class="sourceLine" id="cb5-11" data-line-number="11"><span class="kw">geomorph.ordination</span>(procrustes)[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]</a></code></pre></div>
 <pre><code>##                PC1        PC2           PC3          PC4          PC5
 ## [1,] -0.0369930887 0.05118246 -0.0016971586 -0.003128881 -0.010935739
 ## [2,] -0.0007493689 0.05942083  0.0001371682 -0.002768621 -0.008117767
@@ -322,12 +324,12 @@ This function simply takes Procrustes aligned data and performs an ordination:</
 <p>Options for the ordination (from <code>?prcomp</code>) can be directly passed to this function to perform customised ordinations.
 Additionally you can give the function a <code>geomorph.data.frame</code> object.
 If the latter contains sorting information (i.e. factors), they can be directly used to make a customised <code>dispRity</code> object <a href="#customised-subsets">customised <code>dispRity</code> object</a>!</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="co">## Using a geomorph.data.frame</span></a>
-<a class="sourceLine" id="cb5-2" data-line-number="2">geomorph_df &lt;-<span class="st"> </span><span class="kw">geomorph.data.frame</span>(procrustes,</a>
-<a class="sourceLine" id="cb5-3" data-line-number="3">     <span class="dt">species =</span> plethodon<span class="op">$</span>species, <span class="dt">site =</span> plethodon<span class="op">$</span>site)</a>
-<a class="sourceLine" id="cb5-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb5-5" data-line-number="5"><span class="co">## Ordinating this data and making a dispRity object</span></a>
-<a class="sourceLine" id="cb5-6" data-line-number="6"><span class="kw">geomorph.ordination</span>(geomorph_df)</a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="co">## Using a geomorph.data.frame</span></a>
+<a class="sourceLine" id="cb7-2" data-line-number="2">geomorph_df &lt;-<span class="st"> </span><span class="kw">geomorph.data.frame</span>(procrustes,</a>
+<a class="sourceLine" id="cb7-3" data-line-number="3">     <span class="dt">species =</span> plethodon<span class="op">$</span>species, <span class="dt">site =</span> plethodon<span class="op">$</span>site)</a>
+<a class="sourceLine" id="cb7-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb7-5" data-line-number="5"><span class="co">## Ordinating this data and making a dispRity object</span></a>
+<a class="sourceLine" id="cb7-6" data-line-number="6"><span class="kw">geomorph.ordination</span>(geomorph_df)</a></code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
 ## 4 customised subsets for 40 elements in one matrix:
 ##     species.Jord, species.Teyah, site.Allo, site.Symp.</code></pre>
@@ -337,10 +339,10 @@ If the latter contains sorting information (i.e. factors), they can be directly
 <h3><span class="header-section-number">3.2.2</span> Ordination matrices from <code>Claddis</code></h3>
 <p><code>dispRity</code> package can also easily take data from the <code>Claddis</code> package using the <code>Claddis.ordination</code> function.
 For this, simply input a matrix in the <code>Claddis</code> format to the function and it will automatically calculate and ordinate the distances among taxa:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw">require</span>(Claddis)</a>
-<a class="sourceLine" id="cb7-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb7-3" data-line-number="3"><span class="co">## Ordinating the example data from Claddis</span></a>
-<a class="sourceLine" id="cb7-4" data-line-number="4"><span class="kw">Claddis.ordination</span>(michaux_<span class="dv">1989</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw">require</span>(Claddis)</a>
+<a class="sourceLine" id="cb9-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb9-3" data-line-number="3"><span class="co">## Ordinating the example data from Claddis</span></a>
+<a class="sourceLine" id="cb9-4" data-line-number="4"><span class="kw">Claddis.ordination</span>(michaux_<span class="dv">1989</span>)</a></code></pre></div>
 <pre><code>##                      [,1]          [,2]       [,3]
 ## Ancilla      0.000000e+00  4.154578e-01  0.2534942
 ## Turrancilla -5.106645e-01 -1.304614e-16 -0.2534942
@@ -357,8 +359,8 @@ Here is how to do it for the following types of matrices:</p>
 <ul>
 <li>Multivariate matrices (principal components analysis; PCA)</li>
 </ul>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="co">## A multivariate matrix</span></a>
-<a class="sourceLine" id="cb9-2" data-line-number="2"><span class="kw">head</span>(USArrests)</a></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="co">## A multivariate matrix</span></a>
+<a class="sourceLine" id="cb11-2" data-line-number="2"><span class="kw">head</span>(USArrests)</a></code></pre></div>
 <pre><code>##            Murder Assault UrbanPop Rape
 ## Alabama      13.2     236       58 21.2
 ## Alaska       10.0     263       48 44.5
@@ -366,12 +368,12 @@ Here is how to do it for the following types of matrices:</p>
 ## Arkansas      8.8     190       50 19.5
 ## California    9.0     276       91 40.6
 ## Colorado      7.9     204       78 38.7</code></pre>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="co">## Ordinating the matrix using `prcomp` </span></a>
-<a class="sourceLine" id="cb11-2" data-line-number="2">ordination &lt;-<span class="st"> </span><span class="kw">prcomp</span>(USArrests)</a>
-<a class="sourceLine" id="cb11-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb11-4" data-line-number="4"><span class="co">## Selecting the ordinated matrix</span></a>
-<a class="sourceLine" id="cb11-5" data-line-number="5">ordinated_matrix &lt;-<span class="st"> </span>ordination<span class="op">$</span>x</a>
-<a class="sourceLine" id="cb11-6" data-line-number="6"><span class="kw">head</span>(ordinated_matrix)</a></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="co">## Ordinating the matrix using `prcomp` </span></a>
+<a class="sourceLine" id="cb13-2" data-line-number="2">ordination &lt;-<span class="st"> </span><span class="kw">prcomp</span>(USArrests)</a>
+<a class="sourceLine" id="cb13-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb13-4" data-line-number="4"><span class="co">## Selecting the ordinated matrix</span></a>
+<a class="sourceLine" id="cb13-5" data-line-number="5">ordinated_matrix &lt;-<span class="st"> </span>ordination<span class="op">$</span>x</a>
+<a class="sourceLine" id="cb13-6" data-line-number="6"><span class="kw">head</span>(ordinated_matrix)</a></code></pre></div>
 <pre><code>##                  PC1        PC2        PC3        PC4
 ## Alabama     64.80216 -11.448007 -2.4949328 -2.4079009
 ## Alaska      92.82745 -17.982943 20.1265749  4.0940470
@@ -383,14 +385,14 @@ Here is how to do it for the following types of matrices:</p>
 <ul>
 <li>Distance matrices (classical multidimensional scaling; MDS)</li>
 </ul>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="co">## A matrix of distances between cities</span></a>
-<a class="sourceLine" id="cb13-2" data-line-number="2"><span class="kw">str</span>(eurodist)</a></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="co">## A matrix of distances between cities</span></a>
+<a class="sourceLine" id="cb15-2" data-line-number="2"><span class="kw">str</span>(eurodist)</a></code></pre></div>
 <pre><code>##  &#39;dist&#39; num [1:210] 3313 2963 3175 3339 2762 ...
 ##  - attr(*, &quot;Size&quot;)= num 21
 ##  - attr(*, &quot;Labels&quot;)= chr [1:21] &quot;Athens&quot; &quot;Barcelona&quot; &quot;Brussels&quot; &quot;Calais&quot; ...</code></pre>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="co">## Ordinating the matrix using cmdscale() with k = 5 dimensions </span></a>
-<a class="sourceLine" id="cb15-2" data-line-number="2">ordinated_matrix &lt;-<span class="st"> </span><span class="kw">cmdscale</span>(eurodist, <span class="dt">k =</span> <span class="dv">5</span>)</a>
-<a class="sourceLine" id="cb15-3" data-line-number="3"><span class="kw">head</span>(ordinated_matrix)</a></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1"><span class="co">## Ordinating the matrix using cmdscale() with k = 5 dimensions </span></a>
+<a class="sourceLine" id="cb17-2" data-line-number="2">ordinated_matrix &lt;-<span class="st"> </span><span class="kw">cmdscale</span>(eurodist, <span class="dt">k =</span> <span class="dv">5</span>)</a>
+<a class="sourceLine" id="cb17-3" data-line-number="3"><span class="kw">head</span>(ordinated_matrix)</a></code></pre></div>
 <pre><code>##                 [,1]      [,2]       [,3]       [,4]       [,5]
 ## Athens    2290.27468 1798.8029   53.79314 -103.82696 -156.95511
 ## Barcelona -825.38279  546.8115 -113.85842   84.58583  291.44076
@@ -422,12 +424,12 @@ Note that any of these default arguments can be changed within the <code>dispari
 <h3><span class="header-section-number">3.3.1</span> Example data</h3>
 <p>To illustrate these functions, we will use data from <span class="citation">Beck and Lee (<a href="#ref-beckancient2014">2014</a>)</span>.
 This dataset contains an ordinated matrix of 50 discrete characters from mammals (<code>BeckLee_mat50</code>), another matrix of the same 50 mammals and the estimated discrete data characters of their descendants (thus 50 + 49 rows, <code>BeckLee_mat99</code>), a dataframe containing the ages of each taxon in the dataset (<code>BeckLee_ages</code>) and finally a phylogenetic tree with the relationships among the 50 mammals (<code>BeckLee_tree</code>).</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1"><span class="co">## Loading the ordinated matrices</span></a>
-<a class="sourceLine" id="cb17-2" data-line-number="2"><span class="kw">data</span>(BeckLee_mat50)</a>
-<a class="sourceLine" id="cb17-3" data-line-number="3"><span class="kw">data</span>(BeckLee_mat99)</a>
-<a class="sourceLine" id="cb17-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb17-5" data-line-number="5"><span class="co">## The first five taxa and dimensions of the 50 taxa matrix</span></a>
-<a class="sourceLine" id="cb17-6" data-line-number="6"><span class="kw">head</span>(BeckLee_mat50[, <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>])</a></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1"><span class="co">## Loading the ordinated matrices</span></a>
+<a class="sourceLine" id="cb19-2" data-line-number="2"><span class="kw">data</span>(BeckLee_mat50)</a>
+<a class="sourceLine" id="cb19-3" data-line-number="3"><span class="kw">data</span>(BeckLee_mat99)</a>
+<a class="sourceLine" id="cb19-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb19-5" data-line-number="5"><span class="co">## The first five taxa and dimensions of the 50 taxa matrix</span></a>
+<a class="sourceLine" id="cb19-6" data-line-number="6"><span class="kw">head</span>(BeckLee_mat50[, <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>])</a></code></pre></div>
 <pre><code>##                    [,1]        [,2]        [,3]       [,4]        [,5]
 ## Cimolestes   -0.5613001  0.06006259  0.08414761 -0.2313084 -0.18825039
 ## Maelestes    -0.4186019 -0.12186005  0.25556379  0.2737995 -0.28510479
@@ -435,16 +437,16 @@ This dataset contains an ordinated matrix of 50 discrete characters from mammals
 ## Bulaklestes  -0.7708261 -0.07629583  0.04549285 -0.4951160 -0.39962626
 ## Daulestes    -0.8320466 -0.09559563  0.04336661 -0.5792351 -0.37385914
 ## Uchkudukodon -0.5074468 -0.34273248  0.40410310 -0.1223782 -0.34857351</code></pre>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1"><span class="co">## The first five taxa and dimensions of the 99 taxa + ancestors matrix</span></a>
-<a class="sourceLine" id="cb19-2" data-line-number="2">BeckLee_mat99[<span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">98</span>, <span class="dv">99</span>), <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]</a></code></pre></div>
-<pre><code>##                  [,1]         [,2]        [,3]       [,4]        [,5]
-## Cimolestes -0.8799516 0.2073955372  0.00894781 -0.0520640 -0.59757193
-## Maelestes  -0.7412082 0.0002627251 -0.28875341  0.2204510  0.01659849
-## n48         0.2805561 0.1062733543  0.22210099  0.1318826  0.09855343
-## n49         0.4785575 0.2631178257  0.16360499  0.1203463 -0.23464289</code></pre>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1"><span class="co">## Loading a list of first and last occurrence dates for the fossils</span></a>
-<a class="sourceLine" id="cb21-2" data-line-number="2"><span class="kw">data</span>(BeckLee_ages)</a>
-<a class="sourceLine" id="cb21-3" data-line-number="3"><span class="kw">head</span>(BeckLee_ages)</a></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1"><span class="co">## The first five taxa and dimensions of the 99 taxa + ancestors matrix</span></a>
+<a class="sourceLine" id="cb21-2" data-line-number="2">BeckLee_mat99[<span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">98</span>, <span class="dv">99</span>), <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]</a></code></pre></div>
+<pre><code>##                  [,1]       [,2]        [,3]        [,4]        [,5]
+## Cimolestes -0.6794737 0.15658591  0.04918307  0.22509831 -0.38139436
+## Maelestes  -0.5797289 0.04223105 -0.20329542 -0.15453876 -0.06993258
+## n48         0.2614394 0.01712426  0.21997583 -0.05383777  0.07919679
+## n49         0.3881123 0.13771446  0.11966941  0.01856597 -0.15263921</code></pre>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1"><span class="co">## Loading a list of first and last occurrence dates for the fossils</span></a>
+<a class="sourceLine" id="cb23-2" data-line-number="2"><span class="kw">data</span>(BeckLee_ages)</a>
+<a class="sourceLine" id="cb23-3" data-line-number="3"><span class="kw">head</span>(BeckLee_ages)</a></code></pre></div>
 <pre><code>##             FAD  LAD
 ## Adapis     37.2 36.8
 ## Asioryctes 83.6 72.1
@@ -452,12 +454,12 @@ This dataset contains an ordinated matrix of 50 discrete characters from mammals
 ## Miacis     49.0 46.7
 ## Mimotona   61.6 59.2
 ## Notharctus 50.2 47.0</code></pre>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1"><span class="co">## Loading and plotting the phylogeny</span></a>
-<a class="sourceLine" id="cb23-2" data-line-number="2"><span class="kw">data</span>(BeckLee_tree)</a>
-<a class="sourceLine" id="cb23-3" data-line-number="3"><span class="kw">plot</span>(BeckLee_tree, <span class="dt">cex =</span> <span class="fl">0.8</span>) </a>
-<a class="sourceLine" id="cb23-4" data-line-number="4"><span class="kw">axisPhylo</span>(<span class="dt">root =</span> <span class="dv">140</span>)</a>
-<a class="sourceLine" id="cb23-5" data-line-number="5"><span class="kw">nodelabels</span>(<span class="dt">cex =</span> <span class="fl">0.5</span>)</a></code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1"><span class="co">## Loading and plotting the phylogeny</span></a>
+<a class="sourceLine" id="cb25-2" data-line-number="2"><span class="kw">data</span>(BeckLee_tree)</a>
+<a class="sourceLine" id="cb25-3" data-line-number="3"><span class="kw">plot</span>(BeckLee_tree, <span class="dt">cex =</span> <span class="fl">0.8</span>) </a>
+<a class="sourceLine" id="cb25-4" data-line-number="4"><span class="kw">axisPhylo</span>(<span class="dt">root =</span> <span class="dv">140</span>)</a>
+<a class="sourceLine" id="cb25-5" data-line-number="5"><span class="kw">nodelabels</span>(<span class="dt">cex =</span> <span class="fl">0.5</span>)</a></code></pre></div>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 <p>Of course you can use your own data as detailed in the <a href="#What-sort-of-data-does-dispRity-work-with">previous section</a>.</p>
 </div>
 <div id="disparity-through-time" class="section level3">
@@ -473,34 +475,34 @@ Of course all the defaults can be changed if required, more on this later.</p>
 <li>Your favourite disparity metric (here the sum of variances)</li>
 </ul>
 <p>Using the Beck and Lee (2014) data described <a href="getting-started-with-disprity.html#example-data">above</a>:</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" data-line-number="1"><span class="co">## Measuring disparity through time</span></a>
-<a class="sourceLine" id="cb24-2" data-line-number="2">disparity_data &lt;-<span class="st"> </span><span class="kw">dispRity.through.time</span>(BeckLee_mat50, BeckLee_tree,</a>
-<a class="sourceLine" id="cb24-3" data-line-number="3">                                        <span class="dt">metric =</span> <span class="kw">c</span>(sum, variances),</a>
-<a class="sourceLine" id="cb24-4" data-line-number="4">                                        <span class="dt">time =</span> <span class="dv">3</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" data-line-number="1"><span class="co">## Measuring disparity through time</span></a>
+<a class="sourceLine" id="cb26-2" data-line-number="2">disparity_data &lt;-<span class="st"> </span><span class="kw">dispRity.through.time</span>(BeckLee_mat50, BeckLee_tree,</a>
+<a class="sourceLine" id="cb26-3" data-line-number="3">                                        <span class="dt">metric =</span> <span class="kw">c</span>(sum, variances),</a>
+<a class="sourceLine" id="cb26-4" data-line-number="4">                                        <span class="dt">time =</span> <span class="dv">3</span>)</a></code></pre></div>
 <p>This generates a <code>dispRity</code> object (see <a href="#guts">here</a> for technical details).
 When displayed, these <code>dispRity</code> objects provide us with information on the operations done to the matrix:</p>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1"><span class="co">## Print the disparity_data object</span></a>
-<a class="sourceLine" id="cb25-2" data-line-number="2">disparity_data</a></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" data-line-number="1"><span class="co">## Print the disparity_data object</span></a>
+<a class="sourceLine" id="cb27-2" data-line-number="2">disparity_data</a></code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
-## 3 discrete time subsets for 50 elements in one matrix with 48 dimensions:
+## 3 discrete time subsets for 50 elements in one matrix with 48 dimensions with 1 phylogenetic tree
 ##     133.51 - 89.01, 89.01 - 44.5, 44.5 - 0.
 ## Data was bootstrapped 100 times (method:&quot;full&quot;).
 ## Disparity was calculated as: metric.</code></pre>
 <p>We asked for three subsets (evenly spread across the age of the tree), the data was bootstrapped 100 times (default) and the metric used was the sum of variances.</p>
 <p>We can now summarise or plot the <code>disparity_data</code> object, or perform statistical tests on it (e.g. a simple <code>lm</code>):</p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" data-line-number="1"><span class="co">## Summarising disparity through time</span></a>
-<a class="sourceLine" id="cb27-2" data-line-number="2"><span class="kw">summary</span>(disparity_data)</a></code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" data-line-number="1"><span class="co">## Summarising disparity through time</span></a>
+<a class="sourceLine" id="cb29-2" data-line-number="2"><span class="kw">summary</span>(disparity_data)</a></code></pre></div>
 <pre><code>##          subsets  n   obs bs.median  2.5%   25%   75% 97.5%
 ## 1 133.51 - 89.01  5 2.123     1.775 1.017 1.496 1.942 2.123
 ## 2   89.01 - 44.5 29 2.456     2.384 2.295 2.350 2.404 2.427
 ## 3       44.5 - 0 16 2.528     2.363 2.213 2.325 2.406 2.466</code></pre>
-<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" data-line-number="1"><span class="co">## Plotting the results</span></a>
-<a class="sourceLine" id="cb29-2" data-line-number="2"><span class="kw">plot</span>(disparity_data, <span class="dt">type =</span> <span class="st">&quot;continuous&quot;</span>)</a></code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
-<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" data-line-number="1"><span class="co">## Testing for an difference among the time bins</span></a>
-<a class="sourceLine" id="cb30-2" data-line-number="2">disp_lm &lt;-<span class="st"> </span><span class="kw">test.dispRity</span>(disparity_data, <span class="dt">test =</span> lm,</a>
-<a class="sourceLine" id="cb30-3" data-line-number="3">                         <span class="dt">comparisons =</span> <span class="st">&quot;all&quot;</span>)</a>
-<a class="sourceLine" id="cb30-4" data-line-number="4"><span class="kw">summary</span>(disp_lm)</a></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" data-line-number="1"><span class="co">## Plotting the results</span></a>
+<a class="sourceLine" id="cb31-2" data-line-number="2"><span class="kw">plot</span>(disparity_data, <span class="dt">type =</span> <span class="st">&quot;continuous&quot;</span>)</a></code></pre></div>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" data-line-number="1"><span class="co">## Testing for an difference among the time bins</span></a>
+<a class="sourceLine" id="cb32-2" data-line-number="2">disp_lm &lt;-<span class="st"> </span><span class="kw">test.dispRity</span>(disparity_data, <span class="dt">test =</span> lm,</a>
+<a class="sourceLine" id="cb32-3" data-line-number="3">                         <span class="dt">comparisons =</span> <span class="st">&quot;all&quot;</span>)</a>
+<a class="sourceLine" id="cb32-4" data-line-number="4"><span class="kw">summary</span>(disp_lm)</a></code></pre></div>
 <pre><code>## 
 ## Call:
 ## test(formula = data ~ subsets, data = data)
@@ -534,31 +536,31 @@ For example, you could ask if there is a difference in disparity between two gro
 <li>Your favourite disparity metric (here the sum of variances)</li>
 </ul>
 <p>Using the <span class="citation">Beck and Lee (<a href="#ref-beckancient2014">2014</a>)</span> data described <a href="getting-started-with-disprity.html#example-data">above</a>:</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" data-line-number="1"><span class="co">## Creating the two groups (crown versus stem) as a list</span></a>
-<a class="sourceLine" id="cb32-2" data-line-number="2">mammal_groups &lt;-<span class="st"> </span><span class="kw">crown.stem</span>(BeckLee_tree, <span class="dt">inc.nodes =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb32-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb32-4" data-line-number="4"><span class="co">## Measuring disparity for each group</span></a>
-<a class="sourceLine" id="cb32-5" data-line-number="5">disparity_data &lt;-<span class="st"> </span><span class="kw">dispRity.per.group</span>(BeckLee_mat50,</a>
-<a class="sourceLine" id="cb32-6" data-line-number="6">                                     <span class="dt">group =</span> mammal_groups,</a>
-<a class="sourceLine" id="cb32-7" data-line-number="7">                                     <span class="dt">metric =</span> <span class="kw">c</span>(sum, variances))</a></code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb34-1" data-line-number="1"><span class="co">## Creating the two groups (crown versus stem) as a list</span></a>
+<a class="sourceLine" id="cb34-2" data-line-number="2">mammal_groups &lt;-<span class="st"> </span><span class="kw">crown.stem</span>(BeckLee_tree, <span class="dt">inc.nodes =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb34-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb34-4" data-line-number="4"><span class="co">## Measuring disparity for each group</span></a>
+<a class="sourceLine" id="cb34-5" data-line-number="5">disparity_data &lt;-<span class="st"> </span><span class="kw">dispRity.per.group</span>(BeckLee_mat50,</a>
+<a class="sourceLine" id="cb34-6" data-line-number="6">                                     <span class="dt">group =</span> mammal_groups,</a>
+<a class="sourceLine" id="cb34-7" data-line-number="7">                                     <span class="dt">metric =</span> <span class="kw">c</span>(sum, variances))</a></code></pre></div>
 <p>We can display the disparity of both groups by simply looking at the output variable (<code>disparity_data</code>) and then summarising the <code>disparity_data</code> object and plotting it, and/or by performing a statistical test to compare disparity across the groups (here a Wilcoxon test).</p>
-<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" data-line-number="1"><span class="co">## Print the disparity_data object</span></a>
-<a class="sourceLine" id="cb33-2" data-line-number="2">disparity_data</a></code></pre></div>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" data-line-number="1"><span class="co">## Print the disparity_data object</span></a>
+<a class="sourceLine" id="cb35-2" data-line-number="2">disparity_data</a></code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
 ## 2 customised subsets for 50 elements in one matrix with 48 dimensions:
 ##     crown, stem.
 ## Data was bootstrapped 100 times (method:&quot;full&quot;).
 ## Disparity was calculated as: metric.</code></pre>
-<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" data-line-number="1"><span class="co">## Summarising disparity in the different groups</span></a>
-<a class="sourceLine" id="cb35-2" data-line-number="2"><span class="kw">summary</span>(disparity_data)</a></code></pre></div>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb37-1" data-line-number="1"><span class="co">## Summarising disparity in the different groups</span></a>
+<a class="sourceLine" id="cb37-2" data-line-number="2"><span class="kw">summary</span>(disparity_data)</a></code></pre></div>
 <pre><code>##   subsets  n   obs bs.median  2.5%   25%   75% 97.5%
 ## 1   crown 30 2.526     2.446 2.380 2.429 2.467 2.498
 ## 2    stem 20 2.244     2.134 2.025 2.105 2.164 2.208</code></pre>
-<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb37-1" data-line-number="1"><span class="co">## Plotting the results</span></a>
-<a class="sourceLine" id="cb37-2" data-line-number="2"><span class="kw">plot</span>(disparity_data)</a></code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
-<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb38-1" data-line-number="1"><span class="co">## Testing for a difference between the groups</span></a>
-<a class="sourceLine" id="cb38-2" data-line-number="2"><span class="kw">test.dispRity</span>(disparity_data, <span class="dt">test =</span> wilcox.test, <span class="dt">details =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb39-1" data-line-number="1"><span class="co">## Plotting the results</span></a>
+<a class="sourceLine" id="cb39-2" data-line-number="2"><span class="kw">plot</span>(disparity_data)</a></code></pre></div>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb40-1" data-line-number="1"><span class="co">## Testing for a difference between the groups</span></a>
+<a class="sourceLine" id="cb40-2" data-line-number="2"><span class="kw">test.dispRity</span>(disparity_data, <span class="dt">test =</span> wilcox.test, <span class="dt">details =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
 <pre><code>## $`crown : stem`
 ## $`crown : stem`[[1]]
 ## 
