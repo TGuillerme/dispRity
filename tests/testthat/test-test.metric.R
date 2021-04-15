@@ -25,7 +25,7 @@ test_that("test.metric works", {
 
 
     ## A simple test with only 1 replicate for two shifts (random and size):
-    test <- test.metric(space, metric = c(prod, ranges), replicates = 1, shifts = c("random", "size")) 
+    test <- test.metric(space, metric = c(prod, ranges), replicates = 1, shifts = c("random", "size"), shift.options = list(tunning = c(max = 1000000)))
     expect_is(test, c("dispRity", "test.metric"))
     expect_equal(names(test), c("call", "results", "models", "saved_steps"))
     expect_equal(names(test$results), c("random", "size.inner", "size.outer"))

@@ -320,7 +320,7 @@ test_that("plot.dispRity with model.test data", {
 
     ## Testing normal model
     model_simulation_empty <- model.test.sim(sim = 10, model = "BM")
-    expect_null(plot(model_simulation_empty))
+    expect_null(plot(model_simulation_empty, density = 1))
 
     ## Testing inherited model
     set.seed(42)

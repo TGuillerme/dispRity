@@ -35,7 +35,7 @@ test_that("randtest.dispRity works", {
     dummy_test <- randtest.dispRity(
         data = dummy_matrix,
         subsets = test_subset,
-        metric = mean)
+        metric = mean, alter = "lesser")
     expect_is(dummy_test, c("dispRity", "randtest"))
     expect_equal(names(dummy_test), c("rep", "observed", "random", "call", "sim", "obs", "plot", "alter", "pvalue", "expvar", "n"))
     ## Normal print
@@ -64,7 +64,7 @@ test_that("randtest.dispRity works", {
 
     ## Applying this on dispRity objects
     data(disparity)
-    test_list <- randtest.dispRity(disparity)
+    test_list <- randtest.dispRity(disparity, alter = "greater")
     expect_is(test_list, c('dispRity', 'randtest'))
     expect_null(plot(test_list))
     test_sum <- summary(test_list)

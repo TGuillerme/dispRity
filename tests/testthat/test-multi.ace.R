@@ -370,35 +370,46 @@ test_that("multi.ace works", {
 
 
     ## Test1
-    # test <- capture.output(ancestral_states <- multi.ace(matrix_complex, multiple_trees,
-    #                               verbose = TRUE,
-    #                               models = my_models,
-    #                               threshold = 0.95,
-    #                               special.tokens = my_spec_tokens,
-    #                               special.behaviours = my_spec_behaviours,
-    #                               brlen.multiplier = branch_lengths,
-    #                               output = "combined.matrix"))
+    set.seed(3)
+    test <- capture.output(results <- multi.ace(data = matrix_complex,
+                            tree = tree_test, 
+                            models = "ER", 
+                            threshold = FALSE,
+                            special.tokens = c("weird" = "%"),
+                            special.behaviours = list(weirdtoken = function(x,y) return(c(1,2))),
+                            brlen.multiplier = rnorm(10),
+                            verbose = TRUE,
+                            parallel = FALSE,
+                            output = "matrix",
+                            estimation.details = c("loglikelihood", "transition_matrix")))
+    expect_equal(test,
+              c("Preparing the data:.....Done." ,
+                "Running ancestral states estimations:" ,
+                ".......... Done.",
+                "Running ancestral states estimations:" ,
+                ".......... Done."))
 
-    # expect_equal(test,
-    #           c("Preparing the data:.....Done." ,
-    #             "Running ancestral states estimations:" ,
-    #             ".................................................. Done.",
-    #             "Running ancestral states estimations:" ,
-    #             ".................................................. Done.",
-    #             "Running ancestral states estimations:" ,
-    #             ".................................................. Done.",
-    #             "Running ancestral states estimations:" ,
-    #             ".................................................. Done.",
-    #             "Running ancestral states estimations:" ,
-    #             ".................................................. Done.",
-    #             "Running ancestral states estimations:" ,
-    #             ".................................................. Done.",
-    #             "Running ancestral states estimations:" ,
-    #             ".................................................. Done.",
-    #             "Running ancestral states estimations:" ,
-    #             ".................................................. Done.",
-    #             "Running ancestral states estimations:" ,
-    #             ".................................................. Done.",
-    #             "Running ancestral states estimations:" ,
-    #             ".................................................. Done."))
+    set.seed(3)
+    test <- capture.output(results <- multi.ace(data = matrix_complex,
+                            tree = tree_test, 
+                            models = "ER", 
+                            threshold = TRUE,
+                            special.tokens = c("weird" = "%"),
+                            special.behaviours = list(weirdtoken = function(x,y) return(c(1,2))),
+                            brlen.multiplier = rnorm(10),
+                            verbose = TRUE,
+                            parallel = TRUE,
+                            output = "matrix",
+                            estimation.details = c("loglikelihood", "transition_matrix")))
+    expect_equal(test,
+              c("Preparing the data:.....Done." ,
+                "Running the estimation for 2 trees using 3 cores...Done."))
+    expect_is(results, "list")
+    expect_equal(names(results), c("estimations", "details"))
+    expect_is(results$estimations, "list")
+    expect_is(results$estimations[[1]], "matrix")
+    expect_is(results$details[[1]]$transition_matrix[[9]], "matrix")
+    expect_equal(rownames(results$details[[1]]$transition_matrix[[9]]), c("0","1","2"))
+    expect_is(results$details[[2]]$loglikelihood[[1]], "numeric")
+
 })

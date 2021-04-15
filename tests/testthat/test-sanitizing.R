@@ -288,4 +288,13 @@ test_that("check.dispRity.tree works", {
     expect_is(test, "multiPhylo")
     expect_is(test[[1]], "phylo")
     expect_equal(length(test), 2)
+
+    ## Binding works
+    error <- capture_error(check.dispRity.tree(tree = tree[[1]], data = data, bind.trees = TRUE))
+    expect_equal(error[[1]], "The number of matrices and trees must be the same to bind them.")
+    wrong_tree <- tree[[1]]
+    wrong_tree$tip.label[1:2] <- letters[1:2]
+    error <- capture_error(check.dispRity.tree(tree = wrong_tree, data = data))
+    expect_equal(error[[1]], "The data is not matching the tree labels (you can use ?clean.data to match both data and tree).")
+
 })

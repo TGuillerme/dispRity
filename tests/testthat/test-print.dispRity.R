@@ -13,6 +13,7 @@ test_that("normal printing", {
     ## Empty object
     test <- make.dispRity()
     expect_equal(capture.output(test), "Empty dispRity object.")
+    expect_equal(length(capture.output(print(test, all = TRUE))), 16)
 
     ## Empty object with a matrix
     test <- make.dispRity(data = matrix(1))
