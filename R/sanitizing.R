@@ -229,7 +229,7 @@ check.dispRity.tree <- function(tree, data, bind.trees = FALSE) {
             if(length(tree) != length(data$matrix)) {
                 stop("The number of matrices and trees must be the same to bind them.", call. = FALSE)
             }
-            cleanings <- mapply(cleand.data, data$matrix, tree, MoreArgs = c(inc.nodes = inc.nodes), SIMPLIFY = FALSE)
+            cleanings <- mapply(clean.data, data$matrix, tree, MoreArgs = c(inc.nodes = inc.nodes), SIMPLIFY = FALSE)
         }
         if(any(not_pass <- unlist(lapply(cleanings, pass.fun)))) {
             ## Stop!

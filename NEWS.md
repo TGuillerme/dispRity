@@ -22,7 +22,7 @@ dispRity 0.2.0 (2016-04-01)
 <!--   * `dtt.dispRity` now works with any tree (including non-ultrametric ones and fossils only ones). -->
 <!--   * `dtt.dispRity` now works with time-slicing. -->
 
-dispRity v1.5.10 (2021-04-01) *dispRitree*
+dispRity v1.6.0 (2021-04-16) *dispRitree*
 =========================
 
 ### NEW FEATURES

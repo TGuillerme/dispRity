@@ -8,14 +8,14 @@ get.node.labels <- function(tree) {
     }
 }
 
-# ## Checking model classes
-# check.model.class <- function(one_model, available_models) {
-#     if(class(one_model)[[1]] == "character") {
-#         check.method(one_model, available_models, msg = "models")
-#     } else {
-#         check.class(c(one_model), c("numeric", "integer"), msg = "models must be numerical matrices")
-#     }
-# }
+## Checking model classes
+check.model.class <- function(one_model, available_models) {
+    if(class(one_model)[[1]] == "character") {
+        check.method(one_model, available_models, msg = "models")
+    } else {
+        check.class(c(one_model), c("numeric", "integer"), msg = "models must be numerical matrices")
+    }
+}
 
 ## Convert the characters into probability tables
 convert.char.table <- function(character, character_states) {
