@@ -401,9 +401,7 @@ test_that("multi.ace works", {
                             parallel = TRUE,
                             output = "matrix",
                             estimation.details = c("loglikelihood", "transition_matrix")))
-    expect_equal(test,
-              c("Preparing the data:.....Done." ,
-                "Running the estimation for 2 trees using 3 cores...Done."))
+    expect_equal(length(test),2)
     expect_is(results, "list")
     expect_equal(names(results), c("estimations", "details"))
     expect_is(results$estimations, "list")
