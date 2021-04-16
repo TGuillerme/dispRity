@@ -11,7 +11,8 @@
 #' @param replicates A \code{numeric} number of replicates to increase variance. By default \code{replicates = 3}. If \code{replicates = 1}, the \code{model} is not run.
 #' @param steps The number of steps in the space reduction to output between 10\% and 100\%. By default \code{steps = 10}.
 #' @param dimensions Optional, a \code{numeric} value or proportion of the dimensions to keep.
-#' @param verbose A \code{logical} value indicating whether to be verbose or not.
+#' @param verbose A \code{logical} value indicating whether to be verbose (\code{TRUE}) or not (\code{FALSE}; default).
+#' @param save.steps A \code{logical} value indicating whether to save the data for visualising the the shift steps if plotting the results (\code{TRUE}) or not (\code{FALSE}; default).
 #' 
 #' @details
 #' For the three non-random shifts: \code{"size"}, \code{"density"}, \code{"evenness"} and \code{"position"}, the function returns both of shifts as:
@@ -24,16 +25,16 @@
 #' See figure 2 in Guillerme et al. 2020 for more details.
 #' 
 #' The default \code{model} is a linear model using the following function:
-#'     \code{model = function(data) lm(disparity \~ reduction, data)}
+#'     \code{model = function(data) lm(disparity ~ reduction, data)}
 #' You can provide your own as long as it is a single function with \code{data} as a single argument. The two terms from data should be called \code{reduction} for the variable on the x axis and \code{disparity} for the variable on the y axis. For example:
-#'     \code{model = function(data) nls(disparity \~ a*reduction/(b+reduction), data)}
+#'     \code{model = function(data) nls(disparity ~ a*reduction/(b+reduction), data)}
 #' Note that models (like this example) should be specific to the dataset. Any type of model can be fitted but only the ones with an associated \code{summary} function will be correctly displayed by \code{\link{summary.dispRity}}.
 #' To not run any model, use \code{model = NULL}.
 #' 
 #' @return
 #' This function outputs a \code{dispRity} object containing a list of simulated reductions in trait space. The results can be accessed through the usual S3 methods (\code{print}, \code{summary}, \code{plot}) or accessed directly through \code{x$<name_of_the_shift>} (e.g. \code{x$random} for the random shift results).  
 #'
-#' @seealso \code{\link{reduce.space}} \code{\link{dispRity}}
+#' @seealso \code{\link{reduce.space}} \code{\link{dispRity}} \code{\link{plot.dispRity}}
 #' 
 #' @examples
 #' ## Creating a 2D uniform space
@@ -58,12 +59,11 @@
 #' 
 #' ## Visualising the test
 #' plot(median_centroid_test)
-#'
 #' 
 #' \dontrun{
 #' ## Note that the tests can take several minutes to run.
 #' 
-#' ## Testing the sum of variance on all shifts
+#' ## Testing the sum of variance on all shifts 
 #' sum_var_test <- test.metric(space, metric = c(sum, variances),
 #'                             shifts = c("random", "size", "density", "position"))
 #' 
@@ -72,6 +72,18 @@
 #' 
 #' ## Visualising the test
 #' plot(sum_var_test)
+#' 
+#' ## Creating a 2D uniform space
+#' space <- space.maker(300, 2, runif)
+#' 
+#' ## Re-running the test on two shifts with data saving for visualisation
+#' median_centroid_test <- test.metric(space,
+#'                                     metric = c(median, centroids),
+#'                                     shifts = c("random", "size"),
+#'                                     save.steps = TRUE)
+#' 
+#' ## Visualising the tests results and display the shifts visualisation
+#' plot(median_centroid_test)
 #' }
 #'  
 #' @author Thomas Guillerme
@@ -80,7 +92,7 @@
 #' Guillerme T, Puttick MN, Marcy AE, Weisbecker V. \bold{2020} Shifting spaces: Which disparity or dissimilarity measurement best summarize occupancy in multidimensional spaces?. Ecol Evol. 2020;00:1-16. (doi:10.1002/ece3.6452)
 
 
-test.metric <- function(data, metric, ..., shifts, shift.options, model, replicates = 3, steps = 10, dimensions, verbose = FALSE) {
+test.metric <- function(data, metric, ..., shifts, shift.options, model, replicates = 3, steps = 10, dimensions, verbose = FALSE, save.steps = FALSE) {
 
     ## Saving the call
     match_call <- match.call()
@@ -187,7 +199,26 @@ test.metric <- function(data, metric, ..., shifts, shift.options, model, replica
                  "model" = model,
                  "metric" = if(is.null(metric_name)){match_call$metric} else {metric_name})
 
-    output <- list("call" = call, "results" = results_list, "models" = models)
+    ## Save the steps
+    if(save.steps) {
+        ## Counting the failures in one replicate (accross all shifts)
+        count.fails <- function(one_rep){
+            unlist(lapply(lapply(one_rep, check.content), function(x) sum(!x)))
+        }
+        ## Checking the content in all subsets from one shift from one replicate
+        check.content <- function(one_shift){
+            unlist(lapply(one_shift$subsets, lapply,  nrow)) > 0
+        }
+        ## Check which replicate worked best
+        fails_pre_rep <- unlist(lapply(lapply(all_reductions, count.fails), sum))
+
+        ## Saving the reduction that worked best
+        saved_steps <- all_reductions[[which(fails_pre_rep == min(fails_pre_rep))[1]]]
+    } else {
+        saved_steps <- NULL
+    }
+
+    output <- list("call" = call, "results" = results_list, "models" = models, "saved_steps" = saved_steps)
     class(output) <- c("dispRity", "test.metric")
 
     return(output)

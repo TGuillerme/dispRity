@@ -67,7 +67,9 @@ print.dispRity <- function(x, all = FALSE, ...) {
                 randtest = {
                     ## Remove the call (messy)
                     remove.call <- function(element) {
-                        element$call <- "dispRity::null.test"
+                        if(element$call != "dispRity.randtest") {
+                            element$call <- "dispRity::null.test"
+                        }
                         return(element)
                     }
                     x <- lapply(x, remove.call)
@@ -175,7 +177,7 @@ print.dispRity <- function(x, all = FALSE, ...) {
                 cat(" ---- dispRity object ---- \n")
                 dims <- dim(x$matrix[[1]])
                 n_matrices <- length(x$matrix)
-                cat(paste0("Contains only ", ifelse(n_matrices > 1, paste0(n_matrices, " matrices "), "a matrix "), dims[1], "x", dims[2], "."))
+                cat(paste0("Contains ", ifelse(n_matrices > 1, paste0(n_matrices, " matrices "), "a matrix "), dims[1], "x", dims[2], "."))
             } else {
                 cat("Empty dispRity object.\n")
             }
@@ -214,9 +216,12 @@ print.dispRity <- function(x, all = FALSE, ...) {
                 } else {
                     cat(paste0(" in one matrix"), sep = "")
                 }
-
-                if(length(x$call$dimensions) != 0) cat(paste(" with", x$call$dimensions, "dimensions"), sep = "")
-                cat(":\n")
+                if(length(x$call$dimensions) != 0) cat(paste(" with", length(x$call$dimensions), "dimensions"), sep = "")
+                if(!is.null(x$tree[[1]])) {
+                    cat(" with ") ; print(x$tree)
+                } else {
+                    cat(":\n")
+                }
                 if(length(subsets) > 5) {
                     cat("    ",paste(subsets[1:5], collapse=", "),"...\n")
                 } else {
@@ -230,10 +235,10 @@ print.dispRity <- function(x, all = FALSE, ...) {
             } else {
                 cat(paste0(" in one matrix"), sep = "")
             }
-            if(length(x$call$dimensions) != 0) cat(paste(" with", x$call$dimensions, "dimensions"), sep = "")
-            cat(".\n")
+            if(length(x$call$dimensions) != 0) cat(paste(" with", length(x$call$dimensions), "dimensions"), sep = "")
+            if(!is.null(x$tree[[1]])) {cat(" with ") ; print(x$tree)} else {cat(".\n")}
         }
-        
+    
         ## Print the bootstrap information
         if(any(names(x$call) == "bootstrap")) {
             if(x$call$bootstrap[[1]] != 0) {

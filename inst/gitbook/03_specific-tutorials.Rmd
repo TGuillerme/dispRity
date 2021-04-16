@@ -336,7 +336,7 @@ The function works by simply using the two available matrices, with no restricti
 ## A second matrix
 dummy_matrix2 <- matrix(runif(12), 4, 3)
 
-## The difference between groups
+## The difference between groups
 mean.difference(dummy_matrix, dummy_matrix2)
 ```
 
@@ -495,6 +495,7 @@ Level | Name | Description | Source |
 2 | `deviations` | The minimal distance between each element and a hyperplane | `dispRity` |
 1 | `diagonal` | The longest distance in the ordinated space (like the diagonal in two dimensions) | `dispRity` |
 2 | `displacements` | The ratio between the distance from a reference and the distance from the centroid | `dispRity` |
+1 | `edge.length.tree` | The edge lengths of the elements on a tree | `ape` |
 1 | `ellipse.volume`<sup>1</sup> | The volume of the ellipsoid of the space | Donohue _et al._ (2013) |
 1 | `func.div` | The functional divergence (the ratio of deviation from the centroid) | `dispRity` (similar to [`FD`](https://cran.r-project.org/web/packages/FD/index.html)`::dbFD$FDiv` but without abundance)|
 1 | `func.eve` | The functional evenness (the minimal spanning tree distances evenness) | `dispRity` (similar to [`FD`](https://cran.r-project.org/web/packages/FD/index.html)`::dbFD$FEve` but without abundance)|
@@ -504,6 +505,8 @@ Level | Name | Description | Source |
 2 | `neighbours` | The distance to specific neighbours (e.g. the nearest neighbours - by default) | `dispRity` |
 2 | `pairwise.dist` | The pairwise distances between elements | [`vegan`](https://cran.r-project.org/web/packages/vegan/index.html)`::vegist` |
 2 | `point.dist` | The distance between one group and the point of another group | `dispRity` |
+2 | `projections.tree` | The `projections` metric but where the vector can be based on a tree | `dispRity` |
+2 | `projections` | The distance *on* (projection) or *from* (rejection) an arbitrary vector | `dispRity` |
 2 | `quantiles` | The *n*th quantile range per axis | `dispRity` |
 2 | `radius` | The radius of each dimensions | `dispRity` |
 2 | `ranges` | The range of each dimension | `dispRity` |
@@ -550,6 +553,13 @@ Some of the functions described below are implemented in the `dispRity` package 
 \end{equation}
 
 \begin{equation}
+    projection_{on} = \| \overrightarrow{i} \cdot \overrightarrow{b} \|
+\end{equation}
+\begin{equation}
+    projection_{from} = \| \overrightarrow{i} - \overrightarrow{i} \cdot \overrightarrow{b} \|
+\end{equation}
+
+\begin{equation}
     radius = |\frac{\sum_{i=1}^{n}d_i}{n} - f(\mathbf{v}d)|
 \end{equation}
 
@@ -575,7 +585,9 @@ $Centroid_{k}$ is their mean,
 $Ancestor_{n}$ is the coordinates of the ancestor of element $n$,
 $f(\mathbf{v}k)$ is function to select one value from the vector $\mathbf{v}$ of the dimension $k$ (e.g. it's maximum, minimum, mean, etc.),
 *R* is the radius of the sphere or the product of the radii of each dimensions ($\displaystyle\prod_{i=1}^{k}R_{i}$ - for a hyper-ellipsoid),
-and $Reference_{k}$ is an arbitrary point's coordinates (usually 0).
+$Reference_{k}$ is an arbitrary point's coordinates (usually 0),
+$\overrightarrow{b}$ is the vector defined by (`(point1, point2)`),
+and $\overrightarrow{i}$ is the vector defined by (`(point1, i)` where `i` is any row of the matrix).
 
 ### Using the different disparity metrics
 Here is a brief demonstration of the main metrics implemented in `dispRity`.
@@ -655,7 +667,7 @@ summary(dispRity(dummy_space, metric = quantiles))
 
 ## By default, the quantile calculated is the 95%
 ## (i.e. 95% of the data on each axis)
-## this can be changed using the option quantile:
+## this can be changed using the option quantile:
 summary(dispRity(dummy_space, metric = quantiles, quantile = 50))
 
 ## Calculating the radius of each dimension in the ordinated space
@@ -700,13 +712,13 @@ The `mode.val` function measures the modal value of the matrix:
 ## Calculating the ordinated space's diagonal
 summary(dispRity(dummy_space, metric = diagonal))
 
-## Calculating the modal value of the matrix
+## Calculating the modal value of the matrix
 summary(dispRity(dummy_space, metric = mode.val))
 ```
 
 > This metric is only a Euclidean diagonal (mathematically valid) if the dimensions within the space are all orthogonal!
 
-#### Centroids, displacements, and ancestral distance metrics {#centroids}
+#### Centroids, displacements and ancestral distances metrics {#centroids}
 
 The `centroids` metric allows users to measure the position of the different elements compared to a fixed point in the ordinated space.
 By default, this function measures the distance between each element and their centroid (centre point):
@@ -757,23 +769,20 @@ summary(dispRity(dummy_space, metric = displacements,
                  reference = c(0,1,2,3,4)))
 ```
 
-The `ancestral.dist` metric works on a similar principle as the `centroids` function but changes the centroid to be the coordinates of each element's ancestor.
-Therefore this functions needs a tree and node coordinates as additional arguments:
+The `ancestral.dist` metric works on a similar principle as the `centroids` function but changes the centroid to be the coordinates of each element's ancestor (if `to.root = FALSE`; default) or to the root of the tree (`to.root = TRUE`).
+Therefore this function needs a matrix that contains tips and nodes and a tree as additional argument.
 
 ```{r}
 ## A generating a random tree with node labels
-tree <- rtree(5) ; tree$node.label <- paste0("n", 1:4)
+my_tree <- makeNodeLabel(rtree(5), prefix = "n")
 ## Adding the tip and node names to the matrix
 dummy_space2 <- dummy_space[-1,]
-rownames(dummy_space2) <- c(tree$tip.label, tree$node.label)
-
-## Calculating all the ancestral nodes
-all_anc_centroids <- nodes.coordinates(dummy_space2, tree,
-                                       full = TRUE)
+rownames(dummy_space2) <- c(my_tree$tip.label,
+                            my_tree$node.label)
 
 ## Calculating the distances from the ancestral nodes
 ancestral_dist <- dispRity(dummy_space2, metric = ancestral.dist,
-                           nodes.coords = all_anc_centroids)
+                           tree = my_tree)
 
 ## The ancestral distances distributions
 summary(ancestral_dist)
@@ -781,6 +790,7 @@ summary(ancestral_dist)
 ## Calculating disparity as the sum of the distances from all the ancestral nodes
 summary(dispRity(ancestral_dist, metric = sum))
 ```
+
 
 #### Minimal spanning tree length
 
@@ -849,6 +859,88 @@ summary(dispRity(dummy_space[, c(1:2)], metric = deviations,
 Since both the functions `angles` and `deviations` effectively run a `lm` or `glm` to estimate slopes or hyperplanes, it is possible to use the option `significant = TRUE` to only consider slopes or intercepts that have a slope significantly different than zero using an `aov` with a significant threshold of $p = 0.05$.
 Note that depending on your dataset, using and `aov` could be completely inappropriate!
 In doubt, it's probably better to enter your `base` (for `angles`) or your `hyperplane` (for `deviations`) manually so you're sure you know what the function is measuring.
+
+#### Projections and phylo projections: elaboration and exploration
+
+The `projections` metric calculates the geometric projection and corresponding rejection of all the rows in a matrix on an arbitrary vector (respectively the distance *on* and the distance *from* that vector). The function is based on @aguilera2004's n-dimensional rotation algorithm to use linear algebra in mutidimensional spaces. The projection or rejection can be seen as respectively the elaboration and exploration scores on a trajectory (*sensu* @endler2005).
+
+By default, the vector (e.g. a trajectory, an axis), on which the data is projected is the one going from the centre of the space (coordinates 0,0, ...) and the centroid of the matrix.
+However, we advice you do define this axis to something more meaningful using the `point1` and `point2` options, to create the vector (the vector's norm will be `dist(point1, point2)` and its direction will be from `point1` towards `point2`).
+
+```{r}
+## The elaboration on the axis defined by the first and
+## second row in the dummy_space
+summary(dispRity(dummy_space, metric = projections,
+                              point1 = dummy_space[1,],
+                              point2 = dummy_space[2,]))
+
+## The exploration on the same axis
+summary(dispRity(dummy_space, metric = projections,
+                              point1 = dummy_space[1,],
+                              point2 = dummy_space[2,],
+                              measure = "distance"))
+```
+
+By default, the vector `(point1, point2)` is used as unit vector of the projections (i.e. the Euclidean distance between `(point1, point2)` is set to 1) meaning that a projection value (`"distance"` or `"position"`) of *X* means *X* times the distance between `point1` and `point2`.
+If you want use the unit vector of the input matrix or are using a space where Euclidean distances are non-sensical, you can remove this option using `scale = FALSE`:
+
+```{r}
+## The elaboration on the same axis using the dummy_space's
+## unit vector
+summary(dispRity(dummy_space, metric = projections,
+                              point1 = dummy_space[1,],
+                              point2 = dummy_space[2,],
+                              scale = FALSE))
+```
+
+The `projections.tree` is the same as the `projections` metric but allows to determine the vector (`(point1, point2)`) using a tree rather than manually entering these points.
+The function intakes the exact same options as the `projections` function described above at the exception of `point1` and `point2`.
+Instead it takes a the argument `type` that designates the type of vector to draw from the data based on a phylogenetic tree `phy`.
+The argument `type` can be a pair of any of the following inputs:
+
+ * `"root"`: to automatically use the coordinates of the root of the tree (the first element in `phy$node.label`);
+ * `"ancestor"`: to automatically use the coordinates of the elements' (i.e. any row in the matrix) most recent ancestor;
+ * `"tips"`: to automatically use the coordinates from the centroid of all tips;
+ * `"nodes"`: to automatically use the coordinates from the centroid of all nodes;
+ * `"livings"`: to automatically use the coordinates from the centroid of all "living" tips (i.e. the tips that are the furthest away from the root);
+ * `"fossils"`: to automatically use the coordinates from the centroid of all "fossil" tips and nodes (i.e. not the "living" ones);
+ *  any numeric values that can be interpreted as `point1` and `point2` in `projections` (e.g. `0`, `c(0, 1.2, 3/4)`, etc.);
+ *  or a user defined function that with the inputs `matrix` and `phy` and `row` (the element's ID, i.e. the row number in `matrix`).
+
+For example, if you want to measure the projection of each element in the matrix (tips and nodes) on the axis from the root of the tree to each element's most recent ancestor, you can define the vector as `type = c("root", "ancestor")`.
+
+```{r}
+## Adding a extra row to dummy matrix (to match dummy_tree)
+tree_space <- rbind(dummy_space, root = rnorm(5))
+## Creating a random dummy tree (with labels matching the ones from tree_space)
+dummy_tree <- rtree(6)
+dummy_tree$tip.label <- rownames(tree_space)[1:6]
+dummy_tree$node.label <- rownames(tree_space)[rev(7:11)]
+
+## Measuring the disparity as the projection of each element
+## on its root-ancestor vector
+summary(dispRity(tree_space, metric = projections.tree,
+                             tree   = dummy_tree,
+                             type   = c("root", "ancestor")))
+```
+
+Of course you can also use any other options from the projections function:
+
+```{r}
+## A user defined function that's returns the centroid of
+## the first three nodes
+fun.root <- function(matrix, tree, row = NULL) {
+  return(colMeans(matrix[tree$node.label[1:3], ]))
+}
+## Measuring the unscaled rejection from the vector from the
+## centroid of the three first nodes
+## to the coordinates of the first tip
+summary(dispRity(tree_space, metric  = projections.tree,
+                             tree    = dummy_tree,
+                             measure = "distance",
+                             type    = list(fun.root,
+                                            tree_space[1, ])))
+```
 
 #### Between group metrics {#betweengroupmetricslist}
 
@@ -1257,7 +1349,7 @@ This can be done on `dispRity` objects using the `adonis.dispRity` wrapper funct
 Basically, this function takes the exact same arguments as `adonis` and a `dispRity` object for data and performs a PERMANOVA based on the distance matrix of the multidimensional space (unless the multidimensional space was already defined as a distance matrix).
 The `adonis.dispRity` function uses the information from the `dispRity` object to generate default formulas:
 
-  * If the object contains customised subsets, it applies the default formula `matrix ~ group` testing the effect of `group` as a predictor on `matrix` (called from the `dispRity` object as `data$matrix` see [`dispRitu` object details](#The-dispRity-object-content))
+  * If the object contains customised subsets, it applies the default formula `matrix ~ group` testing the effect of `group` as a predictor on `matrix` (called from the `dispRity` object as `data$matrix` see [`dispRitu` object details](#The-dispRity-object-content))
   * If the object contains time subsets, it applies the default formula `matrix ~ time` testing the effect of `time` as a predictor (were the different levels of `time` are the different time slices/bins)
 
 ```{r}
@@ -1592,7 +1684,7 @@ my_models <- list(c("BM", "OU"),
                   c("OU", "Trend"),
                   c("Stasis", "BM"))
 
-## Testing the models
+## Testing the models
 disp_time <- model.test.wrapper(data = BeckLee_disparity,
                                 model = my_models, time.split = 66,
                                 show.p = TRUE, fixed.optima = TRUE)
@@ -1890,7 +1982,7 @@ set.seed(1)
 ## Matches the trees and the matrices
 ## A bunch of trees
 make.tree <- function(n, fun = rtree) {
-    ## Make the tree
+    ## Make the tree
     tree <- fun(n)
     tree <- chronos(tree, quiet = TRUE,
                     calibration = makeChronosCalib(tree, age.min = 10, age.max = 10))
@@ -1921,7 +2013,7 @@ do.ace <- function(tree, matrix) {
     return(rbind(matrix, apply(matrix, 2, fun.ace, tree = tree)))
 }
 
-## All matrices
+## All matrices
 matrices <- mapply(do.ace, trees, matrix_list, SIMPLIFY = FALSE)
 ```
 
@@ -1985,3 +2077,52 @@ With the unbound data, the slices are done across the three trees and applied to
 As we've seen before, this is incorrect in this case since the trees don't have the same topology (so the nodes selected by a slice through the second tree are not equivalent to the nodes in the first matrix) but it can be useful if the topology is fixed to integrate both uncertainty in branch length (slicing through different trees) and uncertainty from, say, ancestral states estimations (applying the slices on different matrices).
 
 
+## Disparity with trees: *dispRitree!*
+
+Since the package's version 1.5.10, trees can be directly attached to `dispRity` objects.
+This allows any function in the package that has an input argument called "`tree`" to automatically intake the tree from the `dispRity` object.
+This is especially useful for disparity metrics that requires calculations based on a phylogenetic tree (e.g. `ancestral.dist` or `projections.tree`) and if phylogeny (or phylogenie\*s\*) are going to be an important part of your analyses.
+
+Trees are attached to `dispRity` object as soon as they are called in any function of the package (e.g. as an argument in `chrono.subsets` or in `dispRity`) and are stored in `my_dispRity_object$tree`.
+You can always manually attach, detach or modify the tree parts of a `dispRity` object using the utility functions `get.tree` (to access the trees), `remove.tree` (to remove it) and `add.tree` (to... add trees!).
+The only requirement for this to work is that the labels in the tree must match the ones in the data.
+If the tree has node labels, their node labels must also match the data.
+Similarly if the data has entries for node labels, they must be present in the tree.
+
+Here is a quick demo on how attaching trees to `dispRity` objects can work and make your life easy: for example here we will measure how the sum of branch length changes through time when time slicing through some demo data with a acctran split time slice model (see more info [here](#chrono-subsets)).
+
+```{r}
+## Loading some demo data:
+## An ordinated matrix with node and tip labels
+data(BeckLee_mat99)
+## The corresponding tree with tip and node labels
+data(BeckLee_tree)
+## A list of tips ages for the fossil data
+data(BeckLee_ages)
+
+## Time slicing through the tree using the equal split algorithm
+time_slices <- chrono.subsets(data   = BeckLee_mat99,
+                              tree   = BeckLee_tree,
+                              FADLAD = BeckLee_ages,
+                              method = "continuous",
+                              model  = "acctran",
+                              time   = 15)
+
+## We can visualise the resulting trait space with the phylogeny
+## (using the specific argument as follows)
+plot(time_slices, type = "preview",
+     specific.args = list(tree = TRUE))
+## Note that some nodes are never selected thus explaining the branches not reaching them.
+```
+
+And we can then measure disparity as the sum of the edge length at each time slice on the bootstrapped data:
+
+```{r}
+## Measuring the sum of the edge length per slice
+sum_edge_length <- dispRity(boot.matrix(time_slices), metric = c(sum, edge.length.tree))
+## Summarising and plotting
+summary(sum_edge_length)
+plot(sum_edge_length)
+```
+
+Of course this can be done with multiple trees and be combined with an approach using multiple matrices (see [here](#multi.input))!

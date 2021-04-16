@@ -1,6 +1,6 @@
 #TEST slice.tree
 
-context("slice.tree")
+#context("slice.tree")
 
 
 test_that("slice.tree.sharp works", {

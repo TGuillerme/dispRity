@@ -15,7 +15,8 @@ multi.ace(
   verbose = FALSE,
   parallel = FALSE,
   output,
-  castor.options
+  castor.options,
+  estimation.details = NULL
 )
 }
 \arguments{
@@ -40,6 +41,8 @@ multi.ace(
 \item{output}{optional, see Return section below.}
 
 \item{castor.options}{optional, a named list of options to be passed to function called by \code{\link[castor]{asr_mk_model}}.}
+
+\item{estimation.details}{optional, whether to also return the details for each estimation as returned by \code{\link[castor]{asr_mk_model}}. This argument can be left \code{NULL} (default) or be any combination of the elements returned by \code{\link[castor]{asr_mk_model}} (e.g. \code{c("loglikelihood", "transition_matrix")}).}
 }
 \value{
 Returns a \code{"matrix"} or \code{"list"} of ancestral states. By default, the function returns the ancestral states in the same format as the input \code{matrix}. This can be changed using the option \code{output = "matrix"} or \code{"list"} to force the class of the output.
@@ -77,12 +80,12 @@ When using the parallel option (either through using \code{parallel = TRUE} by u
 \examples{
 set.seed(42)
 ## A simple example:
-## A random tree with 15 tips
-tree <- rcoal(15)
+## A random tree with 10 tips
+tree <- rcoal(10)
 ## Setting up the parameters
 my_rates = c(rgamma, rate = 10, shape = 5)
 
-## A random Mk matrix (15*50)
+## A random Mk matrix (10*50)
 matrix_simple <- sim.morpho(tree, characters = 50, model = "ER", rates = my_rates,
                             invariant = FALSE)
 
@@ -91,8 +94,8 @@ ancestral_states <- multi.ace(matrix_simple, tree)
 ancestral_states[1:5, 1:5]
 
 ## A more complex example
-## Create a multiple list of 10 trees
-multiple_trees <- rmtree(10, 15)
+## Create a multiple list of 5 trees
+multiple_trees <- rmtree(5, 10)
 
 ## Modify the matrix to contain missing and special data
 matrix_complex <- matrix_simple
@@ -114,7 +117,7 @@ my_spec_behaviours$missing      <- function(x,y) return(y)
 my_spec_behaviours$weirdtoken   <- function(x,y) return(c(1,2))
 
 ## Create a random branch length modifier to apply to each tree
-branch_lengths <- rnorm(28)^2
+branch_lengths <- rnorm(18)^2
 
 ## Setting a list of model ("ER" for the 25 first characters and then "SYM")
 my_models <- c(rep("ER", 25), rep("SYM", 25))

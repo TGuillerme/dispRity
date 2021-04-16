@@ -4,10 +4,12 @@
 #'
 #' @param data A matrix or a \code{dispRity} object (see details).
 #' @param metric A vector containing one to three functions. At least of must be a dimension-level 1 or 2 function (see details).
-#' @param dimensions Optional, a \code{numeric} value or proportion of the dimensions to keep.
+#' @param dimensions Optional, a vector of \code{numeric} value(s) or the proportion of the dimensions to keep.
+#' @param tree \code{NULL} (default) or an optional \code{phylo} or \code{multiPhylo} object to be attached to the data. If this argument is not null, it will be recycled by \code{metric} when possible.
 #' @param ... Optional arguments to be passed to the metric.
 #' @param between.groups A \code{logical} value indicating whether to run the calculations between groups (\code{TRUE}) or not (\code{FALSE} - default) or a \code{numeric} list of pairs of groups to run (see details).
 #' @param verbose A \code{logical} value indicating whether to be verbose or not.
+
 #          @param parallel Optional, either a \code{logical} argument whether to parallelise calculations (\code{TRUE}; the numbers of cores is automatically selected to n-1) or not (\code{FALSE}) or a single \code{numeric} value of the number of cores to use.
 #'
 #' @return
@@ -108,7 +110,7 @@
 # verbose = TRUE
 # data <- data_subsets_boot
 
-dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verbose = FALSE){#, parallel) {
+dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verbose = FALSE, tree = NULL){#, parallel) {
     ## ----------------------
     ##  SANITIZING
     ## ----------------------
@@ -116,27 +118,38 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
     ## Saving the call
     match_call <- match.call()
     dots <- list(...)
-
     # warning("DEBUG") ; return(match_call)
 
     ## Check data input
     if(!is(data, "dispRity")) {
-        data <- fill.dispRity(make.dispRity(data = check.dispRity.data(data)))
+        ## Adding the tree
+        if(!is.null(tree)) {
+            data <- fill.dispRity(make.dispRity(data = check.dispRity.data(data), tree = tree))
+        } else {
+            data <- fill.dispRity(make.dispRity(data = check.dispRity.data(data)))
+        }
     } else {
         ## Making sure matrix exist
         if(is.null(data$matrix[[1]])) {
             stop.call(match_call$data, " must contain a matrix or a list of matrices.")
         }
+        ## Adding tree (if possible)
+        if(!is.null(tree)) {
+            data <- remove.tree(data)
+            data <- add.tree(data, tree = check.dispRity.tree(tree, data = data))
+        }
+
         ## Make sure dimensions exist in the call
         if(is.null(data$call$dimensions)) {
-            data$call$dimensions <- ncol(data$matrix[[1]])
+            data$call$dimensions <- 1:ncol(data$matrix[[1]])
         }
     }
 
     ## Get the metric list
-    metrics_list <- get.dispRity.metric.handle(metric, match_call, data.dim = dim(data$matrix[[1]]), ...)
-    # metrics_list <- get.dispRity.metric.handle(metric, match_call, data.dim = dim(data$matrix[[1]]))
+    metrics_list <- get.dispRity.metric.handle(metric, match_call, data.dim = dim(data$matrix[[1]]), tree = tree, ...)
+    # metrics_list <- get.dispRity.metric.handle(metric, match_call, data.dim = dim(data$matrix[[1]]), tree = NULL)
     metric_is_between.groups <- unlist(metrics_list$between.groups)
+    metric_has_tree <- unlist(metrics_list$tree)
     metrics_list <- metrics_list$levels
 
     ## Stop if data already contains disparity and metric is not level1
@@ -179,15 +192,15 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
     ## Dimensions
     if(!missing(dimensions)) {
         ## Else must be a single numeric value (proportional)
-        silent <- check.class(dimensions, c("numeric", "integer"), " must be a number or proportion of dimensions to keep.")
-        check.length(dimensions, 1, " must be a number or proportion of dimensions to keep.", errorif = FALSE)
-        if(dimensions < 0) {
-            stop.call("", "Number of dimensions to remove cannot be less than 0.")
-        }
-        if(dimensions < 1) dimensions <- round(dimensions * ncol(data$matrix[[1]]))
-        if(dimensions > ncol(data$matrix[[1]])) {
-            warning(paste0("Dimension number too high: set to ", ncol(data$matrix[[1]]), "."))
-            dimensions <- ncol(data$matrix[[1]])
+        check.class(dimensions, c("numeric", "integer"), " must be a proportional threshold value.")
+        if(length(dimensions == 1)) {
+            if(dimensions < 0) {
+                stop.call("", "Number of dimensions cannot be less than 0.")
+            }
+            if(dimensions < 1) dimensions <- 1:round(dimensions * ncol(data$matrix[[1]]))
+        } 
+        if(any(dimensions > ncol(data$matrix[[1]]))) {
+            stop.call("", "Number of dimensions cannot be more than the number of columns in the matrix.")
         }
         data$call$dimensions <- dimensions
     }
@@ -330,22 +343,32 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
 
     ## Running the multiple matrix mode
     # if(is_bound || length(data$matrix) > 1) {
-    if(is_bound || (length(data$matrix) > 1 && matrix_decomposition && is.null(data$call$subsets["trees"]))) {
 
-        ## Get the number of treesdata
-        n_trees <- ifelse(is.null(data$call$subsets["trees"]), 1, as.numeric(data$call$subsets["trees"]))
+    if(any( 
+          c(## Data is bound to a tree
+            is_bound,
+            ## Data has multiple matrices and the metric needs matrix decomp
+            length(data$matrix) > 1 && matrix_decomposition && is.null(data$call$subsets["trees"]),
+            ## Data has multiple trees and the metric needs a tree
+            length(data$tree) > 1 && any(metric_has_tree)
+          )
+        )) {
 
         ## Make the lapply loops
+        n_trees <- ifelse(is.null(data$call$subsets["trees"]), 1, as.numeric(data$call$subsets["trees"]))
+        ## Splitting the lapply loop for bound trees 
         lapply_loops <- split.lapply_loop(lapply_loop, n_trees)
 
         ## Make the matrix list
-        matrices_data <- split.data(data)
+        splitted_data <- split.data(data)
+
+        splitted_data[[1]]$call$dimensions
 
         ## mapply this
-        disparities <- mapply(mapply.wrapper, lapply_loops, matrices_data, 
-                            MoreArgs = list(metrics_list, matrix_decomposition, verbose, ...),
+        disparities <- mapply(mapply.wrapper, lapply_loops, splitted_data, 
+                            MoreArgs = list(metrics_list, matrix_decomposition, verbose, metric_has_tree, ...),
                             SIMPLIFY = FALSE)
-        # disparities <- mapply(mapply.wrapper, lapply_loops, matrices_data, MoreArgs = list(metrics_list, matrix_decomposition, verbose), SIMPLIFY = FALSE) ; warning("DEBUG dispRity")
+        # disparities <- mapply(mapply.wrapper, lapply_loops, matrices_data, MoreArgs = list(metrics_list, matrix_decomposition, verbose, metric_has_tree), SIMPLIFY = FALSE) ; warning("DEBUG dispRity")
         
         ## Reformat to normal disparity object
         disparity <- unlist(lapply(as.list(1:ifelse(is.null(data$call$subsets["trees"]), n_trees, length(disparities[[1]]))),
@@ -354,8 +377,8 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
         names(disparity) <- names(disparities[[1]])
     } else {
         ## Normal disparity lapply
-        disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, metric_is_between.groups, ...)
-
+        disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, metric_has_tree, ...)
+        #TG: check out the file disparity_internal_logic.md (located on the root of the package) for explanation about the logic in this lapply
     }
 
     # }

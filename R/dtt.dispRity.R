@@ -4,7 +4,7 @@
 #'
 #' @param data A \code{dispRity} object or a \code{matrix}
 #' @param metric The disparity metric to be passed to \code{\link{dispRity}}.
-#' @param tree A \code{phylo} object matching the data and with a \code{root.time} element.
+#' @param tree A \code{phylo} object matching the data and with a \code{root.time} element. Can be missing if \code{data} has a \code{tree} component.
 #' @param nsim The number of simulations to calculate null disparity-through-time.
 #' @param model A evolutionary model for the simulations (see \code{\link[geiger]{sim.char}} - default is \code{"BM"}).
 #' @param alternative The H1 alternative (for calculating the p-value). Can be \code{"two-sided"} (default), \code{"greater"} or \code{"lesser"}; see details.
@@ -85,12 +85,10 @@ dtt.dispRity <- function(data, metric, tree, nsim = 0, model = "BM", alternative
     ## metric
     metrics_list <- get.dispRity.metric.handle(metric, match_call)
 
-    ## Stop if data already contains disparity and metric is not level1
-    if(!is.null(metrics_list$level3.fun) && length(data$call$disparity$metric) != 0) {
-        stop.call("", "Impossible to apply a dimension-level 3 metric on disparity data.")
-    }
-
     ## tree
+    # if(missing(tree) && !is.null(data$tree[[1]])) {
+    #     tree <- get.tree(data)
+    # }
     check.class(tree, "phylo")
 
     ## Match the tree to the data

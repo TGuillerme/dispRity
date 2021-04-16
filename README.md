@@ -3,7 +3,7 @@ Release:
 [![Build Status](https://travis-ci.org/TGuillerme/dispRity.svg?branch=release)](https://travis-ci.org/TGuillerme/dispRity)
 [![codecov](https://codecov.io/gh/TGuillerme/dispRity/branch/release/graph/badge.svg)](https://codecov.io/gh/TGuillerme/dispRity)
 [![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
-[![develVersion](https://img.shields.io/badge/devel%20version-1.5.1-green.svg?style=flat)](https://github.com/TGuillerme/dispRity/tree/release)
+[![develVersion](https://img.shields.io/badge/devel%20version-1.6.0-green.svg?style=flat)](https://github.com/TGuillerme/dispRity/tree/release)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1186467.svg)](https://doi.org/10.5281/zenodo.1186467)
 
 
@@ -12,7 +12,7 @@ Development (master):
 [![Build Status](https://travis-ci.org/TGuillerme/dispRity.svg?branch=master)](https://travis-ci.org/TGuillerme/dispRity)
 [![codecov](https://codecov.io/gh/TGuillerme/dispRity/branch/master/graph/badge.svg)](https://codecov.io/gh/TGuillerme/dispRity)
 [![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
-[![develVersion](https://img.shields.io/badge/devel%20version-1.5.3-green.svg?style=flat)](https://github.com/TGuillerme/dispRity)
+[![develVersion](https://img.shields.io/badge/devel%20version-1.6.0-green.svg?style=flat)](https://github.com/TGuillerme/dispRity)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1186467.svg)](https://doi.org/10.5281/zenodo.1186467)
 
 CRAN:
@@ -65,6 +65,8 @@ Otherwise, each functions has a detailed associated manual with examples in `R` 
 
 Additionally, you can learn more about the structure of `dispRity` objects [here](https://github.com/TGuillerme/dispRity/blob/master/disparity_object.md).
 
+### Workshop
+
 You can download the workshop follow-along sheet [here](https://raw.githubusercontent.com/TGuillerme/dispRity/master/inst/vignettes/dispRity_workhop_code.Rmd)(use right click > save link as...) or visualise it in html [here](https://raw.githack.com/TGuillerme/dispRity/master/inst/vignettes/dispRity_workhop_code.html).
 
 ### Disparity/dissimilarity metrics/indices?
@@ -76,35 +78,48 @@ You can also find more information in the [`dispRity` manual](https://rawcdn.git
 <!-- biorXiv preprint -->
 
 
-## Latest patch notes
-* 2020/09/25 v1.5 *between groups*
+## Latest major patch notes
+* 2021/04/16 v1.6 *dispRitree*
 
-  * *New* function: `multi.ace` for performing fast ancestral character estimations on multiple matrices (based on `castor::asr_mk_model`).
-  * *New* function: `reduce.space`, a function to modify trait spaces imported from the [`moms` shiny app](https://github.com/TGuillerme/moms). This function comes with a new reduction algorithm: the "evenness" algorithm for flattening the curve (thanks to Gavin Thomas for the suggestion).
-  * *New* function: `test.metric` (and associated `plot`, `print` and `summary` functions), to apply the `reduce.space` function on a specific space and metric to test whether a metric is picking up specific changes in trait space.
-  * the `dispRity` function can now use `"between.groups"` metrics to calculate disparity between groups rather than within groups. The `make.metric` function is now modified to allow detection of metrics that can be applied between groups.
-  * *New* metric: `group.dist`, a dimension level 1 metric for between groups that measures the distance between two groups. By default, this is the minimum distance but the function takes the `probs` argument allowing the distance to be between, says, the 95% CI (`probs = c(0.025, 0.975))`) or between the centroids (`probs = c(0.5)`).
-  * *New* metric: `point.dist`, a dimension level 2 metric for between groups that measures the distance between the rows in `matrix` to a point in `matrix2`. That point is the centroid by default but the `point` argument can take any function.
-  * The `dispRity` package now depends on `R (>= 4.0.0)`.
-  * Many updates to the `dispRity` manual.
-  * Many minor speed improvements across the package
-  * Simplified syntax for the internal `plot.dispRity` S3 methods (for a potential `ggpRity`?). These changes should not be apparent at the user level but see the two removed options below:
-  * **removed** option in `plot.dispRity`: the `chrono.subsets` option (`TRUE`/`FALSE`) has now been removed. The time-slicing-ness is now automatically detected or can be specified by the user normally through `xlab`.
-  * **removed** option in `plot.dispRity`: the `ylim`, `ylab`, `xlab` and `col` options have now been removed. They are now handled through `...` as normal generic `plot(...)` arguments.
-  * **removed** option in `plot.dispRity`: the `elements.pch` option has now been removed. The `pch` of the plotted elements can now be passed like other options directly to elements (e.g. `elements = list(pch = 15)`).
-  * **removed** option in `plot.dispRity`: the `dimensions`, `matrix`, `nclass` and `coeff` options have now been removed. Any options for dual class plots (`randtest`, `dtt`, `model.test`, `type = "preview"` etc...) are now handled through the generic `specific.args` argument.
-  * *New* option in `dtt.dispRity`: `scale.time` allowing to scale the time axis (like in `geiger::dtt`) or not.
-  * when plotting `chrono.subsets` `dispRity` objects, the x label ticks are now rounded if possible (for nicer looking plots!).
-  * when using automatic `chrono.subsets` time slices, the name of the time slices (their age) is now rounded for aesthetics.
+  * *New* metric: `projections` that allows to measure elements' projection on an arbitrary axis (or their distance from this axis with `measure = "distance"`).
+  * *New* metric: `projections.tree` that allows to measure elements' projection on axis between elements of a given tree.
+  * *New* metric: `edge.length.tree` the edge length from each element given a tree (with the option `to.root = TRUE/FALSE` to measure the edge length from the element to the root of the tree (default = TRUE) or the nearest ancestor (FALSE).
+  * You can now save the shifts results in `test.metric` with `save.steps` and then visualise them with `plot.dispRity` along side the disparity metric test results.
+  * *New* utility function `n.subsets` to directly get the number of subsets in a `dispRity` object.
+  * *New* statistical test: `randtest.dispRity` that is a wrapper for `ade4::randtest` applied to `dispRity` objects (not dissimilar from `null.test`).
+  * Six more demo datasets have been added to the package! These datasets are the ones used in [Guillerme et al. 2020](https://onlinelibrary.wiley.com/doi/full/10.1002/ece3.6452) and published originally in [Beck & Lee 2014](https://royalsocietypublishing.org/doi/full/10.1098/rspb.2014.1278) (that one was originally the only demo dataset in the package), [Wright 2017](https://www.cambridge.org/core/journals/journal-of-paleontology/article/bayesian-estimation-of-fossil-phylogenies-and-the-evolution-of-early-to-middle-paleozoic-crinoids-echinodermata/E37972902541CD0995AAD08A1122BD54), [Marcy et al. 2016](https://link.springer.com/article/10.1186/s12862-016-0782-1), [Hopkins & Pearson 2016](https://www.researchgate.net/profile/Melanie_Hopkins3/publication/320543447_Non-linear_ontogenetic_shape_change_in_Cryptolithus_tesselatus_Trilobita_using_three-dimensional_geometric_morphometrics/links/59f7307d0f7e9b553ebd5e03/Non-linear-ontogenetic-shape-change-in-Cryptolithus-tesselatus-Trilobita-using-three-dimensional-geometric-morphometrics.pdf), [Jones et al. 2015](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/1365-2745.12405), [Healy et al. 2019](https://www.nature.com/articles/s41559-019-0938-7). Thanks to all these authors for their open science work!
+  * `dispRity` objects now have a reserved `$tree` component that contain any number of trees attached to the data. This allows any function to use the reserved argument name `tree` to extract directly the relevant tree from the `dispRity` object, for functions like `chrono.subsets` or metrics like `ancestral.dist`! To help manipulate the `tree` component of the `dispRity` object, you can now use the new utility functions `add.tree`, `get.tree` and `remove.tree`.
+  * Reverted R version requirement from `4.0` back to `3.6` following [Joseph Brown's issue](https://github.com/TGuillerme/dispRity/issues/107) and [fix](https://github.com/TGuillerme/dispRity/pull/108).
+  * `reduce.space` `"random"` algorithm now outputs a named logical vector (like the other algorithms!).
+  * remove the `"only"` text when printing `dispRity` objects that contains "only" matrices (even though that can be 10k matrices!).
+  * added a dedicated behaviour to `summary.dispRity` for `"dispRity"` `"randtest"` objects to output "ready-to-publish" result tables.
+  * some error messages have been updated to be slightly more useful.
+  * added the `estimation.details` argument to `multi.ace` allowing to also return specific arguments from the ancestral states estimation (thanks to [Armin Elsler](https://research-information.bris.ac.uk/en/persons/armin-elsler) for the suggestion).
+  * Added new option `inc.nodes` to `clean.data` whether to check if the nodes in the tree match the labels in the matrix.
+  * `make.metric` with the option `silent = TRUE` now outputs a list of info rather than only the level of the metric. You can reproduce the old behaviour using `make.metric(..., silent = TRUE)$type)`.
+  * Fixed bug in `plot` using `preview` when the given argument `pch` did not match the number of groups (the different `pch` arguments are now used correctly).
+  * Completely revamped the `ancestral.dist` metric. The function is now much faster and much easier to use (due to the new `dispRity` object structure). The options `nodes.coords` has been removed and the option `full` is now changed by `to.root`. If you still really want to use the older version of `ancestral.dist` using `ancestral.dist.deprecated` though.
+  * The `dimensions` option throughout the package (e.g. in the `dispRity` function) can now also be a vector of dimensions to take into consideration (e.g. `c(1,2,5)`).
+  * `chrono.subsets` now automatically detects the number of digits to round for the internal time slicing functions (thanks to [Mario Corio](https://mariocoiro.wordpress.com/) for finding this one).
+  * Fixed bug in `test.metric` plots that now display correctly the "top" and "bottom" changes for the "position" shift.
+  * Fixed bug in `test.metric` plots that now display the R^2 values correctly.
+  * Fixed bug in `tree.age` when the tree tips/node labels vector is longer than the actual number of tips/nodes in the tree.
+  * Removed former version of `ancestral.dist` (see NEW FEATURES above).
+  * Removed `node.coordinates` function (no replacement; you must use a package version prior 1.5.10 to use this function).
+  * Removed `get.ancestors` function (no replacement; you must use a package version prior 1.5.10 to use this function).
 
 Previous patch notes and notes for the *next version* can be seen [here](https://github.com/TGuillerme/dispRity/blob/master/NEWS.md).
 
-Authors and contributors
+Authors
 -------
 
 * [Thomas Guillerme](http://tguillerme.github.io)
 * [Natalie Cooper](http://nhcooper123.github.io)
 * [Mark Puttick](https://puttickbiology.wordpress.com/)
+
+#### Contributors (bug fixes, pull requests and suggestions)
+
+[Dave Bapst](https://github.com/dwbapst/), [Mario Corio](https://mariocoiro.wordpress.com/), [Armin Elsler](https://research-information.bris.ac.uk/en/persons/armin-elsler), [Graeme Lloyd](http://graemetlloyd.com/) ([#104](https://github.com/TGuillerme/dispRity/pull/104)), [Jari Oksanen](https://github.com/jarioksa) ([#85](https://github.com/TGuillerme/dispRity/pull/85)), [Emmanuel Paradis](https://github.com/emmanuelparadis), [Abigail Pastore](https://github.com/aipastore), [Ashley Reaney](https://www.researchgate.net/profile/Ashley-Reaney), [Gavin Thomas](https://github.com/ghthomas).
 
 Citations
 -------
@@ -132,6 +147,8 @@ To cite the [time slicing method](https://onlinelibrary.wiley.com/doi/abs/10.111
 Acknowledgments
 -------
 Some ideas/functionalities/implementations in this package where implemented following the suggestions of [Natalie Cooper](http://nhcooper123.github.io/), [Graeme Lloyd](http://www.graemetlloyd.com/), [Dave Bapst](https://github.com/dwbapst/), [Andrew Jackson](https://www.tcd.ie/Zoology/people/jacksoan) and [Martin Brazeau](http://www.imperial.ac.uk/people/m.brazeau).
+
+If you use the `dispRity` pacakge for morphological disparity analyses, you should also check the excellent [`Claddis`](https://github.com/graemetlloyd/Claddis) package!
 
 
 Examples of papers using the `dispRity` package
@@ -178,3 +195,8 @@ Skeels A. The Ecological and Evolutionary Drivers of Spatial Biodiversity Patter
 
 * <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Diet+variability+among+insular+populations+of+Podarcislizards+reveals+diverse+strategies+to+face+resource%E2%80%90limited+environments&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a> 
 Taverne M, Fabre AC, King‐Gillies N, Krajnović M, Lisičić D, Martin L, Michal L, Petricioli D, Štambuk A, Tadić Z, Vigliotti C. Diet variability among insular populations of Podarcis lizards reveals diverse strategies to face resource‐limited environments. *Ecology and Evolution*. **2019** [DOI:10.1002/ece3.5626](https://onlinelibrary.wiley.com/doi/pdf/10.1002/ece3.5626).
+
+#### Disparity analyses jointly using the `dispRity` and [`Claddis`](https://github.com/graemetlloyd/Claddis) packages
+
+* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=The+patterns+and+modes+of+the+evolution+of+disparity+in+Mesozoic+birds&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a> 
+Wang M, Lloyd GT, Zhang C, Zhou Z. The patterns and modes of the evolution of disparity in Mesozoic birds. Proceedings of the Royal Society B. **2021** [DOI:10;288(1944):20203105](https://royalsocietypublishing.org/doi/full/10.1098/rspb.2020.3105?casa_token=YSmPfapjEssAAAAA%3AYU3ya5sGZnwhtEkR5eP_UPUN7cJp8BR_HOoJ3vW3qfY_BUNI_FFXFrkc0-sVO5cl7iAaG8qpj4WLxA)

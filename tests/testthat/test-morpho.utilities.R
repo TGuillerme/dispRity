@@ -1,6 +1,6 @@
 #TESTING morpho.utilities
 
-context("morpho.utilities")
+#context("morpho.utilities")
 
 
 ## Internals

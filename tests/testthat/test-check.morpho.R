@@ -1,6 +1,6 @@
 # #TESTING check.morpho
 
-context("check.morpho")
+#context("check.morpho")
 
 test_that("check.morpho works", {
 

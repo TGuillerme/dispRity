@@ -1,5 +1,5 @@
 
-context("adonis.dispRity")
+#context("adonis.dispRity")
 
 test_that("make.time.factor picks up time", {
 

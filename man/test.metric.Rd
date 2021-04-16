@@ -14,7 +14,8 @@ test.metric(
   replicates = 3,
   steps = 10,
   dimensions,
-  verbose = FALSE
+  verbose = FALSE,
+  save.steps = FALSE
 )
 }
 \arguments{
@@ -36,7 +37,9 @@ test.metric(
 
 \item{dimensions}{Optional, a \code{numeric} value or proportion of the dimensions to keep.}
 
-\item{verbose}{A \code{logical} value indicating whether to be verbose or not.}
+\item{verbose}{A \code{logical} value indicating whether to be verbose (\code{TRUE}) or not (\code{FALSE}; default).}
+
+\item{save.steps}{A \code{logical} value indicating whether to save the data for visualising the the shift steps if plotting the results (\code{TRUE}) or not (\code{FALSE}; default).}
 }
 \value{
 This function outputs a \code{dispRity} object containing a list of simulated reductions in trait space. The results can be accessed through the usual S3 methods (\code{print}, \code{summary}, \code{plot}) or accessed directly through \code{x$<name_of_the_shift>} (e.g. \code{x$random} for the random shift results).
@@ -55,9 +58,9 @@ For the three non-random shifts: \code{"size"}, \code{"density"}, \code{"evennes
 See figure 2 in Guillerme et al. 2020 for more details.
 
 The default \code{model} is a linear model using the following function:
-    \code{model = function(data) lm(disparity \~ reduction, data)}
+    \code{model = function(data) lm(disparity ~ reduction, data)}
 You can provide your own as long as it is a single function with \code{data} as a single argument. The two terms from data should be called \code{reduction} for the variable on the x axis and \code{disparity} for the variable on the y axis. For example:
-    \code{model = function(data) nls(disparity \~ a*reduction/(b+reduction), data)}
+    \code{model = function(data) nls(disparity ~ a*reduction/(b+reduction), data)}
 Note that models (like this example) should be specific to the dataset. Any type of model can be fitted but only the ones with an associated \code{summary} function will be correctly displayed by \code{\link{summary.dispRity}}.
 To not run any model, use \code{model = NULL}.
 }
@@ -85,11 +88,10 @@ summary(median_centroid_test)
 ## Visualising the test
 plot(median_centroid_test)
 
-
 \dontrun{
 ## Note that the tests can take several minutes to run.
 
-## Testing the sum of variance on all shifts
+## Testing the sum of variance on all shifts 
 sum_var_test <- test.metric(space, metric = c(sum, variances),
                             shifts = c("random", "size", "density", "position"))
 
@@ -98,6 +100,18 @@ summary(sum_var_test)
 
 ## Visualising the test
 plot(sum_var_test)
+
+## Creating a 2D uniform space
+space <- space.maker(300, 2, runif)
+
+## Re-running the test on two shifts with data saving for visualisation
+median_centroid_test <- test.metric(space,
+                                    metric = c(median, centroids),
+                                    shifts = c("random", "size"),
+                                    save.steps = TRUE)
+
+## Visualising the tests results and display the shifts visualisation
+plot(median_centroid_test)
 }
  
 }
@@ -105,7 +119,7 @@ plot(sum_var_test)
 Guillerme T, Puttick MN, Marcy AE, Weisbecker V. \bold{2020} Shifting spaces: Which disparity or dissimilarity measurement best summarize occupancy in multidimensional spaces?. Ecol Evol. 2020;00:1-16. (doi:10.1002/ece3.6452)
 }
 \seealso{
-\code{\link{reduce.space}} \code{\link{dispRity}}
+\code{\link{reduce.space}} \code{\link{dispRity}} \code{\link{plot.dispRity}}
 }
 \author{
 Thomas Guillerme

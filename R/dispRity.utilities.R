@@ -2,11 +2,10 @@
 
 #' @title Creates a \code{dispRity} object.
 #' 
-#' @usage make.dispRity(data, call, subsets)
-#'
 #' @description Creating an empty \code{dispRity} object from a matrix
 #'
 #' @param data A \code{matrix}.
+#' @param tree Optional, a \code{phylo} or \code{multiPhylo} object.
 #' @param call Optional, a \code{list} to be a \code{dispRity} call.
 #' @param subsets Optional, a \code{list} to be a \code{dispRity} subsets list.
 #' 
@@ -19,9 +18,12 @@
 #'
 #' 
 #' @author Thomas Guillerme
-make.dispRity <- function(data, call, subsets) {
+make.dispRity <- function(data, tree, call, subsets) {
     ## Make the empty object
-    dispRity_object <- list("matrix" = list(NULL) , "call" = list(), "subsets" = list())
+    dispRity_object <- list("matrix" = list(NULL) ,
+                            "tree" = list(NULL),
+                            "call" = list(),
+                            "subsets" = list())
 
     ## Add the matrix
     if(!missing(data)) {
@@ -31,10 +33,22 @@ make.dispRity <- function(data, call, subsets) {
             list = {dispRity_object$matrix <- data})
     }
 
-    ## Add the call
+    ## Add the tree
     if(!missing(call)) {
         check.class(call, "list")
         dispRity_object$call <- call
+    }
+
+    ## Add the call
+    if(!missing(tree)) {
+        class_tree <- check.class(tree, c("multiPhylo", "phylo"))
+        if(class_tree == "multiPhylo") {
+            dispRity_object$tree <- tree
+        } else {
+            tree <- list(tree)
+            class(tree) <- "multiPhylo"
+            dispRity_object$tree <- tree
+        }
     }
 
     ## Add the subsets
@@ -53,6 +67,7 @@ make.dispRity <- function(data, call, subsets) {
 #' @description Fills a \code{dispRity} object using the data from its matrix
 #'
 #' @param data A \code{dispRity} object.
+#' @param tree A \code{phylo} or \code{multiPhylo} object or \code{NULL} (default)
 #' 
 #' @examples
 #' ## An empty dispRity object (with a matrix)
@@ -61,27 +76,37 @@ make.dispRity <- function(data, call, subsets) {
 #' ## A dispRity object with a matrix of 4*3
 #' fill.dispRity(empty)
 #' 
+#' ## A dispRity object with a tree
+#' my_tree <- rtree(4, tip.label = c(1:4))
+#' fill.dispRity(empty, tree = my_tree)
+#' 
 #' @author Thomas Guillerme
 #' 
-fill.dispRity <- function(data) {
+fill.dispRity <- function(data, tree = NULL) {
 
     ## Data have a matrix
-    data$matrix <- check.dispRity.data(data$matrix)
+    if(!is.null(data)) {
+        data$matrix <- check.dispRity.data(data$matrix)
 
-    ## Dimensions
-    if(length(data$call$dimensions) == 0) {
-        data$call$dimensions <- ncol(data$matrix[[1]])
-    }
+        ## Dimensions
+        if(length(data$call$dimensions) == 0) {
+            data$call$dimensions <- 1:ncol(data$matrix[[1]])
+        }
 
-    ## Fill empty subsets
-    if(length(data$subsets) == 0) {
-        data$subsets <- c(data$subsets, list(list("elements" = as.matrix(1:nrow(data$matrix[[1]])))))
-    } else {
-        for(subsets in 2:length(data$subsets)) {
-            data$subsets[[subsets]] <- list("elements" = as.matrix(data$subsets[[subsets]]$elements))
+        ## Fill empty subsets
+        if(length(data$subsets) == 0) {
+            data$subsets <- c(data$subsets, list(list("elements" = as.matrix(1:nrow(data$matrix[[1]])))))
+        } else {
+            for(subsets in 2:length(data$subsets)) {
+                data$subsets[[subsets]] <- list("elements" = as.matrix(data$subsets[[subsets]]$elements))
+            }
         }
     }
 
+    if(!is.null(tree)) {
+        ## Add the trees
+        data$tree <- check.dispRity.tree(tree, data = data)
+    }
     return(data)
 }
 
@@ -119,16 +144,16 @@ matrix.dispRity <- function(data, subsets, rarefaction, bootstrap, matrix = 1){
 
     ## Add the dimensions if missing
     if(is.null(data$call$dimensions)) {
-        data$call$dimensions <- ncol(data$matrix[[1]])
+        data$call$dimensions <- 1:ncol(data$matrix[[1]])
     }
 
     if(missing(subsets)) {
         return(data$matrix[[matrix]])
     } else {
         if(missing(rarefaction) || missing(bootstrap)) {
-            return(data$matrix[[matrix]][data$subsets[[subsets]]$elements, 1:data$call$dimensions])
+            return(data$matrix[[matrix]][data$subsets[[subsets]]$elements, data$call$dimensions])
         } else {
-            return(data$matrix[[matrix]][data$subsets[[subsets]][[rarefaction+1]][,bootstrap], 1:data$call$dimensions])
+            return(data$matrix[[matrix]][data$subsets[[subsets]][[rarefaction+1]][,bootstrap], data$call$dimensions])
         }
     }
 }
@@ -624,6 +649,30 @@ size.subsets <- function(data) {
     return(unlist(lapply(data$subsets, function(x) nrow(x$elements))))
 }
 
+
+#' @title Number of subsets.
+#'
+#' @description Getting the number of subsets from a dispRity object.
+#'
+#' @param data A \code{dispRity} object.
+#' 
+#' @examples
+#' ## Loading a dispRity object
+#' data(disparity)
+#' 
+#' ## What are the number of elements per subsets?
+#' n.subsets(disparity)
+#' 
+#' @seealso \code{\link{custom.subsets}}, \code{\link{chrono.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
+#'
+#' @author Thomas Guillerme
+
+n.subsets <- function(data) {
+    ## Getting the size of subsets
+    return(length(data$subsets))
+}
+
+
 #' @title Getting the time subsets from at and after an extinction event
 #'
 #' @description Getting the reference (pre-extinction) and the comparison (post-extinction) time subsets
@@ -727,4 +776,60 @@ extinction.subsets <- function(data, extinction, lag = 1, names = FALSE, as.list
 
     return(extinction_subset)
 
+}
+
+#' @name add.tree
+#' @aliases get.tree remove.tree
+#' 
+#' @title Add, get or remove tree
+#'
+#' @description Adding, extracting or removing the tree component from a \code{dispRity} object
+#'
+#' @param data A \code{dispRity} object.
+#' @param tree A \code{phylo} or \code{mutiPhylo} object.
+#' 
+#' @examples
+#' ## Loading a dispRity object
+#' data(disparity)
+#' ## Loading a tree
+#' data(BeckLee_tree)
+#' 
+#' ## Removing  the tree from the dispRity object
+#' (tree_data <- remove.tree(disparity))
+#' 
+#' ## Extracting the tree
+#' get.tree(tree_data) # is null
+#' 
+#' ## Adding a tree to the disparity object
+#' tree_data <- add.tree(tree_data, tree = BeckLee_tree)
+#'
+#' ## Extracting the tree
+#' get.tree(tree_data) # is a "phylo" object
+#' 
+#' @seealso \code{\link{custom.subsets}}, \code{\link{chrono.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
+#'
+#' @author Thomas Guillerme
+
+add.tree <- function(data, tree) {
+    ## Add the tree
+    if(is.null(data$tree[[1]])) {
+        data$tree <- check.dispRity.tree(tree = tree, data = data)
+    } else {
+        data$tree <- check.dispRity.tree(tree = c(get.tree(data$tree), tree), data = data)
+    }
+    return(data)
+}
+get.tree <- function(data) {
+    ## Return the tree
+    tree <- data$tree
+    if(length(tree) == 1) {
+        return(tree[[1]])
+    } else {
+        return(tree)
+    }
+}
+remove.tree <- function(data) {
+    ## Remove the tree
+    data$tree <- list(NULL)
+    return(data)
 }

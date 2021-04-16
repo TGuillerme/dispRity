@@ -1,6 +1,6 @@
 #TESTING bhatt.coeff
 
-context("bhatt.coeff")
+#context("bhatt.coeff")
 
 #Test
 test_that("bhatt.coeff works", {

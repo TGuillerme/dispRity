@@ -1,6 +1,6 @@
 #TESTING dtt.dispRity
 
-context("dtt.dispRity")
+#context("dtt.dispRity")
 
 test_that("dispRity and dtt give the same results", {
 
@@ -53,16 +53,22 @@ test_that("dispRity and dtt give the same results", {
     error <- capture_error(dtt.dispRity(data = geiger_data$dat, metric = var, tree = geiger_data$phy, nsim = 100))
     expect_equal(error[[1]], "var metric must contain at least a dimension-level 1 or a dimension-level 2 metric.\nFor more information, see ?make.metric.")
 
-
     ## Tree has no root time
     data(BeckLee_tree)
     data(BeckLee_mat50)
     dummy <- BeckLee_tree 
     dummy$root.time <- NULL
+
+    tree_short <- drop.tip(BeckLee_tree, tip = BeckLee_tree$tip.label[1])
+
+    warning <- capture_warning(dtt.dispRity(data = BeckLee_mat50, metric = c(sum, variances), tree = tree_short, nsim = 2))
+    expect_equal(warning[[1]], "The following element(s) was not present in the tree: Daulestes.")
+
     test <- dtt.dispRity(data = BeckLee_mat50, metric = c(sum, variances), tree = BeckLee_tree, nsim = 2)
     expect_is(test, c("dispRity", "dtt"))
 
-     
+
+
     ## Same output
     expect_equal(length(geiger_dtt)+2, length(dispRity_dtt))
     expect_equal(unlist(lapply(geiger_dtt[-5], length)), unlist(lapply(dispRity_dtt[-c(5,6,7)], length)))

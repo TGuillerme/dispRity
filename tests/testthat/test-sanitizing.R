@@ -1,6 +1,6 @@
 ## TEST sanitizing
 
-context("sanitizing")
+#context("sanitizing")
 
 ## Testing class.check
 ## examples
@@ -177,13 +177,13 @@ test_that("check.dispRity.data works", {
     error <- capture_error(check.dispRity.data("a"))
     expect_equal(error[[1]], "data must be of class matrix or data.frame or list.")
     error <- capture_error(check.dispRity.data(list(matrix(c(1,2)), "a")))
-    expect_equal(error[[1]], "list(matrix(c(1, 2)), \"a\") must be matrix or a list of matrices with the same dimensions and row names.")
+    expect_equal(error[[1]], "list(matrix(c(1, 2)), \"a\") must be matrix or a list of matrices with the same dimensions and unique row names.")
     error2 <- list(matrix(c(1,2)), matrix(c(1,2,3)))
     error <- capture_error(check.dispRity.data(error2))
-    expect_equal(error[[1]], "error2 must be matrix or a list of matrices with the same dimensions and row names.")
+    expect_equal(error[[1]], "error2 must be matrix or a list of matrices with the same dimensions and unique row names.")
     error3 <- list(matrix(c(1,2), dimnames = list(c(1:2), 1)), matrix(c(1,2), dimnames = list(c(3:4), 1)))
     error <- capture_error(check.dispRity.data(error3))
-    expect_equal(error[[1]], "error3 must be matrix or a list of matrices with the same dimensions and row names.")
+    expect_equal(error[[1]], "error3 must be matrix or a list of matrices with the same dimensions and unique row names.")
 
     ## Matrix input
     bob <- matrix(c(1,2))
@@ -229,4 +229,72 @@ test_that("check.dispRity.data works", {
     expect_equal(dim(test[[2]]), c(2,1))
     expect_equal(rownames(test[[1]]), c("1","2"))
     expect_equal(rownames(test[[2]]), c("1","2"))
+})
+
+## Test check.dispRity.tree
+test_that("check.dispRity.tree works", {    
+    ## One tree one data
+    tree <- makeNodeLabel(rtree(5))
+    data <- matrix(0, nrow = 9, ncol = 2, dimnames = list(c(paste0("t", 1:5), paste0("Node", 1:4))))
+    data <- fill.dispRity(make.dispRity(data = check.dispRity.data(data)))
+
+    ## Basic error
+    error <- capture_error(check.dispRity.tree(tree = "tree", data = data))
+    expect_equal(error[[1]], "tree must be of class phylo or multiPhylo.")
+    ## Basic works
+    test <- check.dispRity.tree(tree = tree, data = data)
+    expect_is(test, "multiPhylo")
+    expect_is(test[[1]], "phylo")
+    expect_equal(length(test), 1)
+
+    ## Multiple tree one data
+    tree <- makeNodeLabel(rtree(5))
+    tree <- list(tree, tree)
+    class(tree) <- "multiPhylo"
+    data <- matrix(0, nrow = 9, ncol = 2, dimnames = list(c(paste0("t", 1:5), paste0("Node", 1:4))))
+    # data <- fill.dispRity(make.dispRity(data = check.dispRity.data(data)))
+
+    ## Not all trees have node labels
+    tree_error <- tree
+    tree_error[[1]]$node.label <- NULL
+    error <- capture_error(check.dispRity.tree(tree = tree_error, data = data))
+    expect_equal(error[[1]], "All trees should have node labels or no node labels.")
+    ## multiple trees works
+    test <- check.dispRity.tree(tree = tree, data = data)
+    expect_is(test, "multiPhylo")
+    expect_is(test[[1]], "phylo")
+    expect_equal(length(test), 2)
+
+    ## One tree multiple data
+    tree <- makeNodeLabel(rtree(5))
+    data <- matrix(0, nrow = 9, ncol = 2, dimnames = list(c(paste0("t", 1:5), paste0("Node", 1:4))))
+    data <- fill.dispRity(make.dispRity(data = check.dispRity.data(list(data, data))))
+
+    ## One tree multiple data works
+    test <- check.dispRity.tree(tree = tree, data = data)
+    expect_is(test, "multiPhylo")
+    expect_is(test[[1]], "phylo")
+    expect_equal(length(test), 1)
+
+    ## multiple tree multiple data
+    tree <- makeNodeLabel(rtree(5))
+    tree <- list(tree, tree)
+    class(tree) <- "multiPhylo"
+    data <- matrix(0, nrow = 9, ncol = 2, dimnames = list(c(paste0("t", 1:5), paste0("Node", 1:4))))
+    data <- fill.dispRity(make.dispRity(data = check.dispRity.data(list(data, data))))
+
+    ## multiple tree multiple data works
+    test <- check.dispRity.tree(tree = tree, data = data)
+    expect_is(test, "multiPhylo")
+    expect_is(test[[1]], "phylo")
+    expect_equal(length(test), 2)
+
+    ## Binding works
+    error <- capture_error(check.dispRity.tree(tree = tree[[1]], data = data, bind.trees = TRUE))
+    expect_equal(error[[1]], "The number of matrices and trees must be the same to bind them.")
+    wrong_tree <- tree[[1]]
+    wrong_tree$tip.label[1:2] <- letters[1:2]
+    error <- capture_error(check.dispRity.tree(tree = wrong_tree, data = data))
+    expect_equal(error[[1]], "The data is not matching the tree labels (you can use ?clean.data to match both data and tree).")
+
 })

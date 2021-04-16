@@ -135,7 +135,15 @@ try.get.from.model <- function(model, what) {
     return(NA)
 }
 
-
+## Summarising randtests
+make.randtest.table <- function(data) {
+    ## Get the parameters to plot
+    results <- lapply(lapply(data, function(x) x[c("n", "obs", "rep", "expvar", "pvalue")]), unlist)
+    results_table <- do.call(rbind, results)
+    colnames(results_table) <- gsub("expvar.", "", colnames(results_table))
+    rownames(results_table) <- names(data)
+    return(results_table)
+}
 
 
 

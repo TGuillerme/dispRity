@@ -11,6 +11,7 @@
 \alias{centroids}
 \alias{mode.val}
 \alias{ellipse.volume}
+\alias{edge.length.tree}
 \alias{convhull.surface}
 \alias{convhull.volume}
 \alias{diagonal}
@@ -28,6 +29,8 @@
 \alias{deviations}
 \alias{group.dist}
 \alias{point.dist}
+\alias{projections}
+\alias{projections.tree}
 \title{Disparity metrics}
 \usage{
 dimension.level3.fun(matrix, ...)
@@ -82,18 +85,44 @@ The currently implemented dimension-level 1 metrics are:
 
 The currently implemented dimension-level 2 metrics are:
 \itemize{
-  \item \code{ancestral.dist}: calculates the distance between each tip and node and their ancestral. This function needs either (1) \code{matrix}/\code{list} from \code{\link{nodes.coordinates}}; or a \code{tree} (\code{"phylo"}) and \code{full} (\code{"logical"}) argument to calculate the node coordinates for the direct descendants (\code{full = FALSE}) or all descendants down to the root (\code{full = TRUE}). NOTE: distance is calculated as \code{"euclidean"} by default, this can be changed using the \code{method} argument.
+  \item \code{ancestral.dist}: calculates the distance between each elements coordinates in the matrix and their ancestors' coordinates (if \code{to.root = FALSE}; default) or to the root coordinates (if \code{to.root = TRUE}) for a given \code{tree}. The distance is calculate as Euclidean by default but can be changed through the \code{methods} argument (\code{method = "euclidean"}; default). Note that the matrix must contain data for both tips and nodes in the \code{tree}, otherwise you must provide a matrix to the argument \code{reference.data} that contains them. Note that if the function is used in \code{\link{dispRity}}, both the \code{tree} and \code{reference.data} can be automatically recycled from the \code{dispRity} object (if present).
 
   \item \code{angles}: calculates the angles of the main axis of variation per dimension in a \code{matrix}. The angles are calculated using the least square algorithm from the \code{\link[stats]{lm}} function. The unit of the angle can be changed through the \code{unit} argument (either \code{"degree"} (default), \code{radian} or \code{slope}) and a base angle to measure the angle from can be passed through the \code{base} argument (by default \code{base = 0}, measuring the angle from the horizontal line (not that the \code{base} argument has to be passed in the same unit as \code{unit}). When estimating the slope through \code{\link[stats]{lm}}, you can use the option \code{significant} to only consider significant slopes (\code{TRUE}) or not (\code{FALSE} - default).
 
   \item \code{centroids}: calculates the distance between each row and the centroid of the matrix (Lalibert'{e} 2010). This function can take an optional arguments \code{centroid} for defining the centroid (if missing (default), the centroid of the matrix is used). This argument can be either a subset of coordinates matching the matrix's dimensions (e.g. \code{c(0, 1, 2)} for a matrix with three columns) or a single value to be the coordinates of the centroid (e.g. \code{centroid = 0} will set the centroid coordinates to \code{c(0, 0, 0)} for a three dimensional matrix). NOTE: distance is calculated as \code{"euclidean"} by default, this can be changed using the \code{method} argument.
 
-\item \code{deviations}: calculates the minimal Euclidean distance between each element in and the hyperplane (or line if 2D, or a plane if 3D). You can specify equation of hyperplane of \emph{d} dimensions in the \eqn{intercept + ax + by + ... + nd = 0} format. For example the line \eqn{y = 3x + 1} should be entered as \code{c(1, 3, -1)} or the plane \eqn{x + 2y - 3z = 44} as \code{c(44, 1, 2, -3,)}. If missing the \code{hyperplane} (default) is calculated using a least square regression using a gaussian \code{\link[stats]{glm}}. Extract arguments can be passed to \code{\link[stats]{glm}} through \code{...}. When estimating the hyperplane, you can use the option \code{significant} to only consider significant slopes (\code{TRUE}) or not (\code{FALSE} - default).
+\item \code{deviations}: calculates the minimal Euclidean distance between each element in and the hyperplane (or line if 2D, or a plane if 3D). You can specify equation of hyperplane of \emph{d} dimensions in the \eqn{intercept + ax + by + ... + nd = 0} format. For example the line \eqn{y = 3x + 1} should be entered as \code{c(1, 3, -1)} or the plane \eqn{x + 2y - 3z = 44} as \code{c(44, 1, 2, -3)}. If missing the \code{hyperplane} (default) is calculated using a least square regression using a gaussian \code{\link[stats]{glm}}. Extract arguments can be passed to \code{\link[stats]{glm}} through \code{...}. When estimating the hyperplane, you can use the option \code{significant} to only consider significant slopes (\code{TRUE}) or not (\code{FALSE} - default).
   \item \code{displacements}: calculates the ratio between the distance to the centroid (see \code{centroids} above) and the distance from a reference (by default the origin of the space). The reference can be changed through the \code{reference} argument. NOTE: distance is calculated as \code{"euclidean"} by default, this can be changed using the \code{method} argument.
+
+  \item \code{edge.length.tree}: calculates the edge length from a given tree for each elements present in the matrix. Each edge length is either measured between the element and the root of the tree (\code{to.root = TRUE} ; default) or between the element and its last ancestor (\code{to.root = FALSE}))
+
 
   \item \code{neighbours}: calculates the distance to a neighbour (Foote 1990). By default this is the distance to the nearest neighbour (\code{which = min}) but can be set to any dimension level - 1 function (e.g. \code{which = mean} gives the distance to the most average neighbour). NOTE: distance is calculated as \code{"euclidean"} by default, this can be changed using the \code{method} argument. 
 
   \item \code{pairwise.dist}: calculates the pairwise distance between elements - calls \code{vegdist(matrix, method = method, diag = FALSE, upper = FALSE, ...)} (Foote 1990). The distance type can be changed via the \code{method} argument (see \code{\link[vegan]{vegdist}} - default: \code{method = "euclidean"}). This function outputs a vector of pairwise comparisons in the following order: d(A,B), d(A,C), d(B,C) for three elements A, B and C. NOTE: distance is calculated as \code{"euclidean"} by default, this can be changed using the \code{method} argument.
+
+  \item \code{projections}: projects each element on a vector defined as (\code{point1}, \code{point2}) and measures some aspect of this projection. The different aspects that can be measured are:
+ \itemize{
+     \item \code{measure = "position"} (default), the distance of each element \emph{on} the vector (\code{point1}, \code{point2}). Negative values means the element projects on the opposite direction of the vector (\code{point1}, \code{point2}).
+     \item \code{measure = "distance"}, the euclidean distance of each element \emph{from} the vector (\code{point1}, \code{point2}).
+     \item \code{measure = "degree"}, the angle between the vector (\code{point1}, \code{point2}) and any vector (\code{point1}, \code{element}) in degrees.
+     \item \code{measure = "radian"}, the angle between the vector (\code{point1}, \code{point2}) and any vector (\code{point1}, \code{element}) in radians.
+ }
+By default, \code{point1} is the centre of the space (coordinates \code{0, 0, 0, ...}) and \code{point2} is the centroid of the space (coordinates \code{colMeans(matrix)}). Coordinates for \code{point1} and \code{point2} can be given as a single value to be repeated (e.g. \code{point1 = 1} is translated into \code{point1 = c(1, 1, ...)}) or a specific set of coordinates.
+Furtheremore, by default, the space is scaled so that the vector (\code{point1}, \code{point2}) becomes the unit vector (distance (\code{point1}, \code{point2}) is set to 1; option \code{scale = TRUE}; default). You can use the unit vector of the space using the option \code{scale = FALSE}.
+
+  \item \code{projections.tree}: calculates the \code{projections} metric but drawing the vectors from a phylogenetic tree. This metric can intake any argument from \code{projections} (see above) but for \code{point1} and \code{point2} that are replaced by the argument \code{type}. \code{type} is a \code{vector} or a \code{list} of two elements that designates which vector to draw and can be any pair of the following options (the first element being the origin of the vector and the second where the vector points to):
+     \itemize{
+         \item \code{"root"}: the root of the tree (the first element in tree$node.label);
+         \item \code{"ancestor"}: the element's most recent ancestor;
+         \item \code{"tips"}: the centroid of the tips;
+         \item \code{"nodes"}: the centroid of all the nodes;
+         \item \code{"livings"}: the centroid of the tips the furthest from the root;
+         \item \code{"fossils"}: the centroid of all the tips that are not the furthest from the root;
+         \item any numeric values that can be interpreted as \code{point1} and \code{point2} in \code{\link{projections}};
+         \item or a user defined function that with the inputs \code{matrix} and \code{tree} and \code{row} (the element's ID, i.e. the row number in \code{matrix}). 
+     }
+\emph{NOTE:} the elements to calculate the origin and end points of the vector are calculated by default on the provided input \code{matrix} which can be missing data from the tree if used with \code{\link{custom.subsets}} or \code{\link{chrono.subsets}}. You can always provide the full matrix using the option \code{reference.data = my_matrix}.
 
   \item \code{quantiles}: calculates the quantile range of each axis of the matrix. The quantile can be changed using the \code{quantile} argument (default is \code{quantile = 95}, i.e. calculating the range on each axis that includes 95\% of the data). An optional argument, \code{k.root}, can be set to \code{TRUE} to scale the ranges by using its \eqn{kth} root (where \eqn{k} are the number of dimensions). By default, \code{k.root = FALSE}.
 
@@ -110,6 +139,7 @@ The currently implemented dimension-level 2 metrics are:
 The currently implemented between.groups metrics are:
 \itemize{
    \item \code{group.dist}: calculates the distance between two groups (by default, this is the minimum euclidean vector norm distance between groups). Negative distances are considered as 0. This function must intake two matrices (\code{matrix} and \code{matrix2}) and the quantiles to consider. For the minimum distance between two groups, the 100% quantiles are considered (default: \code{probs = c(0,1)}) but this can be changed to any values (e.g. distance between the two groups accounting based on the 95% CI: \code{probs = c(0.025, 0.975)}; distance between centroids: \code{probs = c(0.5)}, etc...). This function is the linear algebra equivalent of the \code{\link[hypervolume]{hypervolume_distance}} function.
+
 
 \item \code{point.dist}: calculates the distance between \code{matrix} and a point calculated from \code{matrix2}. By default, this point is the centroid of \code{matrix2}. This can be changed by passing a function to be applied to \code{matrix2} through the \code{point} argument (for example, for the centroid: \code{point.dist(..., point = colMeans)}). NOTE: distance is calculated as \code{"euclidean"} by default, this can be changed using the \code{method} argument.
 
@@ -129,14 +159,11 @@ dummy_matrix <- matrix(rnorm(90), 9, 10)
 rand_tree <- rtree(5) ; rand_tree$node.label <- paste0("n", 1:4)
 ## Adding the tip and node names to the matris
 rownames(dummy_matrix) <- c(rand_tree$tip.label, rand_tree$node.label)
-## Calculating the direct ancestral nodes
-direct_anc_centroids <- nodes.coordinates(dummy_matrix, rand_tree, full = FALSE)
-## Calculating all the ancestral nodes
-all_anc_centroids <- nodes.coordinates(dummy_matrix, rand_tree, full = TRUE)
-## Calculating the distances from the direct ancestral nodes
-ancestral.dist(dummy_matrix, nodes.coords = direct_anc_centroids)
-## Calculating the distances from all the ancestral nodes
-ancestral.dist(dummy_matrix, nodes.coords = all_anc_centroids)
+## Calculating the distances to the ancestors
+ancestral.dist(dummy_matrix, tree = rand_tree)
+## Calculating the manhattan distances to the root
+ancestral.dist(dummy_matrix, tree = rand_tree,
+               to.root = TRUE, method = "manhattan")
 
 ## angles
 ## The angles in degrees of each axis
@@ -179,6 +206,19 @@ displacements(dummy_matrix)
 displacements(dummy_matrix, reference = c(1,2,3,4,5,6,7,8,9,10))
 ## displacement ratios from the centre (manhattan distance)
 displacements(dummy_matrix, method = "manhattan")
+
+## edge.length.tree
+## Making a dummy tree with node labels
+dummy_tree <- makeNodeLabel(rtree((nrow(dummy_matrix)/2)+1))
+## Naming the elements in the matrix
+named_matrix <- dummy_matrix
+rownames(named_matrix) <- c(dummy_tree$tip.label,
+                            dummy_tree$node.label)
+## The total edge length of each element in the matrix (to the root)
+edge.length.tree(named_matrix, tree = dummy_tree)
+
+## The edge lengths for each edge leading to the elements in the matrix
+edge.length.tree(named_matrix, tree = dummy_tree, to.root = FALSE)
 
 ## ellipse.volume
 ## Ellipsoid volume of a matrix
@@ -236,6 +276,43 @@ mean(point.dist(dummy_matrix, dummy_matrix2))
 ## The manhattan distance from the rows dummy_matrix
 ## to the standard deviation of dummy_matrix2
 point.dist(dummy_matrix, dummy_matrix2, point = sd, method = "manhattan")
+
+## projections
+## The distances on the vector defined from the centre of
+## the matrix to its centroid (default)
+projections(dummy_matrix)
+## The distances from the vector defined from the third
+## element of the matrix to the point of coordinated
+## c(1,1,1, ...) the matrix to its centroid (default)
+projections(dummy_matrix, measure = "distance",
+            point1 = dummy_matrix[3, ],
+            point2 = 1)
+
+## projections.tree
+## Making a dummy tree with node labels
+dummy_tree <- makeNodeLabel(rtree((nrow(dummy_matrix)/2)+1))
+## Naming the elements in the matrix
+named_matrix <- dummy_matrix
+rownames(named_matrix) <- c(dummy_tree$tip.label,
+                            dummy_tree$node.label)
+## The projection on the vector defined from the root of
+## the tree to the ancestor of each element in the matrix
+projections.tree(named_matrix, dummy_tree,
+                  type = c("root", "ancestor"))
+## The rejection from the vector defined from the centroid
+## of the nodes to the centroids of the tips
+projections.tree(named_matrix, dummy_tree,
+                  type = c("nodes", "tips"),
+                  measure = "distance")
+## A user function that define coordinates based on the 
+## centroid of the three first nodes
+user.fun <- function(matrix, tree, row = NULL) {
+     return(colMeans(matrix[tree$node.label[1:3], ]))
+}
+## The projection on the vector defined by the coordinates
+## 0,0,0 and a user defined function
+projections.tree(named_matrix, dummy_tree,
+                  type = c(0, user.fun))
 
 ## quantiles
 ## The 95 quantiles

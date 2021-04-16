@@ -1,6 +1,6 @@
 #TESTING make.metric
 
-context("make.metric")
+#context("make.metric")
 
 #Loading the data
 #load("test_data.Rda")
@@ -10,8 +10,8 @@ test_that("check.metric works", {
     # expect_error(check.metric(1))
     expect_equal(check.metric(sum), "summary.metric")
     expect_equal(check.metric(var), "class.metric")
-    error <- capture_error(check.metric(check.metric))
-    expect_equal(error[[1]], "Invalid metric.")
+#    error <- capture_error(check.metric(check.metric))
+#    expect_equal(error[[1]], "Invalid metric.")
 })
 
 test_that("Output is correct", {
@@ -61,37 +61,31 @@ test_that("Output is correct", {
         make.metric(lapply)
         )
 
+    expect_equal(make.metric(mean, silent=TRUE), list(type = "level1", tree = FALSE))
+    expect_equal(make.metric(ranges, silent=TRUE), list(type = "level2", tree = FALSE))
+    expect_equal(make.metric(var, silent=TRUE), list(type = "level3", tree = FALSE))
     expect_equal(
-        make.metric(mean, silent=TRUE), "level1"
+        make.metric(function(x)mean(var(x)), silent=TRUE)$type, "level1"
         )
     expect_equal(
-        make.metric(ranges, silent=TRUE), "level2"
+        make.metric(function(x)variances(var(x)), silent=TRUE)$type, "level2"
         )
     expect_equal(
-        make.metric(var, silent=TRUE), "level3"
+        make.metric(function(x)var(var(x)), silent=TRUE)$type, "level3"
         )
     expect_equal(
-        make.metric(function(x)mean(var(x)), silent=TRUE), "level1"
-        )
-    expect_equal(
-        make.metric(function(x)variances(var(x)), silent=TRUE), "level2"
-        )
-    expect_equal(
-        make.metric(function(x)var(var(x)), silent=TRUE), "level3"
-        )
-    expect_equal(
-        make.metric(function(x)sd(variances(var(x))), silent=TRUE), "level1"
+        make.metric(function(x)sd(variances(var(x))), silent=TRUE)$type, "level1"
         )
 
     ## Same with data.dim
     expect_equal(
-        make.metric(function(x)variances(var(x)), silent=TRUE, data.dim = c(3, 2)), "level2"
+        make.metric(function(x)variances(var(x)), silent=TRUE, data.dim = c(3, 2))$type, "level2"
         )
     expect_equal(
-        make.metric(function(x)var(var(x)), silent=TRUE, data.dim = c(33, 5)), "level3"
+        make.metric(function(x)var(var(x)), silent=TRUE, data.dim = c(33, 5))$type, "level3"
         )
     expect_equal(
-        make.metric(function(x)sd(variances(var(x))), silent=TRUE, data.dim = c(3, 10)), "level1"
+        make.metric(function(x)sd(variances(var(x))), silent=TRUE, data.dim = c(3, 10))$type, "level1"
         )
 
     expect_equal(capture.output(make.metric(var)),
@@ -110,19 +104,22 @@ test_that("Output is correct", {
     between.groups.metric <- function(matrix, matrix2) return(42)
     between.groups.metric2 <- function(matrix, matrix2, option = TRUE) return(c(1,2,3,4))
 
-    expect_equal(make.metric(between.groups.metric, silent = TRUE), "level1")
-    expect_equal(make.metric(between.groups.metric, silent = TRUE, check.between.groups = TRUE), list("type" = "level1", "between.groups" = TRUE))
-    expect_equal(make.metric(between.groups.metric2, option = FALSE, silent = TRUE), "level2")
-    expect_equal(make.metric(between.groups.metric2, option = "bla", silent = TRUE, check.between.groups = TRUE), list("type" = "level2", "between.groups" = TRUE))
-    expect_equal(make.metric(mean, silent = TRUE, check.between.groups = TRUE), list("type" = "level1", "between.groups" = FALSE))
+    expect_equal(make.metric(between.groups.metric, silent = TRUE)$type, "level1")
+    expect_equal(make.metric(between.groups.metric, silent = TRUE, check.between.groups = TRUE), list("type" = "level1", "between.groups" = TRUE, "tree" = FALSE))
+    expect_equal(make.metric(between.groups.metric2, option = FALSE, silent = TRUE)$type, "level2")
+    expect_equal(make.metric(between.groups.metric2, option = "bla", silent = TRUE, check.between.groups = TRUE), list("type" = "level2", "between.groups" = TRUE, "tree" = FALSE))
+    expect_equal(make.metric(mean, silent = TRUE, check.between.groups = TRUE), list("type" = "level1", "between.groups" = FALSE, "tree" = FALSE))
 
     ## Metrics with tree or phy argument
     between.groups.metric <- function(matrix, matrix2, tree = TRUE) return(c(1,2,3,4))
     between.groups.metric2 <- function(matrix, matrix2, phy = TRUE) return(c(1,2,3,4))
     normal.metric <- function(matrix, tree) return(42)
     normal.metric2 <- function(matrix, phy) return(42)
-    expect_equal(make.metric(normal.metric, tree = rtree(5), silent = TRUE), "level1")
-    expect_equal(make.metric(normal.metric2, phy = rtree(5), silent = TRUE), "level1")
-    expect_equal(make.metric(between.groups.metric, tree = rtree(5), silent = TRUE, check.between.groups = TRUE), list("type" = "level2", "between.groups" = TRUE))
-    expect_equal(make.metric(between.groups.metric2, phy = rtree(5), silent = TRUE, check.between.groups = TRUE), list("type" = "level2", "between.groups" = TRUE))
+    expect_equal(make.metric(normal.metric, tree = rtree(5), silent = TRUE), list(type = "level1", tree = TRUE))
+    expect_equal(make.metric(normal.metric2, phy = rtree(5), silent = TRUE), list(type = "level1", tree = FALSE))
+    expect_equal(make.metric(between.groups.metric, tree = rtree(5), silent = TRUE, check.between.groups = TRUE), list("type" = "level2", "between.groups" = TRUE, tree = TRUE))
+    expect_equal(make.metric(between.groups.metric2, phy = rtree(5), silent = TRUE, check.between.groups = TRUE), list("type" = "level2", "between.groups" = TRUE, tree = FALSE))
+    expect_equal(make.metric(normal.metric, silent = TRUE), list(type = "level1", tree = TRUE))
+    expect_equal(make.metric(normal.metric2, silent = TRUE), list(type = "level1", tree = FALSE))
+    
 })

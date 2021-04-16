@@ -17,47 +17,47 @@ make.null.model <- function(data, replicates, null.distrib, null.args, null.cor,
         if(is.null(args)){
                 null_models_result <- replicate(replicates, summary(dispRity(
                         space.maker(nrow(data$matrix[[1]]),
-                                    dimensions = data$call$dimensions,
+                                    dimensions = length(data$call$dimensions),
                                     distribution = null.distrib,
                                     arguments = null.args,
                                     cor.matrix = null.cor,
                                     scree = null.scree),
-                            metric = metric, dimensions = data$call$dimensions),
+                            metric = metric, dimensions = length(data$call$dimensions)),
                     cent.tend = mean, quantiles = 1)$obs)
         } else {
                 null_models_result <- replicate(replicates, summary(dispRity(
                         space.maker(nrow(data$matrix[[1]]),
-                                    dimensions = data$call$dimensions,
+                                    dimensions = length(data$call$dimensions),
                                     distribution = null.distrib,
                                     arguments = null.args,
                                     cor.matrix = null.cor,
                                     scree = null.scree),
-                            metric = metric, dimensions = data$call$dimensions, args),
+                            metric = metric, dimensions = length(data$call$dimensions), args),
                     cent.tend = mean, quantiles = 1)$obs)        }
     } else {
         if(is.null(args)) {
             null_models_result <- replicate(replicates, summary(dispRity(
                     scale(
                         space.maker(nrow(data$matrix[[1]]),
-                                    dimensions = data$call$dimensions,
+                                    dimensions = length(data$call$dimensions),
                                     distribution = null.distrib,
                                     arguments = null.args,
                                     cor.matrix = null.cor,
                                     scree = null.scree)
                         ),
-                    metric = metric, dimensions = data$call$dimensions),
+                    metric = metric, dimensions = length(data$call$dimensions)),
             cent.tend = mean, quantiles = 1)$obs)
         } else {
             null_models_result <- replicate(replicates, summary(dispRity(
                     scale(
                         space.maker(nrow(data$matrix[[1]]),
-                                    dimensions = data$call$dimensions,
+                                    dimensions = length(data$call$dimensions),
                                     distribution = null.distrib,
                                     arguments = null.args,
                                     cor.matrix = null.cor,
                                     scree = null.scree)
                         ),
-                    metric = metric, dimensions = data$call$dimensions, args),
+                    metric = metric, dimensions = length(data$call$dimensions), args),
             cent.tend = mean, quantiles = 1)$obs)
         }
     }

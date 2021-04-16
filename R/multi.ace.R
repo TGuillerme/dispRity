@@ -14,6 +14,7 @@
 #' @param parallel \code{logical}, whether to use parallel algorithm (\code{TRUE}) or not (\code{FALSE} - default).
 #' @param output optional, see Return section below.
 #' @param castor.options optional, a named list of options to be passed to function called by \code{\link[castor]{asr_mk_model}}.
+#' @param estimation.details optional, whether to also return the details for each estimation as returned by \code{\link[castor]{asr_mk_model}}. This argument can be left \code{NULL} (default) or be any combination of the elements returned by \code{\link[castor]{asr_mk_model}} (e.g. \code{c("loglikelihood", "transition_matrix")}).
 #' 
 #' @details
 #' 
@@ -51,12 +52,12 @@
 #' @examples
 #' set.seed(42)
 #' ## A simple example:
-#' ## A random tree with 15 tips
-#' tree <- rcoal(15)
+#' ## A random tree with 10 tips
+#' tree <- rcoal(10)
 #' ## Setting up the parameters
 #' my_rates = c(rgamma, rate = 10, shape = 5)
 #' 
-#' ## A random Mk matrix (15*50)
+#' ## A random Mk matrix (10*50)
 #' matrix_simple <- sim.morpho(tree, characters = 50, model = "ER", rates = my_rates,
 #'                             invariant = FALSE)
 #' 
@@ -65,8 +66,8 @@
 #' ancestral_states[1:5, 1:5]
 #' 
 #' ## A more complex example
-#' ## Create a multiple list of 10 trees
-#' multiple_trees <- rmtree(10, 15)
+#' ## Create a multiple list of 5 trees
+#' multiple_trees <- rmtree(5, 10)
 #' 
 #' ## Modify the matrix to contain missing and special data
 #' matrix_complex <- matrix_simple
@@ -88,7 +89,7 @@
 #' my_spec_behaviours$weirdtoken   <- function(x,y) return(c(1,2))
 #' 
 #' ## Create a random branch length modifier to apply to each tree
-#' branch_lengths <- rnorm(28)^2
+#' branch_lengths <- rnorm(18)^2
 #' 
 #' ## Setting a list of model ("ER" for the 25 first characters and then "SYM")
 #' my_models <- c(rep("ER", 25), rep("SYM", 25))
@@ -125,7 +126,7 @@
 #' @author Thomas Guillerme
 #' @export
 
-multi.ace <- function(data, tree, models = "ER", threshold = TRUE, special.tokens, special.behaviours, brlen.multiplier, verbose = FALSE, parallel = FALSE, output, castor.options) {
+multi.ace <- function(data, tree, models = "ER", threshold = TRUE, special.tokens, special.behaviours, brlen.multiplier, verbose = FALSE, parallel = FALSE, output, castor.options, estimation.details = NULL) {
 
     match_call <- match.call()
 
@@ -356,6 +357,13 @@ multi.ace <- function(data, tree, models = "ER", threshold = TRUE, special.token
         }
     }
 
+    ## Check the estimation details
+    if(!is.null(estimation.details)) {
+        ## The return args from castor::asr_mk_model (1.6.6)
+        return_args <- c("success", "Nstates", "transition_matrix", "loglikelihood", "ancestral_likelihoods")
+        check.method(estimation.details, return_args, msg = "estimation.details")
+    }
+
     ## Convert the potential missing data
     if(verbose) cat("Preparing the data:.")
 
@@ -367,9 +375,7 @@ multi.ace <- function(data, tree, models = "ER", threshold = TRUE, special.token
     characters_states <- lapply(characters, function(char) sort(unique(na.omit(unlist(char)))))
     if(verbose) cat(".")
 
-
-
-    # Find invariant characters
+    ## Find invariant characters
     invariants <- which(lengths(characters_states) < 2)
     if(length(invariants) > 0) {
 
@@ -400,7 +406,7 @@ multi.ace <- function(data, tree, models = "ER", threshold = TRUE, special.token
 
     ## Set up the arguments for one tree
     args_list <- mapply(make.args, characters_tables, characters_states, models,
-                        MoreArgs = list(castor.options, cores), SIMPLIFY = FALSE)
+                        MoreArgs = list(castor.options, cores, estimation.details), SIMPLIFY = FALSE)
 
     ## Add up the tree arguments
     add.tree <- function(tree, args_list) {
@@ -458,6 +464,9 @@ multi.ace <- function(data, tree, models = "ER", threshold = TRUE, special.token
         ## Running the ACE for each tree
         results_out <- lapply(tree_args_list, one.tree.ace, special.tokens, invariants, characters_states, threshold.type, threshold, invariant_characters_states, verbose)
     }
+    ## Separating results and details
+    details_out <- lapply(results_out, `[[`, 2)
+    results_out <- lapply(results_out, `[[`, 1)
 
     ## Output a matrix
     make.matrix <- function(results) {
@@ -485,12 +494,20 @@ multi.ace <- function(data, tree, models = "ER", threshold = TRUE, special.token
         #dispRity        = return(list("tips" = matrix, "nodes" = output_matrix))
         )
 
-    if(length(tree) == 1) {
-        return(output_return[[1]])
+    ## Results out
+    if(is.null(estimation.details)) {
+        if(length(tree) == 1) {
+            return(output_return[[1]])
+        } else {
+            return(output_return)
+        }
     } else {
-        return(output_return)
+        if(length(tree) == 1) {
+            return(list(estimations = output_return[[1]], details = details_out[[1]]))
+        } else {
+            return(list(estimations = output_return, details = details_out))
+        }        
     }
-
 }
 
 

@@ -1,6 +1,6 @@
 #TEST space.maker
 
-context("space.maker")
+#context("space.maker")
 
 #Testing sample.distribution
 test_that("sample.distribution works", {

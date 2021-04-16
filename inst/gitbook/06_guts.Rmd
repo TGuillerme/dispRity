@@ -93,6 +93,27 @@ str(matrix.dispRity(disparity, "50"))
 str(matrix.dispRity(disparity, subsets = 1, bootstrap = 3, rarefaction = 2))
 ```
 
+
+#### `n.subsets`
+
+This function simply counts the number of subsets in a `dispRity` object.
+
+
+```{r}
+## How many subsets are in this object?
+n.subsets(disparity)
+```
+
+#### `size.subsets`
+
+This function tells the number of elements in each subsets of a `dispRity` object.
+
+
+```{r}
+## How many elements are there in each subset?
+size.subsets(disparity)
+```
+
 #### `get.subsets`
 
 This function creates a dispRity object that contains only elements from one specific subsets.
@@ -160,6 +181,20 @@ head(summary(sort(disparity, sort = c(7, 1, 3, 4, 5, 2, 6))))
 ```
 
 
+#### `get.tree` `add.tree` and `remove.tree`
+
+These functions allow to manipulate the potential tree components of `dispRity` objects.
+
+```{r, eval = FALSE}
+## Getting the tree component of a dispRity object
+get.tree(disparity)
+
+## Removing the tree
+remove.tree(disparity)
+
+## Adding a tree
+add.tree(disparity, tree = BeckLee_tree)
+```
 
 
 ## The `dispRity` object content {#disprity-object}

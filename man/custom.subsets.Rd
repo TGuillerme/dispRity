@@ -7,20 +7,14 @@
 \alias{cust.subsets}
 \title{Separating data into custom subsets.}
 \usage{
-custom.subsets(data, group)
+custom.subsets(data, group, tree)
 }
 \arguments{
 \item{data}{A \code{matrix} or a \code{list} of matrices.}
 
-\item{group}{Either a \code{list} of row numbers or names to be used as different groups or a \code{data.frame} with the same \eqn{k} elements as in \code{data} as rownames. If \code{group} is a \code{phylo} object matching \code{data}, groups are automatically generated as clades.}
-}
-\value{
-This function outputs a \code{dispRity} object containing:
-\item{matrix}{the multidimensional space (a \code{matrix}).}
-\item{call}{A \code{list} containing the called arguments.}
-\item{subsets}{A \code{list} containing matrices pointing to the elements present in each subsets.}
+\item{group}{Either a \code{list} of row numbers or names to be used as different groups or a \code{data.frame} with the same \eqn{k} elements as in \code{data} as rownames. If \code{group} is a \code{phylo} object matching \code{data}, groups are automatically generated as clades (and the tree is attached to the resulting \code{dispRity} object).}
 
-Use \link{summary.dispRity} to summarise the \code{dispRity} object.
+\item{tree}{Optional, a \code{phylo} or \code{multiPhylo} object to attach to the resulting \code{dispRity} data.}
 }
 \description{
 Splits the data into a customized subsets list.

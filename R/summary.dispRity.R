@@ -69,7 +69,7 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
     #Must be a function
     check.class(cent.tend, "function")
     #The function must work
-    if(make.metric(cent.tend, silent = TRUE) != "level1") {
+    if(make.metric(cent.tend, silent = TRUE)$type != "level1") {
         stop.call(match_call$cent.tend, " cannot be used for measuring the central tendency.")
     }
     ## Update match_call if argument is empty
@@ -134,7 +134,7 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
             return(summary_results)
         }
         
-        # Model sim summary
+        ## Model sim summary
         if(is(data, "model.sim")) {
 
             # if(recall){
@@ -158,7 +158,7 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
             return(output_table)
         }
 
-
+        ## test.metric summary
         if(is(data, "test.metric")) {
 
             ## Summary table
@@ -204,6 +204,12 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
             return(all_results)
         }
 
+        ## randtest summary
+        if(is(data, "randtest")) {
+            table <- make.randtest.table(data)
+            return(round(table, digits = ifelse(digits== "default", 2, digits)))
+        }
+
         ## No dual class summary available
         stop.call("", paste0("No specific summary for combined class \"dispRity\" and \"", class(data)[2], "\"."))
     } 
@@ -240,6 +246,9 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
 
     ## Change the names and subsets if between groups
     if(data$call$disparity$metrics$between.groups) {
+
+        names(elements) <- gsub(":", ";", names(elements))
+
         ## Groups names
         names <- names(data$disparity)
 

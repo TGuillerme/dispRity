@@ -1,4 +1,4 @@
-context("test.metric")
+#context("test.metric")
 
 ## Test
 test_that("test.metric works", {
@@ -25,11 +25,12 @@ test_that("test.metric works", {
 
 
     ## A simple test with only 1 replicate for two shifts (random and size):
-    test <- test.metric(space, metric = c(prod, ranges), replicates = 1, shifts = c("random", "size")) 
+    test <- test.metric(space, metric = c(prod, ranges), replicates = 1, shifts = c("random", "size"), shift.options = list(tunning = c(max = 1000000)))
     expect_is(test, c("dispRity", "test.metric"))
-    expect_equal(names(test), c("call", "results", "models"))
+    expect_equal(names(test), c("call", "results", "models", "saved_steps"))
     expect_equal(names(test$results), c("random", "size.inner", "size.outer"))
     expect_is(test$results[[1]], "data.frame")
+    expect_null(test$saved_steps)
 
     ## Print works
     print_out <- capture.output(test)
@@ -44,8 +45,6 @@ test_that("test.metric works", {
     ## Verbose works
     output <- capture_messages(test <- test.metric(space, metric = c(prod, ranges), replicates = 1, shifts = c("random", "size"), verbose = TRUE))
     expect_equal(output, c("Running the space reductions:", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "Done.\n"                      , "Calculating disparity:", ".", ".", ".", "Done.\n"))
-
-
 
     ## Summarising basic works
     expect_equal(dim(summary(test)), c(3, 10))
@@ -64,7 +63,7 @@ test_that("test.metric works", {
     test <- test.metric(space, metric = c(sum, variances), steps = 5,
                         shifts = c("random", "size", "density", "position"), verbose = FALSE)
     expect_is(test, c("dispRity", "test.metric"))
-    expect_equal(names(test), c("call", "results", "models"))
+    expect_equal(names(test), c("call", "results", "models", "saved_steps"))
     expect_equal(names(test$results), c("random", "size.inner", "size.outer", "density.higher", "density.lower", "position.top", "position.bottom"))
     expect_is(test$results[[1]], "data.frame")
     expect_is(test$models[[1]], "lm")
@@ -94,7 +93,7 @@ test_that("test.metric works", {
     ## Applying the test directly on a disparity object
     test <- test.metric(disparity, shifts = "evenness", verbose = FALSE)
     expect_is(test, c("dispRity", "test.metric"))
-    expect_equal(names(test), c("call", "results", "models"))
+    expect_equal(names(test), c("call", "results", "models", "saved_steps"))
     expect_equal(names(test$results), c("evenness.flattened", "evenness.compacted"))
     expect_is(test$results[[1]], "data.frame")
     expect_is(test$models[[1]], "lm")
@@ -118,4 +117,26 @@ test_that("test.metric works", {
 
     ## Plot works
     expect_null(plot(test))
+
+    ## Saving the results for visualisation
+    space <- space.maker(300, 2, runif)
+    
+    ## Re-running the test on two shifts with data saving for visualisation
+    test <- test.metric(space, metric = c(sum, variances), shifts = c("random", "size"), save.steps = TRUE)
+    expect_is(test$saved_steps[[1]], "dispRity")
+
+    ## Visualising the tests results and display the shifts visualisation
+    expect_null(plot(test))
+
+    error <- capture_error(plot(test, specific.args = list(visualise.steps = c(1, 11, 12))))
+    expect_equal(error[[1]], "Impossible to display the steps 11, 12 because the test only contains 10 steps.")
+    test <- test.metric(space, metric = c(sum, variances), shifts = c("density", "size"), save.steps = TRUE)
+    expect_null(plot(test))
+
+    ## Visualising the tests results with several specific options
+    expect_null(plot(test,
+         specific.args = list(visualise.steps = c(1,4,5))))
+
+
+
 })

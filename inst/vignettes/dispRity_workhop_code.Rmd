@@ -22,6 +22,7 @@ In this workshop I will assume you are already familiar with basic `R`. The basi
  * What is an object's class (e.g. the class `"matrix"` or `"phylo"`)
  * What is a function (e.g. the function `mean(c(1,2))`)
  * How to access function manuals (e.g. `?mean`)
+ * How to input data in `R` (e.g. using `read.csv`)
 
 Let's get into it.
 First we'll want to download and install the package:
@@ -76,7 +77,8 @@ clean.data(my_matrix, my_tree)
 
 ## Disparity per groups analysis
 
-This is the code for the simple disparity per group analysis:
+This is the code for the simple disparity per group analysis.
+The hypothesis we will test will be: "Is the crown mammal's morphospace bigger than stem mammal's one?"
 
 ```{r}
 ## Creating a list of groups
@@ -87,7 +89,23 @@ trait_space <- custom.subsets(my_matrix, group = my_groups)
 
 ## Bootstrapping
 trait_space_bs <- boot.matrix(trait_space)
+```
 
+### Which disparity metric do we need?
+
+This is a tricky one and depends on your question, but thankfully we can ask [`moms`](https://tguillerme.shinyapps.io/moms/) to help us!
+Check out the documentation [here](https://rawcdn.githack.com/TGuillerme/moms/master/inst/moms_vignette.html).
+
+For that we can simply upload our trait space in `moms` and test our different metrics to measure our different hypotheses.
+
+```{r}
+## Saving our space as a matrix (with column names and row names)
+write.csv(my_matrix, file = "moms_space.csv")
+```
+
+Here for our hypotheses, we are interested in volume or size of the trait space occupied (i.e. "Is the crown mammal's morphospace bigger than stem mammal's one?") and we can see that the sum of variance metric works relatively well to capture changes in volume.
+
+```{r}
 ## Measuring disparity
 disparity_groups <- dispRity(trait_space_bs, metric = c(sum, variances))
 
@@ -113,7 +131,7 @@ knitr::kable(summary(disparity_groups))
 
 ### Making up some node data
 
-This section here will generate some data for your nodes in the tree. _DO NOT TRY THIS AT HOME_. Or, less patronisingly, we will use some within-PCA ancestral states estimations, there are some cases when this method is totally valid but this is not always the case. You can find our opinion on this paper [Section 3-d](https://royalsocietypublishing.org/doi/full/10.1098/rsbl.2020.0199#d1e934). I will personally advice against this technique in publications (but you should do what you think is best for your question and data - don't list to me).
+This section here will generate some data for your nodes in the tree. _DO NOT TRY THIS AT HOME_. Or, less patronisingly, we will use some within-PCA ancestral states estimations, there are some cases when this method is totally valid but this is not always the case. You can find our opinion on this paper [Section 3-d](https://royalsocietypublishing.org/doi/full/10.1098/rsbl.2020.0199#d1e934). I will personally be really cautious about using this approach if you don't know what you are doing (but you should do what you think is best for your question and data - don't list to me).
 
 ```{r}
 ## Wrapping function for running a quick and dirty ancestral character estimation
@@ -253,8 +271,71 @@ The package also provides a range of functions for modifying `dispRity` objects 
 
 The package also provides some other functions that I find useful in disparity analysis but are not totally linked to disparity analysis. For example, a function for removing zero branch lengths from trees (`remove.zero.brlen`) or a function to calculate various matrix distance metrics (`char.diff`). [More info here](https://raw.githack.com/TGuillerme/dispRity/master/inst/gitbook/_book/other-functionalities.html).
 
+### Using the `Claddis` package with `dispRity`
+
+Some of you might be familiar with Graeme Lloyd's rich [`Claddis`](https://github.com/graemetlloyd/Claddis) package and might want to use that in your analysis.
+Great news, there is a simple function in `dispRity` that can convert `Claddis` objects into `dispRity` objects `Claddis.ordination`.
+The way both me and Graeme see the synergy between both packages is that you can do a lot of analyses before measuring disparity in the `Claddis` package (e.g. ordinating data, measuring distance matrices, looking at rates, etc...) and then export the trait space generated in `Claddis` in `dispRity` for the analyses involving disparity metrics.
+Of course you do you and you can mix and match your analyses and your packages the way you want.
+
+For those that don't use/know `Claddis` , here is a quick pipeline on how to analyse your data starting from a cladistic matrix:
+
+
+```{r}
+library(Claddis) # based on v0.6.3 or higher
+## previous version of Claddis were quite different
+## and won't work here
+```
+
+You can either input your own nexus matrix:
+
+```{r, eval = FALSE}
+## Reading your cladistic (NEXUS) matrix
+my_nexus <- read_nexus_matrix(file_name)
+```
+
+Or a matrix already present in `R` with species as rows and characters as columns:
+
+```{r}
+## Create random 10-by-50 matrix containing NAs (inapplicable)
+## polymorphisms (&) and missing data ("")
+character_taxon_matrix <- matrix(sample(c("0", "1", "0&1", NA, ""), 
+                                        500,replace = TRUE ),
+                                nrow = 10, ncol = 50)
+rownames(character_taxon_matrix) <- LETTERS[1:10]
+
+## Reformat for use elsewhere in Claddis:
+my_nexus <- build_cladistic_matrix(character_taxon_matrix)
+```
+
+You can then measure your distance matrix anyway you want (e.g. using Graeme's MORD distance) and then ordinate the distance matrix using a PCoA (NMDS):
+
+```{r}
+## Calculate morphological distances
+mord_distances <- calculate_morphological_distances(my_nexus)
+
+## Ordinating the distances
+ordinated_distances <- cmdscale(mord_distances$distance_matrix)
+```
+
+There is much more the the distance and ordination methods and I suggest you check out directly [Graeme's paper](https://academic.oup.com/biolinnean/article/118/1/131/2440368?login=true) for more info.
+Regardless you can then feed the ordinated matrix directly into dispRity:
+
+```{r}
+## Calculating the sum of variances:
+dispRity(ordinated_distances, metric = c(sum, variances))
+```
+
+Alternatively, you can do all the pipeline automatically using the `Claddis.ordination` function:
+
+```{r}
+## Running the ordination automatically to create a dispRity object
+dispRity(Claddis.ordination(my_nexus), metric = c(sum, variances))
+```
+
 ## What's next?
 
 The `dispRity` package is constantly updated with new functionalities, bug fixes and improved functions. You can follow the development of the package by following me on github ([TGuillerme](https://github.com/TGuillerme) - I also develop other ecology-evolution packages) or twitter ([@TGuillerme](https://twitter.com/TGuillerme) - I also tweet about other work related stuff).
 You can check what will be happening in the next CRAN version of the package by checking the [NEWS.md](https://github.com/TGuillerme/dispRity/blob/master/NEWS.md) on the master branch.
 And of course, you are more than welcome to [contact](mailto:guillert@tcd.ie) me if you have suggestions, ideas or wishes for improvements!
+

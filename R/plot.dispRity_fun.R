@@ -20,11 +20,11 @@ get.plot.params <- function(data, data_params, cent.tend, quantiles, rarefaction
     ## Set up the plotting data
     ## Summarise the data
     if(is.null(data_params$model.sim)) {
-        if((!is.na(data$call$subsets["trees"])) && (as.numeric(data$call$subsets["trees"]) > 1)) {
+        # if((!is.na(data$call$subsets["trees"])) && (as.numeric(data$call$subsets["trees"]) > 1)) {
+        #     summarised_data <- summary.dispRity(data, quantiles = quantiles, cent.tend = cent.tend, digits = 5, na.rm = TRUE)
+        # } else {
             summarised_data <- summary.dispRity(data, quantiles = quantiles, cent.tend = cent.tend, digits = 5, na.rm = TRUE)
-        } else {
-            summarised_data <- summary.dispRity(data, quantiles = quantiles, cent.tend = cent.tend, digits = 5)
-        }
+        # }
     } else {
         summarised_data <- summary.dispRity(data, quantiles = quantiles, cent.tend = cent.tend, digits = 5)
         ## Making a fake obs column
@@ -660,10 +660,13 @@ plot.preview <- function(data, specific.args, ...) {
     gg.color.hue <- function(n) {
         grDevices::hcl(h = seq(15, 375, length = n + 1), l = 65, c = 100)[1:n]
     }
+    make.transparent <- function(colour, levels) {
+        grDevices::adjustcolor(colour, alpha.f = (1/levels) + 1/3)
+    }
 
     ## Set up the specific args
     if(is.null(specific.args$matrix)) {
-        specific.args$matrix <- 1
+        specific.args$matrix <- c(1:length(data$matrix))
     }
     if(is.null(specific.args$dimensions)) {
         specific.args$dimensions <- c(1,2)
@@ -680,16 +683,28 @@ plot.preview <- function(data, specific.args, ...) {
             legend_args <- specific.args$legend
         }
     }
+    if(is.null(specific.args$tree) || is.null(data$tree[[1]])) {
+        ## Don't plot trees
+        plot_trees <- FALSE
+    } else {
+        if(is(specific.args$tree, "logical")) {
+            ## Toggle plot_trees
+            plot_trees <- specific.args$tree
+            if(plot_trees) {
+                ## Select the trees to plot
+                specific.args$tree <- 1:length(data$tree)
+            }
+        } else {
+            ## Specific args must be the specific trees to plot
+            plot_trees <- TRUE
+        }
+    }
 
     ## Capturing the dots options
-    plot_args <- list(...)
-
-    ## Setting the dimensions
-    plot_args$x <- data$matrix[[specific.args$matrix]][, specific.args$dimensions[1]]
-    plot_args$y <- data$matrix[[specific.args$matrix]][, specific.args$dimensions[2]]
+    plot_args <- list(x = NULL, y = NULL, ...)
 
     ## Getting the loadings
-    loading <- apply(data$matrix[[specific.args$matrix]], 2, var, na.rm = TRUE)
+    loading <- apply(do.call(rbind, lapply(data$matrix[specific.args$matrix], function(matrix) apply(matrix, 2, var, na.rm = TRUE))), 2, mean)
     loading <- round(loading/sum(loading)*100, 2)
 
     ## Setting the labels
@@ -701,17 +716,12 @@ plot.preview <- function(data, specific.args, ...) {
     }
 
     ## Setting plot limits
-    plot_lim <- range(as.vector(c(data$matrix[[specific.args$matrix]][, specific.args$dimensions])))
+    plot_lim <- range(unlist(lapply(data$matrix[specific.args$matrix], function(matrix, dim) c(matrix[, dim]), dim = specific.args$dimensions)))
     if(is.null(plot_args$xlim)) {
         plot_args$xlim <- plot_lim
     }
     if(is.null(plot_args$ylim)) {
         plot_args$ylim <- plot_lim
-    }
-
-    ## Setting the pch
-    if(is.null(plot_args$pch)) {
-        plot_args$pch <- 19
     }
 
     ## Get the number of colour groups
@@ -731,18 +741,93 @@ plot.preview <- function(data, specific.args, ...) {
         }
     }
 
-    ## Make a colour classifier
-    col_order <- plot_args$col
-    if(n_groups > 1) {
-        classifier <- rep(NA, nrow(data$matrix[[specific.args$matrix]]))
-        for(class in 1:n_groups) {
-            classifier[data$subsets[[class]]$elements[,1]] <- class
-        }
-        plot_args$col <- plot_args$col[classifier]
+    ## Setting the pch
+    if(is.null(plot_args$pch)) {
+        plot_args$pch <- 19
+    }
+    if(length(plot_args$pch) != n_groups) {
+        plot_args$pch <- rep(plot_args$pch, n_groups)
     }
 
-    ## Plot the results
+    ## Make a colour and pch classifier
+    col_order <- plot_args$col
+    pch_order <- plot_args$pch
+    if(n_groups > 1) {
+        ## Get the list of subsets
+        subsets <- unlist(data$subsets, recursive = FALSE)
+        ## Make an empty classifier
+        classifier <- rep(NA, nrow(data$matrix[[1]]))
+        for(class in 1:n_groups) {
+            ## Store the selected subsets in the classifier (potentially overriding)
+            if(dim(subsets[[1]])[2] == 1) {
+                classifier[c(subsets[[class]])] <- class 
+            } else {
+                classifier[c(elements.sampler(subsets[[class]]))] <- class
+            }
+        }
+        plot_args$col <- plot_args$col[classifier]
+        plot_args$pch <- plot_args$pch[classifier]
+    }
+
+    ## Plot the empty plot
     do.call(plot, plot_args)
+
+    ## Plot the trees
+    if(plot_trees) {
+        ## Plotting one edge
+        plot.edge <- function(one_edge, points_data, params) {
+            params$x <- points_data[one_edge, 1] 
+            params$y <- points_data[one_edge, 2] 
+            do.call(lines, params)
+        }
+
+        ## Get the lines arguments
+        lines_args <- plot_args
+        lines_args$col <- "grey"
+        if(length(specific.args$tree) > 1) {
+            lines_args$col <- make.transparent(lines_args$col, levels = length(specific.args$tree))
+        }
+        if(is.null(lines_args$lwd)) {
+            lines_args$lwd <- 1
+        }
+        if(is.null(lines_args$lty)) {
+            lines_args$lty <- 1
+        }
+
+        ## Plotting each tree
+        for(one_tree in specific.args$tree) {
+
+            ## Select the right data
+            if(length(data$matrix) == length(specific.args$tree)) {
+                data_matrix <- data$matrix[[one_tree]]
+            } else {
+                data_matrix <- data$matrix[[1]]
+            }
+
+            ## Selecting the origin points for the tree
+            points_data <- data_matrix[, specific.args$dimensions][c(data$tree[[one_tree]]$tip.label, data$tree[[one_tree]]$node.label), ] 
+            ## Plotting all the edges
+            apply(data$tree[[one_tree]]$edge, 1, plot.edge,
+                  points_data = points_data,
+                  params = lines_args)
+        }
+    }
+
+    ## Plot the points
+    for(matrix in specific.args$matrix) {
+        point_args <- plot_args
+        ## Transparentize the colour
+        if(length(specific.args$matrix) > 1) {
+            point_args$col <- make.transparent(point_args$col, levels = length(specific.args$matrix)*2)
+        }
+        ## Add the points per matrix
+        point_args$x <- data$matrix[[specific.args$matrix[matrix]]][, specific.args$dimensions[1]]
+        point_args$y <- data$matrix[[specific.args$matrix[matrix]]][, specific.args$dimensions[2]]
+        ## Call the points
+        do.call(points, point_args)
+    }
+
+    ## Plot the legend
     if(n_groups > 1 && plot_legend) {
 
         ## Set the legend arguments
@@ -756,7 +841,7 @@ plot.preview <- function(data, specific.args, ...) {
             legend_args$col <- col_order
         }
         if(is.null(legend_args$pch)) {
-            legend_args$pch <- plot_args$pch
+            legend_args$pch <- pch_order
         }
         if(is.null(legend_args$cex)) {
             legend_args$cex <- 0.666
@@ -893,7 +978,7 @@ plot.dtt <- function(data, quantiles, cent.tend, density, ...) {
         ## Check the central tendency
         check.class(cent.tend, "function")
         ## The function must work
-        if(make.metric(cent.tend, silent = TRUE) != "level1") {
+        if(make.metric(cent.tend, silent = TRUE)$type != "level1") {
             stop.call("", "cent.tend argument must be a function that outputs a single numeric value.")
         }
 
@@ -1021,17 +1106,65 @@ plot.test.metric <- function(data, specific.args, ...) {
         }
     }
 
+    ## Detect whether to plot the shift steps or not
+    shift_plots <- !is.null(data$saved_steps)
+    if(shift_plots) {
+        ## Find which steps to plot
+        if(!is.null(specific.args$visualise.steps)) {
+            check.class(specific.args$visualise.steps, c("numeric", "integer"))
+            steps_to_visualise <- specific.args$visualise.steps
+            if(any(check <- steps_to_visualise > n.subsets(data$saved_steps[[1]]))) {
+                stop(paste0("Impossible to display the step", ifelse(sum(check) > 1, "s ", " "), paste0(steps_to_visualise[check], collapse = ", "), " because the test only contains ",  n.subsets(data$saved_steps[[1]]), " steps."), call. = FALSE)
+            }
+        } else {
+            steps_to_visualise <- floor(seq(from = 1, to = n.subsets(data$saved_steps[[1]]) - 1, length.out = 4))
+        }
+        n_steps <- length(steps_to_visualise)
+    }
+
     ## Setting plot window size
     group_plot <- sapply(names(data$results), function(x) strsplit(x, "\\.")[[1]][[1]])
 
     ## Separating the plots in different groups (per plot windows)
     n_plots <- length(unique(group_plot))
-    if(n_plots > 1){
-        ## Correct the number of plots if only 3
-        plot_size <- ifelse(n_plots == 3, 4, n_plots)
 
-        ## Setting up plotting window
-        op_tmp <- par(mfrow = c(ceiling(sqrt(plot_size)),floor(sqrt(plot_size))))
+    if(!shift_plots) {
+        if(n_plots > 1){
+            ## Correct the number of plots if only 3
+            plot_size <- ifelse(n_plots == 3, 4, n_plots)
+
+            ## Setting up plotting window
+            op_tmp <- par(mfrow = c(ceiling(sqrt(plot_size)),floor(sqrt(plot_size))))
+        }
+    } else {    
+        ## Create the template of step plots
+        steps_to_consider <- ifelse(n_steps == 3, 4, n_steps)
+        steps_plots <- results_plots <- base_matrix <- matrix(0, ceiling(sqrt(steps_to_consider)), floor(sqrt(steps_to_consider)), byrow = TRUE)
+        steps_plots[1:n_steps] <- 1:n_steps
+        steps_plots[1:n_steps] <- steps_plots[1:n_steps] + n_plots
+        steps_plots <- t(steps_plots)
+        ## Create the template for the normal plots
+        results_plots <- base_matrix
+        results_plots[] <- 1
+        ## Create the columns of for layout template
+        if(n_plots > 1) {
+            for(i in 2:n_plots) {
+                ## Add a row to the step plots
+                tmp <- base_matrix
+                tmp[1:n_steps] <- steps_plots[1:n_steps] + max(steps_plots[1:n_steps], na.rm = TRUE) + 1 - min(steps_plots[1:n_steps], na.rm = TRUE)
+                steps_plots <- rbind(steps_plots, tmp)
+                ## Add a row to the normal plots
+                tmp <- base_matrix
+                tmp[] <- i
+                results_plots <- rbind(results_plots, tmp)
+            }
+        }
+
+        ## Create the layout
+        set_layout <- layout(cbind(results_plots, steps_plots))
+        # layout.show(set_layout)
+        ## Parameter backup
+        op_tmp <- NULL
     }
 
     ## Get the plotting arguments
@@ -1078,10 +1211,10 @@ plot.test.metric <- function(data, specific.args, ...) {
     if(length(legend_args == 2) && !is.null(names(legend_args[[1]])) && !is.null(names(legend_args[[2]]))) {
         if(names(legend_args[[1]]) == names(legend_args[[2]])) {
             legend_args_1 <- legend_args[[1]]
-            legend_args_2 <- legend_args[[2]]
+            legend_args_2 <- legend_args_2_base <- legend_args[[2]]
         }
     } else {
-        legend_args_1 <- legend_args_2 <- legend_args
+        legend_args_1 <- legend_args_2 <- legend_args_2_base <- legend_args
     }
 
 
@@ -1169,7 +1302,7 @@ plot.test.metric <- function(data, specific.args, ...) {
             fit <- add.fit(model_groups[[one_plot]][[1]])
             ## Slope for the first model
             add.slope(model_groups[[one_plot]][[1]], col = col_vector[1])
-            
+
             ## Get the eventual second fit
             if(!is.null(model_groups[[one_plot]][[1]])) {
                 ## Fit for the second model
@@ -1197,13 +1330,63 @@ plot.test.metric <- function(data, specific.args, ...) {
                     }
                     ## Plot the legend
                     do.call(legend, legend_args_2)
+                    ## Reinitialise the legend
+                    legend_args_2 <- legend_args_2_base
                 }
             }
         }
     }
 
+    ## Add the steps visualisation
+    if(shift_plots) {
+
+        ## List of plot margins
+        mar_base <- c(2,2,2,1)
+        xaxts <- yaxts <- rep("n", n_steps)
+        yaxts[c(nrow(base_matrix), length(base_matrix))-1] <- "s"
+        xaxts[c(ncol(base_matrix)+1, length(base_matrix))] <- "s"
+
+        ## Select the shifts
+        if(length(data$saved_steps)/2 != round(length(data$saved_steps)/2)) {
+            ## There is the random one
+            shift_list <- c(1, seq(from = 2, to = length(data$saved_steps), by = 2))
+        } else {
+            ## There is no random one
+            shift_list <- c(seq(from = 1, to = length(data$saved_steps), by = 2))
+        }
+
+        ## Loop through the shifts
+        for(shift in shift_list) {
+
+            ## Loop through the different steps
+            for(step in 1:n_steps){
+                ## Selecting the subsets
+                step_preview <- get.subsets(data$saved_steps[[shift]],steps_to_visualise[step])
+                ## Making a new subset without the negatives
+                step_preview$subsets$negatives$elements <- matrix((1:nrow(step_preview$matrix[[1]]))[-c(step_preview$subsets[[1]]$elements)], ncol = 1)
+
+                ## Default title
+                step_name <- names(step_preview$subsets)[1]
+                ## Selecting the colours and the title
+                if(names(data$saved_steps)[[shift]] == "random") {
+                    select_col <- c(plot_args$col[1], "grey")
+                    step_name <- paste0(step_name, "%")
+                } else {
+                    select_col <- plot_args$col[-1]
+                    step_name <- paste0(step_name, "% - ", as.character(100-as.numeric(step_name)), "%")
+                }
+                                    
+                ## Plotting the shift preview
+                par(mar = mar_base)
+                plot.dispRity(step_preview, type = "preview", col = select_col, specific.args = list(legend = FALSE), main = step_name,xaxt = xaxts[step], yaxt = yaxts[step])
+            }
+        }
+        ## Reset the default plot margins
+        par(mar = c(5, 4, 4, 2) + 0.1)
+    }
+
     ## Restoring the parameters
-    if(n_plots > 1) {
+    if(n_plots > 1 && !is.null(op_tmp)) {
         par(op_tmp)
     }
 }

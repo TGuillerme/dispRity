@@ -148,8 +148,9 @@ get.neigbhours <- function(distance, diameter = 0.1) {
 # ' @description Selects pairs of nearest neighbours
 # ' @param space the space
 # ' @param bw the bandwidth selector function
+# ' @param power a scaling factor to power the flattening/evenness
 # '
-get.prob.vector <- function(space, bw) {
+get.prob.vector <- function(space, bw, power) {
     ## Get the scaled variance per axis
     get.dimension.correction <- function(space) {
         var_axis <- apply(space, 2, var)
@@ -157,13 +158,16 @@ get.prob.vector <- function(space, bw) {
     }
 
     ## Get the sampling prob per axis
-    get.prob.axis <- function(axis, bw) {
+    get.prob.axis <- function(axis, bw, power) {
         ## Select the breaks
         band_width <- bw(axis)
         breaks <- seq(from = min(axis - band_width), to = max(axis + band_width), by = band_width) 
 
         ## Get the counts
         counts <- hist(axis, breaks = breaks, plot = FALSE)$counts
+
+        ## Exagerate the counts
+        counts <- counts^power
 
         ## Sort each values in each breaks
         proba_counts <- cut(axis, breaks)
@@ -174,7 +178,7 @@ get.prob.vector <- function(space, bw) {
     }
 
     ## Count the probability of sampling per axis
-    probabilities_table <- apply(space, 2, get.prob.axis, bw)
+    probabilities_table <- apply(space, 2, get.prob.axis, bw, power)
 
     ## Get the sum probability vector (scaled)
     return(apply(probabilities_table/get.dimension.correction(space), 1, sum))

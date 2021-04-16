@@ -22,21 +22,46 @@ dispRity 0.2.0 (2016-04-01)
 <!--   * `dtt.dispRity` now works with any tree (including non-ultrametric ones and fossils only ones). -->
 <!--   * `dtt.dispRity` now works with time-slicing. -->
 
-dispRity v1.5.3 (2020-11-19)
+dispRity v1.6.0 (2021-04-16) *dispRitree*
 =========================
 
 ### NEW FEATURES
 
- * Six more demo datasets have been added to the package! These datasets are the ones used in [Guillerme et al. 2020]() and published originally in [Beck & Lee 2014](https://royalsocietypublishing.org/doi/full/10.1098/rspb.2014.1278) (that one was originally the only demo dataset in the package), [Wright 2017](https://www.cambridge.org/core/journals/journal-of-paleontology/article/bayesian-estimation-of-fossil-phylogenies-and-the-evolution-of-early-to-middle-paleozoic-crinoids-echinodermata/E37972902541CD0995AAD08A1122BD54), [Marcy et al. 2016](https://link.springer.com/article/10.1186/s12862-016-0782-1), [Hopkins & Pearson 2016](https://www.researchgate.net/profile/Melanie_Hopkins3/publication/320543447_Non-linear_ontogenetic_shape_change_in_Cryptolithus_tesselatus_Trilobita_using_three-dimensional_geometric_morphometrics/links/59f7307d0f7e9b553ebd5e03/Non-linear-ontogenetic-shape-change-in-Cryptolithus-tesselatus-Trilobita-using-three-dimensional-geometric-morphometrics.pdf), [Jones et al. 2015](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/1365-2745.12405), [Healy et al. 2019](https://www.nature.com/articles/s41559-019-0938-7). Thanks to all these authors for their open science work!
+ * *New* metric: `projections` that allows to measure elements' projection on an arbitrary axis (or their distance from this axis with `measure = "distance"`).
+ * *New* metric: `projections.tree` that allows to measure elements' projection on axis between elements of a given tree.
+ * *New* metric: `edge.length.tree` the edge length from each element given a tree (with the option `to.root = TRUE/FALSE` to measure the edge length from the element to the root of the tree (default = TRUE) or the nearest ancestor (FALSE).
+ * You can now save the shifts results in `test.metric` with `save.steps` and then visualise them with `plot.dispRity` along side the disparity metric test results.
+ * *New* utility function `n.subsets` to directly get the number of subsets in a `dispRity` object.
+ * *New* statistical test: `randtest.dispRity` that is a wrapper for `ade4::randtest` applied to `dispRity` objects (not dissimilar from `null.test`).
+ * Six more demo datasets have been added to the package! These datasets are the ones used in [Guillerme et al. 2020](https://onlinelibrary.wiley.com/doi/full/10.1002/ece3.6452) and published originally in [Beck & Lee 2014](https://royalsocietypublishing.org/doi/full/10.1098/rspb.2014.1278) (that one was originally the only demo dataset in the package), [Wright 2017](https://www.cambridge.org/core/journals/journal-of-paleontology/article/bayesian-estimation-of-fossil-phylogenies-and-the-evolution-of-early-to-middle-paleozoic-crinoids-echinodermata/E37972902541CD0995AAD08A1122BD54), [Marcy et al. 2016](https://link.springer.com/article/10.1186/s12862-016-0782-1), [Hopkins & Pearson 2016](https://www.researchgate.net/profile/Melanie_Hopkins3/publication/320543447_Non-linear_ontogenetic_shape_change_in_Cryptolithus_tesselatus_Trilobita_using_three-dimensional_geometric_morphometrics/links/59f7307d0f7e9b553ebd5e03/Non-linear-ontogenetic-shape-change-in-Cryptolithus-tesselatus-Trilobita-using-three-dimensional-geometric-morphometrics.pdf), [Jones et al. 2015](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/1365-2745.12405), [Healy et al. 2019](https://www.nature.com/articles/s41559-019-0938-7). Thanks to all these authors for their open science work!
+ * `dispRity` objects now have a reserved `$tree` component that contain any number of trees attached to the data. This allows any function to use the reserved argument name `tree` to extract directly the relevant tree from the `dispRity` object, for functions like `chrono.subsets` or metrics like `ancestral.dist`! To help manipulate the `tree` component of the `dispRity` object, you can now use the new utility functions `add.tree`, `get.tree` and `remove.tree`.
 
 ### MINOR IMPROVEMENT
 
   * Reverted R version requirement from `4.0` back to `3.6` following [Joseph Brown's issue](https://github.com/TGuillerme/dispRity/issues/107) and [fix](https://github.com/TGuillerme/dispRity/pull/108).
+  * `reduce.space` `"random"` algorithm now outputs a named logical vector (like the other algorithms!).
+  * remove the `"only"` text when printing `dispRity` objects that contains "only" matrices (even though that can be 10k matrices!).
+  * added a dedicated behaviour to `summary.dispRity` for `"dispRity"` `"randtest"` objects to output "ready-to-publish" result tables.
+  * some error messages have been updated to be slightly more useful.
+  * added the `estimation.details` argument to `multi.ace` allowing to also return specific arguments from the ancestral states estimation (thanks to [Armin Elsler](https://research-information.bris.ac.uk/en/persons/armin-elsler) for the suggestion).
+  * Added new option `inc.nodes` to `clean.data` whether to check if the nodes in the tree match the labels in the matrix.
+  * `make.metric` with the option `silent = TRUE` now outputs a list of info rather than only the level of the metric. You can reproduce the old behaviour using `make.metric(..., silent = TRUE)$type)`.
+  * Fixed bug in `plot` using `preview` when the given argument `pch` did not match the number of groups (the different `pch` arguments are now used correctly).
+  * Completely revamped the `ancestral.dist` metric. The function is now much faster and much easier to use (due to the new `dispRity` object structure). The options `nodes.coords` has been removed and the option `full` is now changed by `to.root`. If you still really want to use the older version of `ancestral.dist` using `ancestral.dist.deprecated` though.
+  * The `dimensions` option throughout the package (e.g. in the `dispRity` function) can now also be a vector of dimensions to take into consideration (e.g. `c(1,2,5)`).
 
 ### BUG FIXES
 
   * `chrono.subsets` now automatically detects the number of digits to round for the internal time slicing functions (thanks to [Mario Corio](https://mariocoiro.wordpress.com/) for finding this one).
   * Fixed bug in `test.metric` plots that now display correctly the "top" and "bottom" changes for the "position" shift.
+  * Fixed bug in `test.metric` plots that now display the R^2 values correctly.
+  * Fixed bug in `tree.age` when the tree tips/node labels vector is longer than the actual number of tips/nodes in the tree.
+
+### DEPRECATED AND DEFUNCT
+
+  * Removed former version of `ancestral.dist` (see NEW FEATURES above).
+  * Removed `node.coordinates` function (no replacement; you must use a package version prior 1.5.10 to use this function).
+  * Removed `get.ancestors` function (no replacement; you must use a package version prior 1.5.10 to use this function).
 
 dispRity v1.5.0 (2020-09-25) *between groups*
 =========================
@@ -44,7 +69,7 @@ dispRity v1.5.0 (2020-09-25) *between groups*
 ### NEW FEATURES
 
   * *New* function: `multi.ace` for performing fast ancestral character estimations on multiple matrices (based on `castor::asr_mk_model`).
-  * *New* function: `reduce.space`, a function to modify trait spaces imported from the [`moms` shiny app](https://github.com/TGuillerme/moms). This function comes with a new reduction algorithm: the "evenness" algorithm for flattening the curve (thanks to Gavin Thomas for the suggestion).
+  * *New* function: `reduce.space`, a function to modify trait spaces imported from the [`moms` shiny app](https://github.com/TGuillerme/moms). This function comes with a new reduction algorithm: the "evenness" algorithm for flattening the curve (thanks to [Gavin Thomas](https://github.com/ghthomas) for the suggestion).
   * *New* function: `test.metric` (and associated `plot`, `print` and `summary` functions), to apply the `reduce.space` function on a specific space and metric to test whether a metric is picking up specific changes in trait space.
   * the `dispRity` function can now use `"between.groups"` metrics to calculate disparity between groups rather than within groups. The `make.metric` function is now modified to allow detection of metrics that can be applied between groups.
   * *New* metric: `group.dist`, a dimension level 1 metric for between groups that measures the distance between two groups. By default, this is the minimum distance but the function takes the `probs` argument allowing the distance to be between, says, the 95% CI (`probs = c(0.025, 0.975))`) or between the centroids (`probs = c(0.5)`).
@@ -71,6 +96,7 @@ dispRity v1.5.0 (2020-09-25) *between groups*
   * Updated `Claddis.ordination` function to be compatible with the new `ape` version `5.4` (thanks to [Emmanuel Paradis](https://github.com/emmanuelparadis) for the pointing that out).
   * Fixed a bug in `chrono.subsets` where ladder trees with no tip branch lengths an `method = "continuous"` option would get stuck in an infinite loop.
   * Fixed a bug in `chrono.subsets` where the `"*.split"` methods would bug if the last slice is through a single edge.
+  * Fixed a bug in `dispRity` where some 1D matrices could loose their class for certain metrics.
 
 dispRity v1.4.0 *getting faster* (2020-05-05)
 =========================
@@ -88,7 +114,8 @@ dispRity v1.4.0 *getting faster* (2020-05-05)
   * updated class evaluations throughout the package for `R` version `4.0.0`: `class(.) == *` is now `is(., *)`.
   * updated `...` argument bug PR#16223.
   * In `make.metric` the argument `...` is now ignored if any `names(...)` is `"tree"` or `"phy"`.
-  * fixed bug in `neighbours` and `span.tree.length` when feeding "distance" like metrics (thanks to Ashley Reaney for finding that one).
+  * fixed bug in `neighbours` and `span.tree.length` when feeding "distance" like metrics (thanks to [Ashley Reaney](https://www.researchgate.net/profile/Ashley-Reaney)
+ for finding that one).
 
 ### MINOR IMPROVEMENTS
 

@@ -1,6 +1,6 @@
 #TESTING null.test
 
-context("null.test")
+#context("null.test")
 
 # Testing data
 data(BeckLee_mat50)

@@ -1,4 +1,4 @@
-context("reduce.matrix")
+#context("reduce.matrix")
 
 ## Test
 test_that("reduce.matrix works", {

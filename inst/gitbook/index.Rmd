@@ -20,17 +20,17 @@ knitr::opts_chunk$set(echo = TRUE)
 ## master version
 version_raw <- RCurl::getURL("https://raw.githubusercontent.com/TGuillerme/dispRity/master/DESCRIPTION")
 version_master <- strsplit(strsplit(version_raw, split = "Version: ")[[1]][2], split = "\nDate:")[[1]][1]
-version_master <- 1.5
+version_master <- 1.6
 
 ## release version
 version_raw <- RCurl::getURL("https://raw.githubusercontent.com/TGuillerme/dispRity/release/DESCRIPTION")
 version_release <- strsplit(strsplit(version_raw, split = "Version: ")[[1]][2], split = "\nDate:")[[1]][1]
-version_release <- 1.5
+version_release <- 1.6
 
 ## CRAN version
 version_raw <- RCurl::getURL("https://cran.r-project.org/web/packages/dispRity/index.html")
 version_CRAN <- strsplit(strsplit(version_raw, split = "\n<td>Version:</td>\n<td>")[[1]][2], split = "</td>\n</tr>\n<tr>\n<td>Depends:")[[1]][1]
-version_CRAN <- 1.5
+version_CRAN <- 1.6
 ```
 
 # `dispRity`
@@ -94,6 +94,42 @@ For the the GitHub version, the differences are that the `release` one is more s
 
 If you want the latest-latest version of the package I suggest using the GitHub `master` one, especially if you recently emailed me reporting a minor bug or wanting a new functionality!
 Note however that *it can happen* that the `master` version can sometimes be bugged (especially when there are major `R` and `R` packages updates), however, the status of the package state on both the `release` and the `master` version is constantly displayed on the [`README` page](https://github.com/TGuillerme/dispRity/) of the package with the nice badges displaying these different (and constantly tested) information.
+
+## `dispRity` is always changing, how do I know it's not broken?
+
+This is a really common a legitimate question in software development. Like `R` itself:
+
+> `dispRity` is free software and comes with ABSOLUTELY NO WARRANTY.
+
+So you are using it at your own risk.
+
+**HOWEVER**, there are two points that can be used as objective-ish markers on why it's OK to use `dispRity`.
+
+First, the package has been use in a number of [peer reviewed](https://scholar.google.co.uk/scholar?oi=bibs&hl=en&cites=13311379491028410826,7753828186872068057) publications (the majority of them independently) which could be taken as warranty.
+
+Second, I spend a lot of time and attention in making sure that every function in every version actually does what I think it is supposed to do.
+This is done through [CI; continuous integration development](https://en.wikipedia.org/wiki/Continuous_integration), the [CRAN check](https://cran.r-project.org/web/checks/check_results_dispRity.html), and [unit testing](https://en.wikipedia.org/wiki/Unit_testing).
+The two first checks (CRAN and CI) ensure that the version you are using is not bugged (the [CRAN check](https://cran.r-project.org/web/checks/check_results_dispRity.html) if you are using the CRAN version and the [Travis CI](https://travis-ci.org/TGuillerme/dispRity) if you are using a GitHub version).
+The third check, unit testing, is checking that every function is doing what it is supposed to do. For a real basic example, it is testing that the following expression should always return the same thing no matter what changes in the package.
+
+```
+> mean(c(1,2,3))
+[1] 2
+```
+Or, more formally:
+
+```{r}
+testthat::expect_equal(object = mean(c(1,2,3)),
+                       expected = 2)
+```
+
+You can always access what is actually tested in the [`test/testthat`](https://github.com/TGuillerme/dispRity/tree/master/tests/testthat) sub-folder.
+For example [here is how the core function `dispRity`](https://github.com/TGuillerme/dispRity/blob/master/tests/testthat/test-dispRity.R) is tested (through > 500 tests!).
+All these tests are run every time a change is made to the package and you can always see for yourself how much a single function is covered (i.e. what percentage of the function is actually covered by at least one test).
+You can always see the global coverage [here](https://app.codecov.io/gh/TGuillerme/dispRity) or the specific coverage for each function [here](https://codecov.io/gh/TGuillerme/dispRity/tree/master/R).
+
+Finally, this package is build on the shoulders of the whole open science philosophy so when bugs do occur and are caught by myself or the package users, they are quickly fixed and notified in the [`NEWS.md` file](https://github.com/TGuillerme/dispRity/blob/master/NEWS.md). And all the changes to the package are [public and annotated](https://github.com/TGuillerme/dispRity/commits/master) so there's that too...
+
 
 ## Help
 

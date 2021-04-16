@@ -2,9 +2,6 @@
 #' @aliases time.series time.subsets
 #'
 #' @description Splits the data into a chronological (time) subsets list.
-#' 
-#' @usage chrono.subsets(data, tree, method, time, model, inc.nodes = FALSE,
-#'                     FADLAD, verbose = FALSE, t0 = FALSE, bind.data = FALSE)
 #'
 #' @param data A \code{matrix} or a \code{list} of matrices.
 #' @param tree A \code{phylo} or a \code{multiPhylo} object matching the data and with a \code{root.time} element. This argument can be left missing if \code{method = "discrete"} and all elements are present in the optional \code{FADLAD} argument.
@@ -18,13 +15,6 @@
 #' @param bind.data If \code{data} contains multiple matrices and \code{tree} contains the same number of trees, whether to bind the pairs of matrices and the trees (\code{TRUE}) or not (\code{FALSE} - default).
 #' 
 #' 
-#' @return
-#' This function outputs a \code{dispRity} object containing:
-#' \item{matrix}{the multidimensional space (a \code{matrix}).}
-#' \item{call}{A \code{list} containing the called arguments.}
-#' \item{subsets}{A \code{list} containing matrices pointing to the elements present in each subsets.}
-#'
-#' Use \link{summary.dispRity} to summarise the \code{dispRity} object.
 #' 
 #'  
 #' @details
@@ -184,8 +174,17 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
         ## tree.age_tree variable declaration
         tree.age_tree <- lapply(tree, tree.age)
     } else {
+
         ## Default tree list
         is_multiPhylo <- FALSE
+
+        # ## If the data has a tree attached, use that one
+        # TG: this is not supposed to happen
+        # if(!is.null(data$tree[[1]])) {
+        #     tree <- data$tree
+        #     tree.age_tree <- lapply(tree, tree.age)
+        #     is_multiPhylo <- length(data$tree) > 1
+        # }
     }
 
     ## METHOD
@@ -442,5 +441,10 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
     #time_subsets <- c(make.origin.subsets(data), time_subsets)
 
     ## Output as a dispRity object
-    return(make.dispRity(data = data, call = list("subsets" = c(method, model, "trees" = length(tree), "matrices" = length(data), "bind" = bind.data)), subsets = time_subsets))
+    if(!tree_was_missing) {
+        return(make.dispRity(data = data, call = list("subsets" = c(method, model, "trees" = length(tree), "matrices" = length(data), "bind" = bind.data)), subsets = time_subsets, tree = tree))    
+    } else {
+        return(make.dispRity(data = data, call = list("subsets" = c(method, model, "trees" = length(tree), "matrices" = length(data), "bind" = bind.data)), subsets = time_subsets))        
+    }
+
 }

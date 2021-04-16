@@ -1,6 +1,6 @@
 # TESTING dispRity
 
-context("between.groups (inc. S3)")
+#context("between.groups (inc. S3)")
 
 test_that("dispRity works for between.groups metrics", {
 
@@ -49,13 +49,20 @@ test_that("dispRity works for between.groups metrics", {
     custom_wrong_names <- custom.subsets(matrix, group = list("A" = c(1:5), "B:" = c(6:8), ":::" = c(9:12)))
     warning <- capture_warning(dispRity(custom_wrong_names, metric = between.groups.simple, between.groups = TRUE))
     expect_equal(warning[[1]],  "The subset names: B:, ::: were changed to B;, ;;;. The \":\" character is reserved for between groups comparisons.")
-
+    expect_warning(test <- dispRity(custom_wrong_names, metric = between.groups.simple, between.groups = TRUE))
+    expect_equal(summary(test)$subsets, c("A:B;", "A:;;;", "B;:;;;"))
 
     ## Serial works for level 1
     test <- dispRity(custom, metric = between.groups.simple)
     expect_false(test$call$disparity$metrics$between.groups)
     test <- dispRity(custom, metric = between.groups.simple, between.groups = TRUE)
     expect_true(test$call$disparity$metrics$between.groups)
+
+    ## Works for specified groups
+    test <- dispRity(custom, metric = between.groups.simple, between.groups = list(c(1,2), c(1,1)))
+    expect_equal(summary(test)$subsets, c("1:2", "1:1"))
+
+
 
     ## Custom normal
     test <- dispRity(custom, metric = between.groups.complex, between.groups = TRUE)
@@ -173,4 +180,16 @@ test_that("dispRity works for between.groups metrics", {
     expect_equal(error[[1]], "Impossible to apply a dimension-level 3 metric that is not a between group metric with a dimension-level1 or 2 metric that is. You can try to integrate that dimension-level 3 metric directly in the definition of the other metrics.")
     error <- capture_error(dispRity(data, metric = c(var, point.dist), between.groups = TRUE))
     expect_equal(error[[1]], "Impossible to apply a dimension-level 3 metric that is not a between group metric with a dimension-level1 or 2 metric that is. You can try to integrate that dimension-level 3 metric directly in the definition of the other metrics.")
+
+    ## Between groups with tree metrics
+    tree.diff <- function(matrix, matrix2, tree) {
+        return(sum(edge.length.tree(matrix, tree)) - sum(edge.length.tree(matrix2, tree)))
+    }
+    data(BeckLee_mat99)
+    data(BeckLee_tree)
+    data <- custom.subsets(BeckLee_mat99, group = crown.stem(BeckLee_tree, inc.nodes = TRUE))
+    test <- dispRity(data, metric = tree.diff, between.groups = list(c(1,2), c(2,1)), tree = BeckLee_tree)
+    expect_is(test, "dispRity")
+    expect_equal_round(test$disparity[[1]][[1]][1], 3307.54, 2)
+    expect_equal_round(test$disparity[[2]][[1]][1], -3307.54, 2)
 })

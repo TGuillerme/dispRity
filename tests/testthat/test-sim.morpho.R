@@ -1,6 +1,6 @@
 #TEST sim.morpho
 
-context("sim.morpho")
+#context("sim.morpho")
 
 #Testing sample.distribution
 test_that("sample.distribution works", {
