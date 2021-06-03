@@ -38,9 +38,9 @@ test_that("test.metric works", {
         c("Metric testing:"                                             ,
           "The following metric was tested: c(prod, ranges)."           ,
           "The test was run on the random, size shifts for 1 replicate.",
-          "Use summary($) or plot($) for more details. "                ,
-          "Use summary(item) or plot(item) for more details. "          ,
-          "Use summary(value) or plot(value) for more details."  ))
+          "Use summary(x) or plot(x) for more details."))                #,
+          # "Use summary(item) or plot(item) for more details."          ,
+          # "Use summary(value) or plot(value) for more details."  ))
 
     ## Verbose works
     output <- capture_messages(test <- test.metric(space, metric = c(prod, ranges), replicates = 1, shifts = c("random", "size"), verbose = TRUE))
@@ -75,9 +75,9 @@ test_that("test.metric works", {
           "The following metric was tested: c(sum, variances).",
           "The test was run on the random, size, density, position shifts for 3 replicates using the following model:",
           "lm(disparity ~ reduction, data = data)",
-          "Use summary($) or plot($) for more details. ",
-          "Use summary(item) or plot(item) for more details. " ,
-          "Use summary(value) or plot(value) for more details."))
+          "Use summary(x) or plot(x) for more details."))#,
+          # "Use summary(item) or plot(item) for more details." ,
+          # "Use summary(value) or plot(value) for more details."))
 
 
     ## Summarising basic works
@@ -105,9 +105,9 @@ test_that("test.metric works", {
           "The following metric was tested: c(median, centroids).",
           "The test was run on the evenness shift for 3 replicates using the following model:",
           "lm(disparity ~ reduction, data = data)",
-          "Use summary($) or plot($) for more details. ",
-          "Use summary(item) or plot(item) for more details. " ,
-          "Use summary(value) or plot(value) for more details."))
+          "Use summary(x) or plot(x) for more details."))#,
+          # "Use summary(item) or plot(item) for more details." ,
+          # "Use summary(value) or plot(value) for more details."))
 
     ## Summarising basic works
     expect_equal(dim(summary(test)), c(2, 13))

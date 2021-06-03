@@ -22,6 +22,14 @@ dispRity 0.2.0 (2016-04-01)
 <!--   * `dtt.dispRity` now works with any tree (including non-ultrametric ones and fossils only ones). -->
 <!--   * `dtt.dispRity` now works with time-slicing. -->
 
+
+dispRity v1.6.1 (2021-06-03)
+=========================
+
+### NEW FEATURES
+
+ * *New* utility function: `randtest.dist` for measuring the distance between the observed statistic and a specific quantile of the simulated statistic (thanks to [Frane Babarovic](https://twitter.com/FBabarovic)  for the inspiration).
+
 dispRity v1.6.0 (2021-04-16) *dispRitree*
 =========================
 
