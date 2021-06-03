@@ -29,9 +29,9 @@
  #' 
 #'      \item if \code{type = "preview"}, the specific arguments can be:
 #'      \itemize{
-#'          \item code{dimensions}: two specific dimensions to plot (default is \code{specific.args = list(dimensions = c(1,2)});
-#'          \item code{matrix}: which specific matrix to plot the data from (by default, all the matrices are used).
-#'          \item code{tree}: whether to plot the underlying tree(s) or not. Can be either logical, whether to plot no tree (default is \code{specific.args = list(tree = FALSE)}), all trees (\code{specific.args = list(tree = TRUE)}) or a specific set of trees (e.g. \code{specific.args = list(tree = c(1,2))})
+#'          \item \code{dimensions}: two specific dimensions to plot (default is \code{specific.args = list(dimensions = c(1,2)});
+#'          \item \code{matrix}: which specific matrix to plot the data from (by default, all the matrices are used).
+#'          \item \code{tree}: whether to plot the underlying tree(s) or not. Can be either logical, whether to plot no tree (default is \code{specific.args = list(tree = FALSE)}), all trees (\code{specific.args = list(tree = TRUE)}) or a specific set of trees (e.g. \code{specific.args = list(tree = c(1,2))})
 #'      }
 #' 
 #'      \item for plots with legends (if \code{type = "preview"}; if data is \code{"randtest"} or \code{"test.metric"}) you can pass any non ambiguous arguments for \code{legend} such as \code{specific.args = list(legend = list(x = 1, y = 2, bg = "blue"))}. When the plot generates two legends (e.g. when the data is \code{"test.metric"}), these arguments can be a list (e.g. \code{specific.args = list(legend = list(list(x = "bottomright"), list(x = "topright")))}. \emph{HINT}: to remove the legends all together you can use \code{specific.args = list(legend = FALSE)}.

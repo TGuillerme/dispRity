@@ -30,6 +30,11 @@ dispRity v1.6.1 (2021-06-03)
 
  * *New* utility function: `randtest.dist` for measuring the distance between the observed statistic and a specific quantile of the simulated statistic (thanks to [Frane Babarovic](https://twitter.com/FBabarovic)  for the inspiration).
 
+### BUG FIXES
+ 
+ * Removed warning in `dispRity` when selecting a specific number of dimensions (old warning artefact).
+ * Fixed bug in `plot.dispRity` when using `type = "preview"` on bootstrapped data (now ) 
+
 dispRity v1.6.0 (2021-04-16) *dispRitree*
 =========================
 

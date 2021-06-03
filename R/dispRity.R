@@ -193,7 +193,7 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
     if(!missing(dimensions)) {
         ## Else must be a single numeric value (proportional)
         check.class(dimensions, c("numeric", "integer"), " must be a proportional threshold value.")
-        if(length(dimensions == 1)) {
+        if(length(dimensions) == 1) {
             if(dimensions < 0) {
                 stop.call("", "Number of dimensions cannot be less than 0.")
             }
