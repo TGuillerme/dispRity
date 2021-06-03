@@ -47,7 +47,7 @@
 #' ## Plotting the results
 #' plot(test_disparity)
 #'
-#' @seealso \code{link[ade4]{randtest}}
+#' @seealso \code{\link[ade4]{randtest}}
 #' 
 #' @author Thomas Guillerme
 #' @export

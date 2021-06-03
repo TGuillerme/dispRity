@@ -160,7 +160,7 @@ print.dispRity <- function(x, all = FALSE, ...) {
                     } else {
                         cat(paste0("."))
                     }
-                    cat(paste0("\nUse summary(", x_name, ") or plot(",x_name, ") for more details."))
+                    cat(paste0("\nUse summary(x) or plot(x) for more details."))
                     return(invisible())
                 }
             )

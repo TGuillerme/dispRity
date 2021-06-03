@@ -77,6 +77,7 @@ Check out this pre-print on selecting the best metric for your specific question
 You can also find more information in the [`dispRity` manual](https://rawcdn.githack.com/TGuillerme/dispRity/c94452e6877fbb274eb0a4ff1363272a6297a9ee/inst/gitbook/_book/details-of-specific-functions.html#disparity-metrics).
 <!-- biorXiv preprint -->
 
+
 ## Latest major patch notes
 * 2021/04/16 v1.6 *dispRitree*
 

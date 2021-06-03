@@ -81,7 +81,10 @@ Here the characters are automatically converted into bitwise integers to be comp
 matrix_character[sample(1:30, 8)] <- "0/1"
 
 ## Adding missing data
-(matrix_character[sample(1:30, 5)] <- "?")
+matrix_character[sample(1:30, 5)] <- "?"
+
+## This is what it looks like now
+matrix_character
 
 ## The hamming difference between columns including the special characters
 char.diff(matrix_character)

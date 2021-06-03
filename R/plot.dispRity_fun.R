@@ -754,7 +754,7 @@ plot.preview <- function(data, specific.args, ...) {
     pch_order <- plot_args$pch
     if(n_groups > 1) {
         ## Get the list of subsets
-        subsets <- unlist(data$subsets, recursive = FALSE)
+        subsets <- lapply(data$subsets,`[[`, "elements")
         ## Make an empty classifier
         classifier <- rep(NA, nrow(data$matrix[[1]]))
         for(class in 1:n_groups) {

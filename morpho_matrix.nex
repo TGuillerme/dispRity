@@ -1,0 +1,12 @@
+#NEXUS
+    BEGIN DATA;
+    DIMENSIONS  NTAX=5 NCHAR=5;
+    FORMAT SYMBOLS= " 0 1 2" MISSING=? GAP=- ;
+    MATRIX
+         t1  11010
+         t2  02120
+         t3  12100
+         t4  01111
+         t5  00101
+    ;
+    END;

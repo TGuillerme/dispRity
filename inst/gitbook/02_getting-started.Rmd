@@ -186,7 +186,7 @@ For a disparity through time analysis, you will need:
 Using the Beck and Lee (2014) data described [above](#example-data):
 
 ```{r}
-## Measuring disparity through time
+## Measuring disparity through time
 disparity_data <- dispRity.through.time(BeckLee_mat50, BeckLee_tree,
                                         metric = c(sum, variances),
                                         time = 3)

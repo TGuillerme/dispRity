@@ -250,7 +250,7 @@ There are many ways of measuring disparity!
 In brief, disparity is a summary metric that will represent an aspect of an ordinated space (e.g. a MDS, PCA, PCO, PCoA).
 For example, one can look at ellipsoid hyper-volume of the ordinated space (Donohue _et al._ 2013), the sum and the product of the ranges and variances (Wills _et al._ 1994) or the median position of the elements relative to their centroid (Wills _et al._ 1994). 
 Of course, there are many more examples of metrics one can use for describing some aspect of the ordinated space, with some performing better than other ones at particular descriptive tasks, and some being more generalist.
-Check out this pre-print on selecting the best metric for your specific question on [biorXiv](https://www.biorxiv.org/content/10.1101/801571v1).
+Check out this paper on selecting the best metric for your specific question in [Ecology and Evolution](https://onlinelibrary.wiley.com/doi/full/10.1002/ece3.6452).
 <!-- biorXiv preprint -->
 You can also use the  [`moms` shiny app](https://tguillerme.shinyapps.io/moms/) to test which metric captures which aspect of traitspace occupancy regarding your specific space and your specific question.
 
