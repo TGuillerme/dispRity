@@ -95,7 +95,6 @@
 # t0 = 5
 # bind.data = TRUE
 
-
 chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, FADLAD, verbose = FALSE, t0 = FALSE, bind.data = FALSE) {    
     match_call <- match.call()
 
@@ -379,9 +378,18 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
             colnames(add_FADLAD) <- colnames(FADLAD)
             FADLAD <- rbind(FADLAD, add_FADLAD)
         }
-        ## Remove FADLAD taxa not present in the tree
-        if(nrow(FADLAD) != Ntip_tree) {
-            FADLAD <- FADLAD[-c(which(is.na(match(rownames(FADLAD), tree[[1]]$tip.label)))),]
+        
+        ## Check if nodes are included in the FADLAD
+        if(any(rownames(FADLAD) %in% tree[[1]]$node.label)) {
+            ## Remove FADLAD nodes/tips not present in either
+            if(nrow(FADLAD) != Ntip_tree+Nnode(tree[[1]])) {
+                FADLAD <- FADLAD[-c(which(is.na(match(rownames(FADLAD), c(tree[[1]]$tip.label, tree[[1]]$node.label))))),]
+            }
+        } else {
+            ## Remove FADLAD taxa not present in the tree
+            if(nrow(FADLAD) != Ntip_tree) {
+                FADLAD <- FADLAD[-c(which(is.na(match(rownames(FADLAD), tree[[1]]$tip.label)))),]
+            }
         }
         FADLAD <- list(FADLAD)
     }

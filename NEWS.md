@@ -23,17 +23,18 @@ dispRity 0.2.0 (2016-04-01)
 <!--   * `dtt.dispRity` now works with time-slicing. -->
 
 
-dispRity v1.6.1 (2021-06-03)
+dispRity v1.6.2 (2021-06-10)
 =========================
 
 ### NEW FEATURES
 
- * *New* utility function: `randtest.dist` for measuring the distance between the observed statistic and a specific quantile of the simulated statistic (thanks to [Frane Babarovic](https://twitter.com/FBabarovic)  for the inspiration).
+ * *New* utility function: `randtest.dist` for measuring the distance between the observed statistic and a specific quantile of the simulated statistic (thanks to [Frane Babarovic](https://twitter.com/FBabarovic) for the inspiration).
 
 ### BUG FIXES
  
  * Removed warning in `dispRity` when selecting a specific number of dimensions (old warning artefact).
- * Fixed bug in `plot.dispRity` when using `type = "preview"` on bootstrapped data (now ) 
+ * Fixed bug in `plot.dispRity` when using `type = "preview"` on bootstrapped data.
+ * Fixed bug when using `chrono.subsets` with `"continuous"` method a `FADLAD` data containing only node values (now correctly taken into account; thanks to [Peng-Wei Li](https://www.researchgate.net/profile/Peng-Wei-Li) for noticing it).
 
 dispRity v1.6.0 (2021-04-16) *dispRitree*
 =========================
