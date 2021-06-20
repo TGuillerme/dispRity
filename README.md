@@ -188,8 +188,8 @@ de Oca-Aguilar AC, De Luna E, Rebollar-Téllez EA, Piermarini PM, Ibáñez-Berna
 
 #### Simulating disparity through time using `dtt.dispRity`:
 
-* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=he+Ecological+and+Evolutionary+Drivers+of+Spatial+Biodiversity+Patterns&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a> 
-Skeels A. The Ecological and Evolutionary Drivers of Spatial Biodiversity Patterns. Doctoral Thesis at the Australian National University **2020** [Open Researcg](https://openresearch-repository.anu.edu.au/bitstream/1885/204921/1/Alexander_Skeels_Thesis_Revisions.pdf)
+* <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Ecological+interactions+shape+the+evolution+of+flower+color+in+communities+across+a+temperate+biodiversity+hotspot&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a> 
+Skeels A, Dinnage R, Medina I, Cardillo M. Ecological interactions shape the evolution of flower color in communities across a temperate biodiversity hotspot *Evolution Letters* **2021** [10.1002/evl3.225](https://onlinelibrary.wiley.com/doi/full/10.1002/evl3.225)
 
 #### Using the wrapper `disparity.per.group` function:
 
