@@ -20,19 +20,19 @@
 #' @details
 #' The data is considered as the multidimensional space with rows as elements and columns as dimensions and is not transformed (e.g. if ordinated with negative eigen values, no correction is applied to the matrix).
 #' 
-#' If \code{method = "continuous"} and when the sampling is done along an edge of the tree, the data selected for the time subsets is can be one of the following:
+#' If \code{method = "continuous"} and when the sampling is done along an edge of the tree, the data selected for the time subsets can be one of the following:
 #' \itemize{
 #'      \item Punctuated models:
 #'      \itemize{
-#'         \item \code{"acctran"}: always the value from the ancestral node.
-#'         \item \code{"deltran"}: always the value from the descendant node or tip.
-#'         \item \code{"random"}: randomly selected from the ancestral node or the descendant node or tip.
-#'         \item \code{"proximity"}: selects the ancestral node or the descendant with a probability relative to branch length.
+#'         \item \code{"acctran"}: always selecting the value from the ancestral node.
+#'         \item \code{"deltran"}: always selecting the value from the descendant node or tip.
+#'         \item \code{"random"}: randomly selecting between the ancestral node or the descendant node/tip.
+#'         \item \code{"proximity"}: selecting the ancestral node or the descendant node/tip with a probability relative to branch length.
 #'      }
 #'      \item Gradual models:
 #'      \itemize{
-#'          \item \code{"equal.split"}: randomly selected from the ancestral node or the descendant node or tip with a 50\% probability each.
-#'          \item \code{"gradual.split"}: selects the ancestral node or the descendant with a probability relative to branch length.
+#'          \item \code{"equal.split"}: randomly selecting from the ancestral node or the descendant node or tip with a 50\% probability each.
+#'          \item \code{"gradual.split"}: selecting the ancestral node or the descendant with a probability relative to branch length.
 #'      }
 #' }
 #' N.B. \code{"equal.split"} and \code{"gradual.split"} differ from the punctuated models by outputting a node/tip probability table rather than simply the node and the tip selected. In other words, when bootstrapping using \code{\link{boot.matrix}}, the two former models will properly integrate the probability to the bootstrap procedure (i.e. different tips/nodes can be drawn) and the two latter models will only use the one node/tip determined by the model before the bootstrapping.
@@ -423,7 +423,10 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
     ## Toggle the multiPhylo option
     if(!is_multiPhylo) {
         time_subsets <- chrono.subsets.fun(data[[1]], tree[[1]], time, model, FADLAD[[1]], inc.nodes, verbose)
-        # time_subsets <- chrono.subsets.fun(data, tree, time, model, FADLAD, inc.nodes, verbose)
+        # time_subsets <- chrono.subsets.fun(data[[1]], tree[[1]], time, model, FADLAD[[1]], inc.nodes, verbose) ; warning("DEBUG chrono.subsets")
+        # data <- data[[1]] ; warning("DEBUG chrono.subsets")
+        # tree <- tree[[1]] ; warning("DEBUG chrono.subsets")
+        # FADLAD <- FADLAD[[1]] ; warning("DEBUG chrono.subsets")
     } else {
 
         ## Combining arguments into lists
