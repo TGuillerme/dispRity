@@ -23,7 +23,7 @@ dispRity 0.2.0 (2016-04-01)
 <!--   * `dtt.dispRity` now works with time-slicing. -->
 
 
-dispRity v1.6.2 (2021-06-10)
+dispRity v1.6.3 (2021-07-01)
 =========================
 
 ### NEW FEATURES
@@ -35,6 +35,7 @@ dispRity v1.6.2 (2021-06-10)
  * Removed warning in `dispRity` when selecting a specific number of dimensions (old warning artefact).
  * Fixed bug in `plot.dispRity` when using `type = "preview"` on bootstrapped data.
  * Fixed bug when using `chrono.subsets` with `"continuous"` method a `FADLAD` data containing only node values (now correctly taken into account; thanks to [Peng-Wei Li](https://www.researchgate.net/profile/Peng-Wei-Li) for noticing it).
+ * Fixed bug when using `chrono.subsets` with `"gradual.*"` models on empty subsets.
 
 dispRity v1.6.0 (2021-04-16) *dispRitree*
 =========================
