@@ -229,13 +229,13 @@ get.time.slice <- function(time, tree, model, verbose) {
     slice <- select.table.tips(fast.slice.table(time, tree), model)
     if(is.na(slice[1])) {
         warning("The slice ", time, " is empty.", call. = FALSE)
+    } else {
+        ## Correct slices with only one taxa
+        if(is_split && ncol(slice) == 2) {
+            slice <- matrix(c(slice[,1], slice[1,2]), nrow = 1)
+        }
     }
-
-    ## Correct slices with only one taxa
-    if(is_split && ncol(slice) == 2) {
-        slice <- matrix(c(slice[,1], slice[1,2]), nrow = 1)
-    }
-
+    
     return(list("elements" = matrix(slice, ncol = ifelse(is_split, 3, 1))))
 }
 
