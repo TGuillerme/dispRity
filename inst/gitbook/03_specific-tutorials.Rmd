@@ -251,7 +251,6 @@ In brief, disparity is a summary metric that will represent an aspect of an ordi
 For example, one can look at ellipsoid hyper-volume of the ordinated space (Donohue _et al._ 2013), the sum and the product of the ranges and variances (Wills _et al._ 1994) or the median position of the elements relative to their centroid (Wills _et al._ 1994). 
 Of course, there are many more examples of metrics one can use for describing some aspect of the ordinated space, with some performing better than other ones at particular descriptive tasks, and some being more generalist.
 Check out this paper on selecting the best metric for your specific question in [Ecology and Evolution](https://onlinelibrary.wiley.com/doi/full/10.1002/ece3.6452).
-<!-- biorXiv preprint -->
 You can also use the  [`moms` shiny app](https://tguillerme.shinyapps.io/moms/) to test which metric captures which aspect of traitspace occupancy regarding your specific space and your specific question.
 
 Regardless, and because of this great diversity of metrics, the package `dispRity` does not have one way to measure disparity but rather proposes to facilitate users in defining their own disparity metric that will best suit their particular analysis.
@@ -510,7 +509,7 @@ Level | Name | Description | Source |
 2 | `quantiles` | The *n*th quantile range per axis | `dispRity` |
 2 | `radius` | The radius of each dimensions | `dispRity` |
 2 | `ranges` | The range of each dimension | `dispRity` |
-2 | `span.tree.length` | The minimal spanning tree length | [`ape`](https://cran.r-project.org/web/packages/vegan/index.html) (but see also [`vegan`](https://cran.r-project.org/web/packages/vegan/index.html)`::spantree`) |
+2 | `span.tree.length` | The minimal spanning tree length | [`vegan`](https://cran.r-project.org/web/packages/vegan/index.html)`::spantree` |
 2 | `variances` | The variance of each dimension | `dispRity` |
 
 1: Note that by default, the centroid is the centroid of the elements.
