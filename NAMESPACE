@@ -28,6 +28,7 @@ useDynLib(dispRity, .registration = TRUE)
 ## Data utilities
 export(Claddis.ordination)
 export(geomorph.ordination)
+export(select.axes)
 
 ##Functions
 export(boot.matrix)

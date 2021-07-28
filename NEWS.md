@@ -23,12 +23,17 @@ dispRity 0.2.0 (2016-04-01)
 <!--   * `dtt.dispRity` now works with time-slicing. -->
 
 
-dispRity v1.6.3 (2021-07-01)
+dispRity v1.6.4 (2021-07-26)
 =========================
 
 ### NEW FEATURES
 
+ * *New* data function: `select.axes` for selecting and analysing the number of axes required to contain an arbitrary amount of variance.
  * *New* utility function: `randtest.dist` for measuring the distance between the observed statistic and a specific quantile of the simulated statistic (thanks to [Frane Babarovic](https://twitter.com/FBabarovic) for the inspiration).
+
+### MINOR IMPROVEMENTS
+
+ * formalised the grouping logic for `custom.subsets` and `select.axes` (no noticeable change for the user).
 
 ### BUG FIXES
  
