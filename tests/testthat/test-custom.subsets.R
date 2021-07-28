@@ -33,6 +33,50 @@ test_that("split.elements.data.frame", {
 
 })
 
+test_that("set.group.list works", {
+
+    set.seed(41)
+    data <- matrix(data = rnorm(90), nrow = 9, ncol = 10, dimnames = list(letters[1:9]))
+    group1 <- list("A" = c(1,2,3,4), "B" = c(5,6,7,8,9))
+    group2 <- list("A" = c("a", "b", "c", "d"), "B" = c(letters[5:9]))
+    group3 <- as.data.frame(matrix(data = c(rep(1,5), rep(2,4)), nrow = 9, ncol = 1, dimnames = list(letters[1:9])))
+    group4 <- matrix(data = c(rep(1,5), rep(2,4)), nrow = 9, ncol = 1, dimnames = list(letters[1:9]))
+    group5 <- rtree(10, tip.label = letters[1:10])
+    group6 <- rtree(5, tip.label = letters[1:5])
+    group6$node.label <- letters[6:9]
+
+    ## List numbers
+    test <- set.group.list(group1, data)
+    expect_is(test, "list")
+    expect_equal(length(test), 2)
+    expect_equal(unlist(lapply(test, length)), c("A" = 4, "B" = 5))
+    ## List letters
+    test <- set.group.list(group2, data)
+    expect_is(test, "list")
+    expect_equal(length(test), 2)
+    expect_equal(unlist(lapply(test, length)), c("A" = 4, "B" = 5))
+    ## data frame
+    test <- set.group.list(group3, data)
+    expect_is(test, "list")
+    expect_equal(length(test), 2)
+    expect_equal(unlist(lapply(test, length)), c("1" = 5, "2" = 4))
+    ## matrix
+    test <- set.group.list(group4, data)
+    expect_is(test, "list")
+    expect_equal(length(test), 2)
+    expect_equal(unlist(lapply(test, length)), c("1" = 5, "2" = 4))
+    ## tree
+    test <- set.group.list(group5, data)
+    expect_is(test, "list")
+    expect_equal(length(test), 9)
+    expect_equal(unlist(lapply(test, length)), c(10, 7, 3, 2, 4, 3, 2, 3, 2))
+    ## tree nodes
+    test <- set.group.list(group6, data)
+    expect_is(test, "list")
+    expect_equal(length(test), 4)
+    expect_equal(unlist(lapply(test, length)), c(9, 3, 5, 3))
+})
+
 
 ## Sanitizing
 test_that("Sanitizing works", {

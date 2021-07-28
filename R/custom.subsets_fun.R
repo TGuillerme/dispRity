@@ -26,6 +26,30 @@ convert.name.to.numbers <- function(one_group, data) {
     return(match(one_group, rownames(data)))
 }
 
+
+## Internal for set.group.list with tree
+get.tree.clades <- function(tree, inc.nodes) {
+    ## Get the bipartitions
+    clades <- ape::prop.part(tree)
+
+    ## Get the tips names for each clades
+    clades <- lapply(clades, function(clade, labels) labels[clade], labels = attr(clades, "labels"))
+
+    ## Add node labels
+    if(inc.nodes) {
+        get.node.labels <- function(tips, tree) {
+            if(length(tips) != Ntip(tree)) {
+                return(drop.tip(tree, tip =tree$tip.label[!(tree$tip.label %in% tips)])$node.label)
+            } else {
+                return(tree$node.label)
+            }
+        }
+        clade_nodes <- lapply(clades, get.node.labels, tree = tree)
+        clades <- mapply(c, clades, clade_nodes)
+    }
+    return(clades)
+}
+
 ## Handle the group class for custom.subsets or select.axes
 set.group.list <- function(group, data) {
 
@@ -36,26 +60,17 @@ set.group.list <- function(group, data) {
         group_class <- "data.frame"
         group <- as.data.frame(group)
     }
-
-    split.data.frame <- function(X, group) split(rownames(group), as.factor(group[,X]))
-
-    apply(group, 2, split.data.frame, group = group)
-
-    split.data.frame(1, group = group)
-
-    # ## Switch methods
-    # output <- switch(group_class,
-    #     ## Group is already a list
-    #     "list" = group,
-    #     ## Group is a data.frame
-    #     "data.frame" = group,
-    #     ## Group is a phylo
-    #     "phylo"
-    #     )
-
-
-    ## Input can be matrix, data.frame, list or phylo
-    ## Output is list
+    
+    ## Switch methods
+    return(switch(group_class,
+            ## Group is already a list
+            "list"       = group,
+            ## Group is a data.frame
+            "data.frame" = unlist(sapply(1:ncol(group), function(X, group) split(rownames(group), as.factor(group[,X])), group = group, simplify = FALSE), recursive = FALSE),
+            ## Group is a phylo
+            "phylo"      = get.tree.clades(group, inc.nodes = !is.null(group$node.label))
+            )
+        )
 }
 
 ## Check the group list for custom.subsets or select.axes

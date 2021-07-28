@@ -67,6 +67,15 @@ custom.subsets <- function(data, group, tree) {
         warning("custom.subsets is applied on what seems to be a distance matrix.\nThe resulting matrices won't be distance matrices anymore!", call. = FALSE)
     }
 
+    ## Sanitize the group variable
+    check.class(group, c("matrix", "data.frame", "list", "phylo"))
+
+    ## Set the group.list
+    # group_list <- set.group.list(group, data)
+
+    ## Check the group list
+    # subsets_list <- check.group.list(group, data)
+
     ## group
     ## group is a matrix or a data.frame
     if(is(group, "matrix") || is(group, "data.frame")) {
