@@ -1,32 +1,3 @@
-# ## Checking number of elements in each group in the data.frame
-# check.elements.data.frame <- function(group) {
-#     any(table(as.factor(group)) < 3)
-# }
-
-# ## Splitting element function
-# split.elements.data.frame <- function(one_group, data) {
-
-#     ## lapply fun for selecting the elements
-#     select.elements <- function(subsets, one_group) {
-#         return(list("elements" = as.matrix(which(as.character(one_group) == as.character(levels(as.factor(one_group))[[subsets]])))))
-#     }
-
-#     ## Select the elements per subsets
-#     selected_elements <- lapply(as.list(1:length(levels(as.factor(one_group)))), select.elements, one_group)
-
-#     ## Adding the names to the subsets
-#     names(selected_elements) <- levels(as.factor(one_group))
-
-#     ## Output
-#     return(selected_elements)
-# }
-
-# ## Convert row names in row numbers
-# convert.name.to.numbers <- function(one_group, data) {
-#     return(match(one_group, rownames(data)))
-# }
-
-
 ## Internal for set.group.list with tree
 get.tree.clades <- function(tree, data) {
 
@@ -144,7 +115,7 @@ check.group.list <- function(group, data, group_class, match_call) {
     ## Set the group names
     if(is.null(names(group))) {
         ## Adding some group names
-        names(group) <- paste0(ifelse(group_class == "phylo", "Clade", "Group"), 1:length(group))
+        names(group) <- 1:length(group)
     }
 
     ## Set the row names

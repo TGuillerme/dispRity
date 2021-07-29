@@ -102,14 +102,14 @@ test_that("check.group.list works", {
                              group_class = "list",
                              match_call = match_call)
     expect_is(test, "list")
-    expect_equal(unlist(lapply(test, class)), c("Group1" = "integer", "Group2" = "integer"))
+    expect_equal(unlist(lapply(test, class)), c("1" = "integer", "2" = "integer"))
     
     test <- check.group.list(group = group_uname,
                              data = data_alpha,
                              group_class = "phylo",
                              match_call = match_call)
     expect_is(test, "list")
-    expect_equal(unlist(lapply(test, class)), c("Clade1" = "integer", "Clade2" = "integer"))
+    expect_equal(unlist(lapply(test, class)), c("1" = "integer", "2" = "integer"))
 
     test <- check.group.list(group = group_numer,
                              data = data_alpha,
@@ -135,14 +135,14 @@ test_that("check.group.list works", {
                              group_class = "list",
                              match_call = match_call)
     expect_is(test, "list")
-    expect_equal(unlist(lapply(test, class)), c("Group1" = "integer", "Group2" = "integer"))
+    expect_equal(unlist(lapply(test, class)), c("1" = "integer", "2" = "integer"))
     
     test <- check.group.list(group = group_uname,
                              data = data_numer,
                              group_class = "phylo",
                              match_call = match_call)
     expect_is(test, "list")
-    expect_equal(unlist(lapply(test, class)), c("Clade1" = "integer", "Clade2" = "integer"))
+    expect_equal(unlist(lapply(test, class)), c("1" = "integer", "2" = "integer"))
 
     test <- check.group.list(group = group_numer,
                              data = data_numer,
@@ -173,14 +173,14 @@ test_that("check.group.list works", {
                              group_class = "list",
                              match_call = match_call)
     expect_is(test, "list")
-    expect_equal(unlist(lapply(test, class)), c("Group1" = "integer", "Group2" = "integer"))
+    expect_equal(unlist(lapply(test, class)), c("1" = "integer", "2" = "integer"))
     
     test <- check.group.list(group = group_uname,
                              data = data_alpha,
                              group_class = "phylo",
                              match_call = match_call)
     expect_is(test, "list")
-    expect_equal(unlist(lapply(test, class)), c("Clade1" = "integer", "Clade2" = "integer"))
+    expect_equal(unlist(lapply(test, class)), c("1" = "integer", "2" = "integer"))
 
     test <- check.group.list(group = group_alpha,
                              data = data_alpha,
@@ -206,14 +206,14 @@ test_that("check.group.list works", {
                              group_class = "list",
                              match_call = match_call)
     expect_is(test, "list")
-    expect_equal(unlist(lapply(test, class)), c("Group1" = "integer", "Group2" = "integer"))
+    expect_equal(unlist(lapply(test, class)), c("1" = "integer", "2" = "integer"))
     
     test <- check.group.list(group = group_uname,
                              data = data_numer,
                              group_class = "phylo",
                              match_call = match_call)
     expect_is(test, "list")
-    expect_equal(unlist(lapply(test, class)), c("Clade1" = "integer", "Clade2" = "integer"))
+    expect_equal(unlist(lapply(test, class)), c("1" = "integer", "2" = "integer"))
 
     error <- capture_error(test <- test <- check.group.list(group = group_alpha,
                              data = data_numer,
