@@ -68,150 +68,165 @@ custom.subsets <- function(data, group, tree) {
     }
 
     ## Sanitize the group variable
-    check.class(group, c("matrix", "data.frame", "list", "phylo"))
-
+    group_class <- check.class(group, c("matrix", "data.frame", "list", "phylo"))
+    if(group_class == "phylo") {
+        ## Saving the tree for export
+        tree <- group
+    }
     ## Set the group.list
-    # group_list <- set.group.list(group, data)
+    group_list <- set.group.list(group, data, group_class)
+
+    ## Replace nulls by NAs in groups
+    group_list <- lapply(group_list, function(x) if(is.null(x)){return(NA)}else{return(x)})
+
+    ## Find empty groups
+    if(any(empty_groups <- is.na(group_list))) {
+        warning(paste0("The following subset", ifelse(sum(empty_groups) > 1, "s are ", " is "), "empty: ", paste0(names(which(empty_groups)), collapse = ", "), "."))
+    }
 
     ## Check the group list
-    # subsets_list <- check.group.list(group, data)
+    group_list <- check.group.list(group_list, data, group_class, match_call)
 
-    ## group
-    ## group is a matrix or a data.frame
-    if(is(group, "matrix") || is(group, "data.frame")) {
-        group_class <- "data.frame"
-        group <- as.data.frame(group)
-    } else {
-        if(is(group, "list")) {
-            group_class <- "list"
-        } else {
+    ## Make into a subset table
+    subsets_list <- lapply(group_list, function(x) list(elements = matrix(x, ncol = 1)))
 
-            if(is(group, "phylo")) {
-                tree <- group
-                group_class <- "phylo"
-                ## Matching the tree and the data
-                if(any(is.na(match(group$tip.label, rownames(data[[1]]))))) {
-                    stop.call("", "Some tips in the tree are not matching the data.\nSee ?clean.data for matching the tree and the data.")
-                }
 
-                if(is.null(group$node.label)) {
-                    ## No nodes
-                    if(nrow(data[[1]]) != Ntip(group)) {
-                        stop.call("", "Some rows in the data are not matching the tree.\nSee ?clean.data for matching the tree and the data.")
-                    }
-                    inc.nodes <- FALSE
-                } else {
-                    ## Are the nodes relevant in the data
-                    if(nrow(data[[1]]) == (Ntip(group) + Nnode(group))) {
-                        if(any(is.na(match(group$node.label, rownames(data[[1]]))))) {
-                            stop.call("", "Some nodes in the tree are not matching the data.\nSee ?clean.data for matching the tree and the data.")
-                        }
-                        inc.nodes <- TRUE
-                    } else {
-                        if(nrow(data[[1]]) == Ntip(group)) {
-                            inc.nodes <- FALSE
-                        } else {
-                            stop.call("", "Some rows in the data are not matching the tree.\nSee ?clean.data for matching the tree and the data.")
-                        }
-                    }
-                }
+    # ## group
+    # ## group is a matrix or a data.frame
+    # if(is(group, "matrix") || is(group, "data.frame")) {
+    #     group_class <- "data.frame"
+    #     group <- as.data.frame(group)
+    # } else {
+    #     if(is(group, "list")) {
+    #         group_class <- "list"
+    #     } else {
 
-            } else {
-                stop.call("", "group argument must be either a \"list\", a \"matrix\", a \"data.frame\" or a \"phylo\" object.")
-            }
-        }
-    }
+    #         if(is(group, "phylo")) {
+    #             tree <- group
+    #             group_class <- "phylo"
+    #             ## Matching the tree and the data
+    #             if(any(is.na(match(group$tip.label, rownames(data[[1]]))))) {
+    #                 stop.call("", "Some tips in the tree are not matching the data.\nSee ?clean.data for matching the tree and the data.")
+    #             }
 
-    ## ----------------------
-    ##  SPLITING THE DATA INTO A LIST
-    ## ----------------------
-    if(group_class == "data.frame") {
-        ## Using a data.frame or a matrix
+    #             if(is.null(group$node.label)) {
+    #                 ## No nodes
+    #                 if(nrow(data[[1]]) != Ntip(group)) {
+    #                     stop.call("", "Some rows in the data are not matching the tree.\nSee ?clean.data for matching the tree and the data.")
+    #                 }
+    #                 inc.nodes <- FALSE
+    #             } else {
+    #                 ## Are the nodes relevant in the data
+    #                 if(nrow(data[[1]]) == (Ntip(group) + Nnode(group))) {
+    #                     if(any(is.na(match(group$node.label, rownames(data[[1]]))))) {
+    #                         stop.call("", "Some nodes in the tree are not matching the data.\nSee ?clean.data for matching the tree and the data.")
+    #                     }
+    #                     inc.nodes <- TRUE
+    #                 } else {
+    #                     if(nrow(data[[1]]) == Ntip(group)) {
+    #                         inc.nodes <- FALSE
+    #                     } else {
+    #                         stop.call("", "Some rows in the data are not matching the tree.\nSee ?clean.data for matching the tree and the data.")
+    #                     }
+    #                 }
+    #             }
 
-        ## must have the same labels as data
-        if(!all( as.character(rownames(group)) %in% as.character(rownames(data[[1]])))) {
-            stop.call("", "Row names in data and group arguments don't match.")
-        }
+    #         } else {
+    #             stop.call("", "group argument must be either a \"list\", a \"matrix\", a \"data.frame\" or a \"phylo\" object.")
+    #         }
+    #     }
+    # }
 
-        ## Checking if the groups have a list three elements
-        if(any(apply(group, 2, check.elements.data.frame))) {
-            stop.call("", "There must be at least three elements for each subset.")
-        }
+    # ## ----------------------
+    # ##  SPLITING THE DATA INTO A LIST
+    # ## ----------------------
+    # if(group_class == "data.frame") {
+    #     ## Using a data.frame or a matrix
 
-        ## Creating the subsets
-        subsets_list <- unlist(apply(group, 2, split.elements.data.frame, data[[1]]), recursive = FALSE)
-    } else {
+    #     ## must have the same labels as data
+    #     if(!all( as.character(rownames(group)) %in% as.character(rownames(data[[1]])))) {
+    #         stop.call("", "Row names in data and group arguments don't match.")
+    #     }
 
-        if(group_class == "phylo") {
+    #     ## Checking if the groups have a list three elements
+    #     if(any(apply(group, 2, check.elements.data.frame))) {
+    #         stop.call("", "There must be at least three elements for each subset.")
+    #     }
 
-            get.clade.tips <- function(node, tree, inc.nodes) {
-                if(inc.nodes) {
-                    clade <- extract.clade(phy = tree, node = node)
-                    return(c(clade$tip.label, clade$node.label))
-                } else {
-                    return(extract.clade(phy = tree, node = node)$tip.label)
-                }
-            }
+    #     ## Creating the subsets
+    #     subsets_list <- unlist(apply(group, 2, split.elements.data.frame, data[[1]]), recursive = FALSE)
+    # } else {
 
-             group_tmp <- sapply(Ntip(group)+1:Nnode(group), get.clade.tips, tree = group, inc.nodes = inc.nodes, USE.NAMES = FALSE)
+    #     if(group_class == "phylo") {
 
-             if(!is.null(group$node.label)) {
-                names(group_tmp) <- group$node.label
-             } else {
-                names(group_tmp) <- paste0("n", Ntip(group)+1:Nnode(group))
-             }
+    #         get.clade.tips <- function(node, tree, inc.nodes) {
+    #             if(inc.nodes) {
+    #                 clade <- extract.clade(phy = tree, node = node)
+    #                 return(c(clade$tip.label, clade$node.label))
+    #             } else {
+    #                 return(extract.clade(phy = tree, node = node)$tip.label)
+    #             }
+    #         }
 
-             group <- group_tmp
-         }
+    #          group_tmp <- sapply(Ntip(group)+1:Nnode(group), get.clade.tips, tree = group, inc.nodes = inc.nodes, USE.NAMES = FALSE)
 
-        ## Using a list
+    #          if(!is.null(group$node.label)) {
+    #             names(group_tmp) <- group$node.label
+    #          } else {
+    #             names(group_tmp) <- paste0("n", Ntip(group)+1:Nnode(group))
+    #          }
 
-        ## Check for empty groups
-        empty_groups <- is.na(group) | unlist(lapply(group, is.null))
-        if(any(empty_groups)) {
-            ## Prepare a warning message
-            empty_groups_names <- ifelse(!is.null(names(empty_groups)), paste(names(which(empty_groups)), collapse = ", "), paste(which(empty_groups), collapse = ", "))
-            being <- ifelse(length(which(empty_groups)) == 1, "is", "are")
-            subset <- ifelse(length(which(empty_groups)) == 1, "Subsample", "Subsamples")
-            ## Send a warning messages
-            warning(paste(subset, empty_groups_names, being, "empty."))
+    #          group <- group_tmp
+    #     }
 
-            ## Replace NULL groups by NAs
-            null_groups <- unlist(lapply(group, is.null))
-            if(any(null_groups)) {
-                group[which(null_groups)] <- NA
-            }
-        } 
-        ## Select the groups for sanitising
-        group_select <- which(empty_groups != TRUE)
+    #     ## Using a list
 
-        ## Cleaning groups
-        if(all(unique(unlist(lapply(group[group_select], class))) %in% c("numeric", "integer"))) {
-            ## The list must have the same columns as in the data
-            if(max(unlist(group[group_select])) > nrow(data[[1]])) {
-                stop.call("", "Row numbers in group don't match the row numbers in data.")
-            }
-        } else {
-            if(all(unique(unlist(lapply(group[group_select], class))) == "character")) {
-                if(!all( as.character(unlist(group[group_select])) %in% as.character(rownames(data[[1]])))) {
-                    stop.call("", "Row names in data and group arguments don't match.")
-                }
+    #     ## Check for empty groups
+    #     empty_groups <- is.na(group) | unlist(lapply(group, is.null))
+    #     if(any(empty_groups)) {
+    #         ## Prepare a warning message
+    #         empty_groups_names <- ifelse(!is.null(names(empty_groups)), paste(names(which(empty_groups)), collapse = ", "), paste(which(empty_groups), collapse = ", "))
+    #         being <- ifelse(length(which(empty_groups)) == 1, "is", "are")
+    #         subset <- ifelse(length(which(empty_groups)) == 1, "Subsample", "Subsamples")
+    #         ## Send a warning messages
+    #         warning(paste(subset, empty_groups_names, being, "empty."))
+
+    #         ## Replace NULL groups by NAs
+    #         null_groups <- unlist(lapply(group, is.null))
+    #         if(any(null_groups)) {
+    #             group[which(null_groups)] <- NA
+    #         }
+    #     } 
+    #     ## Select the groups for sanitising
+    #     group_select <- which(empty_groups != TRUE)
+
+    #     ## Cleaning groups
+    #     if(all(unique(unlist(lapply(group[group_select], class))) %in% c("numeric", "integer"))) {
+    #         ## The list must have the same columns as in the data
+    #         if(max(unlist(group[group_select])) > nrow(data[[1]])) {
+    #             stop.call("", "Row numbers in group don't match the row numbers in data.")
+    #         }
+    #     } else {
+    #         if(all(unique(unlist(lapply(group[group_select], class))) == "character")) {
+    #             if(!all( as.character(unlist(group[group_select])) %in% as.character(rownames(data[[1]])))) {
+    #                 stop.call("", "Row names in data and group arguments don't match.")
+    #             }
                 
-                ## Convert the row names into row numbers
-                group <- lapply(group, convert.name.to.numbers, data[[1]])
+    #             ## Convert the row names into row numbers
+    #             group <- lapply(group, convert.name.to.numbers, data[[1]])
 
-            } else {
-                stop.call("", "group argument must be a list of row names or row numbers.")
-            }
-        }
+    #         } else {
+    #             stop.call("", "group argument must be a list of row names or row numbers.")
+    #         }
+    #     }
 
-        ## Checking if the groups have names
-        if(is.null(names(group))) names(group) <- seq(1:length(group))
+    #     ## Checking if the groups have names
+    #     if(is.null(names(group))) names(group) <- seq(1:length(group))
 
-        ## Creating the subsets
-        subsets_list <- lapply(group, function(x) list("elements" = matrix(x)))
+    #     ## Creating the subsets
+    #     subsets_list <- lapply(group, function(x) list("elements" = matrix(x)))
     
-    }
+    # }
 
     ## Attach the tree
     if(group_class == "phylo" || !missing(tree)) {

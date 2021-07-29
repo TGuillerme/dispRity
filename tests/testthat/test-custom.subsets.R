@@ -5,34 +5,35 @@
 data <- matrix(data = rnorm(10*9), nrow = 10, ncol = 9)
 rownames(data) <- letters[1:10]
 
-## Internal functions
-test_that("check.elements.data.frame", {
-    ## Returns false if all groups have > 3 elements
-    expect_false(check.elements.data.frame(c(rep(1,3), rep(2,4))))
-    ## else returns true
-    expect_true(check.elements.data.frame(c(rep(1,2), rep(2,4))))
-})
+# ## Internal functions
+# test_that("check.elements.data.frame", {
+#     ## Returns false if all groups have > 3 elements
+#     expect_false(check.elements.data.frame(c(rep(1,3), rep(2,4))))
+#     ## else returns true
+#     expect_true(check.elements.data.frame(c(rep(1,2), rep(2,4))))
+# })
 
-test_that("convert.name.to.numbers", {
-    ## Returns the matching rownames ...
-    expect_equal(convert.name.to.numbers(c("a", "b"), data), c(1,2))
-    ## ... in the right input order
-    expect_equal(convert.name.to.numbers(c("d", "a"), data), c(4,1))
-    ## returns NA if no match
-    expect_true(is.na(convert.name.to.numbers(c("X"), data)))
-})
+# test_that("convert.name.to.numbers", {
+#     ## Returns the matching rownames ...
+#     expect_equal(convert.name.to.numbers(c("a", "b"), data), c(1,2))
+#     ## ... in the right input order
+#     expect_equal(convert.name.to.numbers(c("d", "a"), data), c(4,1))
+#     ## returns NA if no match
+#     expect_true(is.na(convert.name.to.numbers(c("X"), data)))
+# })
 
-test_that("split.elements.data.frame", {
-    test <- split.elements.data.frame(c(rep(1,5), rep(2,5)), data)
+# test_that("split.elements.data.frame", {
+#     test <- split.elements.data.frame(c(rep(1,5), rep(2,5)), data)
 
-    ## Must be a list of two elements ("1" and "2") with a list of 5 elements each within.
-    expect_is(test, "list")
-    expect_equal(length(test), 2)
-    expect_equal(names(test), c("1", "2"))
-    expect_equal(as.vector(unlist(lapply(test, lapply, length))), c(5,5))
+#     ## Must be a list of two elements ("1" and "2") with a list of 5 elements each within.
+#     expect_is(test, "list")
+#     expect_equal(length(test), 2)
+#     expect_equal(names(test), c("1", "2"))
+#     expect_equal(as.vector(unlist(lapply(test, lapply, length))), c(5,5))
 
-})
+# })
 
+## Set.group.list
 test_that("set.group.list works", {
 
     set.seed(41)
@@ -46,37 +47,180 @@ test_that("set.group.list works", {
     group6$node.label <- letters[6:9]
 
     ## List numbers
-    test <- set.group.list(group1, data)
+    test <- set.group.list(group1, data, group_class = class(group1))
     expect_is(test, "list")
     expect_equal(length(test), 2)
     expect_equal(unlist(lapply(test, length)), c("A" = 4, "B" = 5))
     ## List letters
-    test <- set.group.list(group2, data)
+    test <- set.group.list(group2, data, group_class = class(group2))
     expect_is(test, "list")
     expect_equal(length(test), 2)
     expect_equal(unlist(lapply(test, length)), c("A" = 4, "B" = 5))
     ## data frame
-    test <- set.group.list(group3, data)
+    test <- set.group.list(group3, data, group_class = class(group3))
     expect_is(test, "list")
     expect_equal(length(test), 2)
-    expect_equal(unlist(lapply(test, length)), c("1" = 5, "2" = 4))
+    expect_equal(unlist(lapply(test, length)), c("V1.1" = 5, "V1.2" = 4))
     ## matrix
-    test <- set.group.list(group4, data)
+    test <- set.group.list(group4, data, group_class = class(group4))
     expect_is(test, "list")
     expect_equal(length(test), 2)
-    expect_equal(unlist(lapply(test, length)), c("1" = 5, "2" = 4))
+    expect_equal(unlist(lapply(test, length)), c("V1.1" = 5, "V1.2" = 4))
     ## tree
-    test <- set.group.list(group5, data)
+    test <- set.group.list(group5, data, group_class = class(group5))
     expect_is(test, "list")
     expect_equal(length(test), 9)
     expect_equal(unlist(lapply(test, length)), c(10, 7, 3, 2, 4, 3, 2, 3, 2))
     ## tree nodes
-    test <- set.group.list(group6, data)
+    test <- set.group.list(group6, data, group_class = class(group6))
     expect_is(test, "list")
     expect_equal(length(test), 4)
     expect_equal(unlist(lapply(test, length)), c(9, 3, 5, 3))
 })
 
+## Check.group.list
+test_that("check.group.list works", {
+
+    set.seed(41)
+    data_alpha <- matrix(data = rnorm(90), nrow = 9, ncol = 10, dimnames = list(letters[1:9]))
+    data_numer <- matrix(data = rnorm(90), nrow = 9, ncol = 10, dimnames = list(as.character(1:9)))
+
+    group_uname <- list(c(1,2,3,4), c(5,6,7,8,9))
+    group_numer <- list("A" = as.numeric(c(1,2,3,4)), "B" = c(5,6,7,8,9))
+    group_numer_wrong <- list("A" = c(1,2,3,4), "B" = c(5,6,7,8,9,11)) #Should error 11
+    group_numer_wrong2 <-list("A" = c(1,2,3,4,88), "B" = c(5,6,7,8,9,11)) #Should error 88
+    group_alpha <- list("A" = c("a", "b", "c", "d"), "B" = c(letters[5:9]))
+    group_alpha_wrong <-list("A" = c("a", "b", "c", "d"), "B" = c(letters[5:9], "x","z")) #Should error "x, z"
+    group_alpha_wrong2 <-list("A" = c("a", "b", "c", "d", "3"), "B" = c(letters[5:9])) #Should error 3
+
+    match_call <- list(data = "test_ping")
+
+
+    ## Data alpha x groups
+    test <- check.group.list(group = group_uname,
+                             data = data_alpha,
+                             group_class = "list",
+                             match_call = match_call)
+    expect_is(test, "list")
+    expect_equal(unlist(lapply(test, class)), c("Group1" = "integer", "Group2" = "integer"))
+    
+    test <- check.group.list(group = group_uname,
+                             data = data_alpha,
+                             group_class = "phylo",
+                             match_call = match_call)
+    expect_is(test, "list")
+    expect_equal(unlist(lapply(test, class)), c("Clade1" = "integer", "Clade2" = "integer"))
+
+    test <- check.group.list(group = group_numer,
+                             data = data_alpha,
+                             group_class = "list",
+                             match_call = match_call)
+    expect_is(test, "list")
+    expect_equal(unlist(lapply(test, class)), c("A" = "integer", "B" = "integer"))
+
+    error <- capture_error(test <- check.group.list(group = group_numer_wrong,
+                             data = data_alpha,
+                             group_class = "list",
+                             match_call = match_call))
+    expect_equal(error[[1]], "The following element cannot be found in test_ping: 11.")
+
+    error <- capture_error(test <- check.group.list(group = group_numer_wrong2,
+                             data = data_alpha,
+                             group_class = "list",
+                             match_call = match_call))
+    expect_equal(error[[1]], "The following element cannot be found in test_ping: 88.")
+
+    test <- check.group.list(group = group_uname,
+                             data = data_numer,
+                             group_class = "list",
+                             match_call = match_call)
+    expect_is(test, "list")
+    expect_equal(unlist(lapply(test, class)), c("Group1" = "integer", "Group2" = "integer"))
+    
+    test <- check.group.list(group = group_uname,
+                             data = data_numer,
+                             group_class = "phylo",
+                             match_call = match_call)
+    expect_is(test, "list")
+    expect_equal(unlist(lapply(test, class)), c("Clade1" = "integer", "Clade2" = "integer"))
+
+    test <- check.group.list(group = group_numer,
+                             data = data_numer,
+                             group_class = "list",
+                             match_call = match_call)
+    expect_is(test, "list")
+    expect_equal(unlist(lapply(test, class)), c("A" = "integer", "B" = "integer"))
+
+    error <- capture_error(test <- check.group.list(group = group_numer_wrong,
+                             data = data_numer,
+                             group_class = "list",
+                             match_call = match_call))
+    expect_equal(error[[1]], "The following element cannot be found in test_ping: 11.")
+
+    error <- capture_error(test <- check.group.list(group = group_numer_wrong2,
+                             data = data_numer,
+                             group_class = "list",
+                             match_call = match_call))
+    expect_equal(error[[1]], "The following element cannot be found in test_ping: 88.")
+
+
+
+
+
+    ## Data numeric x groups
+    test <- check.group.list(group = group_uname,
+                             data = data_alpha,
+                             group_class = "list",
+                             match_call = match_call)
+    expect_is(test, "list")
+    expect_equal(unlist(lapply(test, class)), c("Group1" = "integer", "Group2" = "integer"))
+    
+    test <- check.group.list(group = group_uname,
+                             data = data_alpha,
+                             group_class = "phylo",
+                             match_call = match_call)
+    expect_is(test, "list")
+    expect_equal(unlist(lapply(test, class)), c("Clade1" = "integer", "Clade2" = "integer"))
+
+    test <- check.group.list(group = group_alpha,
+                             data = data_alpha,
+                             group_class = "list",
+                             match_call = match_call)
+    expect_is(test, "list")
+    expect_equal(unlist(lapply(test, class)), c("A" = "integer", "B" = "integer"))
+
+    error <- capture_error(test <- check.group.list(group = group_alpha_wrong,
+                             data = data_alpha,
+                             group_class = "list",
+                             match_call = match_call))
+    expect_equal(error[[1]], "The following elements cannot be found in test_ping: x, z.")
+
+    error <- capture_error(test <- check.group.list(group = group_alpha_wrong2,
+                             data = data_alpha,
+                             group_class = "phylo",
+                             match_call = match_call))
+    expect_equal(error[[1]], "The following element cannot be found in test_ping: 3.\nSee ?clean.data for matching the tree and the data.")
+
+    test <- check.group.list(group = group_uname,
+                             data = data_numer,
+                             group_class = "list",
+                             match_call = match_call)
+    expect_is(test, "list")
+    expect_equal(unlist(lapply(test, class)), c("Group1" = "integer", "Group2" = "integer"))
+    
+    test <- check.group.list(group = group_uname,
+                             data = data_numer,
+                             group_class = "phylo",
+                             match_call = match_call)
+    expect_is(test, "list")
+    expect_equal(unlist(lapply(test, class)), c("Clade1" = "integer", "Clade2" = "integer"))
+
+    error <- capture_error(test <- test <- check.group.list(group = group_alpha,
+                             data = data_numer,
+                             group_class = "list",
+                             match_call = match_call))
+    expect_equal(error[[1]], "The following elements cannot be found in test_ping: a, b, c, d.")
+})
 
 ## Sanitizing
 test_that("Sanitizing works", {
@@ -98,21 +242,9 @@ test_that("Sanitizing works", {
     expect_error(
         custom.subsets(data, group)
         )
-    ## One class with only 3 elements
-    rownames(group) <- letters[1:10]
-    group[1:2,1] <- 3
-    expect_error(
-        custom.subsets(data, group)
-        )
     ## Wrong tree
     expect_error(
         custom.subsets(data, rtree(10))
-    )
-    tree <- rtree(9)
-    tree$tip.label <- letters[1:9]
-    tree$node.label <- NULL
-    expect_error(
-        custom.subsets(data, tree)
     )
     tree <- rtree(5)
     tree$tip.label <- letters[1:5]
@@ -125,18 +257,18 @@ test_that("Sanitizing works", {
     data_wrong <- data
     rownames(data_wrong)[1] <- "AAA"
     error <- capture_error(custom.subsets(data_wrong, tree))
-    expect_equal(error[[1]], "Some tips in the tree are not matching the data.\nSee ?clean.data for matching the tree and the data.")
+    expect_equal(error[[1]], "The following element cannot be found in custom.subsets(data = data_wrong, group = tree): a.\nSee ?clean.data for matching the tree and the data.")
 
     ## Wrong names as list
     error <- capture_error(custom.subsets(data, group = list(letters[1:5], letters[20:25])))
-    expect_equal(error[[1]], "Row names in data and group arguments don't match.")    
+    expect_equal(error[[1]], "The following elements cannot be found in custom.subsets(data = data, group = list(letters[1:5], letters[20:25])): t, u, v, w, x, y.")    
     error <- capture_error(custom.subsets(data, group = list(1:5, 20:25)))
-    expect_equal(error[[1]], "Row numbers in group don't match the row numbers in data.")
+    expect_equal(error[[1]], "The following elements cannot be found in custom.subsets(data = data, group = list(1:5, 20:25)): 20, 21, 22, 23, 24, 25.")
 })
 
 ## Results
-group <- as.data.frame(matrix(data = c(rep(1,5), rep(2,5)), nrow = 10, ncol = 1))
-rownames(group) <- letters[1:10]
+group <- as.data.frame(matrix(data = c(rep(1,5), rep(2,4)), nrow = 9, ncol = 1))
+rownames(group) <- letters[1:9]
 test <- custom.subsets(data, group)
 
 ## Test
@@ -158,15 +290,15 @@ test_that("custom.subsets works", {
         ,5)
     expect_equal(
         length(test$subsets[[2]]$elements)
-        ,5)
+        ,4)
 })
 
 ## Test
 test_that("Different group inputs gives the same output", {
 
-    group1 <- list("A" = c(1,2,3,4), "B" = c(5,6,7,8,9,10))
-    group2 <- list("A" = c("a", "b", "c", "d"), "B" = c(letters[5:10]))
-    group3 <- as.data.frame(matrix(data = c(rep(1,4), rep(2,6)), nrow = 10, ncol = 1, dimnames = list(letters[1:10])))
+    group1 <- list("A" = c(1,2,3,4), "B" = c(5,6,7,8,9))
+    group2 <- list("A" = c("a", "b", "c", "d"), "B" = c(letters[5:9]))
+    group3 <- as.data.frame(matrix(data = c(rep(1,4), rep(2,5)), nrow = 9, ncol = 1, dimnames = list(letters[1:9])))
 
     cust1 <- custom.subsets(data, group1)
     cust2 <- custom.subsets(data, group2)
@@ -198,7 +330,6 @@ test_that("Different group inputs gives the same output", {
         all(as.vector(cust2$subsets[[2]]$elements) == as.vector(cust3$subsets[[2]]$elements))
     )
 })
-
 
 ## Example
 test_that("Example works", {
@@ -250,11 +381,11 @@ test_that("empty custom.subsets", {
 
     warning <- capture_warnings(test <- custom.subsets(data, group4))
 
-    expect_equal(warning, "Subsamples A, E are empty.")
+    expect_equal(warning, "The following subsets are empty: A, E.")
     expect_is(test, "dispRity")
     expect_equal(length(test$subsets), 5)
 
-    expect_equal(capture_warnings(custom.subsets(data, group5)), "Subsample E is empty.")
+    expect_equal(capture_warnings(custom.subsets(data, group5)), "The following subset is empty: E.")
 }) 
 
 ## Subsets works with a tree
@@ -279,8 +410,6 @@ test_that("clade subsets works", {
     expect_is(with_nodes$tree[[1]], "phylo")
 })
 
-
-
 test_that("custom.subsets detects distance matrices", {
     non_dist <- matrix(1:100, 10, 10)
     rownames(non_dist) <- letters[1:10]
@@ -290,7 +419,6 @@ test_that("custom.subsets detects distance matrices", {
     msg <- capture_warnings(custom.subsets(is_dist, group = list(letters[1:5], letters[6:10])))
     expect_equal(msg, "custom.subsets is applied on what seems to be a distance matrix.\nThe resulting matrices won't be distance matrices anymore!")
 })
-
 
 test_that("custom.subsets works with tree", {
     data(BeckLee_mat50)

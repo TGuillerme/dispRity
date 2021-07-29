@@ -33,7 +33,7 @@ dispRity v1.6.4 (2021-07-26)
 
 ### MINOR IMPROVEMENTS
 
- * formalised the grouping logic for `custom.subsets` and `select.axes` (no noticeable change for the user).
+ * formalised the grouping logic for `custom.subsets` and `select.axes`. This can create some noticeable user level changes namely: warning messages for empty subsets now correctly mentions "subsets" (rather than subsamples); groups with incorrect elements are now always flagged as errors (rather than just ignored). The changes at the developer level is that the logic is now made smoother and exported in `custom.subsets_fun.R`.
 
 ### BUG FIXES
  
