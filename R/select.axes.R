@@ -5,14 +5,23 @@
 #' @param data The trait space to analyse. This can be either a \code{"matrix"}, \code{"prcomp"}, \code{"princomp"} or a \code{"dispRity"} object.
 #' @param group Optional, either a \code{list} of row numbers or names to be used as different groups or a \code{data.frame} with the same \eqn{k} elements as in \code{data} as rownames. If \code{data} is a \code{"dispRity"} object that already contains groups, the \code{group} argument is recycled.
 #' @param threshold The arbitrary threshold amount of variance (by default this is \code{0.95}).
+#' @param inc.threshold Logical, whether to output the axes that contain the threshold value (\code{TRUE}; default) or not (\code{FALSE}). See details.
+#' 
+#' , i.e. the axes necessary to include at least the threshold value
+#' 
+#' @details
+#' If \code{inc.threshold = TRUE}, the returned axes are the ones that contains at least the threshold value (e.g. if the threshold is \code{0.95}, all the returned axes contain at least \code{0.95} of the variance, potentially more). If \code{inc.threshold = FALSE}, the returned axes are the ones before reaching this threshold (e.g. the cumulative variance returned is strictly less or equal to \code{0.95}).
 #' 
 #' @return
 #' A \code{"dispRity"}, \code{"axes"} object that can be printed, summarised and plot through generic \code{print}, \code{summary} and \code{plot} functions.
 #' The object is a list containing:
 #' \itemize{
-#'      \item \code{$dimensions}: the selected dimensions;
-#'      \item \code{$var.table}: the variance per axes table;
-#'      \item \code{$cum.var.table}: the cumulative variance per axes table.
+#'      \item \code{$dimensions}: the maximum number of dimensions selected across all groups;
+#'      \item \code{$dim.list}: the selected dimensions per group;
+#'      \item \code{$var}: the variance per axes per group;
+#'      \item \code{$scaled.var}: the variance scaled variance per axes per group;
+#'      \item \code{$cumsum.var}: the cumulative scaled variance per axes per group;
+#'      \item \code{$call}: a list containing the \code{$threshold} value and the \code{$inc.threshold} option used.
 #' }
 #' 
 #' @examples
@@ -25,9 +34,10 @@
 # data(demo_data)
 # data <- demo_data$wright$matrix[[1]]
 # group <- unlist(demo_data$wright$subsets, recursive = FALSE)
+# group <- lapply(group, c)
 
 
-select.axes <- function(data, group, threshold = 0.95) {
+select.axes <- function(data, group, threshold = 0.95, inc.threshold = TRUE) {
 
     ## Set up the data type
     data_class <- check.class(data, c("dispRity", "matrix", "prcomp", "princomp"))
@@ -41,33 +51,72 @@ select.axes <- function(data, group, threshold = 0.95) {
     n_elements <- nrow(trait_space[[1]])
 
     ## Set up the base group (all elements)
-    group_base <- list("whole_space" = matrix(1:nrow(trait_space[[1]]), ncol = 1))
+    base_group <- 1:nrow(trait_space[[1]])
     
     ## Set up the groups
     if(missing(group)) {
         if(data_class == "dispRity") {
             ## Extracting the groups from the dispRity object
-            group <- lapply(data$subsets, function(x) return(x$elements))
-            if(max(unlist(lapply(group, length))) != n_dimensions) {
-                group <- c(group_base, group)
-            }
+            group <- lapply(data$subsets, function(x) return(c(x$elements)))
         } else {
-            ## No group (only whole space)
-            group <- group_base
+            group <- list(whole_space = base_group)
         }
-    } else {
-        ## Check if group works
+    }
+        
+    ## Sanitize the group variable
+    group_class <- check.class(group, c("matrix", "data.frame", "list", "phylo"))
+    if(group_class == "phylo") {
+        ## Saving the tree for export
+        tree <- group
+    }
+    ## Set the group.list
+    group_list <- set.group.list(group, data, group_class)
 
+    ## Replace nulls by NAs in groups
+    group_list <- lapply(group_list, function(x) if(is.null(x)){return(NA)}else{return(x)})
+
+    ## Find empty groups
+    if(any(empty_groups <- is.na(group_list))) {
+        warning(paste0("The following subset", ifelse(sum(empty_groups) > 1, "s are ", " is "), "empty: ", paste0(names(which(empty_groups)), collapse = ", "), "."))
     }
 
-    # Group class can be "data.frame", "matrix", "list", "phylo"
+    ## Check the group list
+    group_list <- check.group.list(group_list, data, group_class, match_call)
 
 
+    ## Add the base group (if not present)
+    if(!any(unlist(lapply(group_list, length)) == length(base_group))) {
+        group_list$whole_space <- base_group    
+    }
+    
+    ## Get the variance per group
+    group_var <- lapply(group_list, function(row,data) apply(data[[1]][row,], 2, var), data = trait_space)
 
+    ## Get the scaled variance per group
+    group_sumvar <- lapply(group_var, function(x) x/sum(x))
 
-    # Subset by data frame
-    #subsets_list <- unlist(apply(group, 2, split.elements.data.frame, data[[1]]), recursive = FALSE)
+    ## Get the cumulative scaled variance per group
+    group_cumsumvar <- lapply(group_sumvar, function(x) cumsum(x))
 
+    ## Get the axis thresholds
+    if(!inc.threshold) {
+        group_axes <- lapply(group_cumsumvar, function(x, threshold) which(x <= threshold), threshold)
+    } else {
+        group_axes <- lapply(group_cumsumvar, function(x, threshold) c(1, which(x <= threshold) + 1), threshold)
+    }
 
-    return(NULL)
+    ## Dimensions lengths per groups
+    dim_lengths <- unlist(lapply(group_axes, length))
+
+    output <- list(
+        dimensions = 1:dim_lengths[which(dim_lengths == max(dim_lengths))[1]],
+        dim.list   = group_axes,
+        var        = group_var,
+        scaled.var = group_sumvar,
+        cumsum.var = group_cumsumvar,
+        call       = list(threshold = threshold, inc.threshold = inc.threshold))
+
+    class(output) <- c("dispRity", "axes")
+
+    return(output)
 }
