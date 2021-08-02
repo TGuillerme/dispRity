@@ -23,7 +23,7 @@ dispRity 0.2.0 (2016-04-01)
 <!--   * `dtt.dispRity` now works with time-slicing. -->
 
 
-dispRity v1.6.4 (2021-07-26)
+dispRity v1.6.4 (2021-08-02)
 =========================
 
 ### NEW FEATURES
