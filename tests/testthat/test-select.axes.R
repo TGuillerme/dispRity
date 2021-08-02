@@ -50,12 +50,35 @@ test_that("print.select.axes works", {
     x <- select.axes(demo_data$healy, threshold = 0.99)
     test <- capture_output(print.dispRity(x))
     expect_equal(test, "The first 6 dimensions are needed to express at least 99% of the variance in the following groups: ectotherms, endotherms, whole_space.\nYou can use x$dimensions to select them or use plot(x) and summary(x) to summarise them.")
-
 })
 
 ## Test summary
 test_that("summary.select.axes works", {
 
+    ## random
+    test_mat <- matrix(rnorm(120), 60, 2, dimnames = list(c(1:60)))
+    data <- select.axes(test_mat)
+    test <- summary(data)
+    expect_is(test, "matrix")
+    expect_equal(dim(test), c(1, ncol(test_mat)*2))
+    expect_equal(rownames(test), "whole_space")
+    expect_equal(colnames(test), c("dim.1.var", "dim.1.sum", "dim.2.var", "dim.2.sum"))
+    
+    data <- select.axes(test_mat, group = list("A" = 1:10, "B" = 11:20, "C" = 1:30, "D" = 31:40, "E" = 10:50, "F" = c(15:35)))
+    test <- summary(data)
+    expect_is(test, "matrix")
+    expect_equal(dim(test), c(7, ncol(test_mat)*2))
+    expect_equal(rownames(test), c(LETTERS[1:6], "whole_space"))
+    expect_equal(colnames(test), c("dim.1.var", "dim.1.sum", "dim.2.var", "dim.2.sum"))
+
+    ## Recycling
+    data(demo_data)
+    data <- select.axes(demo_data$healy, threshold = 0.99)
+    test <- summary(data)
+    expect_is(test, "matrix")
+    expect_equal(dim(test), c(3, ncol(demo_data$healy$matrix[[1]])*2))
+    expect_equal(rownames(test), c("ectotherms", "endotherms", "whole_space"))
+    expect_equal(colnames(test), paste0(rep(paste0("PC",1:6), each = 2), c(".var", ".sum")))
 })
 
 ## Test plot

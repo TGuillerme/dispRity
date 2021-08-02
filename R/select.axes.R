@@ -103,7 +103,6 @@ select.axes <- function(data, group, threshold = 0.95, inc.threshold = TRUE) {
     ## Check the group list
     group_list <- check.group.list(group_list, data, group_class, match_call)
 
-
     ## Add the base group (if not present)
     if(!any(unlist(lapply(group_list, length)) == length(base_group))) {
         group_list$whole_space <- base_group    
@@ -134,7 +133,7 @@ select.axes <- function(data, group, threshold = 0.95, inc.threshold = TRUE) {
         var        = group_var,
         scaled.var = group_sumvar,
         cumsum.var = group_cumsumvar,
-        call       = list(threshold = threshold, inc.threshold = inc.threshold))
+        call       = list(threshold = threshold, inc.threshold = inc.threshold, colnames = colnames(trait_space[[1]])))
 
     class(output) <- c("dispRity", "axes")
 
