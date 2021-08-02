@@ -210,6 +210,33 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
             return(round(table, digits = ifelse(digits== "default", 2, digits)))
         }
 
+        ## axes summary
+        if(is(data, "axes")) {
+            if(is(digits, "character") && digits == "default") {
+                digits <- 3
+            }
+            ## Get the column names
+            if(is.null(data$call$colnames)) {
+                col_names <- paste0("dim.", 1:length(data$scaled.var[[1]]))
+            } else {
+                col_names <- data$call$colnames
+            }
+            ## Get each variance component
+            scaled_var <- do.call(rbind, data$scaled.var)
+            colnames(scaled_var) <- paste0(col_names, ".var")
+            cum_var <- do.call(rbind, data$cumsum.var)
+            colnames(cum_var) <- paste0(col_names, ".sum")
+            ## Get the combined variance components
+            combined_var <- cbind(scaled_var, cum_var)
+            ## Combine them by order
+            base_col <- c(0, ncol(scaled_var))
+            col_order <- numeric()
+            for(i in 1:ncol(scaled_var)) {
+                col_order <- c(col_order, base_col+i)
+            }
+            return(round(combined_var[, col_order, drop = FALSE], digits = digits))
+        }
+
         ## No dual class summary available
         stop.call("", paste0("No specific summary for combined class \"dispRity\" and \"", class(data)[2], "\"."))
     } 

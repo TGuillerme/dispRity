@@ -235,6 +235,89 @@ We can not remove the rows 1 and 9 and see if that improved the overlap:
 image(t(na_matrix[-as.numeric(reduction$rows.to.remove), ]), col = "black")
 ```
 
+## `select.axes`
+
+This function allows you to select which axes (or how many of them) are relevant in your trait space analyses.
+Usually, when the trait space is an ordination, workers select a certain number of axes to reduce the dimensionality of the dataset by removing axes that contain relatively little information.
+This is often done by selecting the axes from which the cumulative individual variance is lower than an arbitrary threshold.
+For example, all the axes that contain together 0.95 of the variance:
+
+```{r}
+## The USArrest example in R
+ordination <- princomp(USArrests, cor = TRUE)
+
+## The loading of each variable
+loadings(ordination)
+
+## Or the same operation but manually
+variances <- apply(ordination$scores, 2, var)
+scaled_variances <- variances/sum(variances)
+sumed_variances <- cumsum(scaled_variances)
+round(rbind(variances, scaled_variances, sumed_variances), 3)
+```
+
+In this example, you can see that the three first axes are required to have at least 0.95 of the variance.
+You can do that automatically in `dispRity` using the `select.axes` function.
+
+```{r}
+## Same operation automatised
+(selected <- select.axes(ordination))
+```
+
+This function does basically what the script above does and allows the results to be plotted or summarised into a table.
+
+```{r}
+## Summarising this info
+summary(selected)
+## Plotting it
+plot(selected)
+## Extracting the dimensions
+## (for the dispRity function for example)
+selected$dimensions
+```
+
+However, it might be interesting to not only consider the variance within the whole trait space but also among groups of specific interest.
+E.g. if the 95% of the variance is concentrated in the two first axes for the whole trait space, that does not automatically mean that it is the case for each subset in this space. Some subset might require more than the two first axes to express 95% of their variance!
+You can thus use the `select.axes` function to look at the results per group as well as through the whole trait space.
+
+> Note that you can always change the threshold value (default is 0.95). Here for example we set it to 0.9 (we arbitrarily decide that explain 90% of the variance is enough).
+
+```{r}
+## Creating some groups of stats
+states_groups <- list("Group1" = c("Mississippi","North Carolina",
+                                   "South Carolina", "Georgia", "Alabama",
+                                   "Alaska", "Tennessee", "Louisiana"),
+                      "Group2" = c("Florida", "New Mexico", "Michigan",
+                                   "Indiana", "Virginia", "Wyoming", "Montana",
+                                   "Maine", "Idaho", "New Hampshire", "Iowa"),
+                      "Group3" = c("Rhode Island", "New Jersey", "Hawaii", "Massachusetts"))
+## Running the same analyses but per groups
+selected <- select.axes(ordination, group = states_groups, threshold = 0.9)
+## Plotting the results
+plot(selected)
+```
+
+As you can see here, the whole space requires the three first axes to explain at least 90% of the variance (in fact, 95% as seen before).
+However, different groups have a different story!
+The Group 1 and 3 requires 4 dimensions whereas Group 2 requires only 1 dimensions (note how for Group 3, there is actually nearly no variance explained on the second axes)!
+Using this method, you can safely use the four axes returned by the function (`selected$dimensions`) so that every group has at least 90% of their variance explained in the trait space.
+
+If you've used the function if you've already done some grouping in your disparity analyses (e.g. using the function `custom.subsets` or `chrono.subsets`), you can use the generated `dispRity` to automatise this analyses:
+
+```{r}
+## Loading the dispRity package demo data
+data(demo_data)
+## A dispRity object with two groups
+demo_data$hopkins
+## Selecting axes on a dispRity object
+selected <- select.axes(demo_data$hopkins)
+plot(selected)
+## Displaying which axes are necessary for which group
+selected$dim.list
+## Note how the whole space needs only 16 axes
+## but both groups need 22 and 23 axes
+```
+
 ## `slice.tree`
 
 This function is a modification of the `paleotree::timeSliceTree` function that allows to make slices through a phylogenetic tree.

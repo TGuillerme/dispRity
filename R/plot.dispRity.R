@@ -199,6 +199,16 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
             ## Exit subclass plots
             return(invisible())
         }
+
+        ## select.axes plots
+        if(is(data, c("dispRity")) && is(data, c("axes"))) {
+
+            ## Plot the data
+            plot.axes(data, ...)
+                
+            ## Exit subclass plots
+            return(invisible())
+        }        
     }
 
     ## ----
