@@ -42,11 +42,21 @@ ordination <- princomp(USArrests, cor = TRUE)
 (selected <- select.axes(ordination))
 ## The selected dimensions
 selected$dimensions
+## Visualising the results
+plot(selected)
+
 ## Same but by grouping the data into three groups
-(selected <- select.axes(ordination,
-                         group = list(group1 = 1:16,
-                                      group2 = 17:33,
-                                      group3 = 34:50)))
+states_groups <- list("Group1" = c("Mississippi","North Carolina",
+                                   "South Carolina", "Georgia", "Alabama",
+                                   "Alaska", "Tennessee", "Louisiana"),
+                      "Group2" = c("Florida", "New Mexico", "Michigan",
+                                   "Indiana", "Virginia", "Wyoming", "Montana",
+                                   "Maine", "Idaho", "New Hampshire", "Iowa"),
+                      "Group3" = c("Rhode Island", "New Jersey", "Hawaii",
+                                   "Massachusetts"))
+(selected <- select.axes(ordination, group = states_groups))
+## Note that the required number of axes is now 4 (instead of 3)
+plot(selected)
 
 ## Loading some example dispRity data
 data(demo_data)
