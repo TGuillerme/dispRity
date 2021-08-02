@@ -31,11 +31,21 @@
 #' (selected <- select.axes(ordination))
 #' ## The selected dimensions
 #' selected$dimensions
+#' ## Visualising the results
+#' plot(selected)
+#'
 #' ## Same but by grouping the data into three groups
-#' (selected <- select.axes(ordination,
-#'                          group = list(group1 = 1:16,
-#'                                       group2 = 17:33,
-#'                                       group3 = 34:50)))
+#' states_groups <- list("Group1" = c("Mississippi","North Carolina",
+#'                                    "South Carolina", "Georgia", "Alabama",
+#'                                    "Alaska", "Tennessee", "Louisiana"),
+#'                       "Group2" = c("Florida", "New Mexico", "Michigan",
+#'                                    "Indiana", "Virginia", "Wyoming", "Montana",
+#'                                    "Maine", "Idaho", "New Hampshire", "Iowa"),
+#'                       "Group3" = c("Rhode Island", "New Jersey", "Hawaii",
+#'                                    "Massachusetts"))
+#' (selected <- select.axes(ordination, group = states_groups))
+#' ## Note that the required number of axes is now 4 (instead of 3)
+#' plot(selected)
 #' 
 #' ## Loading some example dispRity data
 #' data(demo_data)
@@ -46,7 +56,7 @@
 #' plot(how_many)
 #' 
 #'
-#' @seealso
+#' @seealso \code{\link{custom.subsets}}
 #' 
 #' @author Thomas Guillerme
 #' @export
@@ -90,7 +100,7 @@ select.axes <- function(data, group, threshold = 0.95, inc.threshold = TRUE) {
         tree <- group
     }
     ## Set the group.list
-    group_list <- set.group.list(group, data, group_class)
+    group_list <- set.group.list(group, trait_space, group_class)
 
     ## Replace nulls by NAs in groups
     group_list <- lapply(group_list, function(x) if(is.null(x)){return(NA)}else{return(x)})
@@ -101,7 +111,7 @@ select.axes <- function(data, group, threshold = 0.95, inc.threshold = TRUE) {
     }
 
     ## Check the group list
-    group_list <- check.group.list(group_list, data, group_class, match_call)
+    group_list <- check.group.list(group_list, trait_space, group_class, match_call)
 
     ## Add the base group (if not present)
     if(!any(unlist(lapply(group_list, length)) == length(base_group))) {
@@ -119,9 +129,9 @@ select.axes <- function(data, group, threshold = 0.95, inc.threshold = TRUE) {
 
     ## Get the axis thresholds
     if(!inc.threshold) {
-        group_axes <- lapply(group_cumsumvar, function(x, threshold) which(x <= threshold), threshold)
+        group_axes <- lapply(group_cumsumvar, function(x, threshold) unname(which(x <= threshold)), threshold)
     } else {
-        group_axes <- lapply(group_cumsumvar, function(x, threshold) c(1, which(x <= threshold) + 1), threshold)
+        group_axes <- lapply(group_cumsumvar, function(x, threshold) unname(c(1, which(x <= threshold) + 1)), threshold)
     }
 
     ## Dimensions lengths per groups

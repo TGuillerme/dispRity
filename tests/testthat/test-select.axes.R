@@ -83,5 +83,16 @@ test_that("summary.select.axes works", {
 
 ## Test plot
 test_that("plot.select.axes works", {
-
+    ## random
+    test_mat <- matrix(rnorm(120), 60, 2, dimnames = list(c(1:60)))
+    data <- select.axes(test_mat)
+    expect_null(plot(data))
+    
+    data <- select.axes(test_mat, group = list("A" = 1:10, "B" = 11:20, "C" = 1:30, "D" = 31:40, "E" = 10:50, "F" = c(15:35)))
+    expect_null(test <- plot(data, main = c(letters[1:3]), col = c("blue", "orange", "green"), xlim = 30, ylab = "aha"))
+    
+    ## Recycling
+    data(demo_data)
+    data <- select.axes(demo_data$beck, threshold = 0.5)
+    expect_null(plot(data, ylim = c(0,1)))
 })

@@ -59,7 +59,7 @@ plot(how_many)
 
 }
 \seealso{
-
+\code{\link{custom.subsets}}
 }
 \author{
 Thomas Guillerme
