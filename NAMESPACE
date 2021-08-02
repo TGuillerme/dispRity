@@ -126,7 +126,6 @@ export(sim.morpho)
 export(multi.ace)
 
 ##S3 
-
 S3method(adonis, dispRity)
 S3method(dtt, dispRity)
 S3method(matrix, dispRity)

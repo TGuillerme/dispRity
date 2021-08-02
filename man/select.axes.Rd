@@ -36,6 +36,26 @@ Selects the axes required to explain a cumulative threshold amount of variance i
 If \code{inc.threshold = TRUE}, the returned axes are the ones that contains at least the threshold value (e.g. if the threshold is \code{0.95}, all the returned axes contain at least \code{0.95} of the variance, potentially more). If \code{inc.threshold = FALSE}, the returned axes are the ones before reaching this threshold (e.g. the cumulative variance returned is strictly less or equal to \code{0.95}).
 }
 \examples{
+## Ordinating the USArrests dataset
+ordination <- princomp(USArrests, cor = TRUE)
+## Which dimensions to select?
+(selected <- select.axes(ordination))
+## The selected dimensions
+selected$dimensions
+## Same but by grouping the data into three groups
+(selected <- select.axes(ordination,
+                         group = list(group1 = 1:16,
+                                      group2 = 17:33,
+                                      group3 = 34:50)))
+
+## Loading some example dispRity data
+data(demo_data)
+## How many axes are required to explain 99\% of the variance
+## for each group in the Healy et al 2019 data?
+(how_many <- select.axes(demo_data$healy, threshold = 0.99))
+summary(how_many)
+plot(how_many)
+
 
 }
 \seealso{

@@ -25,6 +25,26 @@
 #' }
 #' 
 #' @examples
+#' ## Ordinating the USArrests dataset
+#' ordination <- princomp(USArrests, cor = TRUE)
+#' ## Which dimensions to select?
+#' (selected <- select.axes(ordination))
+#' ## The selected dimensions
+#' selected$dimensions
+#' ## Same but by grouping the data into three groups
+#' (selected <- select.axes(ordination,
+#'                          group = list(group1 = 1:16,
+#'                                       group2 = 17:33,
+#'                                       group3 = 34:50)))
+#' 
+#' ## Loading some example dispRity data
+#' data(demo_data)
+#' ## How many axes are required to explain 99% of the variance
+#' ## for each group in the Healy et al 2019 data?
+#' (how_many <- select.axes(demo_data$healy, threshold = 0.99))
+#' summary(how_many)
+#' plot(how_many)
+#' 
 #'
 #' @seealso
 #' 
@@ -32,7 +52,7 @@
 #' @export
 
 # data(demo_data)
-# data <- demo_data$wright$matrix[[1]]
+# data <- demo_data$healy$matrix[[1]]
 # group <- unlist(demo_data$wright$subsets, recursive = FALSE)
 # group <- lapply(group, c)
 

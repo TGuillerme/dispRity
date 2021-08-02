@@ -37,6 +37,19 @@ test_that("select.axes works", {
 
 ## Test print
 test_that("print.select.axes works", {
+    ## random
+    test_mat <- matrix(rnorm(120), 60, 2, dimnames = list(c(1:60)))
+    x <- select.axes(test_mat)
+    test <- capture_output(print.dispRity(x))
+    expect_equal(test, "The first 2 dimensions are needed to express at least 95% of the variance in the whole trait space.\nYou can use x$dimensions to select them or use plot(x) and summary(x) to summarise them.")
+    x <- select.axes(test_mat, group = list("A" = 1:10, "B" = 11:20, "C" = 1:30, "D" = 31:40, "E" = 10:50, "F" = c(15:35)))
+    test <- capture_output(print.dispRity(x))
+    expect_equal(test, "The first 2 dimensions are needed to express at least 95% of the variance in the 7 following groups: A, B, C, D, E, ...\nYou can use x$dimensions to select them or use plot(x) and summary(x) to summarise them.")
+    ## Recycling
+    data(demo_data)
+    x <- select.axes(demo_data$healy, threshold = 0.99)
+    test <- capture_output(print.dispRity(x))
+    expect_equal(test, "The first 6 dimensions are needed to express at least 99% of the variance in the following groups: ectotherms, endotherms, whole_space.\nYou can use x$dimensions to select them or use plot(x) and summary(x) to summarise them.")
 
 })
 
