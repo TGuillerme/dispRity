@@ -119,7 +119,7 @@ select.axes <- function(data, group, threshold = 0.95, inc.threshold = TRUE) {
     }
     
     ## Get the variance per group
-    group_var <- lapply(group_list, function(row,data) apply(data[[1]][row,], 2, var), data = trait_space)
+    group_var <- lapply(group_list, function(row,data) apply(data[[1]][row,, drop = FALSE], 2, var), data = trait_space)
 
     ## Get the scaled variance per group
     group_sumvar <- lapply(group_var, function(x) x/sum(x))
