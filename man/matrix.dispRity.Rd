@@ -2,24 +2,30 @@
 % Please edit documentation in R/dispRity.utilities.R
 \name{matrix.dispRity}
 \alias{matrix.dispRity}
-\alias{fetch.matrix}
-\title{Fetching a matrix from a \code{dispRity} object.}
+\alias{extract.dispRity}
+\title{Extract elements from a \code{dispRity} object.}
 \usage{
-matrix.dispRity(data, subsets, rarefaction, bootstrap, matrix = 1)
+matrix.dispRity(data, subsets, rarefaction, bootstrap, matrix)
+
+extract.dispRity(data, subsets, rarefaction, observed, concatenate)
 }
 \arguments{
 \item{data}{A \code{dispRity} object.}
 
-\item{subsets}{Optional, a \code{numeric} value to select subsets.}
+\item{subsets}{Optional, a \code{numeric} or \code{character} for which subsets to get (if missing, the value for all subsets are given).}
 
-\item{rarefaction}{Optional, a \code{numeric} value to select the rarefaction level (\code{0} is no rarefaction).}
+\item{rarefaction}{Optional, a single \code{numeric} value corresponding to the rarefaction level (as the number of elements; if missing, the non-rarefied values are output).}
 
 \item{bootstrap}{Optional, a \code{numeric} value to select a specific bootstrap draw (\code{0} is no bootstrap).}
 
 \item{matrix}{A \code{numeric} value of which matrix to select (default is \code{1}).}
+
+\item{observed}{A \code{logical} value indicating whether to output the observed (\code{TRUE} (default)) or the bootstrapped values (\code{FALSE}).}
+
+\item{concatenate}{When the disparity metric is a distribution, whether to concatenate it (\code{TRUE}; default) or to return each individual metric.}
 }
 \description{
-Fetching a specific matrix from a \code{dispRity} object.
+Extract a matrix or the disparity results from a \code{dispRity}.
 }
 \examples{
 ## Load the disparity data based on Beck & Lee 2014
@@ -35,6 +41,19 @@ matrix.dispRity(disparity, subsets = "80")
 ## same subset
 matrix.dispRity(disparity, subsets = 2, rarefaction = 2, bootstrap = 52)
 
+## Extracting the observed disparity
+extract.dispRity(disparity)
+
+## Extracting the bootstrapped disparity
+boot_disp <- extract.dispRity(disparity, observed = FALSE)
+str(boot_disp)
+## Or only the rarefied (5) data
+boot_disp_rare <- extract.dispRity(disparity, observed = FALSE,
+     rarefaction = 5)
+
+}
+\seealso{
+\code{\link{dispRity}}, \code{\link{get.subsets}}.
 }
 \author{
 Thomas Guillerme

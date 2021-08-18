@@ -7,6 +7,10 @@
 \title{Add, get or remove tree}
 \usage{
 add.tree(data, tree)
+
+get.tree(data)
+
+remove.tree(data)
 }
 \arguments{
 \item{data}{A \code{dispRity} object.}

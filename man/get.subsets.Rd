@@ -2,32 +2,62 @@
 % Please edit documentation in R/dispRity.utilities.R
 \name{get.subsets}
 \alias{get.subsets}
-\alias{get.dispRity,}
-\alias{get.subsets.dispRity}
-\title{Extracts subsets from a dispRity object.}
+\alias{n.subsets}
+\alias{size.subsets}
+\alias{combine.subsets}
+\title{Extracts or modify subsets from a \code{dispRity} object.}
 \usage{
+n.subsets(data)
+
+size.subsets(data)
+
 get.subsets(data, subsets)
+
+combine.subsets(data, subsets)
 }
 \arguments{
 \item{data}{A \code{dispRity} object.}
 
-\item{subsets}{A list of subset names or subset numbers to be extracted.}
-}
-\value{
-This function outputs a \code{dispRity} object.
+\item{subsets}{Either a \code{vector} of the number or name of the subsets to merge or a single. But see details for \code{combine.subsets}.}
 }
 \description{
-Extracting some subsets and data from a \code{dispRity} object.
+Extracting or modify some subsets' data and information from a \code{dispRity} object.
+}
+\details{
+For the function \code{combine.subsets}, the argument \code{subsets} can ALSO be a \code{numeric} value of the minimum of elements for each series.
+If \code{subset} is a vector, the subsets are merged in the given input order. \code{c(1, 3, 4)} will merge subsets 1 and 3 into 4, while the opposite, \code{c(3, 4, 1)} will merge subsets 3 and 4 into 1.
+When a single numeric value is given, subsets are merged with the next subset until the correct number of elements for each subset is reached (apart from the last subset that gets merged with the previous one).
 }
 \examples{
 ## Load the disparity data based on Beck & Lee 2014
 data(disparity)
+
+## How many subsets are in disparity?
+n.subsets(disparity)
+
+## What are the number of elements per subsets?
+size.subsets(disparity)
 
 ## Get one subset
 get.subsets(disparity, "60")
 
 ## Get two subsets
 get.subsets(disparity, c(1,5))
+
+## Generate subsets from a dummy matrix
+dummy_matrix <- matrix(rnorm(120), 40)
+dummy_subsets <- custom.subsets(dummy_matrix,
+     group = list("a" = c(1:5), "b" = c(6:10), "c" = c(11:20),
+                  "d" = c(21:24), "e" = c(25:30), "f" = c(31:40)))
+
+## Merging the two first subsets
+combine.subsets(dummy_subsets, c(1,2))
+
+## Merging the three subsets by name
+combine.subsets(dummy_subsets, c("d", "c", "e"))
+
+## Merging the subsets to contain at least 20 taxa
+combine.subsets(dummy_subsets, 10)
 
 }
 \seealso{

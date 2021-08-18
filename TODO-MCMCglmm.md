@@ -42,4 +42,5 @@
 ## Minor
 
  * Utility functions manuals are now grouped by topic (e.g. utilities related to `MCMCglmm` objects, `dispRity` objects in general, `dispRity` objects with subsets, ect...). It should now be much easier to find these sometimes overlooked functions.
- - [ ] implemented
+ - [x] implemented
+ - [x] tested
