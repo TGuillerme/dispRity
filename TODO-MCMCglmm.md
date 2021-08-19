@@ -1,5 +1,21 @@
 # TODO list for MCMCglmm branch?
 
+TODO: transfer from `beer`:
+ - [ ] change `data$MCMCglmm$covars` -> `data$covar`
+ - [ ] change `data$MCMCglmm$covars[[1]]$Sol` -> `data$covar[[1]]$centre`
+ - [ ] make a list of new functions here and check sanitizing
+       * [ ] `MCMCglmm.traits`
+       * [ ] ...
+ - [ ] make a list of warnings/stops and `dispRity`ze them
+       * [ ] ...
+
+
+
+
+
+
+
+
  * `dispRity` objects can now contain covariance matrices as a `$covar` object. The `covar` part can be directly used for some specific metrics (usually `my_metric.covar`) and are handled by the `dispRity` function (and plot, summary, etc...) in a specific way.`$covar` contains a list of two elements `VCV` the variance covariance matrix and `centre` the coordinates of the centre of the `VCV` in space (can be left empty). `$covar` matrices are effectively treated as bootstraps.
  - [ ] implemented
  - [ ] tested
