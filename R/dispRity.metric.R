@@ -836,13 +836,13 @@ projections <- function(matrix, point1 = 0, point2 = colMeans(matrix), measure =
         space <- space - rep(point1, rep.int(nrow(space), ncol(space)))
         ## Re-attribute the centred variables
         matrix <- space[1:nrow(matrix), , drop = FALSE]
-        base_vector <- space[-c(1:nrow(matrix)), ]
+        base_vector <- space[-c(1:nrow(matrix)), , drop = FALSE]
     }
 
     ## Scale the space
     if(scaled) {
         ## The scaled space
-        space <- space/dist(space[-c(1:nrow(matrix)),])
+        space <- space/dist(space[-c(1:nrow(matrix)), , drop = FALSE])
     }
 
     ## Get the base vector axis (x) and the projection vector (former unit vector; y)
@@ -856,7 +856,7 @@ projections <- function(matrix, point1 = 0, point2 = colMeans(matrix), measure =
     
     ## Re-attributing the matrix and the vector
     matrix <- space[1:nrow(matrix), , drop = FALSE]
-    base_vector <- space[-c(1:nrow(matrix)),]
+    base_vector <- space[-c(1:nrow(matrix)), , drop = FALSE]
 
     ## Project the vectors
     projections <- t(apply(matrix, 1, geometry::dot, y = base_vector[2,], d = 2))
