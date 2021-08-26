@@ -1,3 +1,4 @@
+#!/bin/sh
 ##########################
 # Script for exporting the package in CRAN format
 ##########################
