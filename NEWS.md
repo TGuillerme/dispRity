@@ -119,7 +119,7 @@ dispRity v1.5.0 (2020-09-25) *between groups*
   * Fixed a bug in `chrono.subsets` where the `"*.split"` methods would bug if the last slice is through a single edge.
   * Fixed a bug in `dispRity` where some 1D matrices could loose their class for certain metrics.
 
-dispRity v1.4.0 *getting faster* (2020-05-05)
+dispRity v1.4.0 (2020-05-05) *getting faster*
 =========================
 
 ### NEW FEATURES
@@ -152,7 +152,7 @@ dispRity v1.4.0 *getting faster* (2020-05-05)
   * `chrono.subsets` with multiple trees now stretches the root edges length to match the oldest tree.
 
 
-dispRity v1.3 *many metrics* (2019-08-15)
+dispRity v1.3 (2019-08-15) *many metrics*
 =========================
 
 ### NEW FEATURES
@@ -211,7 +211,7 @@ dispRity v1.2.3 (2019-03-12)
   * `...`  are now properly handled by internal metric testing functions for more accurate error messages.
   * `char.diff` names are now properly protected in the `C` implementation to comply with new `rcheck` requirements.
 
-dispRity v1.2 *model tests* (2018-09-19)
+dispRity v1.2 (2018-09-19) *model tests*
 =========================
 
 ### NEW FEATURES
@@ -233,7 +233,7 @@ dispRity v1.2 *model tests* (2018-09-19)
   * Corrected `char.diff` to properly reflect the probability of different splits between characters (thanks to [Abigail Pastore](https://github.com/aipastore)).
 
 
-dispRity v1.1 *got CRAN* (2018-03-20)
+dispRity v1.1 (2018-03-20) *got CRAN*
 =========================
   
 ### NEW FEATURES
@@ -245,7 +245,7 @@ dispRity v1.1 *got CRAN* (2018-03-20)
   * Added default Cailliez correction to `Claddis.ordination` function (with `add = TRUE`).
   * Improved test coverage.
 
-dispRity v1.0.3 *got CRAN* (2018-03-20)
+dispRity v1.0.3 (2018-03-20) *got CRAN*
 =========================
   
 ### NEW FEATURES
@@ -268,7 +268,7 @@ dispRity v1.0.3 *got CRAN* (2018-03-20)
 
   * Removed `Claddis.ordination` function to comply with the CRAN requirement (this function is still live in the [GitHub version](https://github.com/TGuillerme/dispRity) 1.1).
 
-dispRity v0.5 *covered with tests* (2017-12-20)
+dispRity v0.5 (2017-12-20) *covered with tests*
 =========================
 
 ### NEW FEATURES
@@ -319,7 +319,7 @@ dispRity v0.4.1 (2017-11-13)
   * Fixed fuzzy match issues in `slice.tree`.
 
 
-dispRity v0.4 *user friendly* (2017-08-21)
+dispRity v0.4 (2017-08-21) *user friendly*
 =========================
 
 ### NEW FEATURES
@@ -348,7 +348,7 @@ dispRity v0.4 *user friendly* (2017-08-21)
   * **Modified function**: `cust.series` is now renamed `custom.subsamples` (to avoid confusion with `custard.subsamples`!). Its `factor` argument as been changed to `groups` and can now take a simple list.
 
 
-dispRity v0.3 *dispRity lite* (2017-01-25)
+dispRity v0.3 (2017-01-25) *dispRity lite*
 =========================
 
 ### NEW FEATURES
@@ -365,7 +365,7 @@ dispRity v0.3 *dispRity lite* (2017-01-25)
   * **Removed** `rm.last.axis` argument in `boot.matrix`. It is now replaced by `dimensions`.
   * **Changed argument** in `plot.dispRity`, `type = "lines"` is now replaced by `type = "line"`.
 
-dispRity v0.2.1 *making stuff up* (2016-11-07)
+dispRity v0.2.1 (2016-11-07) *making stuff up*
 =========================
 
 ### NEW FEATURES

@@ -73,7 +73,7 @@ You can download the workshop follow-along sheet [here](https://raw.githubuserco
 
 Not sure what disparity metric to use?
 Not sure what a disparity metric is in the first place?
-Check out this pre-print on selecting the best metric for your specific question on [biorXiv](https://www.biorxiv.org/content/10.1101/801571v1) or the [`moms` shiny app](https://tguillerme.shinyapps.io/moms/).
+Check out this paper on selecting the best metric for your specific question in [Ecology and Evolution](https://onlinelibrary.wiley.com/doi/full/10.1002/ece3.6452) or the [`moms` shiny app](https://tguillerme.shinyapps.io/moms/).
 You can also find more information in the [`dispRity` manual](https://rawcdn.githack.com/TGuillerme/dispRity/c94452e6877fbb274eb0a4ff1363272a6297a9ee/inst/gitbook/_book/details-of-specific-functions.html#disparity-metrics).
 <!-- biorXiv preprint -->
 
