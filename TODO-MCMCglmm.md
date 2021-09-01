@@ -42,7 +42,7 @@ TODO: transfer from `beer`:
  * *New utility functions* for `dispRity` objects with `covar` matrices
         * `get.covar` to extract the VCV matrices (or a subsample of them)
         * `axes.covar` to extract the major axes of the VCV matrices
-        * `metric.covar` to transform a adapt a `dispRity` metric function to use a covar object.
+        * `as.covar` to transform a adapt a `dispRity` metric function to use a covar object.
  - [ ] implemented
  - [ ] tested
  - [ ] example
