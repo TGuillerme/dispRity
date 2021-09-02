@@ -817,11 +817,11 @@ get.rotation.matrix <- function(x, y){
 projections <- function(matrix, point1 = 0, point2 = colMeans(matrix), measure = "position", scaled = TRUE) {
 
     ## Get the point1 and point2
-    if(length(point1) == 1) {
-        point1 <- rep(point1, ncol(matrix))
+    if(length(point1) != ncol(matrix)) {
+        point1 <- rep(point1, ncol(matrix))[1:ncol(matrix)]
     }
-    if(length(point2) == 1) {
-        point2 <- rep(point2, ncol(matrix))
+    if(length(point2) != ncol(matrix)) {
+        point2 <- rep(point2, ncol(matrix))[1:ncol(matrix)]
     }
 
     ## Get the base vector
