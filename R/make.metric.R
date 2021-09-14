@@ -53,7 +53,7 @@
 make.metric <- function(fun, ..., silent = FALSE, check.between.groups = FALSE, data.dim, tree = NULL) {
     ## Sanitizing
     ## fun
-    check.class(fun, "function")
+    check.class(fun, c("function", "standardGeneric"), report = 1)
     dots <- list(...)
     fun_type <- NULL
     

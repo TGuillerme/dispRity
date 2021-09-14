@@ -4,7 +4,7 @@
 \alias{fill.dispRity}
 \title{Fills a \code{dispRity} object.}
 \usage{
-fill.dispRity(data, tree = NULL)
+\method{fill}{dispRity}(data, tree = NULL)
 }
 \arguments{
 \item{data}{A \code{dispRity} object.}

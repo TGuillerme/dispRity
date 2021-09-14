@@ -6,10 +6,10 @@ get.dispRity.metric.handle <- function(metric, match_call, data.dim, tree = NULL
     if(length_metric == 1) {
         if(!is(metric, "list")) {
             ## Metric was fed as a single element
-            check.class(metric, "function")
+            check.class(metric, c("function", "standardGeneric"), report = 1)
         } else {
             ## Metric was still fed as a list
-            check.class(metric[[1]], "function")
+            check.class(metric[[1]], c("function", "standardGeneric"), report = 1)
             metric <- metric[[1]]
         }
         ## Which level is the metric?
@@ -33,7 +33,8 @@ get.dispRity.metric.handle <- function(metric, match_call, data.dim, tree = NULL
     } else {
         ## Check all the metrics
         for(i in 1:length_metric) {
-            if(!is(metric[[i]], "function")) {
+            if(!any(class(metric[[i]]) %in% c("function", "standardGeneric"))) {
+            #if(!is(metric[[i]], "function")) {
                 stop.call(msg.pre = "metric argument ", call = match_call$metric[[i + 1]], msg = " is not a function.")
             }
         }

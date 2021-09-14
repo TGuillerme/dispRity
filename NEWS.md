@@ -42,7 +42,8 @@ dispRity v1.6.6 (2021-09-14)
  * Removed warning in `dispRity` when selecting a specific number of dimensions (old warning artefact).
  * Fixed bug in `plot.dispRity` when using `type = "preview"` on bootstrapped data and for `type = "box"` when the subsets to plot are from different sizes (now plots all the data correctly).
  * Fixed bug when using `chrono.subsets` with `"continuous"` method a `FADLAD` data containing only node values (now correctly taken into account; thanks to [Peng-Wei Li](https://www.researchgate.net/profile/Peng-Wei-Li) for noticing it) and when using `chrono.subsets` with `"gradual.*"` models on empty subsets.
-
+ * `standardGeneric` functions are now correctly interpreted as functions throughout the package.
+ 
 dispRity v1.6.0 (2021-04-16) *dispRitree*
 =========================
 
