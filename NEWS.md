@@ -23,7 +23,7 @@ dispRity 0.2.0 (2016-04-01)
 <!--   * `dtt.dispRity` now works with time-slicing. -->
 
 
-dispRity v1.6.5 (2021-09-02)
+dispRity v1.6.6 (2021-09-14)
 =========================
 
 ### NEW FEATURES
@@ -35,13 +35,13 @@ dispRity v1.6.5 (2021-09-02)
 
  * Formalised the grouping logic for `custom.subsets` and `select.axes`. This can create some minor user level changes namely: warning messages for empty subsets now correctly mentions "subsets" (rather than subsamples); groups with incorrect elements are now always flagged as errors (rather than just ignored). The changes at the developer level is that the logic is now made smoother and exported in `custom.subsets_fun.R`.
  * Added a `function.index.csv` list (and updater) to help developers find internal functions locations easily.
+ * Restricted the type-I error inflation warning message in `test.dispRity` to only occur when using a test of class `"htest"`.
 
 ### BUG FIXES
  
  * Removed warning in `dispRity` when selecting a specific number of dimensions (old warning artefact).
- * Fixed bug in `plot.dispRity` when using `type = "preview"` on bootstrapped data.
- * Fixed bug when using `chrono.subsets` with `"continuous"` method a `FADLAD` data containing only node values (now correctly taken into account; thanks to [Peng-Wei Li](https://www.researchgate.net/profile/Peng-Wei-Li) for noticing it).
- * Fixed bug when using `chrono.subsets` with `"gradual.*"` models on empty subsets.
+ * Fixed bug in `plot.dispRity` when using `type = "preview"` on bootstrapped data and for `type = "box"` when the subsets to plot are from different sizes (now plots all the data correctly).
+ * Fixed bug when using `chrono.subsets` with `"continuous"` method a `FADLAD` data containing only node values (now correctly taken into account; thanks to [Peng-Wei Li](https://www.researchgate.net/profile/Peng-Wei-Li) for noticing it) and when using `chrono.subsets` with `"gradual.*"` models on empty subsets.
 
 dispRity v1.6.0 (2021-04-16) *dispRitree*
 =========================
