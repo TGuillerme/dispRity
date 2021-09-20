@@ -64,10 +64,16 @@ TODO: transfer from `beer`:
  - [ ] tested
  - [ ] example
 
+ * New `dispRity.fast` function for the fastest disparity calculations at the expanses of pretty much everything this package does. This is a really situational function.
+ - [ ] implemented
+ - [ ] tested
+ - [ ] example
+
 ## Minor
 
  * Utility functions manuals are now grouped by topic (e.g. utilities related to `MCMCglmm` objects, `dispRity` objects in general, `dispRity` objects with subsets, ect...). It should now be much easier to find these sometimes overlooked functions.
  - [x] implemented
  - [x] tested
+
 
  * Add a `between.groups` tutorial??
