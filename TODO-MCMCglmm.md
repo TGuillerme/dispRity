@@ -1,9 +1,13 @@
 # TODO list for MCMCglmm branch?
 
+TODO: (no news export)
+- [ ] set up testing data for MCMCglmm
+
+
 TODO: transfer from `beer`:
  - [ ] change `data$MCMCglmm$covars` -> `data$covar`
  - [ ] change `data$MCMCglmm$covars[[1]]$Sol` -> `data$covar[[1]]$centre`
- - [ ] make a list of new functions here and check sanitizing
+ - [ ] make a list of new functions here and check sanitizing (SEE BELOW)
        * [ ] `MCMCglmm.traits`
        * [ ] ...
  - [ ] make a list of warnings/stops and `dispRity`ze them
