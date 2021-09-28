@@ -60,6 +60,24 @@ object
 	|		|
 	|		\---[[...]] = class:"matrix" (the rarefactions)
 	|
+	\---$covar = class:"list" (a list of subsets containing covar matrices; is the same length as $subsets)
+	|	|
+	|	\---[[1]] = class:"list" (first item in subsets list)
+	|	|	|
+	|	|	\---$matrices = class:"list" (the list of covar matrices)
+	|	|	|	|
+	|	|	|	\[[1]] = class:"matrix" (the first covar matrix)
+	|	|	|	|
+	|	|	|	\[[...]] = class:"matrix" (the subsequent covar matrices)
+	|	|	|
+	|	|	\---$centre = class:"list" (optional, the list of centres for the matrices)
+	|	|	 	|
+	|	|	 	\[[1]] = class:"numeric" (the coordinates for the centre of the first matrix)
+	|	|	 	|
+	|	|	 	\[[...]] = class:"numeric" (the coordinates for the centre of the subsequent covar matrices)
+	|	|	
+	|	\---[[...]] = class:"list" (the following subsets)
+	|	
 	\---$disparity
 		|
 		\---[[2]] = class:"list" (the first subsets)

@@ -1,8 +1,8 @@
 # TODO list for MCMCglmm branch?
 
-TODO: (no news export)
-- [ ] set up testing data for MCMCglmm
-
+TODO: (no NEWS export)
+- [x] set up testing data for MCMCglmm
+- [x] updated `disparity_object.md` structure
 
 TODO: transfer from `beer`:
  - [ ] change `data$MCMCglmm$covars` -> `data$covar`
