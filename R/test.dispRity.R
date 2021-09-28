@@ -258,10 +258,10 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
         ## Get the list of comparisons
         comp_subsets <- set.comparisons.list(comp, extracted_data, comparisons)
 
-        ## Check the correction
-        if((is_bootstrapped || is_distribution) && correction == "none" && length(comp_subsets) > 1 && match_call$test != "adonis.dispRity") {
-            warning("Multiple p-values will be calculated without adjustment!\nThis can inflate Type I error!")
-        }
+        # ## Check the correction
+        # if((is_bootstrapped || is_distribution) && correction == "none" && length(comp_subsets) > 1 && match_call$test != "adonis.dispRity") {
+        #     warning("Multiple p-values will be calculated without adjustment!\nThis can inflate Type I error!")
+        # }
 
         ## Apply the test to the list of pairwise comparisons
         details_out <- test.list.lapply.distributions(comp_subsets, extracted_data, test, ...)
@@ -327,6 +327,12 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
 
         ## htest output
         if(out_class == "htest") {
+
+            ## Check the correction
+            if((is_bootstrapped || is_distribution) && correction == "none" && length(comp_subsets) > 1 && match_call$test != "adonis.dispRity") {
+                warning("Multiple p-values will be calculated without adjustment!\nThis can inflate Type I error!")
+            }
+            
             if(concatenate) {
                 table_out <- output.htest.results(details_out, comparisons_list, correction = correction)
             } else {

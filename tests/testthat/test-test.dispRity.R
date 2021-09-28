@@ -341,7 +341,7 @@ test_that("test.dispRity works fine", {
     expect_error(
         test.dispRity(just_variances, test = t.test, concatenate = FALSE, conc.quantiles = list(mean, c("a", "b")))
         )
-    expect_warning(test.dispRity(just_variances, test = t.test, concatenate = FALSE, conc.quantiles = list(mean, c(0.25, 0.75))))
+    expect_warning(test.dispRity(just_variances, test = t.test, concatenate = FALSE, conc.quantiles = list(median, c(0.25, 0.75))))
 
     data(disparity)
     ## Rarefaction error management
@@ -386,31 +386,31 @@ test_that("example works fine", {
 
 
     ## Measuring the subsets overlap
-    expect_warning(expect_is(
+    expect_is(
     	test.dispRity(sum_of_ranges, bhatt.coeff, "pairwise")
-        , "data.frame"))
-    expect_warning(expect_is(
+        , "data.frame")
+    expect_is(
         test.dispRity(sum_of_ranges, bhatt.coeff, "pairwise", details = TRUE)
-        , "list"))
-    expect_warning(expect_equal(
+        , "list")
+    expect_equal(
     	dim(test.dispRity(sum_of_ranges, bhatt.coeff, "pairwise"))
-        , c(3,1)))
-    expect_warning(expect_equal(
+        , c(3,1))
+    expect_equal(
     	round(sum(test.dispRity(sum_of_ranges, bhatt.coeff, "pairwise")), 5)
-        , round(0.71086, 5)))
+        , round(0.71086, 5))
 
     ## Measuring overlap without concatenating
-    expect_warning(expect_equal(
+    expect_equal(
         dim(test.dispRity(just_variances, bhatt.coeff, "pairwise", concatenate = FALSE))
-        , c(3, 5)))
+        , c(3, 5))
 
     ## Measuring differences from a reference_subsets
     expect_warning(expect_is(
     	test.dispRity(sum_of_ranges, wilcox.test, "referential")
         , "list"))
-    expect_warning(expect_is(
+    expect_is(
         test.dispRity(sum_of_ranges, wilcox.test, "referential", details = TRUE)
-        , "list"))
+        , "list")
     expect_warning(expect_equal(
     	length(test.dispRity(sum_of_ranges, wilcox.test, "referential"))
         , 2))
@@ -425,9 +425,9 @@ test_that("example works fine", {
     disparity_var <- dispRity(bootstrapped_data, metric = variances)
 
     expect_warning(test1 <- test.dispRity(disparity_var, test = t.test, comparisons = "pairwise", concatenate = TRUE))
-    expect_warning(expect_is(
+    expect_is(
         test.dispRity(disparity_var, test = t.test, comparisons = "pairwise", concatenate = TRUE, details = TRUE)
-        , "list"))
+        , "list")
 
     expect_is(
         test1
@@ -439,9 +439,9 @@ test_that("example works fine", {
         unique(unlist(lapply(test1, dim)))
         ,c(3,1))
     expect_warning(test2 <- test.dispRity(disparity_var, test = t.test, comparisons = "pairwise", concatenate = FALSE))
-    expect_warning(expect_is(
+    expect_is(
         test.dispRity(disparity_var, test = t.test, comparisons = "pairwise", concatenate = FALSE, details = TRUE)
-        , "list"))
+        , "list")
 
     expect_is(
         test2
@@ -470,9 +470,9 @@ test_that("example works fine", {
     weird.test <- function(x, y) {
         return(rtree(3))
     }
-    expect_warning(expect_equal(
+    expect_equal(
         class(test.dispRity(sum_of_ranges, weird.test, "pairwise")[[1]][[1]])
-        , "phylo"))
+        , "phylo")
 })
 
 test_that("adonis and dtt works fine", {

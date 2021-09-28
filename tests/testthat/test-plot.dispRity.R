@@ -109,8 +109,8 @@ test_that("get.plot.params works", {
                                   type = "box",
                                   main = "main",
                                   observed_args = list(observed = FALSE))
-    expect_is(plot_params$disparity$data, c("matrix", "array"))
-    expect_equal(dim(plot_params$disparity$data), c(100, 7))
+    expect_is(plot_params$disparity$data, c("list"))
+    expect_equal(unname(unlist(lapply(plot_params$disparity$data, length))), rep(100, 7))
 
     plot_params <- get.plot.params(data = disparity, data_params = get.data.params(disparity),
                                   cent.tend = median,
@@ -120,8 +120,8 @@ test_that("get.plot.params works", {
                                   type = "box",
                                   main = "main",
                                   observed_args = list(observed = TRUE))
-    expect_is(plot_params$disparity$data, c("matrix", "array"))
-    expect_equal(dim(plot_params$disparity$data), c(100, 7))
+    expect_is(plot_params$disparity$data, c("list"))
+    expect_equal(unname(unlist(lapply(plot_params$disparity$data, length))), rep(100, 7))
 
     error <- capture_error(get.plot.params(data = disparity, data_params = get.data.params(disparity),
                                   cent.tend = median,

@@ -790,13 +790,8 @@ point.dist <- function(matrix, matrix2, point = colMeans, method = "euclidean", 
 }
 
 ## Angle between two vectors
-vector.angle <- function(v1, v2){#, degree = TRUE) {
-    angle <- acos(geometry::dot(v1, v2, d = 1) / (sqrt(sum(v1^2))*sqrt(sum(v2^2))))
-    # if(degree) {
-        return(angle *180/pi)
-    # } else {
-    #     angle
-    # }
+vector.angle <- function(v1, v2){
+    return(acos(geometry::dot(v1, v2, d = 1) / (sqrt(sum(v1^2))*sqrt(sum(v2^2)))) *180/pi)
 }
 ## Rotate a matrix along one axis (y)
 get.rotation.matrix <- function(x, y){
@@ -817,11 +812,11 @@ get.rotation.matrix <- function(x, y){
 projections <- function(matrix, point1 = 0, point2 = colMeans(matrix), measure = "position", scaled = TRUE) {
 
     ## Get the point1 and point2
-    if(length(point1) == 1) {
-        point1 <- rep(point1, ncol(matrix))
+    if(length(point1) != ncol(matrix)) {
+        point1 <- rep(point1, ncol(matrix))[1:ncol(matrix)]
     }
-    if(length(point2) == 1) {
-        point2 <- rep(point2, ncol(matrix))
+    if(length(point2) != ncol(matrix)) {
+        point2 <- rep(point2, ncol(matrix))[1:ncol(matrix)]
     }
 
     ## Get the base vector
