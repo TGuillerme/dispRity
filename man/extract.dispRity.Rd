@@ -4,7 +4,7 @@
 \alias{extract.dispRity}
 \title{Extracting disparity values.}
 \usage{
-\method{extract}{dispRity}(
+extract.dispRity(
   data,
   subsets,
   observed = TRUE,
