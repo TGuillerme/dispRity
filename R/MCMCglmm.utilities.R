@@ -1,13 +1,13 @@
 #' @name MCMCglmm.utilities
-#' @aliases MCMCglmm.traits MCMCglmm.levels
+#' @aliases MCMCglmm.traits MCMCglmm.levels MCMCglmm.sample MCMCglmm.covars
 #' @title MCMCglmm object utility functions
 #'
 #' @description Different utility functions to extract aspects of a \code{MCMCglmm} object.
 #'
-#' @usage MCMCglmm.traits(MCMglmm)
-#' @usage MCMCglmm.levels(MCMglmm)
-#' @usage MCMCglmm.sample(MCMglmm, n)
-#' @usage MCMCglmm.covars(MCMglmm, n, sample)
+#' @usage MCMCglmm.traits(MCMCglmm)
+#' @usage MCMCglmm.levels(MCMCglmm)
+#' @usage MCMCglmm.sample(MCMCglmm, n)
+#' @usage MCMCglmm.covars(MCMCglmm, n, sample)
 #'  
 #' @param MCMCglmm A \code{MCMCglmm} object.
 #' @param n        Optional, a number of random samples to extract.

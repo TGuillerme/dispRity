@@ -4,6 +4,8 @@
 \alias{MCMCglmm.utilities}
 \alias{MCMCglmm.levels}
 \alias{MCMCglmm.traits}
+\alias{MCMCglmm.sample}
+\alias{MCMCglmm.covars}
 \title{MCMCglmm object utility functions}
 \usage{
 MCMCglmm.traits(MCMglmm)
