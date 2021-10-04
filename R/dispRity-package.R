@@ -179,11 +179,11 @@ NULL
 #'
 #' @description An example of a \code{\link[MCMCglmm]{MCMCglmm}} model.
 #'
-#' @details This dataset is based on a random subset of 50 randomly selected Charadriiformes (gulls, plovers and sandpipers) from Cooney et al 2017.
+#' @details This dataset is based on a random subset of 359 Charadriiformes (gulls, plovers and sandpipers) from Cooney et al 2017.
 #' It contains:
 #' \itemize{
 #'   \item \code{data} A \code{"data.frame"} .
-#'   \item \code{tree} A consensus tree of 50 charadriiformes species (\code{"phylo"}).
+#'   \item \code{tree} A consensus tree of 359 charadriiformes species (\code{"phylo"}).
 #'   \item \code{posteriors} The posteriors from a \code{"MCMCglmm"} model (see example below).
 #' }
 #'
