@@ -6,11 +6,23 @@ test_that("MCMCglmm.subsets and sauron.plot works", {
     load("covar_tree_data.Rda")
 
     ## Sanitizing
-    # data class
-    # posteriors class
-    # group (optional)
-    # tree (optional)
-    # rename.groups (optional)
+    ## data class
+    error <- capture_error(MCMCglmm.subsets(data = "covar_char_data", posteriors = covar_model_list[[1]]))
+    expect_equal(error[[1]], "data must be of class data.frame or matrix.")
+    ## posteriors class
+    error <- capture_error(MCMCglmm.subsets(data = covar_char_data, posteriors = covar_model_list))
+    expect_equal(error[[1]], "posteriors must be of class MCMCglmm.")
+    ## group (optional)
+    error <- capture_error(MCMCglmm.subsets(data = covar_char_data, posteriors = covar_model_list[[1]], group = c(1,2,3)))
+    expect_equal(error[[1]], "The group argument must be a named vector.")
+    error <- capture_error(MCMCglmm.subsets(data = covar_char_data, posteriors = covar_model_list[[1]], group = c("1" = 1, "2" = 2)))
+    expect_equal(error[[1]], "The following groups cannot be found in the posteriors: 1, 2.\nCheck MCMCglmm(posteriors) for the available group names.")
+    ## tree (optional)
+    error <- capture_error(MCMCglmm.subsets(data = covar_char_data, posteriors = covar_model_list[[1]], tree = "covar_tree_data"))
+    expect_equal(error[[1]], "tree must be of class phylo or multiPhylo.")
+    ## rename.groups (optional)
+    error <- capture_error(MCMCglmm.subsets(data = covar_char_data, posteriors = covar_model_list[[1]], rename.groups = c("a", "b")))
+    expect_equal(error[[1]], "The rename.groups argument must the same length as group argument (1).")
 
     ## Model 1: 1 group residual
     ## Data structure
