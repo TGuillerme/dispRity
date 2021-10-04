@@ -15,7 +15,7 @@ It contains:
 \itemize{
   \item \code{data} A \code{"data.frame"} .
   \item \code{tree} A consensus tree of 50 charadriiformes species (\code{"phylo"}).
-  \item \code{model} A \code{"MCMCglmm"} model (see example below).
+  \item \code{posteriors} The posteriors from a \code{"MCMCglmm"} model (see example below).
 }
 }
 \examples{

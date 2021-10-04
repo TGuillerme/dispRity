@@ -39,9 +39,9 @@ TODO: transfer from `beer`:
         * `MCMCglmm.levels(MCMglmm, ...)`
         * `MCMCglmm.sample(MCMglmm, n, ...)`
         * `MCMCglmm.covars(MCMglmm, n, sample, ...)` #TODO: rename into `MCMCglmm.covar`
- - [ ] implemented
- - [ ] tested
- - [ ] example
+ - [x] implemented
+ - [x] tested
+ - [x] example
 
  * *New utility functions* for `dispRity` objects with `covar` matrices
         * `get.covar` to extract the VCV matrices (or a subsample of them)
