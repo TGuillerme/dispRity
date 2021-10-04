@@ -24,7 +24,7 @@ TODO: transfer from `beer`:
  - [ ] tested
  - [ ] example
 
- * `make.dispRity` now has a `covar` argument.
+<!--  * `make.dispRity` now has a `covar` argument.
  - [ ] implemented
  - [ ] tested
  - [ ] example
@@ -32,7 +32,7 @@ TODO: transfer from `beer`:
  * `custom.subsets` now has a `covar` argument.
  - [ ] implemented
  - [ ] tested
- - [ ] example
+ - [ ] example -->
 
  * *New utility functions* for `MCMCglmm` objects
         * `MCMCglmm.traits`
@@ -59,9 +59,9 @@ TODO: transfer from `beer`:
  - [ ] example
 
  * *New function* `MCMCglmm.subsets` is a function that allows to convert a `MCMCglmm` object into a `dispRity` object.
- - [ ] implemented
- - [ ] tested
- - [ ] example
+ - [x] implemented
+ - [x] tested
+ - [x] example
 
  * *New metric* `projections.covar` a between group metric for applying the `projections` metric on `covar` matrices.
  - [ ] implemented
