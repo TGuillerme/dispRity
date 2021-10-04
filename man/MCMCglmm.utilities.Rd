@@ -8,13 +8,13 @@
 \alias{MCMCglmm.covars}
 \title{MCMCglmm object utility functions}
 \usage{
-MCMCglmm.traits(MCMglmm)
+MCMCglmm.traits(MCMCglmm)
 
-MCMCglmm.levels(MCMglmm)
+MCMCglmm.levels(MCMCglmm)
 
-MCMCglmm.sample(MCMglmm, n)
+MCMCglmm.sample(MCMCglmm, n)
 
-MCMCglmm.covars(MCMglmm, n, sample)
+MCMCglmm.covars(MCMCglmm, n, sample)
 }
 \arguments{
 \item{MCMCglmm}{A \code{MCMCglmm} object.}
