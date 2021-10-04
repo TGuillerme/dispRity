@@ -73,6 +73,8 @@ TODO: transfer from `beer`:
  - [ ] tested
  - [ ] example
 
+ * One new demo datasets: `charadriiformes`, a `data.frame` and a `phylo` object of 50 random _charadriiformes_ species (gulls, plovers and sandpipers) from [Cooney et al 2017](https://www.nature.com/articles/d41586-021-02480-z) along with a `MCMCglmm` model with each clade as a random term.
+
 ## Minor
 
  * Utility functions manuals are now grouped by topic (e.g. utilities related to `MCMCglmm` objects, `dispRity` objects in general, `dispRity` objects with subsets, ect...). It should now be much easier to find these sometimes overlooked functions.
