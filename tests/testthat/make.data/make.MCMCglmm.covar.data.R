@@ -156,8 +156,8 @@ model7 <- MCMCglmm(cbind(PC1, PC2, PC3) ~ trait:clade-1, family = rep("gaussian"
 #TG: models run smooth, check with more clades and more traits
 #TG: one way to increase things would be to specify more constrained priors?
 covar_model_list <- list(model1, model2, model3, model4, model5, model6, model7)
-save(covar_model_list, file = "covar_model_list.Rda")
+save(covar_model_list, file = "covar_model_list.rda")
 
 # MCMCglmm example data
 charadriiformes <- list(data = covar_char_data, tree = covar_tree_data, posteriors = model7)
-save(charadriiformes, file = "../../../Data/charadriiformes.Rda")
+save(charadriiformes, file = "../../../Data/charadriiformes.rda")

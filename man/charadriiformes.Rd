@@ -21,6 +21,7 @@ It contains:
 \examples{
 \dontrun{
 ## Reproducing the MCMCglmm model
+require(MCMCglmm)
 data(charadriiformes)
 
 ## Setting up the model parameters:
