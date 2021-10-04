@@ -42,11 +42,15 @@ TODO: transfer from `beer`:
  - [x] implemented
  - [x] tested
  - [x] example
+ - [ ] optimise speed?
 
  * *New utility functions* for `dispRity` objects with `covar` matrices
         * `get.covar` to extract the VCV matrices (or a subsample of them)
         * `axes.covar` to extract the major axes of the VCV matrices
-        * `as.covar` to transform a adapt a `dispRity` metric function to use a covar object.
+ - [x] implemented
+ - [x] tested
+ - [x] example
+        * `as.covar` to transform `dispRity` metric function to use a covar object.
  - [ ] implemented
  - [ ] tested
  - [ ] example
@@ -62,6 +66,7 @@ TODO: transfer from `beer`:
  - [x] implemented
  - [x] tested
  - [x] example
+ - [ ] optimise speed?
 
  * *New metric* `projections.covar` a between group metric for applying the `projections` metric on `covar` matrices.
  - [ ] implemented
