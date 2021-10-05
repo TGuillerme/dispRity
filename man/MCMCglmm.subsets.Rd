@@ -44,7 +44,7 @@ MCMCglmm.subsets(data       = charadriiformes$data,
 
 }
 \seealso{
-dispRity sauron.plot
+\code{\link{dispRity}}  \code{\link{covar.plot}}
 }
 \author{
 Thomas Guillerme

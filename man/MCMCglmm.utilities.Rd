@@ -60,7 +60,7 @@ MCMCglmm.covars(model, n = 2)
 
 }
 \seealso{
-MCMCglmm.subsets
+\code{\link{MCMCglmm.subsets}}
 }
 \author{
 Thomas Guillerme

@@ -45,7 +45,7 @@
 #' ## Get two random samples from the model
 #' MCMCglmm.covars(model, n = 2)
 #'
-#' @seealso MCMCglmm.subsets
+#' @seealso \code{\link{MCMCglmm.subsets}}
 #' 
 #' @author Thomas Guillerme
 #' @export

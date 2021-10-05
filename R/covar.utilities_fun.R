@@ -66,7 +66,7 @@ get.one.axis <- function(data, axis = 1, level = 0.95, dimensions) {
     edges <- tcrossprod(scaled_edges, eigen_decomp$vectors)
 
     ## Move the matrix around
-    edges <- edges + rep(data$Sol[dimensions, drop = FALSE], each = dims*2)
+    edges <- edges + rep(data$loc[dimensions, drop = FALSE], each = dims*2)
 
     ## Get the edges coordinates
     return(edges[c(axis, axis+dims), , drop = FALSE])

@@ -30,7 +30,7 @@
 #'                  rename.groups = c("gulls", "plovers", "sandpipers"))
 #' 
 #'
-#' @seealso dispRity sauron.plot 
+#' @seealso \code{\link{dispRity}}  \code{\link{covar.plot}}
 #' 
 #' @author Thomas Guillerme
 #' @export

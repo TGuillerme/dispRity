@@ -36,7 +36,7 @@ test_that("MCMCglmm.sample works", {
 
 test_that("MCMCglmm.covars works", {
     ## Checking the correct structure in the nested lists
-    correct.structure <- function(X) {expect_equal(length(X), 2); expect_is(X$VCV, "matrix"); expect_is(X$Sol, "numeric")}
+    correct.structure <- function(X) {expect_equal(length(X), 2); expect_is(X$VCV, "matrix"); expect_is(X$loc, "numeric")}
 
     ## Everything works!
     for(i in 1:7) {

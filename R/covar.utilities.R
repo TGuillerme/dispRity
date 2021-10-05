@@ -35,7 +35,7 @@
 #' ## Get the median 0.95 minor axis of the 2D ellipse
 #' axis.covar(covar_data, sample = mean, dimensions = c(1,2), axis = 2)
 #'
-#' @seealso
+#' @seealso \code{\link{MCMCglmm.subsets}}
 #' 
 #' @author Thomas Guillerme
 #' @export

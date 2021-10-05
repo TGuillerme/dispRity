@@ -49,7 +49,7 @@ axis.covar(covar_data, sample = mean, dimensions = c(1,2), axis = 2)
 
 }
 \seealso{
-
+\code{\link{MCMCglmm.subsets}}
 }
 \author{
 Thomas Guillerme

@@ -15,7 +15,7 @@ make.sol <- function(level, Sol, levels, n_traits) {
 ## Sapply wrapper
 make.matrix <- function(level, sample_estimates, levels, traits) {
     list(VCV = make.covar(level, sample_estimates$VCV, levels, length(traits)),
-         Sol =   make.sol(level, sample_estimates$Sol, levels, length(traits)))
+         loc =   make.sol(level, sample_estimates$Sol, levels, length(traits)))
 }
 
 ## Internal function for MCMCglmm.covars
