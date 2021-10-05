@@ -1,25 +1,22 @@
 # TODO list for MCMCglmm branch?
 
+Thanks a lot to Andrew Beckerman, Natalie Cooper and Gavin Thomas for supporting the development of this verison.
+
+
 TODO: (no NEWS export)
 - [x] set up testing data for MCMCglmm
 - [x] updated `disparity_object.md` structure
 
 TODO: transfer from `beer`:
- - [ ] change `data$MCMCglmm$covars` -> `data$covar`
- - [ ] change `data$MCMCglmm$covars[[1]]$Sol` -> `data$covar[[1]]$centre`
- - [ ] make a list of new functions here and check sanitizing (SEE BELOW)
+ - [x] change `data$MCMCglmm$covars` -> `data$covar`
+ - [x] change `data$MCMCglmm$covars[[1]]$Sol` -> `data$covar[[1]]$centre`
+ - [x] make a list of new functions here and check sanitizing (SEE BELOW)
        * [ ] `MCMCglmm.traits`
        * [ ] ...
- - [ ] make a list of warnings/stops and `dispRity`ze them
+ - [x] make a list of warnings/stops and `dispRity`ze them
        * [ ] ...
 
-
-
-
-
-
-
- * `dispRity` objects can now contain covariance matrices as a `$covar` object. The `covar` part can be directly used for some specific metrics (usually `my_metric.covar`) and are handled by the `dispRity` function (and plot, summary, etc...) in a specific way.`$covar` contains a list of two elements `VCV` the variance covariance matrix and `centre` the coordinates of the centre of the `VCV` in space (can be left empty). `$covar` matrices are effectively treated as bootstraps.
+ * `dispRity` objects can now contain covariance matrices as a `$covar` object. The `covar` part can be directly used for some specific metrics (usually `my_metric.covar`) and are handled by the `dispRity` function (and plot, summary, etc...) in a specific way.`$covar` contains a list of two elements `VCV` the variance covariance matrix and `loc` the coordinates of the centre of the `VCV` in space (can be left empty). `$covar` matrices are effectively treated as bootstraps.
  - [ ] implemented
  - [ ] tested
  - [ ] example
@@ -55,12 +52,10 @@ TODO: transfer from `beer`:
  - [ ] tested
  - [ ] example
 
-
-
- * *New function* `sauron.plot` for plotting the `covar` content of `dispRity` objects (this is separated from `plot.dispRity` because of the many different options).
- - [ ] implemented
- - [ ] tested
- - [ ] example
+ * *New function* `covar.plot` for plotting the `covar` content of `dispRity` objects (this is separated from `plot.dispRity` because of the many different options).
+ - [x] implemented
+ - [x] tested
+ - [x] example
 
  * *New function* `MCMCglmm.subsets` is a function that allows to convert a `MCMCglmm` object into a `dispRity` object.
  - [x] implemented
@@ -78,7 +73,7 @@ TODO: transfer from `beer`:
  - [ ] tested
  - [ ] example
 
- * One new demo datasets: `charadriiformes`, a `data.frame` and a `phylo` object of 50 random _charadriiformes_ species (gulls, plovers and sandpipers) from [Cooney et al 2017](https://www.nature.com/articles/d41586-021-02480-z) along with a `MCMCglmm` model with each clade as a random term.
+ * One new demo datasets: `charadriiformes`, a `data.frame` and a `phylo` object of 50 random _Charadriiformes_ species (gulls, plovers and sandpipers) from [Cooney et al 2017](https://www.nature.com/articles/d41586-021-02480-z) along with a `MCMCglmm` model with each clade as a random term.
 
 ## Minor
 
