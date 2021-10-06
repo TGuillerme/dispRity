@@ -77,6 +77,8 @@ TODO: transfer from `beer`:
 
 ## Minor
 
+ * `custom.subsets` can now group elements using a `"factor"` vector.
+
  * Utility functions manuals are now grouped by topic (e.g. utilities related to `MCMCglmm` objects, `dispRity` objects in general, `dispRity` objects with subsets, ect...). It should now be much easier to find these sometimes overlooked functions.
  - [x] implemented
  - [x] tested

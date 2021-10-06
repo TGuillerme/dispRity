@@ -55,10 +55,15 @@ set.group.list <- function(group, data, group_class) {
                            names(group_list) <- colnames(group)
                            unlist(group_list, recursive = FALSE)},
             ## Group is a phylo
-            "phylo"      = get.tree.clades(group, data)
+            "phylo"      = get.tree.clades(group, data),
+            "factor"     = {group_list <- lapply(as.list(levels(group)), function(lvl, group) which(group == lvl), group = group) ; names(group_list) <- levels(group) ; group_list}
             )
         )
 }
+
+
+
+
 
 ## Check the elements in a group
 check.elements <- function(one_group, row_names, group_class, match_call) {
