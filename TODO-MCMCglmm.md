@@ -83,5 +83,8 @@ TODO: transfer from `beer`:
  - [x] implemented
  - [x] tested
 
-
  * Add a `between.groups` tutorial??
+
+## DEPRECATED
+ 
+ * `matrix.dispRity` and `extract.dispRity` are now deprecated. You should now use `get.matrix` and `get.disparity` respectively instead (with the same options).

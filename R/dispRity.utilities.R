@@ -100,13 +100,15 @@ fill.dispRity <- function(data, tree) {
 }
 
 
-#' @name matrix.dispRity
-#' @aliases matrix.dispRity extract.dispRity
+#' @name get.matrix
+#' @aliases get.matrix get.disparity matrix.dispRity extract.dispRity
+#' 
+#' 
 #' 
 #' @title Extract elements from a \code{dispRity} object.
 #' 
-#' @usage matrix.dispRity(data, subsets, rarefaction, bootstrap, matrix)
-#' @usage extract.dispRity(data, subsets, rarefaction, observed, concatenate)
+#' @usage get.matrix(data, subsets, rarefaction, bootstrap, matrix)
+#' @usage get.disparity(data, subsets, rarefaction, observed, concatenate)
 #'
 #' @description Extract a matrix or the disparity results from a \code{dispRity}.
 #'
@@ -123,28 +125,28 @@ fill.dispRity <- function(data, tree) {
 #' data(disparity)
 #' 
 #' ## To get the original matrix
-#' matrix.dispRity(disparity)
+#' get.matrix(disparity)
 #' 
 #' ## To get the un-bootstrapped matrix from the subset called "80"
-#' matrix.dispRity(disparity, subsets = "80")
+#' get.matrix(disparity, subsets = "80")
 #' 
 #' ## To get the 52nd bootstrap draw of the second rarefaction level (15) of the
 #' ## same subset
-#' matrix.dispRity(disparity, subsets = 2, rarefaction = 2, bootstrap = 52)
+#' get.matrix(disparity, subsets = 2, rarefaction = 2, bootstrap = 52)
 #'
 #' ## Extracting the observed disparity
-#' extract.dispRity(disparity)
+#' get.disparity(disparity)
 #'
 #' ## Extracting the bootstrapped disparity
-#' boot_disp <- extract.dispRity(disparity, observed = FALSE)
+#' boot_disp <- get.disparity(disparity, observed = FALSE)
 #' str(boot_disp)
 #' ## Or only the rarefied (5) data
-#' boot_disp_rare <- extract.dispRity(disparity, observed = FALSE,
+#' boot_disp_rare <- get.disparity(disparity, observed = FALSE,
 #'      rarefaction = 5)
 #' 
 #' @seealso \code{\link{dispRity}}, \code{\link{get.subsets}}.
 #' @author Thomas Guillerme
-matrix.dispRity <- function(data, subsets, rarefaction, bootstrap, matrix = 1){
+get.matrix <- function(data, subsets, rarefaction, bootstrap, matrix = 1){
 
     ## Sanitizing
     check.class(data, "dispRity")
@@ -164,7 +166,7 @@ matrix.dispRity <- function(data, subsets, rarefaction, bootstrap, matrix = 1){
         }
     }
 }
-extract.dispRity <- function(data, subsets, rarefaction, observed = TRUE, concatenate = TRUE) {
+get.disparity <- function(data, subsets, rarefaction, observed = TRUE, concatenate = TRUE) {
     #----------------------
     # SANITIZING
     #----------------------
@@ -223,8 +225,14 @@ extract.dispRity <- function(data, subsets, rarefaction, observed = TRUE, concat
         return(output)
     }
 }
-
-
+matrix.dispRity <- function(...) {
+    warning("The function matrix.dispRity is deprecated. Use get.matrix instead.")
+    return(get.matrix(...))
+}
+extract.dispRity <- function(...) {
+    warning("The function extract.dispRity is deprecated. Use get.disparity instead.")
+    return(get.matrix(...))
+}
 
 
 
@@ -285,7 +293,7 @@ extract.dispRity <- function(data, subsets, rarefaction, observed = TRUE, concat
 #' ## Merging the subsets to contain at least 20 taxa
 #' combine.subsets(dummy_subsets, 10)
 #' 
-#' @seealso \code{\link{dispRity}}, \code{\link{extract.dispRity}}.
+#' @seealso \code{\link{dispRity}}, \code{\link{get.disparity}}.
 #'
 #' @author Thomas Guillerme
 get.subsets <- function(data, subsets) {
@@ -558,9 +566,9 @@ rescale.dispRity <- function(data, center = FALSE, scale = TRUE, use.all = TRUE,
     }
 
     ## Get the whole distribution
-    all_data <- unlist(extract.dispRity(data))
+    all_data <- unlist(get.disparity(data))
     if(!is.null(data$call$bootstrap)) {
-        all_data <- c(all_data, unlist(extract.dispRity(data, observed = FALSE)))
+        all_data <- c(all_data, unlist(get.disparity(data, observed = FALSE)))
     }
 
     ## Getting the center value
@@ -621,7 +629,7 @@ rescale.dispRity <- function(data, center = FALSE, scale = TRUE, use.all = TRUE,
 #' summary(sort(disparity, decreasing = TRUE))
 #' summary(sort(disparity, sort = c(7,1,3,4,5,2,6)))
 #'
-#' @seealso \code{\link{dispRity}}, \code{\link{test.dispRity}}, \code{\link{plot.dispRity}}, \code{\link{get.subsets}}, \code{\link{extract.dispRity}}.
+#' @seealso \code{\link{dispRity}}, \code{\link{test.dispRity}}, \code{\link{plot.dispRity}}, \code{\link{get.subsets}}, \code{\link{get.disparity}}.
 #'
 #' @author Thomas Guillerme
 # @export

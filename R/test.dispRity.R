@@ -246,11 +246,11 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
 
     ## Extracting the data (sends error if data is not bootstrapped)
     if(is_distribution && !is_bootstrapped) {
-        extracted_data <- extract.dispRity(data, observed = TRUE, rarefaction = rarefaction, concatenate = concatenate)
+        extracted_data <- get.disparity(data, observed = TRUE, rarefaction = rarefaction, concatenate = concatenate)
         ## Transform into the listed structure
         extracted_data <- lapply(extracted_data, list)
     } else {
-        extracted_data <- extract.dispRity(data, observed = FALSE, rarefaction = rarefaction, concatenate = concatenate)
+        extracted_data <- get.disparity(data, observed = FALSE, rarefaction = rarefaction, concatenate = concatenate)
     }
 
     ## Custom, pairwise, sequential and referential

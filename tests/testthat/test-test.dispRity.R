@@ -212,7 +212,7 @@ test_that("get.quantiles.from.table internal fun", {
 
 ## Set up data for tests
 data(disparity)
-extracted_data <- extract.dispRity(disparity, observed = FALSE, rarefaction = FALSE, concatenate = TRUE)
+extracted_data <- get.disparity(disparity, observed = FALSE, rarefaction = FALSE, concatenate = TRUE)
 ## Set up data for sequential test
 comp_subsets <- set.comparisons.list("sequential", extracted_data, "sequential")
 

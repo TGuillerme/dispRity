@@ -69,17 +69,17 @@ get.plot.params <- function(data, data_params, cent.tend, quantiles, rarefaction
             ## Getting the observed or bootstrapped data
             if(data_params$bootstrap && !observed_args$observed) {
                 ## Getting the bootstrapped data
-                box_data <- unlist(extract.dispRity(data, observed = FALSE), recursive = FALSE)
+                box_data <- unlist(get.disparity(data, observed = FALSE), recursive = FALSE)
             } else {
                 if(data_params$distribution || data_params$between.groups) {
-                    box_data <- extract.dispRity(data, observed = TRUE)
+                    box_data <- get.disparity(data, observed = TRUE)
                 } else {
-                    box_data <- unlist(extract.dispRity(data, observed = FALSE), recursive = FALSE)
+                    box_data <- unlist(get.disparity(data, observed = FALSE), recursive = FALSE)
                 }
             }
         } else {
             ## Find the correct rarefaction level
-            box_data <- unlist(extract.dispRity(data, observed = FALSE, rarefaction = rarefaction_level), recursive = FALSE)
+            box_data <- unlist(get.disparity(data, observed = FALSE, rarefaction = rarefaction_level), recursive = FALSE)
         }
         ## Updating the disparity data part
         if(data_params$between.groups) {

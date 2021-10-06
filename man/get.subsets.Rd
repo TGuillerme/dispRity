@@ -61,7 +61,7 @@ combine.subsets(dummy_subsets, 10)
 
 }
 \seealso{
-\code{\link{dispRity}}, \code{\link{extract.dispRity}}.
+\code{\link{dispRity}}, \code{\link{get.disparity}}.
 }
 \author{
 Thomas Guillerme
