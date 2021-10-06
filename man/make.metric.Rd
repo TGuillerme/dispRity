@@ -10,7 +10,8 @@ make.metric(
   silent = FALSE,
   check.between.groups = FALSE,
   data.dim,
-  tree = NULL
+  tree = NULL,
+  covar = FALSE
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ make.metric(
 \item{data.dim}{optional, two \code{numeric} values for the dimensions of the matrix to run the test function testing. If missing, a default 5 rows by 4 columns matrix is used.}
 
 \item{tree}{optional, a \code{phylo} object.}
+
+\item{covar}{\code{logical}, whether to treat the metric as applied the a \code{data$covar} component (\code{TRUE}) or not (\code{FALSE}; default).}
 }
 \description{
 Testing the dimension-level of disparity metrics

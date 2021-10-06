@@ -42,7 +42,6 @@
 #' }
 #' In both cases it is also possible to specify the input directly by providing the list to loop through. For example using \code{between.groups = list(c(1,2), c(2,1), c(4,8))} will apply the \code{metric} to the 1st and 2nd subsets, the 2nd and first and the 4th and 8th (in that specific order).
 #' 
-#' 
 #' @examples
 #' ## Load the Beck & Lee 2014 data
 #' data(BeckLee_mat50)
@@ -146,8 +145,8 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
     }
 
     ## Get the metric list
-    metrics_list <- get.dispRity.metric.handle(metric, match_call, data.dim = dim(data$matrix[[1]]), tree = tree, ...)
-    # metrics_list <- get.dispRity.metric.handle(metric, match_call, data.dim = dim(data$matrix[[1]]), tree = NULL)
+    metrics_list <- get.dispRity.metric.handle(metric, match_call, data.dim = data, tree = tree, ...)
+    # metrics_list <- get.dispRity.metric.handle(metric, match_call, data.dim = data, tree = NULL)
     metric_is_between.groups <- unlist(metrics_list$between.groups)
     metric_has_tree <- unlist(metrics_list$tree)
     metrics_list <- metrics_list$levels

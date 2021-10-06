@@ -8,6 +8,7 @@
 #' @param check.between.groups \code{logical}; if \code{TRUE}, the function will output a named list containing the metric level and a logical indicating whether the metric can be used between groups or not. If \code{FALSE} (default) the function only outputs the metric level.
 #' @param data.dim optional, two \code{numeric} values for the dimensions of the matrix to run the test function testing. If missing, a default 5 rows by 4 columns matrix is used.
 #' @param tree optional, a \code{phylo} object.
+#' @param covar \code{logical}, whether to treat the metric as applied the a \code{data$covar} component (\code{TRUE}) or not (\code{FALSE}; default).
 #'
 #' @details
 #' This function tests:
@@ -50,7 +51,7 @@
 #' @seealso \code{\link{dispRity}}, \code{\link{dispRity.metric}}.
 #'
 #' @author Thomas Guillerme
-make.metric <- function(fun, ..., silent = FALSE, check.between.groups = FALSE, data.dim, tree = NULL) {
+make.metric <- function(fun, ..., silent = FALSE, check.between.groups = FALSE, data.dim, tree = NULL, covar = FALSE) {
     ## Sanitizing
     ## fun
     check.class(fun, c("function", "standardGeneric"), report = 1)
@@ -64,8 +65,14 @@ make.metric <- function(fun, ..., silent = FALSE, check.between.groups = FALSE, 
     if(missing(data.dim)) {
         data.dim <- c(5, 4)
     }
+
     matrix <- matrix(rnorm(data.dim[1]*data.dim[2]), data.dim[1], data.dim[2])
     matrix_text <- paste0("matrix(rnorm(",data.dim[1],"*",data.dim[2],"), ",data.dim[1], ", ",data.dim[2], ")")
+    
+    if(covar) {
+        matrix <- list(VCV = matrix, loc = diag(matrix))
+        matrix_text <- ""
+    }
 
     ## Testing the metric
     test <- NULL

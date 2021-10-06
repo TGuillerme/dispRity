@@ -1,4 +1,25 @@
-get.dispRity.metric.handle <- function(metric, match_call, data.dim, tree = NULL, ...) {
+check.covar <- function(metric, data.dim) {
+    ## Check whether the metric is a covar one
+    is_covar <- FALSE
+    options(warn = -1)
+    try(eval(body(metric)[[2]]), silent = TRUE)
+    options(warn = 0)    
+    if(is_covar) {
+        ## Check if data has a covar component
+        if(is.null(data$covar)) {
+            stop.call(msg = "Impossible to use a metric with as.covar() if the data has no $covar component.\nCheck MCMCglmm.subsets() function.", call = "")
+        } else {
+            dim_out <- rep(length(data.dim$call$dimensions), 2)
+        }
+    } else {
+        dim_out <- dim(data.dim$matrix[[1]])
+    }
+
+    return(list(is_covar = is_covar, data.dim = dim_out))
+}
+
+get.dispRity.metric.handle <- function(metric, match_call, data.dim = list(matrix = list(matrix(NA, 5, 4))), tree = NULL, ...) {
+
     level3.fun <- level2.fun <- level1.fun <- NULL
     tree.metrics <- between.groups <- rep(FALSE, 3)
     length_metric <- length(metric)
@@ -12,8 +33,13 @@ get.dispRity.metric.handle <- function(metric, match_call, data.dim, tree = NULL
             check.class(metric[[1]], c("function", "standardGeneric"), report = 1)
             metric <- metric[[1]]
         }
+
+        ## Check the metric for covarness
+        checks <- check.covar(metric, data.dim)
+
         ## Which level is the metric?
-        test_level <- make.metric(metric, silent = TRUE, check.between.groups = TRUE, data.dim = data.dim, tree = tree, ...)
+        test_level <- make.metric(metric, silent = TRUE, check.between.groups = TRUE, data.dim = checks$data.dim, tree = tree, covar = checks$is_covar, ...)
+
         # warning("DEBUG dispRity_fun") ; test_level <- make.metric(metric, silent = TRUE, check.between.groups = TRUE, data.dim = data.dim)
         level <- test_level$type
         between.groups[as.numeric(gsub("level", "", test_level$type))] <- test_level$between.groups
@@ -38,9 +64,15 @@ get.dispRity.metric.handle <- function(metric, match_call, data.dim, tree = NULL
                 stop.call(msg.pre = "metric argument ", call = match_call$metric[[i + 1]], msg = " is not a function.")
             }
         }
+
         ## Sorting the metrics by levels
+        lapply.wrapper <- function(metric, data, tree, ...) {
+            checks <- check.covar(metric, data)
+            return(make.metric(metric, silent = TRUE, check.between.groups = TRUE, data.dim = checks$data.dim, tree = tree, covar = checks$is_covar, ...))
+        }
+
         ## getting the metric levels
-        test_level <- lapply(metric, make.metric, silent = TRUE, data.dim = data.dim, check.between.groups = TRUE, tree = tree)
+        test_level <- lapply(metric, lapply.wrapper, data = data.dim, tree = tree, ...)
         levels <- unlist(lapply(test_level, `[[` , 1))
         btw_groups <- unlist(lapply(test_level, `[[` , 2))
         tree_metrics <- unlist(lapply(test_level, `[[` , 3))
