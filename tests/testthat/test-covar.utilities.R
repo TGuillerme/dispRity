@@ -30,6 +30,14 @@ test_that("get.covar works", {
     expect_equal(warn[[1]], "sample argument is ignored since n = 7 random samples are asked for.")
     expect_equal(length(test), length(get.covar(data_test)))
     expect_equal(length(test[[1]]), 7)
+    
+    ## Subsets argument works
+    data_test <- MCMCglmm.subsets(data = covar_char_data, posteriors = covar_model_list[[7]])
+    test <- get.covar(data_test, sample = 1, subsets = c(2,1))
+    expect_equal(length(test), 2)
+    expect_equal(names(test), c("animal:clade_2", "animal:clade_1"))
+    expect_equal(length(test[[1]]), 1)
+    
 })
 
 ## Test

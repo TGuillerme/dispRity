@@ -6,12 +6,14 @@
 \alias{axis.covar}
 \title{Utilities for a dispRity object with covariance matrices}
 \usage{
-get.covar(data, sample, n, dimensions)
+get.covar(data, subsets, sample, n, dimensions)
 
-axis.covar(data, sample, n, dimensions, level = 0.95, axis = 1)
+axis.covar(data, subsets, sample, n, dimensions, level = 0.95, axis = 1)
 }
 \arguments{
 \item{data}{a \code{dispRity} object with a \code{covar} element.}
+
+\item{subsets}{optional, a \code{numeric} or \code{character} for which subsets to get (if missing, the value for all subsets are given).}
 
 \item{sample}{optional, one or more specific posterior sample IDs (is ignored if n is used) or a function to summarise all axes.}
 

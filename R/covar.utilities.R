@@ -3,11 +3,12 @@
 #' @title Utilities for a dispRity object with covariance matrices
 #'
 #' @description Different utility functions to extract aspects of a \code{MCMCglmm} object.
-#'
-#' @usage get.covar(data, sample, n, dimensions)
-#' @usage axis.covar(data, sample, n, dimensions, level = 0.95, axis = 1)
+#' 
+#' @usage get.covar(data, subsets, sample, n, dimensions)
+#' @usage axis.covar(data, subsets, sample, n, dimensions, level = 0.95, axis = 1)
 #'
 #' @param data a \code{dispRity} object with a \code{covar} element.
+#' @param subsets optional, a \code{numeric} or \code{character} for which subsets to get (if missing, the value for all subsets are given).
 #' @param sample optional, one or more specific posterior sample IDs (is ignored if n is used) or a function to summarise all axes.
 #' @param n optional, a random number of covariance matrices to sample (if left empty, all are used).
 #' @param dimensions optional, which dimensions to use. If missing the dimensions from \code{data} are used.
@@ -39,7 +40,7 @@
 #' 
 #' @author Thomas Guillerme
 #' @export
-get.covar <- function(data, sample, n, dimensions) {
+get.covar <- function(data, subsets, sample, n, dimensions) {
 
     ## Some sanitizing on data, sample, n
     check.class(data, "dispRity")
@@ -59,9 +60,22 @@ get.covar <- function(data, sample, n, dimensions) {
         dimensions <- NULL
     }
     
+    ## Subsets
+    if(missing(subsets)) {
+        if(!is.null(data$disparity)) {
+            if(data$call$disparity$metrics$between.groups) {
+                subsets <- seq(1:length(data$disparity))
+            }
+        } else {
+            subsets <- seq(1:length(data$subsets))
+        }
+    } else {
+        check.subsets(subsets, data)
+    }
+
     ## Just return everything!
     if(missing(sample) && missing(n)) {
-        return(sample.n(data$covar, n = data$call$bootstrap[[1]], dimensions = dimensions))
+        return(sample.n(data$covar[subsets], n = data$call$bootstrap[[1]], dimensions = dimensions))
     }
 
     ## Just return the n random samples
@@ -69,21 +83,21 @@ get.covar <- function(data, sample, n, dimensions) {
         if(!missing(sample)) {
             warning("sample argument is ignored since n = ", n, " random samples are asked for.")
         }
-        return(sample.n(data$covar, n = n, dimensions = dimensions))
+        return(sample.n(data$covar[subsets], n = n, dimensions = dimensions))
     }
 
     ## Return specific samples
     if(!missing(sample)) {
         if(is(sample, "function") || is(sample, "standardGeneric")) {
             ## Summarise the results
-            return(lapply(lapply(sample.n(data$covar, n = data$call$bootstrap[[1]], dimensions = dimensions), summarise.fun, fun = sample), list))
+            return(lapply(lapply(sample.n(data$covar[subsets], n = data$call$bootstrap[[1]], dimensions = dimensions), summarise.fun, fun = sample), list))
         } else {
             ## Return specific samples
-            return(sample.n(data$covar, selected_n = sample, dimensions = dimensions))
+            return(sample.n(data$covar[subsets], selected_n = sample, dimensions = dimensions))
         }
     }
 }
-axis.covar <- function(data, sample, n, dimensions, level = 0.95, axis = 1) {
+axis.covar <- function(data, subsets, sample, n, dimensions, level = 0.95, axis = 1) {
     
     check.class(data, "dispRity")
     ## Checks happen internally (in get.covar)
@@ -104,7 +118,7 @@ axis.covar <- function(data, sample, n, dimensions, level = 0.95, axis = 1) {
     }
 
     ## Get the covar matrices
-    selected_covars <- get.covar(data, sample, n)
+    selected_covars <- get.covar(data, subsets, sample, n)
 
     ## Select all the axis
     return(lapply(selected_covars, lapply, get.one.axis, axis = axis, level = level, dimensions = dimensions))
