@@ -13,8 +13,8 @@
 #          @param parallel Optional, either a \code{logical} argument whether to parallelise calculations (\code{TRUE}; the numbers of cores is automatically selected to n-1) or not (\code{FALSE}) or a single \code{numeric} value of the number of cores to use.
 #'
 #' @return
-#' This function outputs a \code{dispRity} object containing:
-#' \item{matrix}{the multidimensional space (a \code{matrix}).}
+#' This function outputs a \code{dispRity} object containing at least the following:
+#' \item{matrix}{the multidimensional space (a list of \code{matrix}).}
 #' \item{call}{A \code{list} containing the called arguments.}
 #' \item{subsets}{A \code{list} containing matrices pointing to the elements present in each subsets.}
 #' \item{disparity}{A \code{list} containing the disparity in each subsets.}

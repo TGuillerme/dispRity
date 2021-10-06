@@ -1,8 +1,8 @@
 ## Get the disparity characteristics
 get.data.params <- function(data) {
     return(list(
-        "distribution"   = ifelse(length(data$disparity[[1]]$elements) != 1, TRUE, FALSE),
-        "bootstrap"      = ifelse(!is.null(data$call$bootstrap), TRUE, FALSE),
+        "distribution"   = length(data$disparity[[1]]$elements) != 1,
+        "bootstrap"      = !is.null(data$call$bootstrap) && data$call$bootstrap[[2]] != "covar",
         "rarefaction"    = data$call$bootstrap[[3]],
         "between.groups" = data$call$disparity$metrics$between.groups,
         "elements"       = names(data$disparity)

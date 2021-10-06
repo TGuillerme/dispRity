@@ -249,7 +249,7 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
     is_distribution <- ifelse(length(data$disparity[[1]]$elements) != 1, TRUE, FALSE)
 
     ## Check the bootstraps
-    bootstrapped <- ifelse(!is.null(data$call$bootstrap), TRUE, FALSE)
+    bootstrapped <- !is.null(data$call$bootstrap) && !(data$call$bootstrap[[2]] == "covar")
 
     ## Get the elements per subsets
     elements <- lapply(data$subsets, lapply.get.elements, bootstrapped)
@@ -314,7 +314,7 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
         names(summary_results)[obs_col] <- "obs"
     }
 
-    if(!is.null(data$call$bootstrap)) {
+    if(bootstrapped) {
         ## Calculate the central tendencies and the quantiles
         summary_results <- cbind(summary_results, matrix(unlist(lapply(data$disparity, lapply.summary, cent.tend, quantiles, ...)), byrow = TRUE, ncol = (1+length(quantiles)*2)))
         ## Adding the labels
