@@ -13,7 +13,7 @@
 #' @param centres optional, a way to determine ellipses or major axes positions. Can be either a \code{function} (default is \code{colMeans}), a \code{vector} or a \code{list} of coordinates vectors or \code{"intercept"}. See details.
 #' @param transparent.scale optional, if multiple major axes and/or ellipses are plotted, a scaling factor for the transparency. If left empty, the transparency is set to \code{1/n} or \code{0.1} (whichever is higher).
 #' @param legend logical, whether to add the automatic legend (\code{TRUE}) or not (\code{FALSE}; default).
-#' @param legend.pos optional, the coordinates of where to add the legend (if \code{legend = TRUE}). Can a numeric vector or a character string like \code{"topleft"} (default), \code{"bottomright"}, etc.
+#' @param legend.args any optional argument to be passed to \code{legend}.
 #' @param add logical, whether to add the plot to an existing plot (\code{TRUE}) or not (\code{FALSE}; default).
 #' @param ... any graphical options to be passed to \code{plot}, \code{lines} or \code{points}.
 #' 
@@ -54,7 +54,7 @@
 #' 
 #' @author Thomas Guillerme
 #' @export
-covar.plot <- function(data, n, points = TRUE, major.axes = FALSE, ellipses = FALSE, level = 0.95, dimensions = c(1,2), centres = colMeans, transparent.scale, legend = FALSE, legend.pos = "topleft", add = FALSE, ...) {
+covar.plot <- function(data, n, points = TRUE, major.axes = FALSE, ellipses = FALSE, level = 0.95, dimensions = c(1,2), centres = colMeans, transparent.scale, legend = FALSE, legend.args, add = FALSE, ...) {
 
     match_call <- match.call()
 
@@ -254,22 +254,43 @@ covar.plot <- function(data, n, points = TRUE, major.axes = FALSE, ellipses = FA
 
     ## Add the legend
     if(legend){
-        ## Control the different pchs
-        if(!points) {
-            legend_pch <- NULL
-        } else {
-            legend_pch <- rep(NA, length(plot_args$pch))
-            legend_pch[plot_groups] <- plot_args$pch[plot_groups]
+
+        ## Missing list
+        if(missing(legend.args)) {
+            legend.args <- list()
         }
-        ## Control the legend text size
-        if(!is.null(plot_args$cex)) {
-            legend_cex <- plot_args$cex
-        } else {
-            legend_cex <- 1
+        ## Names
+        if(is.null(legend.args$legend)) {
+            legend.args$legend <- names(data$subsets)
+        }
+        ## Legend pch
+        if(is.null(legend.args$pch)) {
+            if(!points) {
+                legend.args$pch <- NULL
+            } else {
+                legend.args$pch <- rep(NA, length(plot_args$pch))
+                legend.args$pch[plot_groups] <- plot_args$pch[plot_groups]
+            }
+        }
+        ## Legend position
+        if(is.null(legend.args$x)) {
+            legend.args$x <- "topleft"
+        }
+        ## Legend box
+        if(is.null(legend.args$bty)) {
+            legend.args$bty <- "n"
+        }
+        ## Legend col
+        if(is.null(legend.args$col)) {
+            legend.args$col <- plot_args$col
+        }
+        ## Legend lty
+        if(is.null(legend.args$lty)) {
+            legend.args$lty <- plot_args$lty
         }
 
         ## Add the legend
-        legend(legend.pos, legend = names(data$subsets), col = plot_args$col, lty = plot_args$lty, pch = legend_pch, cex = legend_cex, bty = "n")
+        do.call(graphics::legend, legend.args)
     }
 
     return(invisible())

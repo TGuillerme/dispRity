@@ -16,7 +16,7 @@ covar.plot(
   centres = colMeans,
   transparent.scale,
   legend = FALSE,
-  legend.pos = "topleft",
+  legend.args,
   add = FALSE,
   ...
 )
@@ -42,7 +42,7 @@ covar.plot(
 
 \item{legend}{logical, whether to add the automatic legend (\code{TRUE}) or not (\code{FALSE}; default).}
 
-\item{legend.pos}{optional, the coordinates of where to add the legend (if \code{legend = TRUE}). Can a numeric vector or a character string like \code{"topleft"} (default), \code{"bottomright"}, etc.}
+\item{legend.args}{any optional argument to be passed to \code{legend}.}
 
 \item{add}{logical, whether to add the plot to an existing plot (\code{TRUE}) or not (\code{FALSE}; default).}
 

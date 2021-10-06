@@ -47,7 +47,7 @@ test_that("MCMCglmm.subsets and covar.plot works", {
 
     ## Default plot
     expect_null(covar.plot(test))
-    expect_null(covar.plot(test, n = 3, ellipses = TRUE, main = "something", level = 0.5, legend = TRUE, legend.pos = c(0.5, -0.5), pch = 12))
+    expect_null(covar.plot(test, n = 3, ellipses = TRUE, main = "something", level = 0.5, legend = TRUE, legend.args = list(x = 0.5, y = -0.5), pch = 12))
 
 
     ## Model 2: 3 group residual
