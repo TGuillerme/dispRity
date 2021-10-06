@@ -191,7 +191,7 @@ get.disparity <- function(data, subsets, rarefaction, observed = TRUE, concatena
         if(data$call$disparity$metrics$between.groups) {
             subsets <- seq(1:length(data$disparity))
         } else {
-            subsets <- seq(1:length(data$subsets))    
+            subsets <- seq(1:length(data$subsets))
         }
     } else {
         check.subsets(subsets, data)
