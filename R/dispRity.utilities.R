@@ -310,6 +310,7 @@ get.subsets <- function(data, subsets) {
     class(data_out) <- "dispRity"
     return(data_out)
 }
+
 combine.subsets <- function(data, subsets) {
 
     ## Internal cleaning function for only selecting the elements of the list in a subset
@@ -328,8 +329,8 @@ combine.subsets <- function(data, subsets) {
     check.class(data, "dispRity")
     
     ## Check for previous data    
-    has_disparity <- ifelse(!is.null(data$call$disparity), TRUE, FALSE)
-    has_bootstrap <- ifelse(!is.null(data$call$bootstrap), TRUE, FALSE)
+    has_disparity <- !is.null(data$call$disparity)
+    has_bootstrap <- !is.null(data$call$bootstrap)
     if(has_disparity && has_bootstrap) {
         warning(paste(as.expression(match_call$data), "contained bootstrap and disparity data that has been discarded in the output."))
         data$disparity <- NULL
