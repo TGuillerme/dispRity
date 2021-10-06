@@ -12,7 +12,7 @@ custom.subsets(data, group, tree)
 \arguments{
 \item{data}{A \code{matrix} or a \code{list} of matrices.}
 
-\item{group}{Either a \code{list} of row numbers or names to be used as different groups or a \code{data.frame} with the same \eqn{k} elements as in \code{data} as rownames. If \code{group} is a \code{phylo} object matching \code{data}, groups are automatically generated as clades (and the tree is attached to the resulting \code{dispRity} object).}
+\item{group}{Either a \code{list} of row numbers or names to be used as different groups, a \code{data.frame} with the same \eqn{k} elements as in \code{data} as rownames or a \code{factor} vector. If \code{group} is a \code{phylo} object matching \code{data}, groups are automatically generated as clades (and the tree is attached to the resulting \code{dispRity} object).}
 
 \item{tree}{Optional, a \code{phylo} or \code{multiPhylo} object to attach to the resulting \code{dispRity} data.}
 }
