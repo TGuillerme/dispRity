@@ -302,6 +302,10 @@ get.subsets <- function(data, subsets) {
     if(!is.null(data$call$disparity)) {
         data_out$disparity <- data$disparity[subsets]
     }
+    ## Add the covar (if available)
+    if(!is.null(data$covar)) {
+        data_out$covar <- data$covar[subsets]
+    }
 
     class(data_out) <- "dispRity"
     return(data_out)
