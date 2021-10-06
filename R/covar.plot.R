@@ -261,8 +261,15 @@ covar.plot <- function(data, n, points = TRUE, major.axes = FALSE, ellipses = FA
             legend_pch <- rep(NA, length(plot_args$pch))
             legend_pch[plot_groups] <- plot_args$pch[plot_groups]
         }
+        ## Control the legend text size
+        if(!is.null(plot_args$cex)) {
+            legend_cex <- plot_args$cex
+        } else {
+            legend_cex <- 1
+        }
+
         ## Add the legend
-        legend(legend.pos, legend = names(data$subsets), col = plot_args$col, lty = plot_args$lty, pch = legend_pch)
+        legend(legend.pos, legend = names(data$subsets), col = plot_args$col, lty = plot_args$lty, pch = legend_pch, cex = legend_cex, bty = "n")
     }
 
     return(invisible())
