@@ -14,6 +14,9 @@
 #'      \item For the \code{rename.groups} option, the vector must be of class \code{"character"} and must of the same length as the number of random and residual terms in \code{posteriors} or of \code{group} argument (if used). If the \code{group} argument is left empty, the groups are extracted from the \code{posteriors} in the following order: the random terms first then the residual terms as specified in the \code{posteriors} object formulas (respectively \code{posteriors$Random$formula} and \code{posteriors$Residual$formula}).
 #' }
 #' 
+#' \emph{NOTE} that the output \code{dispRity} inherits the dimensions used in the \code{posteriors} argument. You can always check the selected dimensions using:
+#' \code{data$call$dimensions}
+#' 
 #' @examples
 #' data(charadriiformes)
 #' 
