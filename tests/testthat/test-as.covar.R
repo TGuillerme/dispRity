@@ -153,3 +153,34 @@ test_that("as.covar works in dispRity", {
     expect_equal(c(summary(test1)$obs), c(0.376, 0.020, 0.129))
     expect_equal(c(summary(test2)$obs), c(119.8, 107.0,  73.3))
 })
+
+test_that("example works", {
+
+    ## Creating a dispRity
+    data(charadriiformes)
+
+    ## Creating a dispRity object from the charadriiformes model
+    covar_data <- MCMCglmm.subsets(data       = charadriiformes$data,
+                                   posteriors = charadriiformes$posteriors)
+
+    ## Get one matrix and one covar matrix
+    set.seed(1)
+    one_matrix <- get.matrix(covar_data, subsets = 1)
+    one_covar  <- get.covar(covar_data, subsets = 1, n = 1)[[1]][[1]]
+
+    ## Measure the centroids on the covar matrix
+    expect_equal_round(as.covar(centroids)(one_covar), c(0.08600486, 0.05806154, 0.04549467), digits = 6)
+    ## Is the same as:
+    expect_equal_round(as.covar(centroids)(one_covar), centroids(one_covar$VCV), digits = 6)
+    
+
+    ## Apply the measurement on a dispRity object:
+    ## On the traitspace:
+    expect_equal(c(summary(dispRity(covar_data, metric = c(sum, centroids)))$obs), c(71.9, 48.5, 52.1, 182.9, 182.9))
+    ## On the covariance matrices:
+    expect_equal(c(summary(dispRity(covar_data, metric = c(sum, as.covar(centroids))))$obs), c(0.376, 0.020, 0.129, 0.219, 0.030))
+    ## The same but with additional options (centre = 100)
+    expect_equal(c(summary(dispRity(covar_data,
+                     metric = c(sum, as.covar(centroids)),
+                     centre = 100))$obs), c(119.8, 107.0, 73.3, 100.0, 100.0))
+})

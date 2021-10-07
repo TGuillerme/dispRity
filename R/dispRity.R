@@ -321,6 +321,14 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
         lapply_loop <- lapply(list_of_pairs, combine.pairs, lapply_data = lapply_loop)
     }
 
+    ## Make the lapply loop just the groups ID (if covar)
+    if(any(unlist(lapply(metrics_list, eval.covar)))) {
+        names_in <- names(lapply_loop)
+        lapply_loop <- as.list(match(names(lapply_loop), names(data$covar)))
+        lapply_loop <- lapply(lapply_loop, function(x) return(list(elements = x)))
+        names(lapply_loop) <- names_in
+    }
+
 
     ## Initialising the cluster
     # if(do_parallel) {

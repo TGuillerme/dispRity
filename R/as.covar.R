@@ -21,19 +21,23 @@
 #' one_matrix <- get.matrix(covar_data, subsets = 1)
 #' one_covar  <- get.covar(covar_data, subsets = 1, n = 1)[[1]][[1]]
 #' 
-#' ## Measure the variances
-#' variances(one_matrix)
+#' ## Measure the centroids
+#' centroids(one_matrix)
 #' 
-#' ## Measure the variances on the covar matrix
-#' as.covar(variances)(one_covar)
+#' ## Measure the centroids on the covar matrix
+#' as.covar(centroids)(one_covar)
 #' ## Is the same as:
-#' variances(one_covar$VCV)
+#' centroids(one_covar$VCV)
 #' 
 #' ## Apply the measurement on a dispRity object:
 #' ## On the traitspace:
-#' summary(dispRity(covar_data, metric = c(sum, variances))) 
+#' summary(dispRity(covar_data, metric = c(sum, centroids))) 
 #' ## On the covariance matrices:
-#' summary(dispRity(covar_data, metric = c(sum, as.covar(variances))))
+#' summary(dispRity(covar_data, metric = c(sum, as.covar(centroids))))
+#' ## The same but with additional options (centre = 100)
+#' summary(dispRity(covar_data,
+#'                  metric = c(sum, as.covar(centroids)),
+#'                  centre = 100))
 #' 
 #'
 #' 

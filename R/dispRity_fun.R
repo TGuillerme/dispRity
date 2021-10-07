@@ -244,20 +244,20 @@ decompose.matrix <- function(one_subsets_bootstrap, fun, data, nrow, use_tree, .
 ## Calculates disparity from a VCV matrix
 decompose.VCV <- function(one_subsets_bootstrap, fun, data, use_array, use_tree = FALSE, ...) {
 
-    ## Return NA if no data
-    if(length(na.omit(one_subsets_bootstrap)) < 2) {
-        return(NA)
-    }
-    ## Find which subset of the VCVs to use
-    find.subset <- function(sub, cur) {
-        if(length(c(sub)) == length(c(cur))) {
-            return(all(c(sub) == c(cur)))
-        } else {
-            return(FALSE)
-        }
-    }
+    # ## Return NA if no data
+    # if(length(na.omit(one_subsets_bootstrap)) < 2) {
+    #     return(NA)
+    # }
+    # ## Find which subset of the VCVs to use
+    # find.subset <- function(sub, cur) {
+    #     if(length(c(sub)) == length(c(cur))) {
+    #         return(all(c(sub) == c(cur)))
+    #     } else {
+    #         return(FALSE)
+    #     }
+    # }
     ## Apply the fun
-    return(do.call(cbind, lapply(data$covar[[which(unlist(lapply(lapply(data$subsets, `[[`, 1), find.subset, cur = one_subsets_bootstrap)))]], fun, ...)))
+    return(do.call(cbind, lapply(data$covar[[one_subsets_bootstrap]], fun, ...)))
 }
 
 
@@ -361,7 +361,7 @@ disparity.bootstraps <- function(one_subsets_bootstrap, metrics_list, data, matr
 }
 
 ## Lapply wrapper for disparity.bootstraps function
-# subsets <- lapply_loop[[1]] ; warning("DEBUG: dispRity_fun")
+# subsets <- lapply_loop[[5]] ; warning("DEBUG: dispRity_fun")
 lapply.wrapper <- function(subsets, metrics_list, data, matrix_decomposition, verbose, metric_has_tree = rep(FALSE, length(metrics_list)), ...) {
     if(verbose) {
         ## Making the verbose version of disparity.bootstraps
