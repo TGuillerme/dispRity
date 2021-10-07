@@ -1,9 +1,6 @@
 check.covar <- function(metric, data) {
     ## Check whether the metric is a covar one
-    is_covar <- FALSE
-    options(warn = -1)
-    try(eval(body(metric)[[2]]), silent = TRUE)
-    options(warn = 0)
+    is_covar <- eval.covar(metric, null.return = FALSE)
     if(is_covar) {
         ## Check if data has a covar component
         if(is.null(data$covar)) {
@@ -109,6 +106,20 @@ get.dispRity.metric.handle <- function(metric, match_call, data = list(matrix = 
             level3.fun <- metric[[match("level3", levels)]]
             between.groups[3] <- btw_groups[match("level3", levels)]
             tree.metrics[3] <- tree_metrics[match("level3", levels)]
+        }
+
+        ## Evaluate the covarness
+        covar_check <- unlist(lapply(list(level1.fun, level2.fun, level3.fun), eval.covar))
+        if(any(covar_check)) {
+            if(sum(covar_check) > 1) {
+                ## Stop if there are more than one covar meetirc
+                stop.call(msg = "Only one metric can be set as as.covar().", call = "")
+            } else {
+                if(!covar_check[length(covar_check)]) {
+                    ## Stop if the last dimension-level metric is not the covar one
+                    stop.call(msg = "Only the highest dimension-level metric can be set as as.covar().", call = "")
+                }
+            }
         }
     }
 
@@ -230,6 +241,26 @@ decompose.matrix <- function(one_subsets_bootstrap, fun, data, nrow, use_tree, .
     }
 }
 
+## Calculates disparity from a VCV matrix
+decompose.VCV <- function(one_subsets_bootstrap, fun, data, use_array, use_tree = FALSE, ...) {
+
+    ## Return NA if no data
+    if(length(na.omit(one_subsets_bootstrap)) < 2) {
+        return(NA)
+    }
+    ## Find which subset of the VCVs to use
+    find.subset <- function(sub, cur) {
+        if(length(c(sub)) == length(c(cur))) {
+            return(all(c(sub) == c(cur)))
+        } else {
+            return(FALSE)
+        }
+    }
+    ## Apply the fun
+    return(do.call(cbind, lapply(data$covar[[which(unlist(lapply(lapply(data$subsets, `[[`, 1), find.subset, cur = one_subsets_bootstrap)))]], fun, ...)))
+}
+
+
 ## Apply decompose matrix
 # fun = first_metric ; warning("DEBUG: dispRity_fun")
 decompose.matrix.wrapper <- function(one_subsets_bootstrap, fun, data, use_array, use_tree = FALSE, ...) {
@@ -288,8 +319,12 @@ disparity.bootstraps <- function(one_subsets_bootstrap, metrics_list, data, matr
         use_tree     <- metric_has_tree[first_metric[[3]]]
         first_metric <- first_metric[[1]]
 
-        ## Decompose the metric using the first metric
-        disparity_out <- decompose.matrix.wrapper(one_subsets_bootstrap, fun = first_metric, data = data, use_array = use_array, use_tree = use_tree, ...)
+        if(!eval.covar(first_metric, null.return = FALSE)) {
+            ## Decompose the metric using the first metric
+            disparity_out <- decompose.matrix.wrapper(one_subsets_bootstrap, fun = first_metric, data = data, use_array = use_array, use_tree = use_tree, ...)
+        } else {
+            disparity_out <- decompose.VCV(one_subsets_bootstrap, fun = first_metric, data = data, use_array = use_array, use_tree = use_tree, ...)
+        }
     } else {
         disparity_out <- one_subsets_bootstrap
     }
@@ -324,7 +359,6 @@ disparity.bootstraps <- function(one_subsets_bootstrap, metrics_list, data, matr
 
     return(disparity_out)
 }
-
 
 ## Lapply wrapper for disparity.bootstraps function
 # subsets <- lapply_loop[[1]] ; warning("DEBUG: dispRity_fun")

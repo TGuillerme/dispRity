@@ -183,6 +183,11 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
             data$call$disparity <- NULL
             data$disparity <- NULL
         }
+
+        ## Check whether the metric is covar
+        if(any(unlist(lapply(metrics_list, eval.covar)))) {
+            stop.call(msg = "Impossible to apply a metric as.covar() on a dispRity object that already contains disparity results.", call = "")
+        }
     }
 
     ## Check if the subsets contains probabilities or not
