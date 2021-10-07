@@ -145,8 +145,8 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
     }
 
     ## Get the metric list
-    metrics_list <- get.dispRity.metric.handle(metric, match_call, data.dim = data, tree = tree, ...)
-    # metrics_list <- get.dispRity.metric.handle(metric, match_call, data.dim = data, tree = NULL)
+    metrics_list <- get.dispRity.metric.handle(metric, match_call, data = data, tree = tree, ...)
+    # metrics_list <- get.dispRity.metric.handle(metric, match_call, data = data, tree = NULL)
     metric_is_between.groups <- unlist(metrics_list$between.groups)
     metric_has_tree <- unlist(metrics_list$tree)
     metrics_list <- metrics_list$levels

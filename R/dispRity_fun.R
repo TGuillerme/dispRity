@@ -1,24 +1,29 @@
-check.covar <- function(metric, data.dim) {
+check.covar <- function(metric, data) {
     ## Check whether the metric is a covar one
     is_covar <- FALSE
     options(warn = -1)
     try(eval(body(metric)[[2]]), silent = TRUE)
-    options(warn = 0)    
+    options(warn = 0)
     if(is_covar) {
         ## Check if data has a covar component
         if(is.null(data$covar)) {
             stop.call(msg = "Impossible to use a metric with as.covar() if the data has no $covar component.\nCheck MCMCglmm.subsets() function.", call = "")
         } else {
-            dim_out <- rep(length(data.dim$call$dimensions), 2)
+            dim_out <- rep(length(data$call$dimensions), 2)
         }
     } else {
-        dim_out <- dim(data.dim$matrix[[1]])
+        ##TODO: This should be streamlined. data$matrix must always be a list!
+        if(is(data$matrix, "list")) {
+            dim_out <- dim(data$matrix[[1]])
+        } else {
+            dim_out <- dim(data$matrix)
+        }
     }
 
     return(list(is_covar = is_covar, data.dim = dim_out))
 }
 
-get.dispRity.metric.handle <- function(metric, match_call, data.dim = list(matrix = list(matrix(NA, 5, 4))), tree = NULL, ...) {
+get.dispRity.metric.handle <- function(metric, match_call, data = list(matrix = list(matrix(NA, 5, 4))), tree = NULL, ...) {
 
     level3.fun <- level2.fun <- level1.fun <- NULL
     tree.metrics <- between.groups <- rep(FALSE, 3)
@@ -35,7 +40,7 @@ get.dispRity.metric.handle <- function(metric, match_call, data.dim = list(matri
         }
 
         ## Check the metric for covarness
-        checks <- check.covar(metric, data.dim)
+        checks <- check.covar(metric, data)
 
         ## Which level is the metric?
         test_level <- make.metric(metric, silent = TRUE, check.between.groups = TRUE, data.dim = checks$data.dim, tree = tree, covar = checks$is_covar, ...)
@@ -72,7 +77,7 @@ get.dispRity.metric.handle <- function(metric, match_call, data.dim = list(matri
         }
 
         ## getting the metric levels
-        test_level <- lapply(metric, lapply.wrapper, data = data.dim, tree = tree, ...)
+        test_level <- lapply(metric, lapply.wrapper, data = data, tree = tree, ...)
         levels <- unlist(lapply(test_level, `[[` , 1))
         btw_groups <- unlist(lapply(test_level, `[[` , 2))
         tree_metrics <- unlist(lapply(test_level, `[[` , 3))

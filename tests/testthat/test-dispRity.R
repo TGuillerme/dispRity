@@ -20,7 +20,7 @@ test_that("get.dispRity.metric.handle", {
     data <- disparity
     
     ## Level1
-    test <- get.dispRity.metric.handle(sum, match_call, data.dim = data)
+    test <- get.dispRity.metric.handle(sum, match_call, data = data)
     expect_equal(names(test), c("levels", "between.groups", "tree.metrics"))
     test <- test$levels
     expect_is(test, "list")
@@ -29,7 +29,7 @@ test_that("get.dispRity.metric.handle", {
     expect_is(test[[3]], "function")
 
     ## Level2
-    test <- get.dispRity.metric.handle(ranges, match_call, data.dim = data)
+    test <- get.dispRity.metric.handle(ranges, match_call, data = data)
     expect_equal(names(test), c("levels", "between.groups", "tree.metrics"))
     test <- test$levels
     expect_is(test, "list")
@@ -38,8 +38,8 @@ test_that("get.dispRity.metric.handle", {
     expect_null(test[[3]])
 
     ## Level3
-    expect_error(test <- get.dispRity.metric.handle(var, match_call, data.dim = data))
-    test <- get.dispRity.metric.handle(c(sd, var), match_call, data.dim = data)
+    expect_error(test <- get.dispRity.metric.handle(var, match_call, data = data))
+    test <- get.dispRity.metric.handle(c(sd, var), match_call, data = data)
     expect_equal(names(test), c("levels", "between.groups", "tree.metrics"))
     test <- test$levels
     expect_is(test, "list")
@@ -50,9 +50,9 @@ test_that("get.dispRity.metric.handle", {
     ## Serial
     test.between.groups <- function(matrix, matrix2) {return(42)}
     test.between.groups.no <- function(matrix, matrix3) {return(42)}
-    test <- get.dispRity.metric.handle(test.between.groups, match_call, data.dim = data)
+    test <- get.dispRity.metric.handle(test.between.groups, match_call, data = data)
     expect_equal(test$between.groups, c(FALSE, FALSE, TRUE))
-    test <- get.dispRity.metric.handle(test.between.groups.no, match_call, data.dim = data)
+    test <- get.dispRity.metric.handle(test.between.groups.no, match_call, data = data)
     expect_equal(test$between.groups, c(FALSE, FALSE, FALSE))
 })
 

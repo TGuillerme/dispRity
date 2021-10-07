@@ -108,7 +108,7 @@ randtest.dispRity <- function(data, subsets, metric, replicates = 100, resample 
     }
 
     ## Check the metric
-    metrics_list <- get.dispRity.metric.handle(metric, match_call, data.dim = data, ...)$levels
+    metrics_list <- get.dispRity.metric.handle(metric, match_call, data = data, ...)$levels
 
     ## Replicates
     check.class(replicates, c("numeric", "integer"))

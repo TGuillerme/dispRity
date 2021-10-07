@@ -116,8 +116,8 @@ test.metric <- function(data, metric, ..., shifts, shift.options, model, replica
     }
 
     ## Get the metric list
-    metrics_list <- get.dispRity.metric.handle(metric, match_call, data.dim = dim(data[[1]]), ...)
-    # metrics_list <- get.dispRity.metric.handle(metric, match_call, data.dim = dim(data[[1]]))
+    metrics_list <- get.dispRity.metric.handle(metric, match_call, data = list(matrix = data), ...)
+    # metrics_list <- get.dispRity.metric.handle(metric, match_call, data = list(matrix = data))
     metrics_list <- metrics_list$levels
 
     ## shift
