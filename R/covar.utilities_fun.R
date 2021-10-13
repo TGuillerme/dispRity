@@ -41,11 +41,24 @@ get.one.axis <- function(data, axis = 1, level = 0.95, dimensions) {
 
     # The magic: https://stackoverflow.com/questions/40300217/obtain-vertices-of-the-ellipse-on-an-ellipse-covariance-plot-created-by-care/40316331#40316331
 
+    ## VCVing the matrix
+    if(!is(data, "list")) {
+        data <- list(VCV = data)
+    } else {
+        if(is.null(data$VCV)) {
+            data$VCV <- data
+        }
+    }
+    ## adding a loc
+    if(is.null(data$loc)) {
+        data$loc <- rep(0, nrow(data$VCV))
+    }
+
     ## Select the right dimensions
     data$VCV <- data$VCV[dimensions, dimensions, drop = FALSE]
 
     ## Get the data dimensionality
-    dims <- dim(data$VCV)[1]
+    dims <- length(diag(data$VCV))
 
     ## Create the unit hypersphere (a hypersphere of radius 1) for the scaling
     unit_hypersphere1 <- unit_hypersphere2 <- matrix(0, ncol = dims, nrow = dims)
@@ -61,7 +74,7 @@ get.one.axis <- function(data, axis = 1, level = 0.95, dimensions) {
     eigen_decomp <- eigen(data$VCV, symmetric = TRUE)
 
     ## Re-scaling the unit hypersphere
-    scaled_edges <- unit_hypersphere * rep(sqrt(eigen_decomp$values), each = dims*2)
+    scaled_edges <- unit_hypersphere * rep(sqrt(abs(eigen_decomp$values)), each = dims*2)
     ## Rotating the edges coordinates
     edges <- tcrossprod(scaled_edges, eigen_decomp$vectors)
 
