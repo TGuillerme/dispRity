@@ -1,5 +1,5 @@
 #' @name dispRity.metric
-#' @aliases dimension.level3.fun dimension.level2.fun dimension.level1.fun between.groups.fun variances ranges centroids mode.val ellipse.volume edge.length.tree convhull.surface convhull.volume diagonal ancestral.dist pairwise.dist span.tree.length n.ball.volume radius neighbours displacements quantiles func.eve func.div angles deviations group.dist point.dist projections projections.tree
+#' @aliases dimension.level3.fun dimension.level2.fun dimension.level1.fun between.groups.fun variances ranges centroids mode.val ellipse.volume edge.length.tree convhull.surface convhull.volume diagonal ancestral.dist pairwise.dist span.tree.length n.ball.volume radius neighbours displacements quantiles func.eve func.div angles deviations group.dist point.dist projections projections.tree projections.between
 #' @title Disparity metrics
 #'
 #' @description Different implemented disparity metrics.
@@ -105,11 +105,9 @@
 #' \itemize{
 #'    \item \code{group.dist}: calculates the distance between two groups (by default, this is the minimum euclidean vector norm distance between groups). Negative distances are considered as 0. This function must intake two matrices (\code{matrix} and \code{matrix2}) and the quantiles to consider. For the minimum distance between two groups, the 100th quantiles are considered (default: \code{probs = c(0,1)}) but this can be changed to any values (e.g. distance between the two groups accounting based on the 95th CI: \code{probs = c(0.025, 0.975)}; distance between centroids: \code{probs = c(0.5)}, etc...). This function is the linear algebra equivalent of the \code{\link[hypervolume]{hypervolume_distance}} function.
 #' 
-#' 
 #' \item \code{point.dist}: calculates the distance between \code{matrix} and a point calculated from \code{matrix2}. By default, this point is the centroid of \code{matrix2}. This can be changed by passing a function to be applied to \code{matrix2} through the \code{point} argument (for example, for the centroid: \code{point.dist(..., point = colMeans)}). NOTE: distance is calculated as \code{"euclidean"} by default, this can be changed using the \code{method} argument.
 #' 
-#' 
-#' 
+#' \item \code{projections.between}: calculates the projection of the major axis between two matrices. It allows the same arguments as \code{projections}. If \code{point1} and \code{point2} are not provided (default), this function measures the major axis from both input matrices, centre their origins and projects the end of the vector of \code{matrix} onto the vector from \code{matrix2}. Which axis to measure can be changed with the option \code{axis} (for the major axis, \code{axis = 1}; default) and the confidence interval can be changed using \code{level} (for the 95 confidence interval, \code{level = 0.95}; default - see \code{\link{axis.covar}} for more details). If and input vector is provided through \code{point1} and \code{point2}, both matrices major axes are projected on the input vector.
 #' }
 #' 
 #' When used in the \code{\link{dispRity}} function, optional arguments are declared after the \code{metric} argument: for example
@@ -291,6 +289,18 @@
 #' ## 0,0,0 and a user defined function
 #' projections.tree(named_matrix, dummy_tree,
 #'                   type = c(0, user.fun))
+#'
+#' ## projections.between
+#' ## Two dummy matrices
+#' matrix_1 <- matrix(rnorm(16), 4, 4)
+#' matrix_2 <- matrix(rnorm(16), 4, 4)
+#' ## Projecting the major axis of matrix_2 onto the one from matrix_1
+#' projections.between(matrix_1, matrix_2)
+#' ## Projecting both second major 0.75 axes
+#' ## and getting the rejections (see projections() for option details)
+#' projections.between(matrix_1, matrix_2,
+#'                     measure = "distance",
+#'                     axis = 2, level = 0.75)
 #' 
 #' ## quantiles
 #' ## The 95 quantiles
@@ -369,6 +379,7 @@ between.groups.fun <- function(matrix, matrix2, ...) {
     cat("Between groups functions implemented in dispRity:")
     cat("\n?group.dist # level 1")
     cat("\n?point.dist # level 2")
+    cat("\n?projections.between # level 2")
 }
 
 ## kth root scaling
@@ -883,6 +894,31 @@ projections <- function(matrix, point1 = 0, point2 = colMeans(matrix), measure =
         })
 
     return(unname(values))
+}
+
+## Projections between covar matrices
+projections.between <- function(matrix, matrix2, axis = 1, level = 0.95, measure = "position", scaled = TRUE) {
+
+    ## Get the main axes from the VCV matrices
+    # source("covar.utilities_fun.R")
+    base_vector  <- get.one.axis(matrix2, axis, level, dimensions = 1:length(diag(matrix2)))
+    projected_vector <- get.one.axis(matrix, axis, level, dimensions = 1:length(diag(matrix)))
+
+    ## Translating into projections format
+    matrix <- projected_vector
+    point1 <- base_vector[1,]
+    point2 <- base_vector[2,]
+
+    ## Moving the two axes so that there origins are the same:
+    ## 1 - Get the translation vector to point1
+    translation_vector <- point1 - matrix[1,]
+ 
+    ## 2 - Align the matrix with point1
+    matrix <- rbind(matrix[1,] + translation_vector,
+                    matrix[2,] + translation_vector)
+
+    ## Measure the projection
+    return(projections(matrix, point1 = point1, point2 = point2, measure = measure, scaled = scaled)[-1]) #[-1] because the first value is the projection of the origin on the origin. Can be sometimes not equal to 0 though (but like something )
 }
 
 ## Select the root coords

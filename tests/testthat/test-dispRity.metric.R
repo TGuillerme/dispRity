@@ -852,3 +852,19 @@ test_that("edge.length.tree works", {
     tree$edge.length[c(3,7)] <- 10
     expect_equal(edge.length.tree(matrix1[c(1,2), ], tree, to.root = FALSE), c(1,10))
 })
+
+test_that("projections.between works", {
+
+    set.seed(1)
+    ## Two dummy matrices
+    matrix_1 <- matrix(rnorm(16), 4, 4)
+    matrix_2 <- matrix(rnorm(16), 4, 4)
+    ## Projecting the major axis of matrix_2 onto the one from matrix_1
+    expect_equal_round(projections.between(matrix_1, matrix_2), -0.312014, 6)
+    ## Projecting both second major 0.75 axes
+    ## and getting the rejections (see projections() for option details)
+    expect_equal_round(projections.between(matrix_1, matrix_2,
+                                           measure = "distance",
+                                           axis = 4, level = 0.75),
+                        0.7356813, 6)
+})

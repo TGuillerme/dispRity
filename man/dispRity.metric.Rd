@@ -31,6 +31,7 @@
 \alias{point.dist}
 \alias{projections}
 \alias{projections.tree}
+\alias{projections.between}
 \title{Disparity metrics}
 \usage{
 dimension.level3.fun(matrix, ...)
@@ -140,11 +141,9 @@ The currently implemented between.groups metrics are:
 \itemize{
    \item \code{group.dist}: calculates the distance between two groups (by default, this is the minimum euclidean vector norm distance between groups). Negative distances are considered as 0. This function must intake two matrices (\code{matrix} and \code{matrix2}) and the quantiles to consider. For the minimum distance between two groups, the 100th quantiles are considered (default: \code{probs = c(0,1)}) but this can be changed to any values (e.g. distance between the two groups accounting based on the 95th CI: \code{probs = c(0.025, 0.975)}; distance between centroids: \code{probs = c(0.5)}, etc...). This function is the linear algebra equivalent of the \code{\link[hypervolume]{hypervolume_distance}} function.
 
-
 \item \code{point.dist}: calculates the distance between \code{matrix} and a point calculated from \code{matrix2}. By default, this point is the centroid of \code{matrix2}. This can be changed by passing a function to be applied to \code{matrix2} through the \code{point} argument (for example, for the centroid: \code{point.dist(..., point = colMeans)}). NOTE: distance is calculated as \code{"euclidean"} by default, this can be changed using the \code{method} argument.
 
-
-
+\item \code{projections.between}: calculates the projection of the major axis between two matrices. It allows the same arguments as \code{projections}. If \code{point1} and \code{point2} are not provided (default), this function measures the major axis from both input matrices, centre their origins and projects the end of the vector of \code{matrix} onto the vector from \code{matrix2}. Which axis to measure can be changed with the option \code{axis} (for the major axis, \code{axis = 1}; default) and the confidence interval can be changed using \code{level} (for the 95 confidence interval, \code{level = 0.95}; default - see \code{\link{axis.covar}} for more details). If and input vector is provided through \code{point1} and \code{point2}, both matrices major axes are projected on the input vector.
 }
 
 When used in the \code{\link{dispRity}} function, optional arguments are declared after the \code{metric} argument: for example
@@ -313,6 +312,18 @@ user.fun <- function(matrix, tree, row = NULL) {
 ## 0,0,0 and a user defined function
 projections.tree(named_matrix, dummy_tree,
                   type = c(0, user.fun))
+
+## projections.between
+## Two dummy matrices
+matrix_1 <- matrix(rnorm(16), 4, 4)
+matrix_2 <- matrix(rnorm(16), 4, 4)
+## Projecting the major axis of matrix_2 onto the one from matrix_1
+projections.between(matrix_1, matrix_2)
+## Projecting both second major 0.75 axes
+## and getting the rejections (see projections() for option details)
+projections.between(matrix_1, matrix_2,
+                    measure = "distance",
+                    axis = 2, level = 0.75)
 
 ## quantiles
 ## The 95 quantiles
