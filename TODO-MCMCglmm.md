@@ -1,7 +1,9 @@
 # TODO list for MCMCglmm branch?
 
-Thanks a lot to Andrew Beckerman, Natalie Cooper and Gavin Thomas for supporting the development of this verison.
+Thanks a lot to Andrew Beckerman, Natalie Cooper and Gavin Thomas for supporting the development of this version.
 
+
+TODO: update the manual with all these new entries
 
 TODO: (no NEWS export)
 - [x] set up testing data for MCMCglmm
@@ -65,9 +67,9 @@ TODO: transfer from `beer`:
  - [ ] optimise speed?
 
  * *New metric* `projections.between` a between group metric for applying the `projections` metric between the major covariance axis of two matrices.
- - [ ] implemented
- - [ ] tested
- - [ ] example
+ - [x] implemented
+ - [x] tested
+ - [x] example
 
  * New `dispRity.fast` function for the fastest disparity calculations at the expanses of pretty much everything this package does. This is a really situational function.
  - [x] implemented
