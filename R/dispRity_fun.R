@@ -256,8 +256,18 @@ decompose.VCV <- function(one_subsets_bootstrap, fun, data, use_array, use_tree 
     #         return(FALSE)
     #     }
     # }
+
     ## Apply the fun
-    return(do.call(cbind, lapply(data$covar[[one_subsets_bootstrap]], fun, ...)))
+    if(!use_tree) {
+        if(length(one_subsets_bootstrap) == 1) {
+            return(do.call(cbind, lapply(data$covar[[one_subsets_bootstrap]], fun, ...)))
+        } else {
+            return(do.call(cbind, mapply(fun, data$covar[[one_subsets_bootstrap[1]]], data$covar[[one_subsets_bootstrap[2]]], MoreArgs = list(...), SIMPLIFY = FALSE)))
+            #do.call(cbind, mapply(fun, data$covar[[one_subsets_bootstrap[1]]], data$covar[[one_subsets_bootstrap[2]]], SIMPLIFY = FALSE))
+        }
+    } else {
+        stop("Impossible to use tree metric in dispRity with covar (yet!).")
+    }
 }
 
 
@@ -361,7 +371,7 @@ disparity.bootstraps <- function(one_subsets_bootstrap, metrics_list, data, matr
 }
 
 ## Lapply wrapper for disparity.bootstraps function
-# subsets <- lapply_loop[[5]] ; warning("DEBUG: dispRity_fun")
+# subsets <- lapply_loop[[1]] ; warning("DEBUG: dispRity_fun")
 lapply.wrapper <- function(subsets, metrics_list, data, matrix_decomposition, verbose, metric_has_tree = rep(FALSE, length(metrics_list)), ...) {
     if(verbose) {
         ## Making the verbose version of disparity.bootstraps

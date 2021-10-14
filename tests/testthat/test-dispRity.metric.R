@@ -867,4 +867,39 @@ test_that("projections.between works", {
                                            measure = "distance",
                                            axis = 4, level = 0.75),
                         0.7356813, 6)
+
+    ## Testing covarly
+    data(charadriiformes)
+    data <- MCMCglmm.subsets(data       = charadriiformes$data,
+                             posteriors = charadriiformes$posteriors,
+                             group = MCMCglmm.levels(charadriiformes$posteriors)[1:4],
+                             rename.groups = c(levels(charadriiformes$data$clade), "phylogeny"))
+    ## Testing the metric in the pipeline without covar option
+    no_covar <- dispRity(data, metric = projections.between, between.groups = TRUE)
+    ## Test the values out
+    disparity <- get.disparity(no_covar)
+    expect_equal(names(disparity), c("gulls:plovers", "gulls:sandpipers", "gulls:phylogeny", "plovers:sandpipers", "plovers:phylogeny", "sandpipers:phylogeny"))
+    expect_equal_round(unname(unlist(disparity)), c(-0.1915237,-1.5257785,-1.5257785,0.2534359,0.2534359,1.0000000), 6)
+
+    ## Testing the metric in the pipeline with covar option
+    is_covar <- dispRity(data, metric = as.covar(projections.between), between.groups = TRUE)
+    ## Test the values out
+    disparity <- get.disparity(is_covar, concatenate = FALSE)
+    expect_equal(names(disparity), c("gulls:plovers", "gulls:sandpipers", "gulls:phylogeny", "plovers:sandpipers", "plovers:phylogeny", "sandpipers:phylogeny"))
+    expect_equal(unique(unlist(lapply(disparity, dim))), c(1, 1000))
+    disparity <- get.disparity(is_covar)
+    expect_equal_round(unname(unlist(disparity)), c(2.7113835,1.5065774,1.2595579,0.3885423,0.2491586,0.7714478), 5)
+
+    ## Same as above but with options
+    no_covar <- dispRity(data, metric = projections.between, between.groups = TRUE, measure = "degree", level = 0.9)
+    disparity <- get.disparity(no_covar)
+    expect_equal(names(disparity), c("gulls:plovers", "gulls:sandpipers", "gulls:phylogeny", "plovers:sandpipers", "plovers:phylogeny", "sandpipers:phylogeny"))
+    expect_equal_round(unname(unlist(disparity)), c(96.69595,148.31804,148.31804,76.57482,76.57482,0), 5)
+
+    is_covar <- dispRity(data, metric = as.covar(projections.between), between.groups = TRUE, measure = "degree", level = 0.9)
+    disparity <- get.disparity(is_covar, concatenate = FALSE)
+    expect_equal(names(disparity), c("gulls:plovers", "gulls:sandpipers", "gulls:phylogeny", "plovers:sandpipers", "plovers:phylogeny", "sandpipers:phylogeny"))
+    expect_equal(unique(unlist(lapply(disparity, dim))), c(1, 1000))
+    disparity <- get.disparity(is_covar)
+    expect_equal_round(unname(unlist(disparity)), c(23.131914,10.321782,10.347916,26.271973,26.889037,9.868631), 5)
 })

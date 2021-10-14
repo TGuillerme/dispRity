@@ -24,7 +24,7 @@ get.disparity(data, subsets, rarefaction, observed, concatenate)
 
 \item{observed}{A \code{logical} value indicating whether to output the observed (\code{TRUE} (default)) or the bootstrapped values (\code{FALSE}).}
 
-\item{concatenate}{When the disparity metric is a distribution, whether to concatenate it (\code{TRUE}; default) or to return each individual metric.}
+\item{concatenate}{When the disparity metric is a distribution, whether to concatenate it returning the median (\code{TRUE}; default) or to return each individual values.}
 }
 \description{
 Extract a matrix or the disparity results from a \code{dispRity}.

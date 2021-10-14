@@ -225,7 +225,7 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
             if(is.null(data$call$subsets)) {
                 stop.call(msg.pre = "The provided \"between.groups\" metric (", match_call$metric, msg = ") cannot be applied to a dispRity object with no subsets. Use chrono.subsets or custom.subsets to create some.")                
             } else {
-                if(data$call$subsets[[1]] == "customised") {
+                if(data$call$subsets[[1]] %in% c("customised", "covar")) {
                     ## Make default pairwise comparisons
                     list_of_pairs <- unlist(apply(combn(1:length(data$subsets), 2), 2, list), recursive = FALSE)
                 } else {
@@ -317,6 +317,16 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
 
     ## Make the lapply loop into between.groups loops
     if(is_between.groups) {
+        ## Name the list of pairs
+        ## Remove ":" for pairs of names (: is reserved for the function)
+        subset_names <- names(data$subsets)
+        if(length(to_correct <- grep(":", subset_names)) > 0) {
+            warning(paste0("The subset name", ifelse(length(to_correct) > 1, "s", ""), ": ", paste(subset_names[to_correct], collapse = ", "), ifelse(length(to_correct) > 1, " were ", " was "), "changed to ", paste(gsub(":", ";", subset_names)[to_correct], collapse = ", "), ". The \":\" character is reserved for between groups comparisons."))
+            subset_names <- paste(gsub(":", ";", subset_names))
+        }
+        names(list_of_pairs) <- unlist(lapply(list_of_pairs, function(pair, names) paste0(names[pair], collapse = ":"), names = subset_names))
+
+
         ## Combine the pairs of elements/bs/rare into a lapply loop containing the data for each pair
         lapply_loop <- lapply(list_of_pairs, combine.pairs, lapply_data = lapply_loop)
     }
@@ -324,11 +334,17 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
     ## Make the lapply loop just the groups ID (if covar)
     if(any(unlist(lapply(metrics_list, eval.covar)))) {
         names_in <- names(lapply_loop)
-        lapply_loop <- as.list(match(names(lapply_loop), names(data$covar)))
+
+        ## Transform the lapply_loop into a list of covar IDs (e.g for the first group: lapply_loop[[1]]$elements = 1). If it's between group lapply_loop[[1]]$elements = c(1,2).
+        if(!is_between.groups) {
+            lapply_loop <- as.list(match(names(lapply_loop), names(data$covar)))
+        } else {
+            #lapply(as.list(names(lapply_loop)), function(X, data) match(strsplit(X, split = ":")[[1]], names(data$covar)), data = data)
+            lapply_loop <- list_of_pairs
+        }
         lapply_loop <- lapply(lapply_loop, function(x) return(list(elements = x)))
         names(lapply_loop) <- names_in
     }
-
 
     ## Initialising the cluster
     # if(do_parallel) {
@@ -422,13 +438,8 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
 
     ## Rename the disparity groups
     if(is_between.groups) {
-        ## Remove ":" for pairs of names (: is reserved for the function)
-        subset_names <- names(data$subsets)
-        if(length(to_correct <- grep(":", subset_names)) > 0) {
-            warning(paste0("The subset name", ifelse(length(to_correct) > 1, "s", ""), ": ", paste(subset_names[to_correct], collapse = ", "), ifelse(length(to_correct) > 1, " were ", " was "), "changed to ", paste(gsub(":", ";", subset_names)[to_correct], collapse = ", "), ". The \":\" character is reserved for between groups comparisons."))
-            subset_names <- paste(gsub(":", ";", subset_names))
-        }
-        names(disparity) <- unlist(lapply(list_of_pairs, function(pair, names) paste0(names[pair], collapse = ":"), names = subset_names))
+        ## Rename the disparity
+        names(disparity) <- names(list_of_pairs)
     }
 
     ## Update the disparity

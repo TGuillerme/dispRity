@@ -118,7 +118,7 @@ fill.dispRity <- function(data, tree) {
 #' @param bootstrap Optional, a \code{numeric} value to select a specific bootstrap draw (\code{0} is no bootstrap).
 #' @param matrix A \code{numeric} value of which matrix to select (default is \code{1}).
 #' @param observed A \code{logical} value indicating whether to output the observed (\code{TRUE} (default)) or the bootstrapped values (\code{FALSE}).
-#' @param concatenate When the disparity metric is a distribution, whether to concatenate it (\code{TRUE}; default) or to return each individual metric.
+#' @param concatenate When the disparity metric is a distribution, whether to concatenate it returning the median (\code{TRUE}; default) or to return each individual values.
 #' 
 #' @examples
 #' ## Load the disparity data based on Beck & Lee 2014
@@ -218,7 +218,11 @@ get.disparity <- function(data, subsets, rarefaction, observed = TRUE, concatena
         lapply.observed <- function(disparity) {
             return(c(apply(disparity$elements, 1, median, na.rm = TRUE)))
         }
-        return(lapply(data$disparity[subsets], lapply.observed))
+        if(concatenate) {
+            return(lapply(data$disparity[subsets], lapply.observed))
+        } else {
+            return(lapply(data$disparity[subsets], function(X) X$elements))
+        }
     } else {
         output <- lapply(as.list(subsets), extract.disparity.values, data, rarefaction, concatenate)
         names(output) <- names(data$subsets[subsets])
