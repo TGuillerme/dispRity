@@ -821,7 +821,8 @@ get.rotation.matrix <- function(x, y){
 }
 ## Projection of elements on an axis
 projections <- function(matrix, point1 = 0, point2 = colMeans(matrix), measure = "position", scaled = TRUE) {
-
+    ## IMPORTANT: edits in this function must also be copy/pasted to dispRity.covar.projections_fun.R/projections.fast
+    
     ## Get the point1 and point2
     if(length(point1) != ncol(matrix)) {
         point1 <- rep(point1, ncol(matrix))[1:ncol(matrix)]

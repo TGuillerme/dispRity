@@ -256,6 +256,7 @@ decompose.VCV <- function(one_subsets_bootstrap, fun, data, use_array, use_tree 
     #         return(FALSE)
     #     }
     # }
+    verbose_place_holder <- NULL
 
     ## Apply the fun
     if(!use_tree) {
@@ -264,6 +265,7 @@ decompose.VCV <- function(one_subsets_bootstrap, fun, data, use_array, use_tree 
         } else {
             return(do.call(cbind, mapply(fun, data$covar[[one_subsets_bootstrap[1]]], data$covar[[one_subsets_bootstrap[2]]], MoreArgs = list(...), SIMPLIFY = FALSE)))
             #do.call(cbind, mapply(fun, data$covar[[one_subsets_bootstrap[1]]], data$covar[[one_subsets_bootstrap[2]]], SIMPLIFY = FALSE))
+            #fun(data$covar[[one_subsets_bootstrap[1]]][[1]], data$covar[[one_subsets_bootstrap[2]]][[2]])
         }
     } else {
         stop("Impossible to use tree metric in dispRity with covar (yet!).")

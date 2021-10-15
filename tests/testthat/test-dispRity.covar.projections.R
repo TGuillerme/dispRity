@@ -1,18 +1,27 @@
 ## Test
 test_that("covar.projections.wrapper works", {
-    # data(charadriiformes)
+    data(charadriiformes)
 
-    # data <- MCMCglmm.subsets(
-    #                   data          = charadriiformes$data,
-    #                   posteriors    = charadriiformes$posteriors,
-    #                   group         = MCMCglmm.levels(charadriiformes$posteriors)[1:4],
-    #                   rename.groups = c("gulls", "plovers", "sandpipers", "phylogeny"))
+    data <- MCMCglmm.subsets(
+                      data          = charadriiformes$data,
+                      posteriors    = charadriiformes$posteriors,
+                      group         = MCMCglmm.levels(charadriiformes$posteriors)[1:4],
+                      rename.groups = c("gulls", "plovers", "sandpipers", "phylogeny"))
     
+    ## Sanitizing
+    error <- capture_error(dispRity.covar.projections("data", type = "groups", base = "phylogeny", n = 3, major.axis = 1, level = 0.95, output = c("position"), verbose = TRUE))
+    expect_equal(error[[1]], "data must be of class dispRity.")
+    error <- capture_error(dispRity.covar.projections(data, type = 1, base = "phylogeny", n = 3, major.axis = 1, level = 0.95, output = c("position"), verbose = TRUE))
+    expect_equal(error[[1]], "type must be must be one of the following: elements, groups.")
+    error <- capture_error(dispRity.covar.projections(data, type = "groups", base = "haha", n = 3, major.axis = 1, level = 0.95, output = c("position"), verbose = TRUE))
+    expect_equal(error[[1]], "Subset haha not found.")
+    error <- capture_error(dispRity.covar.projections(data, type = "groups", n = 3, major.axis = 1, level = 0.95, output = c("possssition"), verbose = TRUE))
+    expect_equal(error[[1]], "output must be must be one of the following: position, distance, degree.")
 
 
-    
-    # ## Test between no base
-    # test <- covar.projections.wrapper(data, type = "between", n = 7, verbose = FALSE)
+
+    ## Test between no base
+    test <- dispRity.covar.projections(data, type = "groups", n = 7, verbose = FALSE)
     # expect_equal(names(test), c("position", "distance", "degree"))
     # expect_equal(names(test[[1]]), c("gulls:plovers", "gulls:sandpipers",  "gulls:phylogeny", "plovers:sandpipers",  "plovers:phylogeny", "sandpipers:phylogeny"))
     # expect_equal(dim(test[[1]][[1]]), c(1,7))

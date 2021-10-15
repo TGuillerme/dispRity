@@ -12,7 +12,7 @@ dispRity.covar.projections(
   n,
   major.axis = 1,
   level = 0.95,
-  measure = c("position", "distance", "degree"),
+  output = c("position", "distance", "degree"),
   verbose = FALSE
 )
 }
@@ -31,9 +31,9 @@ dispRity.covar.projections(
 
 \item{level}{the confidence interval to estimate the major axis (default is \code{0.95}; see \code{\link{axis.covar}} for more details)).}
 
-\item{verbose}{logical, whether to be verbose (\code{TRUE}) or not (\code{FALSE}, default).}
-
 \item{output}{which values to output from the projection. By default, the three values \code{c("position", "distance", "degree")} are used to respectively output the projection, rejection and angle values (see \code{\link{projections}} for more details).}
+
+\item{verbose}{logical, whether to be verbose (\code{TRUE}) or not (\code{FALSE}, default).}
 }
 \value{
 A \code{list} of \code{dispRity} objects corresponding to each projection value from \code{output}.
@@ -67,7 +67,7 @@ example
 
 }
 \seealso{
-\code{\link{projections}} \code{\link{projections.elements}} \code{\link{axis.covar}} \code{\link{dispRity}} \code{\link{MCMCglmm.subsets}}
+\code{\link{projections}} \code{\link{projections.between}} \code{\link{axis.covar}} \code{\link{dispRity}} \code{\link{MCMCglmm.subsets}}
 }
 \author{
 Thomas Guillerme

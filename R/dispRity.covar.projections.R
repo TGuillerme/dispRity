@@ -39,12 +39,12 @@
 #' 
 #' 
 #'
-#' @seealso \code{\link{projections}} \code{\link{projections.elements}} \code{\link{axis.covar}} \code{\link{dispRity}} \code{\link{MCMCglmm.subsets}}
+#' @seealso \code{\link{projections}} \code{\link{projections.between}} \code{\link{axis.covar}} \code{\link{dispRity}} \code{\link{MCMCglmm.subsets}}
 #' 
 #' @author Thomas Guillerme
 #' @export
 
-dispRity.covar.projections <- function(data, type, base, sample, n, major.axis = 1, level = 0.95, measure = c("position", "distance", "degree"), verbose = FALSE) {
+dispRity.covar.projections <- function(data, type, base, sample, n, major.axis = 1, level = 0.95, output = c("position", "distance", "degree"), verbose = FALSE) {
 
     ## Check class data (dispRity)
     check.class(data, "dispRity")
@@ -53,88 +53,86 @@ dispRity.covar.projections <- function(data, type, base, sample, n, major.axis =
     }
  
     ## Check method type (c("elements", "groups"))
-    check.method(type, c("elements", "groups"))
+    check.method(type, c("elements", "groups"), msg = "type must be")
 
     ## base (optional)
     if(!missing(base)) {
         check.subsets(base, data)
     }
 
-    ## Check method measure = c("position", "distance", "degree")
-    check.method(measure, c("position", "distange", "degree"))
+    ## output
+    check.method(output, c("position", "distance", "degree"), "output must be")
 
+    ## Check for sample/n
+    if(missing(sample)) {
+        if(missing(n)) {
+            ## Get a random number of covar samples
+            sample <- seq_len(length(data$covar[[1]]))
+        } else {
+            ## Get all the covar samples
+            sample <- sample.int(n = length(data$covar[[1]]), size = n)
+        }
+    }
+    ## Resampling the data
+    data_sub <- data
+    data_sub$covar <- get.covar(data, sample = sample)
+    data_sub$call$bootstrap[[1]] <- length(sample)
 
-
-
-
-    return("prototype")
-
-
-
-
-
-
-
-
-
-    # ## Check for sample/n
-    # if(missing(sample)) {
-    #     if(missing(n)) {
-    #         ## Get a random number of covar samples (TODO: GET THIS FROM THE CALL)
-    #         sample <- 1:length(data$covar[[1]])
-    #     } else {
-    #         ## Get all the covar samples (TODO: GET THIS FROM THE CALL)
-    #         sample <- sample.int(n = length(data$MCMCglmm$covars[[1]]), size = n)
-    #     }
-    # }
-
-    # ## 1 - get major axis
-    # if(verbose) message("calculating the major axis:...", appendLF = FALSE)
-    # major_axes <- axis.covar(data, sample = sample, axis = major.axis, level = level)
-    # # major_axes <- axis.covar(data)
+    ## Calculating the major axes
+    # if(verbose) message("Calculating the major axis:...", appendLF = FALSE)
+    # major_axes <- axis.covar(data_sub, axis = major.axis, level = level)
     # if(verbose) message("Done.")
 
-    # ## 2 - get the data
-    # if(!missing(n) || !missing(sample)) {
-    #     data$MCMCglmm$covars <- get.covar(data, sample = sample)
-    # }
 
-    # ## A - Type elements:
+    ## Different analyses:
+    if(type == "groups") {
+        ## Get the list of pairs
+        if(missing(base)) {
+            ## Get the pairwise list
+            list_of_pairs <- unlist(apply(combn(1:length(data$subsets), 2), 2, list), recursive = FALSE)
+        } else {
+            ## Get the list paired with the id
+            base_id <- which(names(data$subsets) == base)
+            list_of_pairs <- sapply((1:n.subsets(data))[-base_id], function(x, base_id) c(x, base_id), base_id = base_id, simplify = FALSE)
+        }
+
+        ## Get the subset names
+        subset_names <- names(data$subsets)
+        if(length(to_correct <- grep(":", subset_names)) > 0) {
+            warning(paste0("The subset name", ifelse(length(to_correct) > 1, "s", ""), ": ", paste(subset_names[to_correct], collapse = ", "), ifelse(length(to_correct) > 1, " were ", " was "), "changed to ", paste(gsub(":", ";", subset_names)[to_correct], collapse = ", "), ". The \":\" character is reserved for between groups comparisons."))
+            subset_names <- paste(gsub(":", ";", subset_names))
+        }
+        names(list_of_pairs) <- unlist(lapply(list_of_pairs, function(pair, names) paste0(names[pair], collapse = ":"), names = subset_names))
+
+        ## Make the projection.between.fast function
+        projections.between.fast <- projections.between
+        body(projections.between.fast)[[length(body(projections.between))]][[2]][[2]][[1]] <- substitute(projections.fast)
+        body(projections.between.fast)[[length(body(projections.between))]][[2]][[3]] <- NULL
+
+        ## Update the verboseness
+        decompose.VCV.internal <- decompose.VCV
+        if(verbose) {
+            body(decompose.VCV.internal)[[2]] <- substitute(message(".", appendLF = FALSE))
+        }
+
+        ## Use decompose.VCV directly
+        if(verbose) message("Calculating projections:", appendLF = FALSE)
+        disparity_tmp <- lapply(list_of_pairs, decompose.VCV.internal, fun = as.covar(projections.between.fast), data = data_sub, use_array = FALSE, use_tree = FALSE, measure = output)
+        # if(length(output) == 1) {
+        #     disparity_tmp <- lapply(disparity_tmp, function(X) X[1,, drop = FALSE])
+        # }
+        disparity_tmp <- lapply(disparity_tmp, function(X) apply(X, c(1,2), function(x) return(unlist(x)[2])))
+        if(verbose) message("Done.")
+        ## Get the call updated
+        update_call <- list(metrics = list())
+        get.call <- function(metric) return(match.call()$metric)
+        update_call$metrics$name <- get.call(as.covar(projections.between))
+        update_call$metrics$fun <- list(as.covar(projections.between))
+        update_call$metrics$between.groups <- TRUE
+    }
+
+    ## B - Type groups
     # if(type == "elements") {
-    #     wrap.dispRity.elements <- function(measure, data, list_of_pairs, verbose) {
-
-    #         if(verbose) {
-    #             message("PLACEHOLDER:...")
-
-    #             results <- dispRity.covar(data, metric = projections.covar, elements.groups = list_of_pairs, measure = measure)$disparity
-
-    #             message("Done.")
-    #             return(results)
-    #         } 
-
-    #         ## Use normal dispRity here
-    #         # dispRity.covar(data, metric = projections.covar, elements.groups = list_of_pairs, measure = measure, dimensions = data$call$dimensions, point1 = axes[1, ], point2 = axes[2, ])$disparity
-    #         return(dispRity.covar(data, metric = projections.covar, elements.groups = list_of_pairs, measure = measure)$disparity)
-    #     }
-
-    #     ## 2 - get the groups
-    #     if(missing(base)) {
-    #         list_of_pairs <- unlist(apply(combn(1:n.subsets(data), 2), 2, list), recursive = FALSE)
-    #     } else {
-    #         base_id <- which(names(size.subsets(data)) == base)
-    #         list_of_pairs <- lapply(as.list((1:n.subsets(data))[-base_id]), function(x,y) c(x, y), y = base_id)
-    #     }
-
-    #     ## Get all results
-    #     results <- lapply(as.list(measure), wrap.dispRity.elements, data, list_of_pairs, verbose)
-
-    #     ## Remove the elements part
-    #     results <- lapply(results, lapply, function(x) {x$elements <- NULL; return(matrix(unlist(x), nrow = 1))})
-    #     names(results) <- measure
-    # }
-
-    # ## B - Type groups
-    # if(type == "groups") {        
     #     ## Wrapper for groups function
     #     wrap.dispRity.groups <- function(data, axes, measure, verbose) {
 
@@ -198,25 +196,13 @@ dispRity.covar.projections <- function(data, type, base, sample, n, major.axis =
     #     results <- lapply(results, function(x, names) {names(x) <- names; return(x)}, names = names(size.subsets(data))[group_id])
     # }
 
-    # if(dispRity.out) {
-    #     ## Select the data subset for correct disparity display
-    #     if(type == "elements") {
-    #         sub_data <- get.subsets(data, subsets = unique(unlist(list_of_pairs)))
-    #     } else {
-    #         sub_data <- get.subsets(data, subsets = group_id)
-    #     }
-    #     ## Make into a dispRity object
-    #     output <- list()
-    #     for(one_measure in 1:length(measure)) {
-    #         output[[one_measure]] <- dispRitize(results[[one_measure]], sub_data,
-    #                                            name = measure[[one_measure]],
-    #                                            fun = ifelse(type == "elements", projections.covar, dispRity::projections),
-    #                                            type = type)
-    #     }
-    #     names(output) <- measure
-    #     return(output)
-    # } else {
-    #     ## Raw results
-    #     return(results)
-    # }
+    ## DispRitize the results
+    full_out <- list()
+    for(i in 1:length(output)) {
+        full_out[[i]] <- data
+        full_out[[i]]$disparity <- lapply(disparity_tmp, function(X, i)return(X[i, , drop = FALSE]), i = i)
+        full_out[[i]]$call$disparity <- update_call
+    }
+    names(full_out) <- names(output)
+    return(full_out)
 }
