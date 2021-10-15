@@ -22,6 +22,7 @@ TODO: transfer from `beer`:
  - [x] implemented
  - [x] tested
  - [ ] example
+ - [ ] test case when the metric is as.covar AND uses tree
 
 <!--  * `make.dispRity` now has a `covar` argument.
  - [ ] implemented
@@ -76,7 +77,7 @@ TODO: transfer from `beer`:
  - [x] tested
  - [x] example
 
- * Adding `dispRity.projections` function (a wrapper for the projections analyses)
+ * Adding `dispRity.covar.projections` function (a wrapper for the projections analyses)
  - [ ] implemented
  - [ ] tested
  - [ ] example
