@@ -78,8 +78,8 @@ TODO: transfer from `beer`:
  - [x] example
 
  * Adding `dispRity.covar.projections` function (a wrapper for the projections analyses)
- - [ ] implemented
- - [ ] tested
+ - [x] implemented
+ - [x] tested
  - [ ] example
 
  * One new demo datasets: `charadriiformes`, a `data.frame` and a `phylo` object of 50 random _Charadriiformes_ species (gulls, plovers and sandpipers) from [Cooney et al 2017](https://www.nature.com/articles/d41586-021-02480-z) along with a `MCMCglmm` model with each clade as a random term.
