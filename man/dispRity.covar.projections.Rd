@@ -13,6 +13,7 @@ dispRity.covar.projections(
   major.axis = 1,
   level = 0.95,
   output = c("position", "distance", "degree"),
+  inc.base = FALSE,
   verbose = FALSE
 )
 }
@@ -32,6 +33,8 @@ dispRity.covar.projections(
 \item{level}{the confidence interval to estimate the major axis (default is \code{0.95}; see \code{\link{axis.covar}} for more details)).}
 
 \item{output}{which values to output from the projection. By default, the three values \code{c("position", "distance", "degree")} are used to respectively output the projection, rejection and angle values (see \code{\link{projections}} for more details).}
+
+\item{inc.base}{logical, when using \code{type = "elements"} with a supplied \code{base} argument, whether to also calculate the projections for the base group (\code{TRUE}) or not (\code{FALSE}; default).}
 
 \item{verbose}{logical, whether to be verbose (\code{TRUE}) or not (\code{FALSE}, default).}
 }
