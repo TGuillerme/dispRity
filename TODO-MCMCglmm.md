@@ -47,6 +47,7 @@ TODO: transfer from `beer`:
  * *New utility functions* for `dispRity` objects with `covar` matrices
         * `get.covar` to extract the VCV matrices (or a subsample of them)
         * `axes.covar` to extract the major axes of the VCV matrices
+ - [ ] TODO: change axes calculations to https://stackoverflow.com/a/40304894/9281298
  - [x] implemented
  - [x] tested
  - [x] example
@@ -54,6 +55,7 @@ TODO: transfer from `beer`:
  - [x] implemented
  - [x] tested
  - [x] example
+ - [ ] modify to allow `loc` as an extra argument (i.e. if the function has an argument called `loc`, change `loc = matrix$loc` the same way `matrix = matrix$VCV`).
 
 
  * *New function* `covar.plot` for plotting the `covar` content of `dispRity` objects (this is separated from `plot.dispRity` because of the many different options).
