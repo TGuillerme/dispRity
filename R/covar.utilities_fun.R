@@ -68,7 +68,7 @@ get.one.axis <- function(data, axis = 1, level = 0.95, dimensions) {
     diag(unit_hypersphere2) <- -1
     unit_hypersphere <- rbind(unit_hypersphere1, unit_hypersphere2)
     ## Scale the hypersphere (where level is the confidence interval)
-    unit_hypersphere <- unit_hypersphere * sqrt(qchisq(level, 2))
+    unit_hypersphere <- unit_hypersphere * sqrt(qchisq(level, dims))
 
     ## Do the eigen decomposition (symmetric - faster)
     eigen_decomp <- eigen(data$VCV, symmetric = TRUE)
@@ -84,6 +84,56 @@ get.one.axis <- function(data, axis = 1, level = 0.95, dimensions) {
     ## Get the edges coordinates
     return(edges[c(axis, axis+dims), , drop = FALSE])
 }
+
+## Internal: get the coordinates of one axes (second try) from: https://stackoverflow.com/a/40304894/9281298
+# get.one.axis2 <- function(data, axis = 1, level = 0.95, dimensions) {
+
+#     # location along the ellipse
+#     # linear algebra lifted from the code for ellipse()
+#     ellipse.loc <- function(theta, center, shape, radius)
+#     {
+#         vert <- cbind(cos(theta), sin(theta))
+#         Q <- chol(shape, pivot=TRUE)
+#         ord <- order(attr(Q, "pivot"))
+#         t(center + radius*t(vert %*% Q[, ord]))
+#     }
+
+#     # distance from this location on the ellipse to the center 
+#     ellipse.rad <- function(theta, center, shape, radius)
+#     {
+#         loc <- ellipse.loc(theta, center, shape, radius)
+#         (loc[,1] - center[1])^2 + (loc[,2] - center[2])^2
+#     }
+
+#     # ellipse parameters
+#     center <- c(-0.05, 0.09)
+#     A <- matrix(c(20.43, -8.59, -8.59, 24.03), nrow=2)
+#     radius <- 1.44
+
+#     # solve for the maximum distance in one hemisphere (hemi-ellipse?)
+#     t1 <- optimize(ellipse.rad, c(0, pi - 1e-5), center=center, shape=A, radius=radius, maximum=TRUE)$m
+#     l1 <- ellipse.loc(t1, center, A, radius)
+
+#     # solve for the minimum distance
+#     t2 <- optimize(ellipse.rad, c(0, pi - 1e-5), center=center, shape=A, radius=radius)$m
+#     l2 <- ellipse.loc(t2, center, A, radius)
+
+#     # other points obtained by symmetry
+#     t3 <- pi + t1
+#     l3 <- ellipse.loc(t3, center, A, radius)
+
+#     t4 <- pi + t2
+#     l4 <- ellipse.loc(t4, center, A, radius)
+#     return(cbind())
+
+#     ## Visualise
+#     # plot(ellipse::ellipse(x = A, centre = center), type = "l")
+#     # points(rbind(l1, l2, l3, l4), cex=2, col="blue", lwd=2)
+#     # lines(rbind(l1, l3))
+#     # lines(rbind(l2, l4))
+# }
+
+
 
 ## Internal: summarising distributions
 summarise.fun <- function(one_group, fun) {
