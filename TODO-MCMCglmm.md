@@ -47,7 +47,6 @@ TODO: transfer from `beer`:
  * *New utility functions* for `dispRity` objects with `covar` matrices
         * `get.covar` to extract the VCV matrices (or a subsample of them)
         * `axes.covar` to extract the major axes of the VCV matrices
- - [ ] TODO: change axes calculations to https://stackoverflow.com/a/40304894/9281298
  - [x] implemented
  - [x] tested
  - [x] example
