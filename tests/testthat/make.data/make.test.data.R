@@ -15,7 +15,7 @@ data(BeckLee_mat99) ; data(BeckLee_ages) ; data(BeckLee_tree)
 data_bootstrapped <- boot.matrix(chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", rev(seq(from = 0, to = 120, by = 5)), model = "proximity"))
 model_test_data <- dispRity(data_bootstrapped, c(sum, variances))
 
-save(model_test_data, file="../model_test_data.Rda")
+save(model_test_data, file="../model_test_data.rda")
 
 
 
@@ -42,7 +42,7 @@ data <- matrix(rnorm((Ntip(tree[[1]])+Nnode(tree[[1]]))*6), nrow = Ntip(tree[[1]
 
 paleotree_data <- list(tree = tree, data = data)
 
-save(paleotree_data, file="../paleotree_test_data.Rda")
+save(paleotree_data, file="../paleotree_test_data.rda")
 
 
 ####################
@@ -51,7 +51,7 @@ save(paleotree_data, file="../paleotree_test_data.Rda")
 
 geiger_test_data <- get(data(geospiza))
 
-save(geiger_test_data, file="../geiger_test_data.Rda")
+save(geiger_test_data, file="../geiger_test_data.rda")
 
 
 ####################
@@ -96,4 +96,4 @@ matrices <- lapply(trees, do.ace, matrix_base)
 
 bound_test_data <- list("matrices" = matrices, "trees" = trees)
 
-save(bound_test_data, file="../bound_test_data.Rda")
+save(bound_test_data, file="../bound_test_data.rda")

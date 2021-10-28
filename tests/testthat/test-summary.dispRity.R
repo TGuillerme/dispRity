@@ -311,7 +311,7 @@ test_that("summary.dispRity works with small, empty/subsets", {
 })
 
 test_that("summary.dispRity with model.test data", {
-    load("model_test_data.Rda")
+    load("model_test_data.rda")
 
     ## Run two models (silent)
     models <- list("BM", "OU")

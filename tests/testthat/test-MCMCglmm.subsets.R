@@ -1,9 +1,9 @@
 ## Test
 test_that("MCMCglmm.subsets and covar.plot works", {
     ## Testing the mini chains pipeline
-    load("covar_model_list.Rda")
-    load("covar_char_data.Rda")
-    load("covar_tree_data.Rda")
+    load("covar_model_list.rda")
+    load("covar_char_data.rda")
+    load("covar_tree_data.rda")
 
     ## Sanitizing
     ## data class

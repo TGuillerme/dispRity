@@ -257,7 +257,7 @@ test_that("dtt printing", {
 })
 
 test_that("print.dispRity with model.test data", {
-    load("model_test_data.Rda")
+    load("model_test_data.rda")
 
     ## Run two models (silent)
     models <- list("BM", "OU")

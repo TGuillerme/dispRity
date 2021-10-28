@@ -2,7 +2,7 @@
 #context("model.test")
 
 ## Select model data
-load("model_test_data.Rda")
+load("model_test_data.rda")
 data <- model_test_data
 
 test_that("internal functions work", {

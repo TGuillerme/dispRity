@@ -504,7 +504,7 @@ test_that("dispRity works with function recycling", {
 })
 
 test_that("dispRity works with multiple trees from time-slicing", {
-    load("paleotree_test_data.Rda")
+    load("paleotree_test_data.rda")
     tree <- paleotree_data$tree
     data <- paleotree_data$data
 
@@ -585,7 +585,7 @@ test_that("dispRity works with multiple matrices", {
 
 test_that("dispRity works with multiple matrices from chrono.subsets", {
 
-    load("bound_test_data.Rda")
+    load("bound_test_data.rda")
     matrices <- bound_test_data$matrices
     trees <- bound_test_data$trees
     

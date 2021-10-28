@@ -310,7 +310,7 @@ test_that("plot.dispRity with dtt data", {
 })
 
 test_that("plot.dispRity with model.test data", {
-    load("model_test_data.Rda")
+    load("model_test_data.rda")
     ## Run two models (silent)
     models <- list("BM", "OU")
     set.seed(42)
@@ -335,7 +335,7 @@ test_that("plot.dispRity with model.test data", {
 test_that("preview works with fuzzy matrices and tres", {
 
   ## Get some bound data
-  load("bound_test_data.Rda")
+  load("bound_test_data.rda")
   data <- bound_test_data$matrices
   ## Simple plot
   expect_null(plot(make.dispRity(data[[1]])))
