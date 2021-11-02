@@ -247,6 +247,39 @@ get.plot.params <- function(data, data_params, cent.tend, quantiles, rarefaction
     return(list("disparity" = disparity, "helpers" = helpers, "options" = options, "observed_args" = observed_args, "elements_args" = elements_args))
 }
 
+## Get dots options
+# @param dots ...
+# @param args the list of arguments to be affected by dots
+# @param name the argument name
+# @param default an optional default argument (default is NULL)
+# @param fun an optional suffix argument for the function to be used (default is NULL)
+get.dots <- function(dots, args, name, default = NULL, fun = NULL) {
+    ## Override the name without fun in dots
+    if(!is.null(fun) && !is.null(names(dots))) {
+        name_plus <- paste0(name, ".", fun)
+        if(name_plus %in% names(dots)) {
+            dots[[name]] <- dots[[name_plus]]
+        }
+    } 
+
+    ## Fill in the dots in the arguments list
+    if(!is.null(default)) {
+        if(is.null(dots[[name]])) {
+            ## Set the default
+            args[[name]] <- default
+        } else {
+            ## Use the dots
+            args[[name]] <- dots[[name]]
+        }
+    } else {
+        ## Use the dots
+        if(!is.null(dots[[name]])) {
+            args[[name]] <- dots[[name]]
+        }
+    }
+    return(args)
+}
+
 ## Handle the shift argument
 get.shift <- function(add, plot_params) {
     ## Set the shift parameter (for add)

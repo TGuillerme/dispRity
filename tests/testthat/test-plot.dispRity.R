@@ -8,7 +8,6 @@ data("disparity")
 #######################
 #Testing
 #######################
-
 test_that("get.data.params works", {
     test <- get.data.params(disparity)
     expect_is(test, "list")
@@ -133,6 +132,58 @@ test_that("get.plot.params works", {
                                   observed_args = list(observed = TRUE),
                                   ylab = c("1","2", "3")))
     expect_equal(error[[1]], "ylab can have maximum of two elements.")
+})
+
+test_that("get.dots works", {
+    ## Default
+    my_args <- list(something = 1)
+    expect_equal(my_args$something, 1)
+    ## Empty dots
+    dots <- list()
+    test <- get.dots(dots, my_args, "anything", 2)
+    expect_equal(test$something, 1)
+    expect_equal(test$anything, 2)
+    test <- get.dots(dots, test, "bob", 3)
+    expect_equal(test$something, 1)
+    expect_equal(test$anything, 2)
+    expect_equal(test$bob, 3)
+    test <- get.dots(dots, test, "def")
+    expect_equal(test$something, 1)
+    expect_equal(test$anything, 2)
+    expect_equal(test$bob, 3)
+    expect_null(test$def)
+
+    ## Some args
+    dots <- list("bob" = 4)
+    test <- get.dots(dots, my_args, "anything", 2)
+    expect_equal(test$something, 1)
+    expect_equal(test$anything, 2)
+    test <- get.dots(dots, test, "bob", 3)
+    expect_equal(test$something, 1)
+    expect_equal(test$anything, 2)
+    expect_equal(test$bob, 4)
+    test <- get.dots(dots, test, "def")
+    expect_equal(test$something, 1)
+    expect_equal(test$anything, 2)
+    expect_equal(test$bob, 4)
+    expect_null(test$def)
+
+    ## Some args with fun
+    dots <- list("bib.bob" = 5)
+    test <- get.dots(dots, my_args, "anything", 2, fun = "bib")
+    expect_equal(test$something, 1)
+    expect_equal(test$anything, 2)
+    test <- get.dots(dots, test, "bob", 3, fun = "bib")
+    expect_equal(test$something, 1)
+    expect_equal(test$anything, 2)
+    expect_equal(test$bob, 3)
+    test <- get.dots(dots, test, "def", fun = "bib")
+    expect_equal(test$something, 1)
+    expect_equal(test$anything, 2)
+    expect_equal(test$bob, 3)
+    expect_null(test$def)
+    test <- get.dots(dots, my_args, "bob", 1000)
+    expect_equal(test$bob, 1000)
 })
 
 test_that("get.shift works", {
