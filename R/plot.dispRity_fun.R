@@ -72,7 +72,7 @@ get.plot.params <- function(data, data_params, cent.tend, quantiles, rarefaction
                 box_data <- unlist(get.disparity(data, observed = FALSE), recursive = FALSE)
             } else {
                 if(data_params$distribution || data_params$between.groups) {
-                    box_data <- get.disparity(data, observed = TRUE)
+                    box_data <- lapply(get.disparity(data, observed = TRUE, concatenate = FALSE), c)
                 } else {
                     box_data <- unlist(get.disparity(data, observed = FALSE), recursive = FALSE)
                 }
