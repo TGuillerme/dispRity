@@ -117,6 +117,11 @@ TODO: transfer from `beer`:
  * Use `dispRity.fast` in `test.metric`
  - [ ] done
 
+
+## BUG FIXES
+
+ * [ ] TODO: improve reduce.space so it doesn't output NAs. Use the proper `optim` function for that.
+
 ## DEPRECATED
  
  * `matrix.dispRity` and `extract.dispRity` are now deprecated. You should now use `get.matrix` and `get.disparity` respectively instead (with the same options).
