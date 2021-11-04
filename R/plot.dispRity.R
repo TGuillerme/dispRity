@@ -3,7 +3,7 @@
 #' @description Plots a \code{dispRity} object.
 #'
 #' @param x A \code{dispRity} object.
-#' @param ... Any optional arguments to be passed to \code{\link[graphics]{plot}}.
+#' @param ... Any optional arguments to be passed to \code{\link[graphics]{plot}}. See details.
 #' @param type Either \code{"continuous"}, \code{"box"}, \code{"line"}, \code{"polygon"} or \code{"space"}. When unspecified, if no disparity was calculated, \code{"preview"} is used. If disparity was calculated, \code{"continuous"} is used for \code{\link{chrono.subsets}} and \code{"box"} for \code{\link{custom.subsets}}. See details.
 #' @param quantiles The quantiles to display (default is \code{quantiles = c(50, 95)}; is ignored if the \code{dispRity} object is not bootstrapped).
 #' @param cent.tend A function for summarising the bootstrapped disparity values (default is \code{\link[stats]{median}}).
@@ -15,6 +15,8 @@
 #' @param specific.args optional, a named list of arguments to be passed for some specific plot types. See details.
 #'
 #' @details
+#' When specifying optional arguments with \code{...} in a graph with multiple elements (e.g. \code{points}, \code{lines}, etc...) you can specify which specific element to affect using the syntax \code{<element>.<argument>}. For example if you want everything in the plot to be in blue at the exception of the points to be red, you can use \code{plot(..., col = "blue", points.col = "red")}. 
+#' 
 #' The different \code{type} arguments are:
 #' \itemize{
 #'   \item \code{"continuous"}: plots the results as a continuous line.
@@ -32,12 +34,11 @@
 #'          \item \code{dimensions}: two specific dimensions to plot (default is \code{specific.args = list(dimensions = c(1,2)});
 #'          \item \code{matrix}: which specific matrix to plot the data from (by default, all the matrices are used).
 #'          \item \code{tree}: whether to plot the underlying tree(s) or not. Can be either logical, whether to plot no tree (default is \code{specific.args = list(tree = FALSE)}), all trees (\code{specific.args = list(tree = TRUE)}) or a specific set of trees (e.g. \code{specific.args = list(tree = c(1,2))})
-#'      }
-#' 
-#'      \item for plots with legends (if \code{type = "preview"}; if data is \code{"randtest"} or \code{"test.metric"}) you can pass any non ambiguous arguments for \code{legend} such as \code{specific.args = list(legend = list(x = 1, y = 2, bg = "blue"))}. When the plot generates two legends (e.g. when the data is \code{"test.metric"}), these arguments can be a list (e.g. \code{specific.args = list(legend = list(list(x = "bottomright"), list(x = "topright")))}. \emph{HINT}: to remove the legends all together you can use \code{specific.args = list(legend = FALSE)}.
-#' 
+#'      } 
 #'      \item if data is a \code{"test.metric"} result that was obtained with the option \code{save.steps = TRUE} (see \code{\link{test.metric}}), it is possible to specify which steps to by specifying the following specific argument: \code{specific.args = list(visualise.steps = c(1,4,5))} for visualising steps 1, 4 and 5 of the different shifts. By default, if the \code{"test.metric"} was obtained with the option \code{save.steps = TRUE}, four steps are displayed.
 #' }
+#' 
+#' When plotting \code{"randtest"} or \code{"test.metric"} data or when using \code{type = "preview"} a legend is plotted by default. To remove the legend you can use the argument \code{legend = FALSE}. You can control specific arguments for the legend using the \code{...} optional arguments preceded by \code{legend.}. For example, to change the legend position you can use \code{legend.x = "topleft"} or \code{legend.x = 4.2} and \code{legend.y = 1.23}. General \code{legend} arguments such as \code{col}, \code{legend}, \code{pch}, etc... are recycled by the function but can always be specified using this syntax.
 #'
 #' @examples
 #' ## Load the disparity data based on Beck & Lee 2014
@@ -128,16 +129,14 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
             length_data <- length(data)
 
             ## Set up the extra arguments
-            dots <- list(...)
-            plot_args <- dots
-            plot_args$specific.args <- specific.args
+            plot_data <- list(dots = dots)
 
             ## Single plot
             if(length_data == 1) {
                 ## Select the right dataset
-                plot_args$data_sub <- data[[1]]
+                plot_data$data_sub <- data[[1]]
                 ## Run the plot
-                do.call(plot.randtest, plot_args)
+                plot.randtest(plot_data)
             } else {
                 ## Set up multiple plot windows
                 plot_size <- ifelse(length_data == 3, 4, length_data)
@@ -145,13 +144,13 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
                 ## All plots
                 for(model in 1:length_data) {
                     ## Select the right dataset
-                    plot_args$data_sub <- data[[model]]
+                    plot_data$data_sub <- data[[model]]
                     ## Add the title (optional)
                     if(is.null(dots$main)) {
-                        plot_args$main <- paste("MC test for subsets ", names(data)[[model]], sep = "")
+                        plot_data$dots$main <- paste("MC test for subsets ", names(data)[[model]], sep = "")
                     }
                     ## Run the plot
-                    do.call(plot.randtest, plot_args)
+                    plot.randtest(plot_data)
                 }
                 par(op_tmp)
             }
