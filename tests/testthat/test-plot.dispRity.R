@@ -367,8 +367,7 @@ test_that("plot.dispRity with model.test data", {
     models <- list("BM", "OU")
     set.seed(42)
     tested_models <- model.test(model_test_data, models, time.split = 65, fixed.optima = TRUE, verbose = FALSE)
-    summary_model.tests <- summary(tested_models)
-    expect_null(plot(tested_models, col = c("blue", "pink"), main = "ho"))
+    expect_null(plot(tested_models, col = c("blue", "pink"), main = "ho", lwd = 2))
 
     ## Testing normal model
     model_simulation_empty <- model.test.sim(sim = 10, model = "BM")

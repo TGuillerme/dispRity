@@ -1019,14 +1019,9 @@ plot.dtt <- function(data, quantiles, cent.tend, density, ...) {
 plot.model.test <- function(data, ...) {
 
     plot_args <- list(...)
-
     ## Set the default plotting arguments
-    if(is.null(plot_args$ylab)) {
-        plot_args$ylab <- "weighted AIC"
-    }
-    if(is.null(plot_args$col)) {
-        plot_args$col <- "grey"
-    }
+    plot_args <- get.dots(plot_args, plot_args, "ylab", "weighted AIC", "barplot")
+    plot_args <- get.dots(plot_args, plot_args, "col", "grey", "barplot")
 
     ## Extracting the weighted aicc
     aic_values <- data$aic.models[, 3]
