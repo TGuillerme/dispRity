@@ -256,7 +256,7 @@ get.plot.params <- function(data, data_params, cent.tend, quantiles, rarefaction
 get.dots <- function(dots, args, name, default = NULL, fun = NULL) {
     ## Override the name without fun in dots
     if(!is.null(fun) && !is.null(names(dots))) {
-        name_plus <- paste0(name, ".", fun)
+        name_plus <- paste0(fun, ".", name)
         if(name_plus %in% names(dots)) {
             dots[[name]] <- dots[[name_plus]]
         }
@@ -689,6 +689,8 @@ plot.rarefaction <- function(plot_params, data_params, data) {
 ## Plotting a space preview
 plot.preview <- function(data, specific.args, ...) {
 
+    dots <- list(...)
+
     ## The "ggplot" colours
     gg.color.hue <- function(n) {
         grDevices::hcl(h = seq(15, 375, length = n + 1), l = 65, c = 100)[1:n]
@@ -698,24 +700,20 @@ plot.preview <- function(data, specific.args, ...) {
     }
 
     ## Set up the specific args
-    if(is.null(specific.args$matrix)) {
-        specific.args$matrix <- c(1:length(data$matrix))
-    }
-    if(is.null(specific.args$dimensions)) {
-        specific.args$dimensions <- c(1,2)
-    }
-    if(is.null(specific.args$legend)) {
+    specific.args <- get.dots(specific.args, specific.args, "matrix", c(1:length(data$matrix)))
+    specific.args <- get.dots(specific.args, specific.args, "dimensions", c(1:2))
+    
+    ## Plot the legend?
+    if(is.null(dots$legend)) {
         plot_legend <- TRUE
-        legend_args <- list()
+        dots$legend <- NULL
     } else {
-        if(is(specific.args$legend, "logical")) {
-            plot_legend <- specific.args$legend
-            legend_args <- list()
-        } else {
-            plot_legend <- TRUE
-            legend_args <- specific.args$legend
+        if(is.logical(dots$legend)) {
+            plot_legend <-dots$legend
+            dots$legend <- NULL
         }
     }
+
     if(is.null(specific.args$tree) || is.null(data$tree[[1]])) {
         ## Don't plot trees
         plot_trees <- FALSE
@@ -734,50 +732,45 @@ plot.preview <- function(data, specific.args, ...) {
     }
 
     ## Capturing the dots options
-    plot_args <- list(x = NULL, y = NULL, ...)
+    plot_args <- c(list(x = NULL, y = NULL), dots)
+    ## Removing specific args from dots
+    remove <- c(grep(c("legend"), names(plot_args)), grep(c("lines"), names(plot_args)), grep(c("points"), names(plot_args)))
+    plot_args[remove] <- NULL
 
     ## Getting the loadings
     loading <- apply(do.call(rbind, lapply(data$matrix[specific.args$matrix], function(matrix) apply(matrix, 2, var, na.rm = TRUE))), 2, mean)
     loading <- round(loading/sum(loading)*100, 2)
 
     ## Setting the labels
-    if(is.null(plot_args$xlab)) {
-        plot_args$xlab <- paste0("Dimension ", specific.args$dimensions[1], " (", loading[specific.args$dimensions[1]], "%)")
-    }
-    if(is.null(plot_args$ylab)) {
-        plot_args$ylab <- paste0("Dimension ", specific.args$dimensions[2], " (", loading[specific.args$dimensions[2]], "%)")
-    }
+    plot_args <- get.dots(dots, plot_args, "xlab", paste0("Dimension ", specific.args$dimensions[1], " (", loading[specific.args$dimensions[1]], "%)"))
+    plot_args <- get.dots(dots, plot_args, "ylab", paste0("Dimension ", specific.args$dimensions[2], " (", loading[specific.args$dimensions[2]], "%)"))
 
     ## Setting plot limits
     plot_lim <- range(unlist(lapply(data$matrix[specific.args$matrix], function(matrix, dim) c(matrix[, dim]), dim = specific.args$dimensions)))
-    if(is.null(plot_args$xlim)) {
-        plot_args$xlim <- plot_lim
-    }
-    if(is.null(plot_args$ylim)) {
-        plot_args$ylim <- plot_lim
-    }
+    plot_args <- get.dots(dots, plot_args, "xlim", plot_lim)
+    plot_args <- get.dots(dots, plot_args, "ylim", plot_lim)
 
     ## Get the number of colour groups
     n_groups <- length(data$subsets)
     n_groups <- ifelse(n_groups == 0, 1, n_groups)
 
     ## Setting the colours
-    if(is.null(plot_args$col)) {
-        if(n_groups == 1) {
-            plot_args$col <- "black"
-        } else {
-            if(data$call$subsets[[1]] == "customised") {
-                plot_args$col <- gg.color.hue(n_groups)
-            } else {
-                plot_args$col <- grDevices::heat.colors(n_groups+2)[1:n_groups]
-            }
-        }
-    }
+    plot_args <- get.dots(dots, plot_args, "col",
+            default =
+                ## Toggle between different defaults
+                if(n_groups == 1) {
+                    "black"
+                } else {
+                    if(data$call$subsets[[1]] %in% c("customised", "covar")) {
+                        gg.color.hue(n_groups)
+                    } else {
+                        grDevices::heat.colors(n_groups+2)[1:n_groups]
+                    }
+                }
+    , fun = "points")
 
     ## Setting the pch
-    if(is.null(plot_args$pch)) {
-        plot_args$pch <- 19
-    }
+    plot_args <- get.dots(dots, plot_args, "pch", 19, fun = "points")
     if(length(plot_args$pch) != n_groups) {
         plot_args$pch <- rep(plot_args$pch, n_groups)
     }
@@ -815,17 +808,13 @@ plot.preview <- function(data, specific.args, ...) {
         }
 
         ## Get the lines arguments
-        lines_args <- plot_args
-        lines_args$col <- "grey"
+        line_args <- plot_args
+        line_args <- get.dots(dots, line_args, "col", "grey", fun = "lines")
         if(length(specific.args$tree) > 1) {
             lines_args$col <- make.transparent(lines_args$col, levels = length(specific.args$tree))
         }
-        if(is.null(lines_args$lwd)) {
-            lines_args$lwd <- 1
-        }
-        if(is.null(lines_args$lty)) {
-            lines_args$lty <- 1
-        }
+        line_args <- get.dots(dots, line_args, "lwd", 1, fun = "lines")
+        line_args <- get.dots(dots, line_args, "lty", 1, fun = "lines")
 
         ## Plotting each tree
         for(one_tree in specific.args$tree) {
@@ -840,7 +829,7 @@ plot.preview <- function(data, specific.args, ...) {
             ## Selecting the origin points for the tree
             points_data <- data_matrix[, specific.args$dimensions][c(data$tree[[one_tree]]$tip.label, data$tree[[one_tree]]$node.label), ] 
             ## Plotting all the edges
-            apply(data$tree[[one_tree]]$edge, 1, plot.edge,
+            silent <- apply(data$tree[[one_tree]]$edge, 1, plot.edge,
                   points_data = points_data,
                   params = lines_args)
         }
@@ -864,21 +853,14 @@ plot.preview <- function(data, specific.args, ...) {
     if(n_groups > 1 && plot_legend) {
 
         ## Set the legend arguments
-        if(is.null(legend_args$x)) {
-            legend_args$x <- "topright"
-        }
-        if(is.null(legend_args$legend)) {
-            legend_args$legend <- names(data$subsets)
-        }
-        if(is.null(legend_args$col)) {
-            legend_args$col <- col_order
-        }
-        if(is.null(legend_args$pch)) {
-            legend_args$pch <- pch_order
-        }
-        if(is.null(legend_args$cex)) {
-            legend_args$cex <- 0.666
-        }
+        legend_args <- list()
+        legend_args <- get.dots(dots, legend_args, "x", "topright", fun = "legend")
+        legend_args <- get.dots(dots, legend_args, "y", fun = "legend")
+        legend_args <- get.dots(dots, legend_args, "legend", names(data$subsets), fun = "legend")
+        legend_args <- get.dots(dots, legend_args, "col", col_order, fun = "legend")
+        legend_args <- get.dots(dots, legend_args, "pch", pch_order, fun = "legend")
+        legend_args <- get.dots(dots, legend_args, "cex", 2/3, fun = "legend")
+
         ## Add the legend
         do.call(legend, legend_args)
     }
@@ -888,27 +870,35 @@ plot.preview <- function(data, specific.args, ...) {
 }
 
 ## The following is a modified version of plot.randtest from ade4 v1.4-3
-plot.randtest <- function(data_sub, ...) {
-    plot_args <- list(...)
+plot.randtest <- function(plot_data) {
+    
+    ## Extracting the elements
+    dots <- plot_data$dots
+    data_sub <- plot_data$data_sub 
 
-    ## Extracting the specific args
-    specific_args <- plot_args$specific.args
-    plot_args$specific.args <- NULL
+    ## Plot the legend or not
+    if(is.null(dots$legend)) {
+        plot_legend <- TRUE
+        dots$legend <- NULL
+    } else {
+        if(is.logical(dots$legend)) {
+            plot_legend <-dots$legend
+            dots$legend <- NULL
+        }
+    }
 
     ## Add the histogram data
-    plot_args$x <- data_sub$plot$hist
+    plot_args <- c(list(x = data_sub$plot$hist), dots)
+    ## Removing specific args from dots
+    remove <- c(grep(c("legend"), names(plot_args)), grep(c("lines"), names(plot_args)), grep(c("points"), names(plot_args)))
+    plot_args[remove] <- NULL   
 
     ## Plot arguments
-    if(is.null(plot_args$xlim)) {
-        plot_args$xlim <- data_sub$plot$xlim
-    }
-    if(is.null(plot_args$ylim)) {
-        plot_args$ylim <- c(0, max(data_sub$plot$hist$count))
-    }
-    if(is.null(plot_args$col)) {
-        plot_args$col <- "grey"
-    }
-
+    plot_args <- get.dots(dots, plot_args, "xlim", data_sub$plot$xlim)
+    plot_args <- get.dots(dots, plot_args, "ylim", c(0, max(data_sub$plot$hist$count)))
+    plot_args <- get.dots(dots, plot_args, "col", "grey")
+    plot_args <- get.dots(dots, plot_args, "main")
+    
     ## Plotting the simulated data
     do.call(plot, plot_args)
 
@@ -916,73 +906,51 @@ plot.randtest <- function(data_sub, ...) {
     observed <- data_sub$obs
 
     ## Adding the observed data
-    lines(c(observed, observed), c(plot_args$ylim[2]/2, 0))
-    points(observed, plot_args$ylim[2]/2, pch = 18, cex = 2)
-
-    ## Setting the specific args for the legend
-    if(is.null(specific_args$legend)) {
-        plot_legend <- TRUE
-    } else {
-        if(is(specific_args$legend, "logical")) {
-            plot_legend <- specific_args$legend
-        } else {
-            plot_legend <- TRUE
-        }
-    }
+    line_args <- list(x = c(observed, observed), y = c(plot_args$ylim[2]/2, 0))
+    line_args <- get.dots(dots, line_args, "col", "black", fun = "lines")
+    line_args <- get.dots(dots, line_args, "lty", 1, fun = "lines")
+    line_args <- get.dots(dots, line_args, "lwd", 1, fun = "lines")
+    do.call(lines, line_args)
+    point_args <- list(x = observed, y = plot_args$ylim[2]/2)
+    point_args <- get.dots(dots, point_args, "col", "black", fun = "points")
+    point_args <- get.dots(dots, point_args, "pch", 18, fun = "points")
+    point_args <- get.dots(dots, point_args, "cex", 2, fun = "points")
+    do.call(points, point_args)
 
     ## Adding the legend (test results)
     if(plot_legend) {
-        ## Initialise the legend arguments
-        if(is.null(specific_args)) {
-            legend_args <- list()    
-        } else {
-            legend_args <- specific_args$legend
-        }
-        
-        ## Set the default legend arguments
-        if(is.null(legend_args$x)) {
-            legend_args$x <- "topleft"
-        }
-        if(is.null(legend_args$bty)) {
-            legend_args$bty <- "n"
-        }
-        if(is.null(legend_args$legend)) {
-            legend_args$legend <- c("p-value", round(data_sub$pvalue, 5))
-        }
-        if(is.null(legend_args$cex)) {
-            legend_args$cex <- 0.7
-        }
-        if(is.null(legend_args$adj)) {
-            legend_args$adj <- 0.2
-        }
+        ## Set the legend arguments
+        legend_args <- list()
+        legend_args <- get.dots(dots, legend_args, "x", "topleft", fun = "legend")
+        legend_args <- get.dots(dots, legend_args, "y", fun = "legend")
+        legend_args <- get.dots(dots, legend_args, "bty", "n", fun = "legend")
+        legend_args <- get.dots(dots, legend_args, "legend", c("p-value", round(data_sub$pvalue, 5)), fun = "legend")
+        legend_args <- get.dots(dots, legend_args, "cex", 2/3, fun = "legend")
+        legend_args <- get.dots(dots, legend_args, "adj", 0.2, fun = "legend")
+        ## Add the legend
         do.call(legend, legend_args)
     }
 }
 
 ## The following is a modified version of dtt plots (from https://github.com/mwpennell/geiger-v2/blob/master/R/disparity.R)
 plot.dtt <- function(data, quantiles, cent.tend, density, ...) {
-    plot_args <- list(...)
+    dots <- list(...)
+
+    plot_args <- dots
+    remove <- c(grep(c("polygon"), names(plot_args)), grep(c("lines"), names(plot_args)))
+    plot_args[remove] <- NULL   
 
     ## Set the default options
-    if(is.null(plot_args$ylim)) {
-        ## The base y-limit
-        plot_args$ylim <- c(range(pretty(data$dtt)))
-
-        ## Add the simulation (if exist)
-        if(!is.null(data$sim)) {
-            plot_args$ylim <- range(c(plot_args$ylim , range(data$sim)))
-        }
-    }
-    if(is.null(plot_args$xlab)) {
-        plot_args$xlab <- "scaled time"
-    }
-    if(is.null(plot_args$ylab)) {
-        plot_args$ylab <- paste0("scaled ", as.character(data$call[[3]]))
-    }
-    if(is.null(plot_args$col)) {
-        colfun <- grDevices::colorRampPalette(c("lightgrey", "grey"))
-        plot_args$col <- c("black", colfun(length(quantiles)))
-    }
+    plot_args <- get.dots(plot_args, plot_args, "ylim", 
+            if(!is.null(data$sim)) {
+                c(range(pretty(c(data$dtt, data$sim))))
+            } else {
+                c(range(pretty(data$dtt)))
+            }
+        )
+    plot_args <- get.dots(plot_args, plot_args, "xlab", "scaled time")
+    plot_args <- get.dots(plot_args, plot_args, "ylab", paste0("scaled ", as.character(data$call[[3]])))
+    plot_args <- get.dots(plot_args, plot_args, "col", c("black", grDevices::colorRampPalette(c("lightgrey", "grey"))(length(quantiles))))
 
     ## Add the data for the plot args
     plot_args$x <- data$times
@@ -1021,22 +989,29 @@ plot.dtt <- function(data, quantiles, cent.tend, density, ...) {
 
         ## Plotting the polygons for each quantile
         for(cis in 1:n_quantiles) {
-            xx <- c(data$times, rev(data$times))
-            yy <- c(quantiles_values[(n_quantiles*2) - (cis-1), ], rev(quantiles_values[cis ,]))
-            polygon(xx, yy, col = plot_args$col[cis+1], border = FALSE, density = density)
+            poly_args <- list(x = c(data$times, rev(data$times)),
+                              y = c(quantiles_values[(n_quantiles*2) - (cis-1), ], rev(quantiles_values[cis ,])))
+            poly_args <- get.dots(dots, poly_args, "border", FALSE, "polygon")
+            poly_args <- get.dots(dots, poly_args, "density", density, "polygon")
+            poly_args$col <- plot_args$col[cis+1]
+            do.call(polygon, poly_args)
         }
 
         ## Add the central tendency
-        lines(data$times, cent_tend_values, col = plot_args$col[1], lty = 2)
+        line_args <- list(x = data$times,
+                          y = cent_tend_values)
+        line_args <- get.dots(dots, line_args, "lty", 2, "lines")
+        line_args <- get.dots(dots, line_args, "lwd", 1, "lines")
+        line_args <- get.dots(dots, line_args, "col", plot_args$col[1], "lines")
+        do.call(lines, line_args)
     }
 
     ## Add the observed disparity
     line_args <- plot_args
     line_args$type <- NULL
-    line_args$col <- plot_args$col[1]
-    if(is.null(plot_args$lwd)) {
-        line_args$lwd <- 1.5
-    }
+    line_args <- get.dots(dots, line_args, "lty", 1, "lines")
+    line_args <- get.dots(dots, line_args, "lwd", 1.5, "lines")
+    line_args <- get.dots(dots, line_args, "col", plot_args$col[1], "lines")
     do.call(lines, line_args)
 }
 

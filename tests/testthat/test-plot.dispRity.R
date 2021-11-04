@@ -176,11 +176,11 @@ test_that("get.dots works", {
     test <- get.dots(dots, test, "bob", 3, fun = "bib")
     expect_equal(test$something, 1)
     expect_equal(test$anything, 2)
-    expect_equal(test$bob, 3)
+    expect_equal(test$bob, 5)
     test <- get.dots(dots, test, "def", fun = "bib")
     expect_equal(test$something, 1)
     expect_equal(test$anything, 2)
-    expect_equal(test$bob, 3)
+    expect_equal(test$bob, 5)
     expect_null(test$def)
     test <- get.dots(dots, my_args, "bob", 1000)
     expect_equal(test$bob, 1000)
@@ -318,8 +318,8 @@ test_that("plot.dispRity with preview", {
     expect_null(plot.preview(data_slice, specific.args = list(dimensions = c(1,2), matrix = 1)))
     expect_null(plot(data_cust))
     expect_null(plot(data_slice, type = "preview", specific.args = list(dimensions = c(38, 22)), main = "Ha!"))
-    expect_null(plot(data_slice, type = "preview", specific.args = list(legend = FALSE), main = "Ha!"))
-    expect_null(plot(data_slice, type = "preview", specific.args = list(legend = list(x = 0, y = 0)), main = "Ha!"))
+    expect_null(plot(data_slice, type = "preview", legend = FALSE, main = "Ha!"))
+    expect_null(plot(data_slice, type = "preview", legend.x = 0, legend.y = 0, main = "Ha!"))
     error <- capture_error(plot(data_slice, type = "p"))
     expect_equal(error[[1]], "data_slice must contain disparity data.\nTry running dispRity(data_slice, ...)")
     expect_null(plot.dispRity(x = matrix(rnorm(50), 25, 2)))
@@ -342,8 +342,8 @@ test_that("plot.dispRity with randtest data", {
     expect_null(plot(results_one, main = "hahaha", col = "blue"))
     expect_null(plot(results_two))
     expect_null(plot(results_two, main = "same"))
-    expect_null(plot(results_two, specific.args = list(legend = FALSE)))
-    expect_null(plot(results_two, specific.args = list(legend = list(title = "legend"))))
+    expect_null(plot(results_two, legend = FALSE))
+    expect_null(plot(results_two, points.col = "red", lty = 2, legend.x = "bottomright", legend.bty = "o"))
 })
 
 test_that("plot.dispRity with dtt data", {
@@ -356,6 +356,7 @@ test_that("plot.dispRity with dtt data", {
 
     ## Plotting the results
     expect_null(plot(dispRity_dtt, quantiles = c(0.1, 0.95)))
+    expect_null(plot(dispRity_dtt, quantiles = c(0.1, 0.95), main = "ho!", lines.col = "blue", lwd = 5))
     expect_error(plot(dispRity_dtt, quantiles = c(10, 110)))
     expect_error(plot(dispRity_dtt, cent.tend = var))
 })
@@ -383,7 +384,7 @@ test_that("plot.dispRity with model.test data", {
     expect_null(plot(model_simulation_inherit, add = TRUE))
 })
 
-test_that("preview works with fuzzy matrices and tres", {
+test_that("preview works with fuzzy matrices and trees", {
 
   ## Get some bound data
   load("bound_test_data.rda")
