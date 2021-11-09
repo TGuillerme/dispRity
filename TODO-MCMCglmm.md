@@ -104,6 +104,9 @@ TODO: transfer from `beer`:
 
 ## Minor
 
+ * `null.test` now allows the `null.distrib` argument to be `"observed"`, to use the observed parameters of the input traitspace.
+ - [ ] done
+
  * `custom.subsets` can now group elements using a `"factor"` vector.
  - [x] done
 
@@ -116,7 +119,6 @@ TODO: transfer from `beer`:
 
  * Use `dispRity.fast` in `test.metric`
  - [ ] done
-
 
 ## BUG FIXES
 
