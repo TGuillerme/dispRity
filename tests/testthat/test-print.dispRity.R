@@ -118,16 +118,16 @@ test_that("normal printing", {
 
 test_that("randtest printing", {
     set.seed(1)
-    obs_disparity <- dispRity(BeckLee_mat50, metric = ellipse.volume, dimensions = 5)
+    obs_disparity <- dispRity(BeckLee_mat50, metric = ellipse.volume, dimensions = c(1:5))
     expect_warning(test <- null.test(obs_disparity, replicates = 100, null.distrib = rnorm))
 
     expect_equal(capture.output(test),
         c("Monte-Carlo test", "Call: [1] \"dispRity::null.test\"",
-        "", "Observation: 0.5953437 ", 
+        "", "Observation: 0.02463073 ", 
         "", "Based on 100 replicates", 
-        "Simulated p-value: 0.00990099 ", "Alternative hypothesis: two-sided ", 
+        "Simulated p-value: 0.07920792 ", "Alternative hypothesis: two-sided ", 
         "", "    Std.Obs Expectation    Variance ",
-        "-7.40795128  2.01104000  0.03652111 "))
+        "  -1.842882    5.338100    8.313070 "))
 
   
     ## Running the test on multiple subsets (may take some time!)
@@ -155,7 +155,7 @@ test_that("randtest printing", {
         "Alternative hypothesis: two-sided "  ,
         ""                                    ,
         "    Std.Obs Expectation    Variance ",
-        " 4.76544417  1.00621000  0.05402978 ",
+        " -34.623901   47.841400    1.744226 ",
         ""                                    ,
         "$V1.2"                               ,
         "Monte-Carlo test"                    ,
@@ -168,7 +168,7 @@ test_that("randtest printing", {
         "Alternative hypothesis: two-sided "  ,
         ""                                    ,
         "    Std.Obs Expectation    Variance ",
-        "  6.6577026   1.0230700   0.0389972 ",
+        " -33.531312   48.068600    1.860014 ",
         ""                                    ,
         "$V1.3"                               ,
         "Monte-Carlo test"                    ,
@@ -181,7 +181,7 @@ test_that("randtest printing", {
         "Alternative hypothesis: two-sided "  ,
         ""                                    ,
         "    Std.Obs Expectation    Variance ",
-        "  7.0287024   1.0098500   0.0444776 ",
+        " -35.684854   48.116700    1.634665 ",
         ""                                    ,
         "$V1.4"                               ,
         "Monte-Carlo test"                    ,
@@ -194,7 +194,7 @@ test_that("randtest printing", {
         "Alternative hypothesis: two-sided "  ,
         ""                                    ,
         "    Std.Obs Expectation    Variance ",
-        " 9.67511662  0.97469000  0.02740854 ",
+        " -32.322690   48.021700    1.976796 ",
         ""
         )
     )
