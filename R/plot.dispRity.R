@@ -233,7 +233,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
             type <- "preview"
         } else {
             if(type != "preview") {
-                stop.call(match_call$x, paste0(" must contain disparity data.\nTry running dispRity(", as.expression(match_call$x), ", ...)"))                
+                stop.call(match_call$x, paste0(" must contain disparity data.\nTry running dispRity(", as.expression(match_call$x), ", ...)"))
             }
         }
     }

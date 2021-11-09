@@ -74,7 +74,11 @@ get.plot.params <- function(data, data_params, cent.tend, quantiles, rarefaction
                 if(data_params$distribution || data_params$between.groups) {
                     box_data <- extract.dispRity(data, observed = TRUE)
                 } else {
-                    box_data <- unlist(extract.dispRity(data, observed = FALSE), recursive = FALSE)
+                    if(ncol(disparity$data) == 1) {
+                        box_data <- extract.dispRity(data, observed = TRUE)
+                    } else {
+                        box_data <- unlist(extract.dispRity(data, observed = FALSE), recursive = FALSE)
+                    }
                 }
             }
         } else {
