@@ -23,7 +23,7 @@ dispRity 0.2.0 (2016-04-01)
 <!--   * `dtt.dispRity` now works with time-slicing. -->
 
 
-dispRity v1.6.7 (2021-11-09)
+dispRity v1.6.7 (2021-11-11)
 =========================
 
 ### NEW FEATURES
@@ -44,7 +44,8 @@ dispRity v1.6.7 (2021-11-09)
  * Fixed bug when using `chrono.subsets` with `"continuous"` method a `FADLAD` data containing only node values (now correctly taken into account; thanks to [Peng-Wei Li](https://www.researchgate.net/profile/Peng-Wei-Li) for noticing it) and when using `chrono.subsets` with `"gradual.*"` models on empty subsets.
  * `standardGeneric` functions are now correctly interpreted as functions throughout the package.
  * fixed bug when plotting level 1 disparity metric results without bootstrapped (`observed = TRUE` is now used as the default).
- * fixed bug with `null.test` which is now correctly managing the number of dimensions inherited from `dispRity` objects (thanks to [Alex Slavenko](https://alexslavenko.weebly.com/) for spotting this one and the one above).
+ * fixed bug when plotting `test.metric` plots with `save.steps` options with more than two types of shifts.
+ * fixed bug with `null.test` which is now correctly managing the number of dimensions inherited from `dispRity` objects (thanks to [Alex Slavenko](https://alexslavenko.weebly.com/) for spotting this one and the two above).
  
 dispRity v1.6.0 (2021-04-16) *dispRitree*
 =========================

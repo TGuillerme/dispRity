@@ -1143,30 +1143,28 @@ plot.test.metric <- function(data, specific.args, ...) {
         }
     } else {    
         ## Create the template of step plots
-        steps_to_consider <- ifelse(n_steps == 3, 4, n_steps)
-        steps_plots <- results_plots <- base_matrix <- matrix(0, ceiling(sqrt(steps_to_consider)), floor(sqrt(steps_to_consider)), byrow = TRUE)
-        steps_plots[1:n_steps] <- 1:n_steps
-        steps_plots[1:n_steps] <- steps_plots[1:n_steps] + n_plots
-        steps_plots <- t(steps_plots)
-        ## Create the template for the normal plots
-        results_plots <- base_matrix
-        results_plots[] <- 1
-        ## Create the columns of for layout template
-        if(n_plots > 1) {
-            for(i in 2:n_plots) {
-                ## Add a row to the step plots
-                tmp <- base_matrix
-                tmp[1:n_steps] <- steps_plots[1:n_steps] + max(steps_plots[1:n_steps], na.rm = TRUE) + 1 - min(steps_plots[1:n_steps], na.rm = TRUE)
-                steps_plots <- rbind(steps_plots, tmp)
-                ## Add a row to the normal plots
-                tmp <- base_matrix
-                tmp[] <- i
-                results_plots <- rbind(results_plots, tmp)
-            }
+
+        ## How many steps in each block?
+        steps_to_consider <- n_steps + n_steps %% 2
+
+        ## Create the base matrix for plotting
+        base_matrix <- matrix(0, ceiling(sqrt(steps_to_consider)), floor(sqrt(steps_to_consider)), byrow = TRUE)
+
+        ## Get the column for the plot results
+        results_plots <- matrix(rep(1:n_plots, each = steps_to_consider), ncol = ncol(base_matrix), byrow = TRUE)
+
+        ## Create the vector of empty steps plots
+        steps_plots <- rep(c(base_matrix), n_plots)
+        ## Fill the vector of step plots
+        for(i in 1:n_plots) {
+            select <- (1+(steps_to_consider*(i-1))):(steps_to_consider*i)
+            start_val <- ifelse(max(steps_plots) == 0, max(results_plots), max(steps_plots))
+            steps_plots[select[1:length(steps_to_visualise)]] <- (start_val+1):(start_val+length(steps_to_visualise))
         }
 
         ## Create the layout
-        set_layout <- layout(cbind(results_plots, steps_plots))
+        set_layout <- layout(cbind(results_plots, matrix(steps_plots, ncol = ncol(base_matrix), byrow = TRUE)))
+
         # layout.show(set_layout)
         ## Parameter backup
         op_tmp <- NULL
