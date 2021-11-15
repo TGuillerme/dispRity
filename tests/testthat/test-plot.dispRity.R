@@ -238,7 +238,6 @@ test_that("plot.dispRity examples work", {
 
     ## Rarefaction is ignored if no BS
     error <- capture_error(plot(dispRity(data, metric = mean), rarefaction = TRUE))
-    expect_equal(error[[1]], "Only observed values are available. Set observed = TRUE.")
     expect_null(plot(dispRity(data, metric = mean), type = "l"))
     expect_null(plot(dispRity(data, metric = mean), type = "c"))
 
