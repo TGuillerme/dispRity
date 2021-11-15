@@ -23,7 +23,7 @@ dispRity 0.2.0 (2016-04-01)
 <!--   * `dtt.dispRity` now works with time-slicing. -->
 
 
-dispRity v1.6.7 (2021-11-11)
+dispRity v1.6.7 (2021-11-15)
 =========================
 
 ### NEW FEATURES
@@ -36,6 +36,7 @@ dispRity v1.6.7 (2021-11-11)
  * Formalised the grouping logic for `custom.subsets` and `select.axes`. This can create some minor user level changes namely: warning messages for empty subsets now correctly mentions "subsets" (rather than subsamples); groups with incorrect elements are now always flagged as errors (rather than just ignored). The changes at the developer level is that the logic is now made smoother and exported in `custom.subsets_fun.R`.
  * Added a `function.index.csv` list (and updater) to help developers find internal functions locations easily.
  * Restricted the type-I error inflation warning message in `test.dispRity` to only occur when using a test of class `"htest"`.
+ * Continuous Integration has been moved from Travis-CI to GitHub Actions.
 
 ### BUG FIXES
  
