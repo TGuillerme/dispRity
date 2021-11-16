@@ -15,8 +15,6 @@ covar.plot(
   dimensions = c(1, 2),
   centres = colMeans,
   transparent.scale,
-  legend = FALSE,
-  legend.args,
   add = FALSE,
   ...
 )
@@ -40,18 +38,16 @@ covar.plot(
 
 \item{transparent.scale}{optional, if multiple major axes and/or ellipses are plotted, a scaling factor for the transparency. If left empty, the transparency is set to \code{1/n} or \code{0.1} (whichever is higher).}
 
-\item{legend}{logical, whether to add the automatic legend (\code{TRUE}) or not (\code{FALSE}; default).}
-
-\item{legend.args}{any optional argument to be passed to \code{legend}.}
-
 \item{add}{logical, whether to add the plot to an existing plot (\code{TRUE}) or not (\code{FALSE}; default).}
 
-\item{...}{any graphical options to be passed to \code{plot}, \code{lines} or \code{points}.}
+\item{...}{any graphical options to be passed to \code{plot}, \code{lines} or \code{points}. See details.}
 }
 \description{
 Visualising components of a \code{dispRity} object with covar.
 }
 \details{
+When specifying optional arguments with \code{...} in a graph with multiple elements (e.g. \code{points}, \code{lines}, etc...) you can specify which specific element to affect using the syntax \code{<element>.<argument>}. For example if you want everything in the plot to be in blue at the exception of the points to be red, you can use \code{covar.plot(..., col = "blue", points.col = "red")}. 
+
 The arguments \code{major.axes} and \code{ellipses} can intake a \code{function} for summarising the display of multiple variance covariance matrices (if \code{n} is missing or greater than one). This can be any central tendency function such as \code{\link[base]{mean}}, \code{\link[stats]{median}} or \code{\link[dispRity]{mode.val}}.
 
 The argument \code{centres} allows to determine how to calculate the centre of each ellipses or major axes. The argument can be either:

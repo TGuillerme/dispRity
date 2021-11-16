@@ -87,17 +87,7 @@ TODO: transfer from `beer`:
  - [x] done
 
  * Additional plot arguments `...` in all the `dispRity` plotting functions can now be targeted to a specific plotting element. When multiple elements are plot by default (e.g. lines, legend, points, etc...) it is now possible to pass a specific `...` argument to the specific plotted element using the syntax `<element>.<argument>` (e.g. `points.col = "blue"` will only apply the argument `col = "blue"` to the points).
- - [ ] done
-       - [ ] test_that("plot.dispRity examples work", {
-       - [ ] test_that("plot.dispRity continuous with NAs", {
-       - [ ] test_that("plot.dispRity.discrete with ADD", {
-       - [x] test_that("plot.dispRity with preview", {
-       - [x] test_that("plot.dispRity with randtest data", {
-       - [x] test_that("plot.dispRity with dtt data", {
-       - [ ] test_that("plot.dispRity with model.test data", {
-              - [ ] fix plot.continuous and plot.discrete first (maybe things happen in get.plot.params?)
-       - [ ] test_that("preview works with fuzzy matrices and trees", {
-       - [x] plot.covar
+ - [x] done
  - [ ] add to the manual entry
 
 ## Minor
