@@ -1,3 +1,28 @@
+## Reduce the matrix
+make.reduce.space.args <- function(data, type, shift.options) {
+
+    ## Default arguments
+    args_list <- list("space" = data,
+                      "type" = type,
+                      "verbose" = FALSE,
+                      "return.optim" = FALSE)
+
+    ## Optional arguments
+    if(!is.null(shift.options$parameters)) {
+        args_list <- c(args_list, "parameters" = shift.options$parameters)
+    }
+    if(!is.null(shift.options$tuning)) {
+        args_list <- c(args_list, "tuning" = shift.options$tuning)
+    }
+
+    return(args_list)
+}
+
+## Add the shifts
+add.steps.to.args <- function(type_args, steps) {
+    return(lapply(steps, function(x, args) return(c(args, "remove" = x)), type_args))
+}
+
 ## Run the reduction for one type
 reduce.space.one.type <- function(type, data, steps, shift.options, verbose) {
 
@@ -5,31 +30,6 @@ reduce.space.one.type <- function(type, data, steps, shift.options, verbose) {
     reduce.space.call <- reduce.space
     if(verbose) {
         body(reduce.space.call)[[2]] <- substitute(message(".", appendLF = FALSE))
-    }
-
-    ## Reduce the matrix
-    make.reduce.space.args <- function(data, type, shift.options) {
-
-        ## Default arguments
-        args_list <- list("space" = data,
-                          "type" = type,
-                          "verbose" = FALSE,
-                          "return.optim" = FALSE)
-
-        ## Optional arguments
-        if(!is.null(shift.options$parameters)) {
-            args_list <- c(args_list, "parameters" = shift.options$parameters)
-        }
-        if(!is.null(shift.options$tuning)) {
-            args_list <- c(args_list, "tuning" = shift.options$tuning)
-        }
-
-        return(args_list)
-    }
-
-    ## Add the shifts
-    add.steps.to.args <- function(type_args, steps) {
-        return(lapply(steps, function(x, args) return(c(args, "remove" = x)), type_args))
     }
 
     ## Run the reductions
