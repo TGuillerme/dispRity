@@ -675,14 +675,14 @@ plot.rarefaction <- function(plot_params, data_params, data) {
             ci_cols <- get.quantile.col(cent_tend_col, cis, plot_params$helpers$n_quantiles)
 
             ## Set the plotting arguments
-            line_args <- one_plot_args
-            line_args$col <- all_plot_args$col[length(all_plot_args$col) - (cis-1)]
-            line_args$y <- subset_data[,ci_cols[1]]
+            lines_args <- one_plot_args
+            lines_args$col <- all_plot_args$col[length(all_plot_args$col) - (cis-1)]
+            lines_args$y <- subset_data[,ci_cols[1]]
 
             ## plot the quantiles
-            do.call(lines, line_args)
-            line_args$y <- subset_data[,ci_cols[2]]
-            do.call(lines, line_args)
+            do.call(lines, lines_args)
+            lines_args$y <- subset_data[,ci_cols[2]]
+            do.call(lines, lines_args)
         }
     }
 
@@ -812,13 +812,13 @@ plot.preview <- function(data, specific.args, ...) {
         }
 
         ## Get the lines arguments
-        line_args <- plot_args
-        line_args <- get.dots(dots, line_args, "col", "grey", fun = "lines")
+        lines_args <- plot_args
+        lines_args <- get.dots(dots, lines_args, "col", "grey", fun = "lines")
         if(length(specific.args$tree) > 1) {
-            line_args$col <- make.transparent(line_args$col, levels = length(specific.args$tree))
+            lines_args$col <- make.transparent(lines_args$col, levels = length(specific.args$tree))
         }
-        line_args <- get.dots(dots, line_args, "lwd", 1, fun = "lines")
-        line_args <- get.dots(dots, line_args, "lty", 1, fun = "lines")
+        lines_args <- get.dots(dots, lines_args, "lwd", 1, fun = "lines")
+        lines_args <- get.dots(dots, lines_args, "lty", 1, fun = "lines")
         
         ## Plotting each tree
         for(one_tree in specific.args$tree) {
@@ -835,7 +835,7 @@ plot.preview <- function(data, specific.args, ...) {
             ## Plotting all the edges
             silent <- apply(data$tree[[one_tree]]$edge, 1, plot.edge,
                   points_data = points_data,
-                  params = line_args)
+                  params = lines_args)
         }
     }
 
@@ -910,11 +910,11 @@ plot.randtest <- function(plot_data) {
     observed <- data_sub$obs
 
     ## Adding the observed data
-    line_args <- list(x = c(observed, observed), y = c(plot_args$ylim[2]/2, 0))
-    line_args <- get.dots(dots, line_args, "col", "black", fun = "lines")
-    line_args <- get.dots(dots, line_args, "lty", 1, fun = "lines")
-    line_args <- get.dots(dots, line_args, "lwd", 1, fun = "lines")
-    do.call(lines, line_args)
+    lines_args <- list(x = c(observed, observed), y = c(plot_args$ylim[2]/2, 0))
+    lines_args <- get.dots(dots, lines_args, "col", "black", fun = "lines")
+    lines_args <- get.dots(dots, lines_args, "lty", 1, fun = "lines")
+    lines_args <- get.dots(dots, lines_args, "lwd", 1, fun = "lines")
+    do.call(lines, lines_args)
     point_args <- list(x = observed, y = plot_args$ylim[2]/2)
     point_args <- get.dots(dots, point_args, "col", "black", fun = "points")
     point_args <- get.dots(dots, point_args, "pch", 18, fun = "points")
@@ -1002,21 +1002,21 @@ plot.dtt <- function(data, quantiles, cent.tend, density, ...) {
         }
 
         ## Add the central tendency
-        line_args <- list(x = data$times,
+        lines_args <- list(x = data$times,
                           y = cent_tend_values)
-        line_args <- get.dots(dots, line_args, "lty", 2, "lines")
-        line_args <- get.dots(dots, line_args, "lwd", 1, "lines")
-        line_args <- get.dots(dots, line_args, "col", plot_args$col[1], "lines")
-        do.call(lines, line_args)
+        lines_args <- get.dots(dots, lines_args, "lty", 2, "lines")
+        lines_args <- get.dots(dots, lines_args, "lwd", 1, "lines")
+        lines_args <- get.dots(dots, lines_args, "col", plot_args$col[1], "lines")
+        do.call(lines, lines_args)
     }
 
     ## Add the observed disparity
-    line_args <- plot_args
-    line_args$type <- NULL
-    line_args <- get.dots(dots, line_args, "lty", 1, "lines")
-    line_args <- get.dots(dots, line_args, "lwd", 1.5, "lines")
-    line_args <- get.dots(dots, line_args, "col", plot_args$col[1], "lines")
-    do.call(lines, line_args)
+    lines_args <- plot_args
+    lines_args$type <- NULL
+    lines_args <- get.dots(dots, lines_args, "lty", 1, "lines")
+    lines_args <- get.dots(dots, lines_args, "lwd", 1.5, "lines")
+    lines_args <- get.dots(dots, lines_args, "col", plot_args$col[1], "lines")
+    do.call(lines, lines_args)
 }
 
 ## Plotting model tests results

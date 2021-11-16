@@ -47,7 +47,7 @@ test_that("MCMCglmm.subsets and covar.plot works", {
 
     ## Default plot
     expect_null(covar.plot(test))
-    expect_null(covar.plot(test, n = 3, ellipses = TRUE, main = "something", level = 0.5, legend = TRUE, legend.args = list(x = 0.5, y = -0.5), pch = 12))
+    expect_null(covar.plot(test, n = 3, ellipses = TRUE, main = "something", level = 0.5, legend = TRUE, legend.x = 0.5, legend.y = -0.5, pch = 12))
 
 
     ## Model 2: 3 group residual
@@ -71,7 +71,7 @@ test_that("MCMCglmm.subsets and covar.plot works", {
     expect_equal(names(test$covar), c("animal", "units:clade_1", "units:clade_2", "units:clade_3"))
     print_test <- capture.output(print.dispRity(test))
     expect_equal(print_test, c(" ---- dispRity object ---- ", "4 covar subsets for 359 elements in one matrix with 3 dimensions:", "    animal, units:clade_1, units:clade_2, units:clade_3.", "Data is based on 1000 posterior samples."))
-    expect_null(covar.plot(test, col = rainbow(4), points = TRUE, major.axes = TRUE, n = 20, legend = TRUE, ellipses = mean, pch = 21))
+    expect_null(covar.plot(test, col = rainbow(4), points = TRUE, major.axes = TRUE, n = 20, legend = TRUE, ellipses = mean, points.col = c("blue", "orange", "black", "grey")))
 
     ## Model 5: 6 group (3/3)
     test <- MCMCglmm.subsets(data = covar_char_data, posteriors =covar_model_list[[5]])
@@ -100,7 +100,7 @@ test_that("MCMCglmm.subsets and covar.plot works", {
     expect_equal(size.subsets(test), c("phylogeny" = 359, "clade_1" = 160, "clade_2" = 97, "clade_3" = 102))
     expect_equal(length(test$covar), 4)
     expect_equal(names(test$covar), c("phylogeny", "clade_1", "clade_2", "clade_3"))
-    expect_null(covar.plot(test, ellipses = mean, major.axes = TRUE, n = 100, col = c("grey","orange", "blue", "darkgreen"), legend = TRUE, points = TRUE, cex = 0.2))
+    expect_null(covar.plot(test, ellipses = mean, major.axes = TRUE, n = 100, col = c("grey","orange", "blue", "darkgreen"), legend = TRUE, points = TRUE, cex = 0.2, legend.cex = 1))
 
     # Try with not all subsets selected on a big model
     test <- MCMCglmm.subsets(data = covar_char_data, posteriors = covar_model_list[[7]], group = c(random = "animal", residual = "units"))

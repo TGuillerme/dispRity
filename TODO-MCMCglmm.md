@@ -97,9 +97,7 @@ TODO: transfer from `beer`:
        - [ ] test_that("plot.dispRity with model.test data", {
               - [ ] fix plot.continuous and plot.discrete first (maybe things happen in get.plot.params?)
        - [ ] test_that("preview works with fuzzy matrices and trees", {
-       - [ ] plot.covar
-       - [ ] plot.char.diff
-       - [ ] pair.plot
+       - [x] plot.covar
  - [ ] add to the manual entry
 
 ## Minor
