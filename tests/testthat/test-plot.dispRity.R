@@ -398,12 +398,13 @@ test_that("preview works with fuzzy matrices and trees", {
   expect_null(plot(data))
   expect_null(plot(data, specific.args = list(matrix = 1)))
 
-  ## Plot with multiple trees
+  ## Plot with multiple trees
   data <- bound_test_data$matrices
   tree <- bound_test_data$trees
   expect_null(plot(make.dispRity(data[[1]], tree[[1]]), specific.args = list(tree = TRUE)))
   expect_null(plot(make.dispRity(data[[1]], tree), specific.args = list(tree = TRUE)))
   expect_null(plot(make.dispRity(data, tree[[1]]), specific.args = list(tree = TRUE)))
+  expect_null(plot(make.dispRity(data, tree[[1]]), lty = 3, specific.args = list(tree = TRUE)))
 
   ## Plot with groups
   data <- custom.subsets(data, group = list(tips = bound_test_data$tree[[1]]$tip.label, nodes = bound_test_data$tree[[1]]$node.label), tree = tree)

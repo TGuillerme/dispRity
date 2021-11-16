@@ -675,14 +675,14 @@ plot.rarefaction <- function(plot_params, data_params, data) {
             ci_cols <- get.quantile.col(cent_tend_col, cis, plot_params$helpers$n_quantiles)
 
             ## Set the plotting arguments
-            lines_args <- one_plot_args
-            lines_args$col <- all_plot_args$col[length(all_plot_args$col) - (cis-1)]
-            lines_args$y <- subset_data[,ci_cols[1]]
+            line_args <- one_plot_args
+            line_args$col <- all_plot_args$col[length(all_plot_args$col) - (cis-1)]
+            line_args$y <- subset_data[,ci_cols[1]]
 
             ## plot the quantiles
-            do.call(lines, lines_args)
-            lines_args$y <- subset_data[,ci_cols[2]]
-            do.call(lines, lines_args)
+            do.call(lines, line_args)
+            line_args$y <- subset_data[,ci_cols[2]]
+            do.call(lines, line_args)
         }
     }
 
@@ -815,11 +815,11 @@ plot.preview <- function(data, specific.args, ...) {
         line_args <- plot_args
         line_args <- get.dots(dots, line_args, "col", "grey", fun = "lines")
         if(length(specific.args$tree) > 1) {
-            lines_args$col <- make.transparent(lines_args$col, levels = length(specific.args$tree))
+            line_args$col <- make.transparent(line_args$col, levels = length(specific.args$tree))
         }
         line_args <- get.dots(dots, line_args, "lwd", 1, fun = "lines")
         line_args <- get.dots(dots, line_args, "lty", 1, fun = "lines")
-
+        
         ## Plotting each tree
         for(one_tree in specific.args$tree) {
 
@@ -835,7 +835,7 @@ plot.preview <- function(data, specific.args, ...) {
             ## Plotting all the edges
             silent <- apply(data$tree[[one_tree]]$edge, 1, plot.edge,
                   points_data = points_data,
-                  params = lines_args)
+                  params = line_args)
         }
     }
 
