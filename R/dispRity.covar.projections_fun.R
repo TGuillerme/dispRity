@@ -67,7 +67,8 @@ projections.fast <- function(matrix, point1 = 0, point2 = colMeans(matrix), meas
     if("degree" %in% measure) {
         values[["degree"]] <- angles[,1]
     }
-    return(values)
+    ## Rearrange the values in the input order
+    return(values[measure])
 }
 
 
