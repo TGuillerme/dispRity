@@ -109,6 +109,20 @@
 # verbose = TRUE
 # data <- data_subsets_boot
 
+
+## Mem check
+# library(pryr)
+# data(BeckLee_mat50)
+# customised_subsets <- custom.subsets(BeckLee_mat50, list(group1 = 1:(nrow(BeckLee_mat50)/2),group2 = (nrow(BeckLee_mat50)/2):nrow(BeckLee_mat50)))
+# bootstrapped_data <- boot.matrix(customised_subsets, bootstraps = 100)
+# data <- bootstrapped_data
+# metric <- variances
+# between.groups <- FALSE
+# verbose <- FALSE
+# tree <- NULL
+# start_mem <- mem_used()
+
+
 dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verbose = FALSE, tree = NULL){#, parallel) {
     ## ----------------------
     ##  SANITIZING
@@ -410,6 +424,8 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
     }
 
     # }
+    ## Free the loop memory
+    rm(lapply_loop)
     if(verbose) message("Done.\n", appendLF = FALSE)
 
     # } else {
@@ -444,6 +460,9 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
 
     ## Update the disparity
     data$disparity <- disparity
+
+    ## Free the disparity memory
+    rm(disparity)
 
     ## Update the call
     data$call$disparity$metrics$name <- c(data$call$disparity$metrics$name, match_call$metric)

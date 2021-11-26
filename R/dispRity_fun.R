@@ -340,6 +340,7 @@ disparity.bootstraps <- function(one_subsets_bootstrap, metrics_list, data, matr
     } else {
         disparity_out <- one_subsets_bootstrap
     }
+    rm(one_subsets_bootstrap)
 
     #TODO: handle tree metrics after the matrix decomposition
 
