@@ -344,7 +344,6 @@ test_that("summary.dispRity with model.test data", {
     expect_equal(rownames(summary_model.sim2), as.character(rev(25:1)))
 })
 
-
 # test_that("Test seq.test object management", {
 #     data(BeckLee_mat50)
 #     groups <- as.data.frame(matrix(data = c(rep(1, 12), rep(2, 13), rep(3, 12), rep(4, 13)), dimnames = list(rownames(BeckLee_mat50))), ncol = 1)

@@ -106,6 +106,7 @@
 plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = median, rarefaction = NULL, elements = FALSE, observed = FALSE, add = FALSE, density = NULL, specific.args){ #significance="cent.tend", lines.args=NULL, token.args=NULL
 
     data <- x
+    rm(x)
     match_call <- match.call()
     dots <- list(...)
 
@@ -154,6 +155,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
                 }
                 par(op_tmp)
             }
+            rm(plot_data)
             return(invisible())
         }
 
@@ -162,6 +164,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         
             ## Dtt style plots
             plot.dtt(data, quantiles, cent.tend, density, ...)
+            rm(data)
             return(invisible())
         } 
 
@@ -170,6 +173,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
 
             ## Plotting the model support
             plot.model.test(data, ...)
+            rm(data)
             return(invisible())
         }
         
@@ -186,6 +190,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
             }
 
             plot.model.sim(data, add, density, quantiles, cent.tend, ...)
+            rm(data)
             return(invisible())
         }
 
@@ -194,6 +199,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
 
             ## Plotting the test.metric results
             plot.test.metric(data, specific.args, ...)
+            rm(data)
                 
             ## Exit subclass plots
             return(invisible())
@@ -204,7 +210,8 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
 
             ## Plot the data
             plot.axes(data, ...)
-                
+            rm(data)
+
             ## Exit subclass plots
             return(invisible())
         }        
@@ -241,6 +248,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
     if(!missing(type) && type == "preview") {
         ## Plotting the matrix preview
         plot.preview(data, specific.args, ...)
+        rm(data)
         return(invisible())
     }
 
@@ -387,6 +395,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
 
             ## Run the box plot
             do.call(boxplot, boxplot_args)
+            rm(boxplot_args)
         })
 
     ## Add the observed
@@ -399,5 +408,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         plot.elements(plot_params, data_params, type)
     }
 
+    rm(plot_params)
+    rm(data_params)
     return(invisible())
 }

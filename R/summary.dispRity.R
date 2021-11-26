@@ -56,6 +56,7 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
 
     ## Renaming object
     data <- object
+    rm(object)
 
     #----------------------
     # SANITIZING
@@ -357,7 +358,7 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
     # OUTPUT
     #----------------------
     if(recall) print.dispRity(data)
-
+    rm(data)
     return(summary_results)
 
     #Summary sequential.test shortcut
