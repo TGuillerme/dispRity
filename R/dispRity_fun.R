@@ -370,6 +370,9 @@ disparity.bootstraps <- function(one_subsets_bootstrap, metrics_list, data, matr
         disparity_out <- t(as.matrix(disparity_out))
     }
 
+    ## Clean the dimnames
+    dimnames(disparity_out) <- NULL    
+
     return(disparity_out)
 }
 

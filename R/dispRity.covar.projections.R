@@ -70,9 +70,9 @@ dispRity.covar.projections <- function(data, type, base, sample, n, major.axis =
     check.method(output, c("position", "distance", "degree"), "output must be")
 
     ## Check logicals
-    if(type == "groups") {
-        check.class(centre.proj, "logical")
-    }
+    # if(type == "groups") {
+    check.class(centre.proj, "logical")
+    # }
     check.class(absolute.proj, "logical")
     check.class(verbose, "logical")
 
@@ -217,11 +217,16 @@ dispRity.covar.projections <- function(data, type, base, sample, n, major.axis =
             full_out[[i]]$call$disparity <- update_call
         }
 
+        ## Centre the results
+        if(any(pos <- output %in% "position") && centre.proj) {
+            full_out[[which(pos)]]$disparity <- lapply(full_out[[which(pos)]]$disparity, lapply, function(X) X-0.5)
+        }
+
         ## Make the results absolute
         if(any(pos <- output %in% "position") && absolute.proj) {
             full_out[[which(pos)]]$disparity <- lapply(full_out[[which(pos)]]$disparity, lapply, function(X) abs(X))
         }
-        
+
         if(verbose) message("Done.")
         names(full_out) <- output
         return(full_out)

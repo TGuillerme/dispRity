@@ -188,11 +188,7 @@ get.disparity <- function(data, subsets, rarefaction, observed = TRUE, concatena
 
     ## subsets
     if(missing(subsets)) {
-        if(data$call$disparity$metrics$between.groups) {
-            subsets <- seq(1:length(data$disparity))
-        } else {
-            subsets <- seq(1:length(data$subsets))
-        }
+        subsets <- seq(1:length(data$disparity))
     } else {
         check.subsets(subsets, data)
     }
@@ -219,13 +215,19 @@ get.disparity <- function(data, subsets, rarefaction, observed = TRUE, concatena
             return(c(apply(disparity$elements, 1, median, na.rm = TRUE)))
         }
         if(concatenate) {
-            return(lapply(data$disparity[subsets], lapply.observed))
+            output <- lapply(data$disparity[subsets], lapply.observed)
         } else {
-            return(lapply(data$disparity[subsets], function(X) X$elements))
+            output <- lapply(data$disparity[subsets], function(X) X$elements)
         }
     } else {
         output <- lapply(as.list(subsets), extract.disparity.values, data, rarefaction, concatenate)
         names(output) <- names(data$subsets[subsets])
+    }
+
+    ## Add the dimnames if necessary
+    if(!data$call$disparity$metrics$between.groups) {
+        return(mapply(add.dimnames, output, as.list(subsets), MoreArgs = list(data = data), SIMPLIFY = FALSE))
+    } else {
         return(output)
     }
 }

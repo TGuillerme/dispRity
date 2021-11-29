@@ -4,7 +4,7 @@
 \alias{MCMCglmm.subsets}
 \title{MCMCglmm.subsets}
 \usage{
-MCMCglmm.subsets(data, posteriors, group, tree, rename.groups)
+MCMCglmm.subsets(data, posteriors, group, tree, rename.groups, ...)
 }
 \arguments{
 \item{data}{The \code{data.frame} or \code{matrix} used for the \code{\link[MCMCglmm]{MCMCglmm}} model.}
@@ -16,6 +16,8 @@ MCMCglmm.subsets(data, posteriors, group, tree, rename.groups)
 \item{tree}{Optional, the tree(s) used in the MCMCglmm analyses.}
 
 \item{rename.groups}{optional, a vector of group names for renaming them. See details.}
+
+\item{...}{Optional arguments to be passed to \code{\link{MCMCglmm.covars}}.}
 }
 \description{
 Creating a dispRity object from a MCMCglmm posterior output

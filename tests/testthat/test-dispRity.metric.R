@@ -9,14 +9,12 @@ test_that("dimension generic", {
     expect_equal(capture_output(between.groups.fun()), "Between groups functions implemented in dispRity:\n?group.dist # level 1\n?point.dist # level 2\n?projections.between # level 2")
 })
 
-
 test_that("select.method sanitizing works", {
     test <- select.method("euclidean")
     expect_is(test, "function")
     expect_error(select.method(NULL))
     error <- capture_error(select.method("NULL"))
     expect_equal(error[[1]], "method argument can only be \"euclidean\" or \"manhattan\".")
-
 })
 
 #Testing the metrics
@@ -336,8 +334,6 @@ test_that("diagonal", {
     expect_equal(diagonal(matrix), sqrt(20))
 })
 
-
-
 test_that("ancestral.dist", {
 
     set.seed(1)
@@ -360,7 +356,6 @@ test_that("ancestral.dist", {
     expect_equal(summary(test)$obs.median, c(2.457, 2.538, 2.677, 2.746, 2.741))
 })
 
-
 test_that("span.tree.length", {
 
     set.seed(1)
@@ -382,7 +377,6 @@ test_that("span.tree.length", {
     test2 <- round(span.tree.length(matrix, method = "euclidean"), digit = 5)
     expect_error(span.tree.length(matrix, method = "wooops"))
     expect_equal(test1, test2)
-
 })
 
 test_that("pairwise.dist", {
@@ -408,7 +402,6 @@ test_that("radius", {
     expect_equal(round(radiuses, digit = 5), round(c(1.4660109,0.9556041,2.2528229,0.5045006,2.0705822,1.1221754,1.4195993,0.9011047,0.7181528,0.9463714), digit = 5))
 })
 
-
 test_that("n.ball.volume", {
 
     set.seed(1)
@@ -420,7 +413,6 @@ test_that("n.ball.volume", {
     expect_equal(round(volume_sphere, digit = 5), round(1.286559, digit = 5))
     expect_equal(round(volume_spheroid, digit = 5), round(8.202472, digit = 5))
 })
-
 
 test_that("quantiles", {
     set.seed(1)
@@ -470,7 +462,6 @@ test_that("neighbours", {
         round(c(5.943374, 4.515470, 4.008678, 5.943374, 5.059321), digits = 5)
         )
 })
-
 
 test_that("func.eve", {
     set.seed(1)
