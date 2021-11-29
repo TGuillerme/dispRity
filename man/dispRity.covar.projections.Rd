@@ -65,14 +65,26 @@ If \code{base} is specified:
 }
 }
 \examples{
+data(charadriiformes)
 
-## TODO:
-example
-1 = 2
+## Creating a dispRity object with a covar component
+my_covar <-MCMCglmm.subsets(
+                 data       = charadriiformes$data,
+                 posteriors = charadriiformes$posteriors,
+                 tree       = charadriiformes$tree,
+                 group      = MCMCglmm.levels(
+                                 charadriiformes$posteriors)[1:4],
+                 rename.groups = c("gulls", "plovers", "sandpipers", "phylo"))
 
+## Running a projection analyses between groups (on 100 random samples)
+between_groups <- dispRity.covar.projections(my_covar, type = "groups", base = "phylo", n = 100)
+## Summarising the results
+lapply(between_groups, summary)
 
-
-
+## Measuring the projection of the elements on their own average major axis
+elements_proj <- dispRity.covar.projections(my_covar, type = "elements", sample = mean, output = "position")
+## Visualizing the results
+plot(elements_proj[[1]])
 
 }
 \seealso{

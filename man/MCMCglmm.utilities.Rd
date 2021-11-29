@@ -10,7 +10,7 @@
 \usage{
 MCMCglmm.traits(MCMCglmm)
 
-MCMCglmm.levels(MCMCglmm)
+MCMCglmm.levels(MCMCglmm, convert)
 
 MCMCglmm.sample(MCMCglmm, n)
 
@@ -18,6 +18,8 @@ MCMCglmm.covars(MCMCglmm, n, sample)
 }
 \arguments{
 \item{MCMCglmm}{A \code{MCMCglmm} object.}
+
+\item{convert}{Logical, whether to return the raw term names names as expressed in the model column names (\code{FALSE}) or to convert it to something more reader friendly (\code{TRUE}; default).}
 
 \item{n}{Optional, a number of random samples to extract.}
 

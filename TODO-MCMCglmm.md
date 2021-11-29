@@ -21,10 +21,7 @@ TODO: updates on as.covar
  * *New function* `MCMCglmm.subsets` is a function that allows to convert a `MCMCglmm` object into a `dispRity` object.
  * *New metric* `projections.between` a between group metric for applying the `projections` metric between the major covariance axis of two matrices.
  * New `dispRity.fast` function for the fastest disparity calculations at the expanses of pretty much everything this package does. This is a really situational function.
- * Adding `dispRity.covar.projections` function (a wrapper for the projections analyses)
- - [x] implemented
- - [x] tested
- - [ ] example
+ * Adding `dispRity.covar.projections` function (a wrapper for covariance projections analyses).
  * One new demo datasets: `charadriiformes`, a `data.frame` and a `phylo` object of 50 random _Charadriiformes_ species (gulls, plovers and sandpipers) from [Cooney et al 2017](https://www.nature.com/articles/d41586-021-02480-z) along with a `MCMCglmm` model with each clade as a random term.
  * Additional plot arguments `...` in all the `dispRity` plotting functions can now be targeted to a specific plotting element. When multiple elements are plot by default (e.g. lines, legend, points, etc...) it is now possible to pass a specific `...` argument to the specific plotted element using the syntax `<element>.<argument>` (e.g. `points.col = "blue"` will only apply the argument `col = "blue"` to the points).
 
@@ -33,7 +30,7 @@ TODO: updates on as.covar
  * `custom.subsets` can now group elements using a `"factor"` vector.
  * Utility functions manuals are now grouped by topic (e.g. utilities related to `MCMCglmm` objects, `dispRity` objects in general, `dispRity` objects with subsets, ect...). It should now be much easier to find these sometimes overlooked functions.
  * Many updates and new entries in the `dispRity` manual, including a section on `covar` and `between.groups` specific analyses.
- * Use `dispRity.fast` in `test.metric`
+ * Improving speed for the `test.metric` (using the new official `dispRity.fast` function).
  - [ ] done
  * Most core functions in the package now have a garbage memory cleaning component. This improves the speed and the memory footprint wen handling very large datasets.
  * Disparity results stored in `data$disparity` now don't have dimension names anymore (significantly reducing the size of `disparity` objects). However, you can always retrieve the dimensions names using `get.disparity`.

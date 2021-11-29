@@ -5,13 +5,14 @@
 #' @description Different utility functions to extract aspects of a \code{MCMCglmm} object.
 #'
 #' @usage MCMCglmm.traits(MCMCglmm)
-#' @usage MCMCglmm.levels(MCMCglmm)
+#' @usage MCMCglmm.levels(MCMCglmm, convert)
 #' @usage MCMCglmm.sample(MCMCglmm, n)
 #' @usage MCMCglmm.covars(MCMCglmm, n, sample)
 #'  
 #' @param MCMCglmm A \code{MCMCglmm} object.
 #' @param n        Optional, a number of random samples to extract.
 #' @param sample   Optional, the specific samples to extract (is ignored if \code{n} is present).
+#' @param convert  Logical, whether to return the raw term names names as expressed in the model column names (\code{FALSE}) or to convert it to something more reader friendly (\code{TRUE}; default).
 #'
 #' @details
 #' \itemize{
@@ -153,7 +154,7 @@ MCMCglmm.sample <- function(MCMCglmm, n) {
 }
 
 ## Get some covar matrices
-MCMCglmm.covars <- function(MCMCglmm, sample, n){   
+MCMCglmm.covars <- function(MCMCglmm, n, sample){   
 
     ## The number of traits
     traits <- MCMCglmm.traits(MCMCglmm)
