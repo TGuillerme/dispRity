@@ -31,6 +31,7 @@ License: GPL-3 | file LICENSE
 Remotes:
     github::myllym/spptest@no_fastdepth
 Suggests:
+	MCMCglmm,
     geoscale,
     testthat,
     knitr
