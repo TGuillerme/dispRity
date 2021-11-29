@@ -7,6 +7,7 @@
 #' @param group Optional, a named vector of which group to include from the posteriors (if left empty the random and residual terms are used). See details.
 #' @param tree Optional, the tree(s) used in the MCMCglmm analyses.
 #' @param rename.groups optional, a vector of group names for renaming them. See details.
+#' @param ... Optional arguments to be passed to \code{\link{MCMCglmm.covars}}.
 #' 
 #' @details
 #' \itemize{
@@ -38,7 +39,7 @@
 #' @author Thomas Guillerme
 #' @export
 
-MCMCglmm.subsets <- function(data, posteriors, group, tree, rename.groups) {
+MCMCglmm.subsets <- function(data, posteriors, group, tree, rename.groups, ...) {
 
     match_call <- match.call()
 
@@ -96,7 +97,7 @@ MCMCglmm.subsets <- function(data, posteriors, group, tree, rename.groups) {
     }
 
     ## Getting the covar matrices per group
-    covar_matrices <- MCMCglmm.covars(posteriors)[selected_groups]
+    covar_matrices <- MCMCglmm.covars(posteriors, ...)[selected_groups]
 
     ## Renaming the groups
     if(!missing(rename.groups)) {
