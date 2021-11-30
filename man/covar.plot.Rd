@@ -16,6 +16,7 @@ covar.plot(
   centres = colMeans,
   transparent.scale,
   add = FALSE,
+  apply.to.VCV = FALSE,
   ...
 )
 }
@@ -39,6 +40,8 @@ covar.plot(
 \item{transparent.scale}{optional, if multiple major axes and/or ellipses are plotted, a scaling factor for the transparency. If left empty, the transparency is set to \code{1/n} or \code{0.1} (whichever is higher).}
 
 \item{add}{logical, whether to add the plot to an existing plot (\code{TRUE}) or not (\code{FALSE}; default).}
+
+\item{apply.to.VCV}{logical, if \code{ellipse} and/or \code{major.axes} is a \code{function}, whether to apply it on all the estimated ellipses/major axes (\code{FALSE}; default) or on the variance covariance matrices directly (\code{TRUE}). In other words, whether to apply the function to the ellipses/major axis or the the VCV first (e.g. the average ellipses or the ellipse of the average VCV).}
 
 \item{...}{any graphical options to be passed to \code{plot}, \code{lines} or \code{points}. See details.}
 }

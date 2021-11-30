@@ -57,3 +57,11 @@ recentre.levels <- function(level_sample, centre, dimensions) {
     }
     return(level_sample)
 }
+
+## Get the VCV central tendency
+VCV.cent.tend <- function(one_covar, fun) {
+    VCVs <- lapply(one_covar, `[[`, "VCV")
+    locs <- lapply(one_covar, `[[`, "loc")
+    return(list(VCV = apply(array(do.call(cbind, VCVs), dim = c(dim(VCVs[[1]]), length(VCVs))), c(1,2), fun),
+                loc = apply(do.call(rbind, locs), 2, fun)))
+}
