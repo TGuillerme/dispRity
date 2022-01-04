@@ -123,8 +123,6 @@ test_that("as.covar works in dispRity", {
     ## Different results
     expect_equal(c(summary(test2)$obs), c(0.026, 0.000, 0.003))
 
-
-
     ## Test works in 2 times (1st covar)
     testA <- dispRity(data, metric = as.covar(variances), dimensions = c(1:17))
     expect_is(testA, "dispRity")
@@ -152,6 +150,76 @@ test_that("as.covar works in dispRity", {
     ## Different results
     expect_equal(c(summary(test1)$obs), c(0.376, 0.020, 0.129))
     expect_equal(c(summary(test2)$obs), c(119.8, 107.0,  73.3))
+
+    ## Test with VCV, loc toggles
+    sum.var.dist <- function(matrix, loc = rep(0, ncol(matrix))) {
+        ## Get the sum of the diagonal of the matrix
+        sum_diag <- sum(diag(matrix))
+        ## Get the distance between 0 and the loc
+        dist_loc <- dist(matrix(c(rep(0, ncol(matrix)), loc), nrow = 2, byrow = TRUE))[1]
+        ## Return the sum of the diagonal minus the distance
+        return(sum_diag - dist_loc)
+    }
+    sum.var.group <- function(matrix, matrix2, loc = rep(0, ncol(matrix)), loc2 = rep(0, ncol(matrix2)), ...) {
+        return(sum.var.dist(matrix, loc) + sum.var.dist(matrix2, loc2))
+    }
+
+
+    ## Test works OK with base
+    set.seed(42)
+    data <- MCMCglmm.subsets(data       = charadriiformes$data,
+                             posteriors = charadriiformes$posteriors,
+                             tree       = charadriiformes$tree,
+                             group      = MCMCglmm.levels(
+                                     charadriiformes$posteriors)[1:3],
+                             rename.groups = c("gulls", "plovers", "sandpipers"),
+                             n = 3)
+    ## Adding some loc for groups 2 and 3
+    data$covar[[2]][[1]]$loc <- data$covar[[2]][[2]]$loc <- data$covar[[2]][[3]]$loc <- rep(1, 3)
+    data$covar[[3]][[1]]$loc <- data$covar[[3]][[2]]$loc <- data$covar[[3]][[3]]$loc <- rep(10, 3)
+
+    ## VCV && !loc
+    test2 <- dispRity(data, metric = as.covar(sum.var.dist, VCV = TRUE, loc = FALSE))
+    expect_is(test2, "dispRity")
+    expect_equal(names(test2), c("matrix", "tree", "call", "subsets", "covar", "disparity"))
+    ## Different results
+    expect_equal(c(summary(test2)$obs), c(0.209, 0.024, 0.093))
+
+    ## !VCV && loc
+    test2 <- dispRity(data, metric = as.covar(sum.var.dist, VCV = FALSE, loc = TRUE))
+    expect_is(test2, "dispRity")
+    expect_equal(names(test2), c("matrix", "tree", "call", "subsets", "covar", "disparity"))
+    ## Different results
+    expect_equal(c(summary(test2)$obs), c(0, 1, 10))
+
+    ## VCV && loc
+    test2 <- dispRity(data, metric = as.covar(sum.var.dist, VCV = TRUE, loc = TRUE))
+    expect_is(test2, "dispRity")
+    expect_equal(names(test2), c("matrix", "tree", "call", "subsets", "covar", "disparity"))
+    ## Different results
+    expect_equal(c(summary(test2)$obs), c(0.2, -1.7, -17.2))
+
+    ## Works with between groups
+    ## VCV && !loc
+    test3 <- dispRity(data, metric = as.covar(sum.var.group, VCV = TRUE, loc = FALSE), between.groups = TRUE)
+    expect_is(test3, "dispRity")
+    expect_equal(names(test3), c("matrix", "tree", "call", "subsets", "covar", "disparity"))
+    ## Different results
+    expect_equal(c(summary(test3)$obs), c(0.242, 0.302, 0.118))
+
+    ## !VCV && loc
+    test3 <- dispRity(data, metric = as.covar(sum.var.group, VCV = FALSE, loc = TRUE), between.groups = TRUE)
+    expect_is(test3, "dispRity")
+    expect_equal(names(test3), c("matrix", "tree", "call", "subsets", "covar", "disparity"))
+    ## Different results
+    expect_equal(c(summary(test3)$obs), c(0, 0, 2))
+
+    ## VCV && loc
+    test3 <- dispRity(data, metric = as.covar(sum.var.group, VCV = TRUE, loc = TRUE), between.groups = TRUE)
+    expect_is(test3, "dispRity")
+    expect_equal(names(test3), c("matrix", "tree", "call", "subsets", "covar", "disparity"))
+    ## Different results
+    expect_equal(c(summary(test3)$obs), c(-1.5, -17.0, -18.9))
 })
 
 test_that("example works", {
