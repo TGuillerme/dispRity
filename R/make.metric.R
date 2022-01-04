@@ -85,11 +85,19 @@ make.metric <- function(fun, ..., silent = FALSE, check.between.groups = FALSE, 
     is_between.groups <- all(c("matrix", "matrix2") %in% arguments)
     is_phylo <- "tree" %in% arguments
 
+    if(is_between.groups) {
+        ## Create a matrix2
+        matrix2 <- matrix(rnorm(data.dim[1]*data.dim[2]), data.dim[1], data.dim[2])        
+        if(covar) {
+            matrix2 <- list(VCV = matrix2, loc = diag(matrix2))
+        }
+    }
+
     ## Skip the dots if the dots has a tree argument
     if(!is_phylo) {
         ## Test the metric
         if(is_between.groups) {
-            test <- try(fun(matrix = matrix, matrix2 = matrix, ...), silent = TRUE)
+            test <- try(fun(matrix = matrix, matrix2 = matrix2, ...), silent = TRUE)
         } else {
             test <- try(fun(matrix, ...), silent = TRUE)
         }
@@ -110,7 +118,7 @@ make.metric <- function(fun, ..., silent = FALSE, check.between.groups = FALSE, 
         rownames(matrix) <- c(tree$tip.label, tree$node.label)
         ## Test the metric
         if(is_between.groups) {
-            test <- try(fun(matrix = matrix, matrix2 = matrix, tree = tree, ...), silent = TRUE)
+            test <- try(fun(matrix = matrix, matrix2 = matrix2, tree = tree, ...), silent = TRUE)
         } else {
             test <- try(fun(matrix, tree = tree, ...), silent = TRUE)
         }        
