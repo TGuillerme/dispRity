@@ -10,8 +10,10 @@ TODO: update the manual with all these new entries
  - [ ] plot arguments options
 
 TODO: updates on as.covar
- - [ ] modify to allow `loc` as an extra argument (i.e. if the function has an argument called `loc`, change `loc = matrix$loc` the same way `matrix = matrix$VCV`).
  - [ ] test case when the metric is as.covar AND uses tree
+
+TODO: fix on MCMCglmm.subsets:
+when setting n = 10, update the print (currently keeps the total number)
 
 
  * `dispRity` objects can now contain covariance matrices as a `$covar` object. The `covar` part can be directly used for some specific metrics (usually `my_metric.covar`) and are handled by the `dispRity` function (and plot, summary, etc...) in a specific way.`$covar` contains a list of two elements `VCV` the variance covariance matrix and `loc` the coordinates of the centre of the `VCV` in space (can be left empty). `$covar` matrices are effectively treated as bootstraps.
@@ -31,7 +33,7 @@ TODO: updates on as.covar
  * Utility functions manuals are now grouped by topic (e.g. utilities related to `MCMCglmm` objects, `dispRity` objects in general, `dispRity` objects with subsets, ect...). It should now be much easier to find these sometimes overlooked functions.
  * Many updates and new entries in the `dispRity` manual, including a section on `covar` and `between.groups` specific analyses.
  * Improving speed for the `test.metric` (using the new official `dispRity.fast` function).
- - [ ] done
+       - [ ] TODO: IMPLETMENT
  * Most core functions in the package now have a garbage memory cleaning component. This improves the speed and the memory footprint wen handling very large datasets.
  * Disparity results stored in `data$disparity` now don't have dimension names anymore (significantly reducing the size of `disparity` objects). However, you can always retrieve the dimensions names using `get.disparity`.
 
