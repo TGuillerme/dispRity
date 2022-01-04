@@ -718,7 +718,7 @@ test_that("point.dist", {
     data(BeckLee_mat99)
     test <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", model = "equal.split", time = 10)
     test2 <- dispRity(test, metric = point.dist, between.groups = TRUE)
-    expect_equal(summary(test2)$obs.median, c(1.869, 1.775, 1.824, 1.945, 1.831, 1.928, 2.004, 1.887, 2.072))
+    expect_equal(summary(test2)$obs.median, c(1.594, 1.838, 1.843, 1.969, 1.828, 1.977, 1.934, 1.892, 1.950))
 })
 
 test_that("projections", {

@@ -212,7 +212,7 @@ test_that("as.covar works in dispRity", {
     expect_is(test3, "dispRity")
     expect_equal(names(test3), c("matrix", "tree", "call", "subsets", "covar", "disparity"))
     ## Different results
-    expect_equal(c(summary(test3)$obs), c(0, 1, 10))
+    expect_equal(c(summary(test3)$obs), c(1, 10, 11))
 
     ## VCV && loc
     test3 <- dispRity(data, metric = as.covar(sum.var.group, VCV = TRUE, loc = TRUE), between.groups = TRUE)
