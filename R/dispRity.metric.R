@@ -767,7 +767,7 @@ group.dist <- function(matrix, matrix2, probs = c(0,1)) {
     ## Centre that matrix onto the centroid of group 1
     centred_matrix <- centre.matrix(combined_matrix, groups[[1]])
     ## Get the centroid vector in the centred matrix (the centroid of group 2)
-    centroid <- colMeans(centred_matrix[groups[[2]],])
+    centroid <- colMeans(centred_matrix[groups[[2]], , drop = FALSE])
     ## Get the length of each projected points on the centroid vector
     projected_lengths <- apply(centred_matrix, 1, get.proj.length, centroid = centroid, length = sqrt(sum(centroid^2)))
     ## Get the quantile of the projections for each group
