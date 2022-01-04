@@ -283,7 +283,7 @@ covar.plot <- function(data, n, points = TRUE, major.axes = FALSE, ellipses = FA
         ## Set up the legend arguments
         legend_args <- plot_args
         ## Removing defaults not for legend
-        legend_args[c("main", "xlim", "ylim", "xlab", "ylab")] <- NULL
+        legend_args[c("main", "xlim", "ylim", "xlab", "ylab", "xaxt", "yaxt")] <- NULL
 
         ## Get the legend arguments (plotted)
         if(!points) {
