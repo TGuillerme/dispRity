@@ -86,7 +86,7 @@ as.covar <- function(fun, ..., VCV = TRUE, loc = FALSE) {
         if(!VCV && loc) {
             ## Between groups fun
             fun_covar <- function(matrix, matrix2, ...) {
-                return(fun(matrix = matrix(matrix$loc, nrow = 1), matrix2 = matrix(matrix$loc, nrow = 1), ...))
+                return(fun(matrix = matrix(matrix$loc, nrow = 1), matrix2 = matrix(matrix2$loc, nrow = 1), ...))
                 ## This should never be evaluated by the function but only internally
                 is_covar <- TRUE
             }
