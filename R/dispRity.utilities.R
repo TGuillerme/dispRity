@@ -687,6 +687,11 @@ sort.dispRity <- function(x, decreasing = FALSE, sort, ...) {
         data$disparity <- data$disparity[sort]
     }
 
+    ## Sorting the covar
+    if(!is.null(data$covar)) {
+        data$covar <- data$covar[sort]
+    }
+
     return(data)
 }
 
