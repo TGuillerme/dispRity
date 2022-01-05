@@ -8,6 +8,7 @@ TODO: update the manual with all these new entries
  - [ ] between.groups entry
  - [ ] MCMCglmm utilities in others
  - [ ] plot arguments options
+ - [ ] `match.tip.edge` in the miscelaneous section
 
 TODO: updates on as.covar
  - [ ] test case when the metric is as.covar AND uses tree
@@ -17,15 +18,17 @@ when setting n = 10, update the print (currently keeps the total number)
 
 
  * `dispRity` objects can now contain covariance matrices as a `$covar` object. The `covar` part can be directly used for some specific metrics (usually `my_metric.covar`) and are handled by the `dispRity` function (and plot, summary, etc...) in a specific way.`$covar` contains a list of two elements `VCV` the variance covariance matrix and `loc` the coordinates of the centre of the `VCV` in space (can be left empty). `$covar` matrices are effectively treated as bootstraps.
+ * *New function* `covar.plot` for plotting the `covar` content of `dispRity` objects (this is separated from `plot.dispRity` because of the many different options).
+ * *New function*: `MCMCglmm.subsets` is a function that allows to convert a `MCMCglmm` object into a `dispRity` object.
+ * *New metric*: `projections.between` a between group metric for applying the `projections` metric between the major covariance axis of two matrices.
+ * New `dispRity.fast` function for the fastest disparity calculations at the expanses of pretty much everything this package does. This is a really situational function.
  * *New utility functions* for manipulating `MCMCglmm` objects: `MCMCglmm.traits` for extracting the number of traits, `MCMCglmm.levels` for extracting the level names, `MCMCglmm.sample` for sampling posterior IDs and `MCMCglmm.covars` for extracting variance-covariance matrices
  * *New utility functions* for `dispRity` objects with `covar` matrices: `get.covar` to extract the VCV matrices (or a subsample of them); `axes.covar` to extract the major axes of the VCV matrices and `as.covar` to transform `dispRity` metric function to use a covar object.
- * *New function* `covar.plot` for plotting the `covar` content of `dispRity` objects (this is separated from `plot.dispRity` because of the many different options).
- * *New function* `MCMCglmm.subsets` is a function that allows to convert a `MCMCglmm` object into a `dispRity` object.
- * *New metric* `projections.between` a between group metric for applying the `projections` metric between the major covariance axis of two matrices.
- * New `dispRity.fast` function for the fastest disparity calculations at the expanses of pretty much everything this package does. This is a really situational function.
+ * *New utility function* `match.tip.edge` for matching tip labels as factors/characters/numeric to tree edges.
  * Adding `dispRity.covar.projections` function (a wrapper for covariance projections analyses).
  * One new demo datasets: `charadriiformes`, a `data.frame` and a `phylo` object of 50 random _Charadriiformes_ species (gulls, plovers and sandpipers) from [Cooney et al 2017](https://www.nature.com/articles/d41586-021-02480-z) along with a `MCMCglmm` model with each clade as a random term.
  * Additional plot arguments `...` in all the `dispRity` plotting functions can now be targeted to a specific plotting element. When multiple elements are plot by default (e.g. lines, legend, points, etc...) it is now possible to pass a specific `...` argument to the specific plotted element using the syntax `<element>.<argument>` (e.g. `points.col = "blue"` will only apply the argument `col = "blue"` to the points).
+ 
 
 ## Minor
 
