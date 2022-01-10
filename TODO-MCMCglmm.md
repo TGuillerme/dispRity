@@ -13,10 +13,6 @@ TODO: update the manual with all these new entries
 TODO: updates on as.covar
  - [ ] test case when the metric is as.covar AND uses tree
 
-TODO: fix on MCMCglmm.subsets:
-when setting n = 10, update the print (currently keeps the total number)
-
-
  * `dispRity` objects can now contain covariance matrices as a `$covar` object. The `covar` part can be directly used for some specific metrics (usually `my_metric.covar`) and are handled by the `dispRity` function (and plot, summary, etc...) in a specific way.`$covar` contains a list of two elements `VCV` the variance covariance matrix and `loc` the coordinates of the centre of the `VCV` in space (can be left empty). `$covar` matrices are effectively treated as bootstraps.
  * *New function* `covar.plot` for plotting the `covar` content of `dispRity` objects (this is separated from `plot.dispRity` because of the many different options).
  * *New function*: `MCMCglmm.subsets` is a function that allows to convert a `MCMCglmm` object into a `dispRity` object.
