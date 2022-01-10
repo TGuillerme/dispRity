@@ -59,7 +59,7 @@ test_that("dispRity.covar.projections works", {
     expect_equal(paste0(verb, collapse = ""), "Calculating the major axis:...Done.\nCalculating projections:......Done.\n")
     expect_equal(names(test), c("degree", "distance"))
     expect_equal(names(test[[1]]$disparity), c("gulls", "plovers", "sandpipers", "phylogeny"))
-    expect_equal(dim(test[[1]]$disparity[[1]]$elements), c(160,5))
+    expect_equal(dim(test[[1]]$disparity[[1]]$elements), c(159,5))
     ## Correct output format (dispRity) 
     for(i in 1:2) {
         expect_equal(dim(summary(test[[i]])), c(4,7))

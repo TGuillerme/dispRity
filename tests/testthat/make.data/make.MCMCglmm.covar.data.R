@@ -164,4 +164,4 @@ save(covar_model_list, file = "covar_model_list.rda")
 
 # MCMCglmm example data
 charadriiformes <- list(data = covar_char_data, tree = covar_tree_data, posteriors = model7)
-save(charadriiformes, file = "../../../Data/charadriiformes.rda")
+save(charadriiformes, file = "../../../data/charadriiformes.rda")

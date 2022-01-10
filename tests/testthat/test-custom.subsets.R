@@ -442,5 +442,5 @@ test_that("custom.subsets works with a factor", {
                            group = charadriiformes$data[, "clade"])
     expect_is(test, "dispRity")
     expect_equal(n.subsets(test), 3)
-    expect_equal(size.subsets(test), c("gulls" = 160, "plovers" = 97, "sandpipers" = 102))
+    expect_equal(size.subsets(test), c("gulls" = 159, "plovers" = 98, "sandpipers" = 102))
 })
