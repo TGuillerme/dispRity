@@ -4,6 +4,10 @@ load(file = "covar_char_data.rda")
 load(file = "covar_tree_data.rda")
 library(MCMCglmm)
 
+
+## label fix
+covar_char_data["Pluvianus_aegyptius", "clade"] <- "plovers"
+
 ################################################################################################
 # Step 3 - MCMCglmm !!!!
 # There are many ways we can model covariances in MCMCglmm, including how we separate 
