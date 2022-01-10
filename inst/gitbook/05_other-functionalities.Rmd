@@ -162,6 +162,51 @@ Note that this function outputs the stratigraphic age limits by default but this
 The function also intakes several optional arguments such as whether to output the startm end, range or midpoint of the stratigraphy or the year of reference of the International Commission of Stratigraphy.
 To see a more applied example: this function is used in [chapter 03: specific tutorials](#chrono-subsets).
 
+## `match.tip.edge`
+
+This function matches a vector of discreet tip values with the edges connecting these tips in the `"phylo"` structure.
+This can be used to pull the branches of interest for some specific trait of some group of species or for colouring tree tips based on clades.
+
+For example, with the `charadriiformes` dataset, you can plot the tree with the branches coloured by clade.
+To work properly, the function requires the characteristics of the tip labels (e.g. the clade colour) to match the order of the tips in the tree:
+
+```{r}
+## Loading the charadriiformes data
+data(charadriiformes) 
+## Extracting the tree
+my_tree <- charadriiformes$tree
+## Extracting the data column that contains the clade assignments
+my_data <- charadriiformes$data[, "clade"]
+## Changing the levels names (the clade names) to colours
+levels(my_data) <- c("orange", "blue", "darkgreen")
+my_data <- as.character(my_data)
+## Matching the data rownames to the tip order in the tree
+my_data <- my_data[match(ladderize(my_tree)$tip.label, rownames(charadriiformes$data))]
+```
+
+We can then match this tip data to their common descending edges.
+We will also colour the edges that is not descendant directly from a common coloured tip in grey using `"replace.na = "grey"`.
+Note that these edges are usually the edges at the root of the tree that are the descendant edges from multiple clades.
+
+```{r}
+## Matching the tip colours (labels) to their descending edges in the tree
+## (and making the non-match edges grey)
+clade_edges <- match.tip.edge(my_data, my_tree, replace.na = "grey")
+
+## Plotting the results
+plot(ladderize(my_tree), show.tip.label = FALSE, edge.color = clade_edges)
+```
+
+But you can also use this option to only select some specific edges and modify them (for example making them all equal to one):
+
+```{r}
+## Adding a fixed edge length to the green clade
+my_tree_modif <- my_tree
+green_clade <- which(clade_edges == "darkgreen")
+my_tree_modif$edge.length[green_clade] <- 1
+plot(ladderize(my_tree_modif), show.tip.label = FALSE, edge.color = clade_edges)
+```
+
 ## `pair.plot`
 
 This utility function allows to plot a matrix image of pairwise comparisons.

@@ -8,7 +8,6 @@ TODO: update the manual with all these new entries
  - [ ] between.groups entry
  - [ ] MCMCglmm utilities in others
  - [ ] plot arguments options
- - [ ] `match.tip.edge` in the miscelaneous section
 
 TODO: updates on as.covar
  - [ ] test case when the metric is as.covar AND uses tree
