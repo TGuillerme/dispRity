@@ -31,9 +31,12 @@
 #'          \item WARNING: This function is the generalisation of Pythagoras' theorem and thus \bold{works only if each dimensions are orthogonal to each other}.
 #'      }
 #'
-#'   \item \code{ellipse.volume}: calculates the ellipsoid volume of a matrix.
+#'   \item \code{ellipse.volume}: calculates the ellipsoid volume of a matrix. This function tries to determine the nature of the input matrix and uses one of these following methods to calculate the volume. You can always specify the method using \code{method = "my_choice"} to overrun the automatic method choice.
 #'      \itemize{
-#'          \item WARNING: this function assumes that the input matrix is ordinated and calculates the matrix' eigen values from the matrix as \code{abs(apply(var(matrix),2, sum))} (which is equivalent to \code{eigen(var(matrix))$values} but faster). These values are the correct eigen values for any matrix but differ from the ones output from \code{\link[stats]{cmdscale}} and \code{\link[ape]{pcoa}} because these later have their eigen values multiplied by the number of elements - 1 (i.e. \code{abs(apply(var(matrix),2, sum)) * nrow(matrix) -1 }). Specific eigen values can always be provided manually through \code{ellipse.volume(matrix, eigen.value = my_val)} (or \code{dispRity(matrix, metric = ellipse.volume, eigen.value = my_val)}).
+#'             \item \code{"eigen"}: this method directly calculates the eigen values from the input matrix (using \code{\link{eigen}}). This method is automatically selected if the input matrix is "distance like" (i.e. square with two mirrored triangles and a diagonal).
+#'             \item \code{"pca"}: this method calculates the eigen values as the sum of the variances of the matrix (\code{abs(apply(var(matrix),2, sum))}). This is automatically selected if the input matrix is NOT "distance like". Note that this method is faster than \code{"eigen"} but only works if the input matrix is an ordinated matrix from a PCA, PCO, PCoA, NMDS or MDS.
+#'             \item \code{"axes"}: this method calculates the actual semi axes length using the input matrix. It is never automatically selected. By default this method calculates the length of the major axes based on the 0.95 confidence interval ellipse but this can be modified by providing additional arguments from \code{\link{axis.covar}}.
+#'             \item \code{<a numeric vector>}: finally, you can directly provide a numeric vector of eigen values. This method is never automatically selected and overrides any other options.
 #'      }
 #' 
 #'   \item \code{func.div}: The functional divergence (Vill'{e}ger et al. 2008): the ratio of deviation from the centroid (this is similar to \code{FD::dbFD()$FDiv}).
@@ -201,8 +204,8 @@
 #' ellipse.volume(dummy_matrix)
 #' ## Calculating the same volume with provided eigen values
 #' ordination <- prcomp(dummy_matrix)
-#' ## Calculating the ellipsoid volume
-#' ellipse.volume(ordination$x, eigen.value = ordination$sdev^2)
+#' ## Calculating the ellipsoid volume by providing your own eigen values
+#' ellipse.volume(ordination$x, method = ordination$sdev^2)
 #' 
 #' ## func.div
 #' ## Functional divergence
@@ -477,23 +480,41 @@ mode.val <- function(matrix, ...){
     return(as.numeric(names(sort(-table(matrix))[1])))
 }
 
-## Calculate the ellipsoid volume of an eigen matrix (modified from Donohue et al 2013, Ecology Letters)
-ellipse.volume <- function(matrix, eigen.value) {
+## Calculate the ellipse volume of matrix
+ellipse.volume <- function(matrix, method, ...) {
 
     ## Initialising the variables
     ncol_matrix <- ncol(matrix)
 
-    ## The eigenvalue is equal to the sum of the variance/covariance within each axis (* nrow(matrix) as used in pco/pcoa)
-    if(missing(eigen.value)) {
-        eigen.value <- abs(apply(var(matrix, na.rm = TRUE), 2, sum)) # * (nrow(matrix) - 1)
-    } else {
-        eigen.value <- eigen.value[1:ncol_matrix]
+    ## Calculating the semi axes
+    if(missing(method)) {
+        ## Detect the method
+        is_dist <- check.dist.matrix(matrix, just.check = TRUE)
+        if(is_dist) {
+            ## Use the eigen method
+            method <- "eigen"
+        } else {
+            ## Use the pca method
+            method <- "pca"
+        }
     }
 
-    ## volume (from Donohue et al 2013, Ecology Letters)
-    volume <- pi^(ncol_matrix/2)/gamma((ncol_matrix/2)+1)*prod(eigen.value^(0.5))
+    if(is(method, "character")) {
+        ## Select the semi axes
+        semi_axes <- switch(method, 
+            ## Simply get the eigen values
+            "eigen" = {sqrt(eigen(matrix)$values)},
+            ## The eigenvalue is equal to the sum of the variance/covariance within each axis (* nrow(matrix) as used in pco/pcoa)
+            "pca"   = {sqrt(abs(apply(var(matrix, na.rm = TRUE), 2, sum)))},
+            ## Calculate the 
+            "axes"  = {(sapply(1:ncol(matrix), function(dim, VCV) {dist(get.one.axis(VCV, axis = dim, ...))}, VCV = matrix))/2})            
+    } else {
+        semi_axes <- method[1:ncol_matrix]
+    }
 
-    return(volume)
+
+    ## Volume (from https://keisan.casio.com/exec/system/1223381019)
+    return(pi^(ncol_matrix/2)/gamma((ncol_matrix/2)+1)*prod(semi_axes))
 }
 
 ## Calculate the convex hull hypersurface
