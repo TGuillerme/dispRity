@@ -64,6 +64,10 @@ make.metric <- function(fun, ..., silent = FALSE, check.between.groups = FALSE, 
     if(missing(data.dim)) {
         data.dim <- c(5, 4)
     }
+    ## Tricking the simulated data if the matrix has only one dimensions
+    if(data.dim[2] == 1) {
+        data.dim[2] <- 2
+    }
     matrix <- matrix(rnorm(data.dim[1]*data.dim[2]), data.dim[1], data.dim[2])
     matrix_text <- paste0("matrix(rnorm(",data.dim[1],"*",data.dim[2],"), ",data.dim[1], ", ",data.dim[2], ")")
 

@@ -198,7 +198,7 @@ test_that("MIXED.model works", {
 
     expect_is(Mk, "character")
     expect_is(Mk_or_HKY, "character")
-    expect_equal(Mk, c("0", "2", "2", "2", "0"))
+    expect_equal(Mk, c("0", "1", "1", "1", "0"))
     expect_equal(Mk_or_HKY, c("1", "0", "1", "0", "0"))
 
 })
