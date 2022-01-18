@@ -69,6 +69,8 @@
 
 select.axes <- function(data, group, threshold = 0.95, inc.threshold = TRUE) {
 
+    match_call <- match.call()
+
     ## Set up the data type
     data_class <- check.class(data, c("dispRity", "matrix", "prcomp", "princomp"))
     trait_space <- switch(data_class,
