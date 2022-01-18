@@ -5,7 +5,6 @@ Thanks a lot to Andrew Beckerman, Natalie Cooper and Gavin Thomas for supporting
 
 TODO: update the manual with all these new entries
  - [ ] covar entry
- - [ ] between.groups entry
  - [ ] MCMCglmm utilities in others
  - [ ] plot arguments options
 
@@ -34,7 +33,7 @@ TODO: updates on as.covar
        - [ ] TODO: IMPLETMENT
  * Most core functions in the package now have a garbage memory cleaning component. This improves the speed and the memory footprint wen handling very large datasets.
  * Disparity results stored in `data$disparity` now don't have dimension names anymore (significantly reducing the size of `disparity` objects). However, you can always retrieve the dimensions names using `get.disparity`.
- * Updated the calculation options for `ellipse.volume`, you can now directly specify one of the following methods: `"pca"` to calculate the eigen values from the ordinated matrix; `"eigen"` to directly do an eigen decomposition of the matrix (new); or `"axes"` to directly measure the axes (new); or directly provide the eigen values.
+ * Updated the calculation options for `ellipse.volume`, you can now directly speci`fy one of the following methods: `"pca"` to calculate the eigen values from the ordinated matrix; `"eigen"` to directly do an eigen decomposition of the matrix (new); or `"axes"` to directly measure the axes (new); or directly provide the eigen values.
 
 
 ## DEPRECATED
