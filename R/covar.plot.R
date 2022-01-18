@@ -113,8 +113,9 @@ covar.plot <- function(data, n, points = TRUE, major.axes = FALSE, ellipses = FA
         covars <- mapply(recentre, covars, centres, MoreArgs = list(dimensions = dimensions), SIMPLIFY = FALSE)
     } else {
         ## Handled by ellipses and axes
-        if(centre)
-        centres <- "intercept"
+        if(centre) {
+            centres <- "intercept"
+        }
     }
 
     ## Axes and ellipses arguments
@@ -174,10 +175,10 @@ covar.plot <- function(data, n, points = TRUE, major.axes = FALSE, ellipses = FA
     ## Get the plot limits
     lims <- range(data$matrix[[1]])
     if(do_major_axes) {
-        lims <- range(c(range(data$matrix[[1]]), unlist(all_axes)))
+        lims <- range(c(range(abs(data$matrix[[1]])), abs(unlist(all_axes))))
     }
     if(do_ellipses) {
-        lims <- max(c(range(data$matrix[[1]]), range(unlist(all_ellipses))))
+        lims <- max(c(range(abs(data$matrix[[1]])), range(abs(unlist(all_ellipses)))))
         lims <- c(-lims, lims)
     }    
     plot_args <- get.dots(plot_args, plot_args, "xlim", lims)
