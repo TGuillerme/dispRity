@@ -207,6 +207,13 @@ my_tree_modif$edge.length[green_clade] <- 1
 plot(ladderize(my_tree_modif), show.tip.label = FALSE, edge.color = clade_edges)
 ```
 
+## `MCMCglmm` utilities {#MCMCglmm-utilities}
+
+See also how to use objects with a [`$covar` component](#covar)
+
+
+
+
 ## `pair.plot`
 
 This utility function allows to plot a matrix image of pairwise comparisons.

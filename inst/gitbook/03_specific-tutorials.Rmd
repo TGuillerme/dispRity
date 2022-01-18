@@ -2125,3 +2125,27 @@ plot(sum_edge_length)
 ```
 
 Of course this can be done with multiple trees and be combined with an approach using multiple matrices (see [here](#multi.input))!
+
+
+
+
+
+## Disparity of variance-covariance matrices (covar) {#covar}
+
+
+What is a variance-covariance matrix
+How to get them: MCMCglmm @MCMCglmm from @hadfield2010 (but see also @mulTree)
+
+### Creating a `dispRity` object with a `$covar` component
+
+### Visualising covar objects
+
+### Disparity analyses with a `$covar` component
+
+`as.covar`
+
+#### Elaborations and explorations
+
+But see probably paper
+
+Finally there are other tools for manipulating MCMCglmm objects. See other [MCMCglmm utilities](#MCMCglmm-utilities)
