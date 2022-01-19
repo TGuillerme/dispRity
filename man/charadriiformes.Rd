@@ -10,12 +10,13 @@ one \code{data.frame}, one \code{phylo} and one \code{MCMCglmm}.
 An example of a \code{\link[MCMCglmm]{MCMCglmm}} model.
 }
 \details{
-This dataset is based on a random subset of 359 Charadriiformes (gulls, plovers and sandpipers) from Cooney et al 2017.
+This dataset is based on a random subset of 359 Charadriiformes (gulls, plovers and sandpipers) from Cooney et al 2017 and trees from Jetz et al 2012.
 It contains:
 \itemize{
   \item \code{data} A \code{"data.frame"} .
   \item \code{tree} A consensus tree of 359 charadriiformes species (\code{"phylo"}).
   \item \code{posteriors} The posteriors from a \code{"MCMCglmm"} model (see example below).
+  \item \code{tree_distribution} A random distribution of 10 trees of the 359 charadriiformes species (\code{"multiPhylo"}).
 }
 }
 \examples{
@@ -64,5 +65,7 @@ model <- MCMCglmm(formula  = model_formula,
 }
 }
 \references{
-Cooney CR, Bright JA, Capp EJ, Chira AM, Hughes EC, Moody CJ, Nouri LO, Varley ZK, Thomas GH. Mega-evolutionary dynamics of the adaptive radiation of birds. Nature. 2017 Feb;542(7641):344-7.
+Cooney CR, Bright JA, Capp EJ, Chira AM,Hughes EC, Moody CJ, Nouri LO, Varley ZK, Thomas GH. Mega-evolutionary dynamics of the adaptive radiation of birds. Nature. 2017 Feb;542(7641):344-7.
+
+Jetz W, Thomas GH, Joy JB, Hartmann K, Mooers AO. The global diversity of birds in space and time. Nature. 2012 Nov;491(7424):444-8.
 }

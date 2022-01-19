@@ -879,7 +879,7 @@ test_that("projections.between works", {
     expect_equal(names(disparity), c("gulls:plovers", "gulls:sandpipers", "gulls:phylogeny", "plovers:sandpipers", "plovers:phylogeny", "sandpipers:phylogeny"))
     expect_equal(unique(unlist(lapply(disparity, dim))), c(1, 1000))
     disparity <- get.disparity(is_covar)
-    expect_equal_round(unname(unlist(disparity)), c(2.8863957,1.5628570,1.2798770,0.3934976,0.2566334,0.7740176), 5)
+    expect_equal_round(unname(unlist(disparity)), c(2.8175937, 1.5718191, 1.2262642, 0.3840770, 0.2389399, 0.7011024), 5)
 
     ## Same as above but with options
     no_covar <- dispRity(data, metric = projections.between, between.groups = TRUE, measure = "degree", level = 0.9)
@@ -892,5 +892,5 @@ test_that("projections.between works", {
     expect_equal(names(disparity), c("gulls:plovers", "gulls:sandpipers", "gulls:phylogeny", "plovers:sandpipers", "plovers:phylogeny", "sandpipers:phylogeny"))
     expect_equal(unique(unlist(lapply(disparity, dim))), c(1, 1000))
     disparity <- get.disparity(is_covar)
-    expect_equal_round(unname(unlist(disparity)), c(21.865577,10.353765,9.088015,26.315260,25.020247,8.452643), 4)
+    expect_equal_round(unname(unlist(disparity)), c(25.115014, 11.407162, 9.240426, 25.986941, 27.336217, 10.353848), 4)
 })

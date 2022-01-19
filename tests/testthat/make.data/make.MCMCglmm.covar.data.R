@@ -2,6 +2,8 @@
 ## Loading data and packages
 load(file = "covar_char_data.rda")
 load(file = "covar_tree_data.rda")
+load(file = "covar_tree_list.rda")
+
 library(MCMCglmm)
 
 
@@ -17,7 +19,6 @@ covar_char_data["Pluvianus_aegyptius", "clade"] <- "plovers"
 ################################################################################################
 
 ntraits <- 3 #this refers to the number of traits in the covariance matrix. Here we are using 3 througout
-
 
 # The simplest model simply estimates the overal covariance matrix for the whole data set
 model1 <- MCMCglmm(cbind(PC1, PC2, PC3) ~ trait-1, family = rep("gaussian", ntraits),
@@ -161,7 +162,9 @@ model7 <- MCMCglmm(cbind(PC1, PC2, PC3) ~ trait:clade-1, family = rep("gaussian"
 #TG: one way to increase things would be to specify more constrained priors?
 covar_model_list <- list(model1, model2, model3, model4, model5, model6, model7)
 save(covar_model_list, file = "covar_model_list.rda")
+load("covar_model_list.rda")
+model7 <- covar_model_list[[7]]
 
 # MCMCglmm example data
-charadriiformes <- list(data = covar_char_data, tree = covar_tree_data, posteriors = model7)
+charadriiformes <- list(data = covar_char_data, tree = covar_tree_data, posteriors = model7, tree_distribution = covar_tree_list)
 save(charadriiformes, file = "../../../data/charadriiformes.rda")
