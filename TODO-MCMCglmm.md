@@ -5,7 +5,6 @@ Thanks a lot to Andrew Beckerman, Natalie Cooper and Gavin Thomas for supporting
 
 TODO: update the manual with all these new entries
  - [ ] covar entry
- - [ ] MCMCglmm utilities in others
  - [ ] plot arguments options
 
 TODO: updates on as.covar
