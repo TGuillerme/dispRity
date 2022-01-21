@@ -96,7 +96,7 @@ covar.plot <- function(data, n, points = TRUE, major.axes = FALSE, ellipses = FA
     check.length(dimensions, 2, msg = " argument must contain only 2 dimensions (for now).")
 
     ## Selecting the centres
-    centre_class <- check.class(centres, c("function", "numeric", "integer", "list", "character"), msg = " must be either a function (e.g. colMeans) a set or a list of sets of coordinates (e.g. list(c(1,2), c(0,0))) or \"intercept\" for using the posteriors intercepts.")
+    centre_class <- check.class(centres, c("standardGeneric", "function", "numeric", "integer", "list", "character"), msg = " must be either a function (e.g. colMeans) a set or a list of sets of coordinates (e.g. list(c(1,2), c(0,0))) or \"intercept\" for using the posteriors intercepts.")
     centre_class <- ifelse(centre_class == "standardGeneric", "function", centre_class)
     centre_class <- ifelse(centre_class == "integer", "numeric", centre_class)
     
