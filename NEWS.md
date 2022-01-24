@@ -71,7 +71,7 @@ dispRity v1.6.0 (2021-04-16) *dispRitree*
   * remove the `"only"` text when printing `dispRity` objects that contains "only" matrices (even though that can be 10k matrices!).
   * added a dedicated behaviour to `summary.dispRity` for `"dispRity"` `"randtest"` objects to output "ready-to-publish" result tables.
   * some error messages have been updated to be slightly more useful.
-  * added the `estimation.details` argument to `multi.ace` allowing to also return specific arguments from the ancestral states estimation (thanks to [Armin Elsler](https://research-information.bris.ac.uk/en/persons/armin-elsler) for the suggestion).
+  * added the `estimation.details` argument to `multi.ace` allowing to also return specific arguments from the ancestral states estimation (thanks to [Armin Elsler](https://www.researchgate.net/profile/Armin-Elsler-2) for the suggestion).
   * Added new option `inc.nodes` to `clean.data` whether to check if the nodes in the tree match the labels in the matrix.
   * `make.metric` with the option `silent = TRUE` now outputs a list of info rather than only the level of the metric. You can reproduce the old behaviour using `make.metric(..., silent = TRUE)$type)`.
   * Fixed bug in `plot` using `preview` when the given argument `pch` did not match the number of groups (the different `pch` arguments are now used correctly).
@@ -142,8 +142,7 @@ dispRity v1.4.0 (2020-05-05) *getting faster*
   * updated class evaluations throughout the package for `R` version `4.0.0`: `class(.) == *` is now `is(., *)`.
   * updated `...` argument bug PR#16223.
   * In `make.metric` the argument `...` is now ignored if any `names(...)` is `"tree"` or `"phy"`.
-  * fixed bug in `neighbours` and `span.tree.length` when feeding "distance" like metrics (thanks to [Ashley Reaney](https://www.researchgate.net/profile/Ashley-Reaney)
- for finding that one).
+  * fixed bug in `neighbours` and `span.tree.length` when feeding "distance" like metrics (thanks to Ashley Reaney for finding that one).
 
 ### MINOR IMPROVEMENTS
 

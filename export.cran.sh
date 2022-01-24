@@ -1,4 +1,3 @@
-#!/bin/sh
 ##########################
 # Script for exporting the package in CRAN format
 ##########################
@@ -11,20 +10,20 @@
 
 #INPUT
 ## Input values
-while [[ $# -gt 1 ]]
-do
-key="$1"
+# while [[ $# -gt 1 ]]
+# do
+# key="$1"
 
-case $key in
-    -e|--exclude)
-        EXCLUDE="$2"
-        ;;
-        *)
+# case $key in
+#     -e|--exclude)
+#         EXCLUDE="$2"
+#         ;;
+#         *)
 
-        ;;
-esac
-shift
-done
+#         ;;
+# esac
+# shift
+# done
 
 ## Create the temporary CRAN folder
 mkdir cran_tmp
@@ -119,7 +118,7 @@ else
     then
         echo "Check out the NOTE(s) before submitting!"
         echo "/Users/TGuillerme/Packaging/dispRity/00check.log"
-        mv /Users/TGuillerme/Packaging/dispRity/cran_tmp/dispRity.Rcheck/00check.log /Users/TGuillerme/Packaging/dispRity/00check.log
+        mv ~/Packaging/dispRity/cran_tmp/dispRity.Rcheck/00check.log ~/Packaging/dispRity/00check.log
     else
         echo "Nice one: it compiles smoothly!"
     fi    
