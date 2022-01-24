@@ -218,7 +218,7 @@ check.dispRity.tree <- function(tree, data, bind.trees = FALSE) {
     }
 
     ## Make the data into "dispRity" format for testing
-    if(!missing(data) && is(data, "matrix")) {
+    if(!missing(data) && is.array(data)) {
         if(!is(data, "dispRity")) {
             data <- list(matrix = list(data))
         }
