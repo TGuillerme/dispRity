@@ -23,7 +23,7 @@ dispRity 0.2.0 (2016-04-01)
 <!--   * `dtt.dispRity` now works with time-slicing. -->
 
 
-dispRity v1.6.8 (2022-01-17)
+dispRity v1.6.8 (2022-01-24)
 =========================
 
 ### NEW FEATURES
@@ -48,7 +48,9 @@ dispRity v1.6.8 (2022-01-17)
  * Fixed bug when plotting `test.metric` plots with `save.steps` options with more than two types of shifts.
  * Fixed bug with `null.test` which is now correctly managing the number of dimensions inherited from `dispRity` objects (thanks to [Alex Slavenko](https://alexslavenko.weebly.com/) for spotting this one and the two above).
  * Fixed bug when using level 2 dimension metrics on unidimensional data (the metric is now detected as a level 2 correctly; thanks to [Catherine Klein](https://www.researchgate.net/profile/Catherine-Klein) and [Rachel Warnock](https://www.gzn.nat.fau.de/palaeontologie/team/professors/rachel-warnock/) for noticing that one).
- 
+ * Update internal use of `is(data, c("array", "matrix"))` to `is.array(data)` for R 4.1.2.
+
+
 dispRity v1.6.0 (2021-04-16) *dispRitree*
 =========================
 

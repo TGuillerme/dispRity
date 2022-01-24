@@ -120,7 +120,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
     }
 
     #DATA
-    if(length(class(data)) > 1 && !(is(data, "matrix") && is(data, "array"))) {
+    if(length(class(data)) > 1 && !is.array(data)) {
 
         ## Subclass plots
 
@@ -222,7 +222,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
     ## ----
 
     ## Special case when the data is a matrix (make a dummy disparity data)
-    if(is(data, c("matrix", "array"))) {
+    if(is.array(data)) {
         ## Make a minimal dispRity object
         data <- make.dispRity(data)
         ## Set the type to "preview only"

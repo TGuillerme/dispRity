@@ -49,7 +49,7 @@ pair.plot <- function(data, what, col = c("black", "white"), legend = FALSE, bin
 
     #Sanitizing
     #data
-    if(is(data, "matrix")) {
+    if(is.array(data)) {
         data <- as.data.frame(data)
     } 
     check.class(data, "data.frame")
