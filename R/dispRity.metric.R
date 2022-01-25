@@ -77,7 +77,8 @@
 #'      \item \code{measure = "radian"}, the angle between the vector (\code{point1}, \code{point2}) and any vector (\code{point1}, \code{element}) in radians.
 #'  }
 #' By default, \code{point1} is the centre of the space (coordinates \code{0, 0, 0, ...}) and \code{point2} is the centroid of the space (coordinates \code{colMeans(matrix)}). Coordinates for \code{point1} and \code{point2} can be given as a single value to be repeated (e.g. \code{point1 = 1} is translated into \code{point1 = c(1, 1, ...)}) or a specific set of coordinates.
-#' Furtheremore, by default, the space is scaled so that the vector (\code{point1}, \code{point2}) becomes the unit vector (distance (\code{point1}, \code{point2}) is set to 1; option \code{scale = TRUE}; default). You can use the unit vector of the space using the option \code{scale = FALSE}.
+#' Furthermore, by default, the space is scaled so that the vector (\code{point1}, \code{point2}) becomes the unit vector (distance (\code{point1}, \code{point2}) is set to 1; option \code{scale = TRUE}; default). You can use the unit vector of the space using the option \code{scale = FALSE}.
+#' Other options include the centering of the projections on 0.5 (code{centre = TRUE}; default) ranging the projection onto the vector (\code{point1}, \code{point2}) between -1 and 1 (higher or lower values project beyond the vector); and whether to output the projection values as absolute values (\code{abs = TRUE}; default). These two last options only affect the results from \code{measure = "position"}.
 #'
 #'   \item \code{projections.tree}: calculates the \code{projections} metric but drawing the vectors from a phylogenetic tree. This metric can intake any argument from \code{projections} (see above) but for \code{point1} and \code{point2} that are replaced by the argument \code{type}. \code{type} is a \code{vector} or a \code{list} of two elements that designates which vector to draw and can be any pair of the following options (the first element being the origin of the vector and the second where the vector points to):
 #'      \itemize{
@@ -841,7 +842,7 @@ get.rotation.matrix <- function(x, y){
     return(diag(length(x)) - u %*% t(u) - v %*% t(v) + cbind(u,v) %*% matrix(c(cost,-sint,sint,cost), 2) %*% t(cbind(u,v)))
 }
 ## Projection of elements on an axis
-projections <- function(matrix, point1 = 0, point2 = colMeans(matrix), measure = "position", scaled = TRUE) {
+projections <- function(matrix, point1 = 0, point2 = colMeans(matrix), measure = "position", scaled = TRUE, centre = TRUE, abs = TRUE) {
     ## IMPORTANT: edits in this function must also be copy/pasted to dispRity.covar.projections_fun.R/projections.fast
     
     ## Get the point1 and point2
@@ -902,7 +903,7 @@ projections <- function(matrix, point1 = 0, point2 = colMeans(matrix), measure =
     values <- switch(measure,
         "position" = { #distance on
             ## Measure the position on the vectors and their orientation
-            projections[,1]
+            projections[, 1]
         },
         "distance" = { #distance from
             ## Get the rejection distance
@@ -915,11 +916,26 @@ projections <- function(matrix, point1 = 0, point2 = colMeans(matrix), measure =
             c(angles/180*pi)
         })
 
+    ## If position, apply correction
+    if(measure == "position") {
+        if(centre && abs) {
+            values <- abs(values - 0.5)/0.5
+        }
+        if(centre && !abs) {
+            values <- (values - 0.5)/0.5
+        }
+        if(!centre && abs) {
+            values <- abs(values)
+        }
+    }
+
+
+
     return(unname(values))
 }
 
 ## Projections between covar matrices
-projections.between <- function(matrix, matrix2, axis = 1, level = 0.95, measure = "position", scaled = TRUE) {
+projections.between <- function(matrix, matrix2, axis = 1, level = 0.95, measure = "position", scaled = TRUE, centre = TRUE, abs = TRUE) {
 
     ## Get the main axes from the VCV matrices
     # source("covar.utilities_fun.R")
@@ -940,7 +956,7 @@ projections.between <- function(matrix, matrix2, axis = 1, level = 0.95, measure
                     matrix[2,] + translation_vector)
 
     ## Measure the projection
-    return(projections(matrix, point1 = point1, point2 = point2, measure = measure, scaled = scaled)[-1]) #[-1] because the first value is the projection of the origin on the origin. Can be sometimes not equal to 0 though (but like something )
+    return(projections(matrix, point1 = point1, point2 = point2, measure = measure, scaled = scaled, centre = centre, abs = abs)[-1]) #[-1] because the first value is the projection of the origin on the origin. Can be sometimes not equal to 0 though (but like something )
 }
 
 ## Select the root coords

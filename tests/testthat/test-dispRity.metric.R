@@ -729,39 +729,39 @@ test_that("projections", {
     rownames(matrix) <- LETTERS[1:3]
 
     ## Position default (from 0 to centroid)
-    expect_equal(projections(matrix), c(0, 1, 2))
+    expect_equal(projections(matrix, centre = FALSE, abs = FALSE), c(0, 1, 2))
     ## Distance default (from 0 to centroid)
     expect_equal(projections(matrix, measure = "distance"), c(0, 0, 0))
     ## Position from 0 to 1)
-    expect_equal(projections(matrix, point2 = c(2, 0)), c(0, 0.5, 1))
+    expect_equal(projections(matrix, point2 = c(2, 0), centre = FALSE, abs = FALSE), c(0, 0.5, 1))
     ## Distance default (from 0 to centroid)
     expect_equal(projections(matrix, point2 = c(2, 0), measure = "distance"), c(0, 0, 0))
     ## Position from -1 to 1)
-    expect_equal(projections(matrix, point1 = c(-1, 0), point2 = c(1, 0)), c(0.5, 1, 1.5))
+    expect_equal(projections(matrix, point1 = c(-1, 0), point2 = c(1, 0), centre = FALSE, abs = FALSE), c(0.5, 1, 1.5))
 
     ## Simple 2D test
     matrix <- matrix(c(1,2,3,1,2,3), 3, 2)
     # plot(matrix)
 
     ## Position default (from 0 to centroid)
-    expect_equal(projections(matrix), c(0.5, 1, 1.5))
+    expect_equal(projections(matrix, centre = FALSE, abs = FALSE), c(0.5, 1, 1.5))
     ## Distance default (from 0 to centroid)
     expect_equal(projections(matrix, measure = "distance"), c(0, 0, 0))
     ## Position from 0 to 1)
-    expect_equal(projections(matrix, point2 = c(1, 0)), c(1, 2, 3))
+    expect_equal(projections(matrix, point2 = c(1, 0), centre = TRUE, abs = TRUE), c(1, 3, 5))
     ## Distance default (from 0 to centroid)
     expect_equal(projections(matrix, point2 = c(0.5, 0), measure = "distance"), c(2, 4, 6))
     ## Position from -1 to 1)
-    expect_equal(projections(matrix, point1 = c(-1, 0), point2 = c(1, 0)), c(1, 1.5, 2))  
+    expect_equal(projections(matrix, point1 = c(-1, 0), point2 = c(1, 0), centre = FALSE, abs = FALSE), c(1, 1.5, 2))  
 
     ## 400D matrix (showing off)
     set.seed(1)
     test <- matrix(rnorm(400*5), 5, 400)
     rownames(test) <- letters[1:5]
-    test_res <- projections(test, measure = "position", point1 = colMeans(test), point2 = test["a",])
-    expect_equal_round(test_res, c(1, -0.324, -0.141, -0.269, -0.265), 3)
-    test_res <- projections(test, measure = "position", point1 = 1, point2 = 2)
-    expect_equal_round(test_res, c(-1.0742616, -0.9673474, -1.0096280, -1.0909205, -0.9276176), 3)
+    test_res <- projections(test, measure = "position", point1 = colMeans(test), point2 = test["a",], centre = FALSE, abs = TRUE)
+    expect_equal_round(test_res, c(1, 0.324, 0.141, 0.269, 0.265), 3)
+    test_res <- projections(test, measure = "position", point1 = 1, point2 = 2, centre = TRUE, abs = FALSE)
+    expect_equal_round(test_res, c(-3.148523, -2.934695, -3.019256, -3.181841, -2.855235), 3)
     test_res <- projections(test, measure = "distance", point1 = colMeans(test), point2 = test["c",])
     expect_equal_round(test_res, c(1.023, 1.007, 0, 1.005, 0.953), 3)
     test_res <- projections(test, measure = "degree", point1 = colMeans(test), point2 = test["e",])
@@ -814,13 +814,12 @@ test_that("projections.tree ", {
     rownames(named_matrix) <- c(dummy_tree$tip.label,
                                 dummy_tree$node.label)
     error <- capture_error(projections.tree (named_matrix, dummy_tree, type = c("boot", "ancestor")))
-
-    expect_equal_round(projections.tree (named_matrix, dummy_tree, type = c("root", "ancestor")) , c(1.025, 0.309, 0.236, 0.532, 0.330,   NaN, NaN, NaN, 0.487), 3)
+    expect_equal_round(projections.tree (named_matrix, dummy_tree, type = c("root", "ancestor")) , c(1.05000187, 0.38219637, 0.52814845, 0.06458640, 0.34040743, NaN, NaN, NaN, 0.02510966), 3)
     expect_equal_round(projections.tree (named_matrix, dummy_tree, type = c("nodes", "tips"), measure = "distance"), c(1.383, 0.860, 1.656, 0.886, 1.391, 1.080, 1.466, 1.366, 1.674), 3)
     user.fun <- function(matrix, tree, row = NULL) {
          return(colMeans(matrix[tree$node.label[1:3], ]))
     }
-    expect_equal_round(projections.tree (named_matrix, dummy_tree, type = c(0, user.fun)), c(0.287, -0.293, 0.772, 0.304, -2.609, 0.732, 1.720, 0.548, -0.165), 3)
+    expect_equal_round(projections.tree (named_matrix, dummy_tree, type = c(0, user.fun)), c(0.42521912, 1.58606470, 0.54487738, 0.39155598, 6.21811290, 0.46367394, 2.44040141, 0.09592465, 1.33037794), 3)
 })
 
 test_that("edge.length.tree works", {
@@ -851,7 +850,7 @@ test_that("projections.between works", {
     matrix_1 <- matrix(rnorm(16), 4, 4)
     matrix_2 <- matrix(rnorm(16), 4, 4)
     ## Projecting the major axis of matrix_2 onto the one from matrix_1
-    expect_equal_round(projections.between(matrix_1, matrix_2), -0.312014, 6)
+    expect_equal_round(projections.between(matrix_1, matrix_2, centre = FALSE, abs = TRUE), 0.312014, 6)
     ## Projecting both second major 0.75 axes
     ## and getting the rejections (see projections() for option details)
     expect_equal_round(projections.between(matrix_1, matrix_2,
@@ -866,14 +865,14 @@ test_that("projections.between works", {
                              group = MCMCglmm.levels(charadriiformes$posteriors)[1:4],
                              rename.groups = c(levels(charadriiformes$data$clade), "phylogeny"))
     ## Testing the metric in the pipeline without covar option
-    no_covar <- dispRity(data, metric = projections.between, between.groups = TRUE)
+    no_covar <- dispRity(data, metric = projections.between, between.groups = TRUE, centre = FALSE, abs = FALSE)
     ## Test the values out
     disparity <- get.disparity(no_covar)
     expect_equal(names(disparity), c("gulls:plovers", "gulls:sandpipers", "gulls:phylogeny", "plovers:sandpipers", "plovers:phylogeny", "sandpipers:phylogeny"))
     expect_equal_round(unname(unlist(disparity)), c(-0.1915237,-1.5257785,-1.5257785,0.2534359,0.2534359,1.0000000), 6)
 
     ## Testing the metric in the pipeline with covar option
-    is_covar <- dispRity(data, metric = as.covar(projections.between), between.groups = TRUE)
+    is_covar <- dispRity(data, metric = as.covar(projections.between), between.groups = TRUE, centre = FALSE, abs = FALSE)
     ## Test the values out
     disparity <- get.disparity(is_covar, concatenate = FALSE)
     expect_equal(names(disparity), c("gulls:plovers", "gulls:sandpipers", "gulls:phylogeny", "plovers:sandpipers", "plovers:phylogeny", "sandpipers:phylogeny"))
@@ -882,12 +881,12 @@ test_that("projections.between works", {
     expect_equal_round(unname(unlist(disparity)), c(2.8175937, 1.5718191, 1.2262642, 0.3840770, 0.2389399, 0.7011024), 5)
 
     ## Same as above but with options
-    no_covar <- dispRity(data, metric = projections.between, between.groups = TRUE, measure = "degree", level = 0.9)
+    no_covar <- dispRity(data, metric = projections.between, between.groups = TRUE, measure = "degree", level = 0.9, centre = FALSE, abs = FALSE)
     disparity <- get.disparity(no_covar)
     expect_equal(names(disparity), c("gulls:plovers", "gulls:sandpipers", "gulls:phylogeny", "plovers:sandpipers", "plovers:phylogeny", "sandpipers:phylogeny"))
     expect_equal_round(unname(unlist(disparity)), c(96.69595,148.31804,148.31804,76.57482,76.57482,0), 5)
 
-    is_covar <- dispRity(data, metric = as.covar(projections.between), between.groups = TRUE, measure = "degree", level = 0.9)
+    is_covar <- dispRity(data, metric = as.covar(projections.between), between.groups = TRUE, measure = "degree", level = 0.9, centre = FALSE, abs = FALSE)
     disparity <- get.disparity(is_covar, concatenate = FALSE)
     expect_equal(names(disparity), c("gulls:plovers", "gulls:sandpipers", "gulls:phylogeny", "plovers:sandpipers", "plovers:phylogeny", "sandpipers:phylogeny"))
     expect_equal(unique(unlist(lapply(disparity, dim))), c(1, 1000))

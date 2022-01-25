@@ -11,8 +11,7 @@
 #' @param level the confidence interval to estimate the major axis (default is \code{0.95}; see \code{\link{axis.covar}} for more details)).
 #' @param output which values to output from the projection. By default, the three values \code{c("position", "distance", "degree")} are used to respectively output the projection, rejection and angle values (see \code{\link{projections}} for more details).
 #' @param inc.base logical, when using \code{type = "elements"} with a supplied \code{base} argument, whether to also calculate the projections for the base group (\code{TRUE}) or not (\code{FALSE}; default).
-#' @param centre.proj logical, whether to centre projection results on 0.5 when using \code{type = "group"} (\code{TRUE}; default) or not (\code{FALSE}).
-#' @param absolute.proj logical, whether to make the projection results absolute (\code{TRUE}; default) or not (\code{FALSE}). 
+#' @param ... any optional arguments to pass to \code{\link{projections}} (such as \code{centre} or \code{abs}). 
 #' @param verbose logical, whether to be verbose (\code{TRUE}) or not (\code{FALSE}, default).
 #' 
 #' @details
@@ -59,7 +58,7 @@
 #' @author Thomas Guillerme
 #' @export
 
-dispRity.covar.projections <- function(data, type, base, sample, n, major.axis = 1, level = 0.95, output = c("position", "distance", "degree"), inc.base = FALSE, centre.proj = TRUE, absolute.proj = TRUE, verbose = FALSE) {
+dispRity.covar.projections <- function(data, type, base, sample, n, major.axis = 1, level = 0.95, output = c("position", "distance", "degree"), inc.base = FALSE, ..., verbose = FALSE) {
 
     ## Check class data (dispRity)
     check.class(data, "dispRity")
@@ -82,11 +81,20 @@ dispRity.covar.projections <- function(data, type, base, sample, n, major.axis =
     check.method(output, c("position", "distance", "degree"), "output must be")
 
     ## Check logicals
-    # if(type == "groups") {
-    check.class(centre.proj, "logical")
-    # }
-    check.class(absolute.proj, "logical")
     check.class(verbose, "logical")
+
+    ## Check optionals
+    dots <- list(...)
+    ## Set the defaults
+    if(is.null(dots$scaled)) {
+        dots$scaled <- TRUE
+    }
+    if(is.null(dots$centre)) {
+        dots$centre <- TRUE
+    }
+    if(is.null(dots$abs)) {
+        dots$abs <- TRUE
+    }
 
     ## Check for sample/n
     if(missing(sample)) {
@@ -136,7 +144,7 @@ dispRity.covar.projections <- function(data, type, base, sample, n, major.axis =
 
         ## Use decompose.VCV directly
         if(verbose) message("Calculating projections:", appendLF = FALSE)
-        disparity_tmp <- lapply(list_of_pairs, decompose.VCV.internal, fun = as.covar(projections.between.fast), data = data_sub, use_array = FALSE, use_tree = FALSE, measure = output)
+        disparity_tmp <- lapply(list_of_pairs, decompose.VCV.internal, fun = as.covar(projections.between.fast), data = data_sub, use_array = FALSE, use_tree = FALSE, measure = output, centre = dots$centre, abs = dots$abs, scaled = dots$scaled)
         # if(length(output) == 1) {
         #     disparity_tmp <- lapply(disparity_tmp, function(X) X[1,, drop = FALSE])
         # }
@@ -156,17 +164,6 @@ dispRity.covar.projections <- function(data, type, base, sample, n, major.axis =
             full_out[[i]]$disparity <- lapply(disparity_tmp, function(X, i)return(list(elements = X[i, , drop = FALSE])), i = i)
             full_out[[i]]$call$disparity <- update_call
         }
-
-        ## Centre the results
-        if(any(pos <- output %in% "position") && centre.proj) {
-            full_out[[which(pos)]]$disparity <- lapply(full_out[[which(pos)]]$disparity, lapply, function(X) X-0.5)
-        }
-
-        ## Make the results absolute
-        if(any(pos <- output %in% "position") && absolute.proj) {
-            full_out[[which(pos)]]$disparity <- lapply(full_out[[which(pos)]]$disparity, lapply, function(X) abs(X))
-        }
-        
         names(full_out) <- output
         return(full_out)
     }
@@ -207,7 +204,7 @@ dispRity.covar.projections <- function(data, type, base, sample, n, major.axis =
         groups <- lapply(data_proj$subsets, function(group, data) seq_len(nrow(data$matrix[[1]])) %in% c(group$elements), data = data_proj)
    
         ## Getting all the metrics for one group
-        disparity_tmp <- mapply(apply.proj, base_axes, groups, MoreArgs = list(measure = output, data = data, verbose = verbose), SIMPLIFY = FALSE)
+        disparity_tmp <- mapply(apply.proj, base_axes, groups, MoreArgs = list(measure = output, data = data, verbose = verbose, dots = dots), SIMPLIFY = FALSE)
 
         ## Get the call updated
         update_call <- list(metrics = list())
@@ -227,16 +224,6 @@ dispRity.covar.projections <- function(data, type, base, sample, n, major.axis =
 
             ## Updating the call
             full_out[[i]]$call$disparity <- update_call
-        }
-
-        ## Centre the results
-        if(any(pos <- output %in% "position") && centre.proj) {
-            full_out[[which(pos)]]$disparity <- lapply(full_out[[which(pos)]]$disparity, lapply, function(X) X-0.5)
-        }
-
-        ## Make the results absolute
-        if(any(pos <- output %in% "position") && absolute.proj) {
-            full_out[[which(pos)]]$disparity <- lapply(full_out[[which(pos)]]$disparity, lapply, function(X) abs(X))
         }
 
         if(verbose) message("Done.")

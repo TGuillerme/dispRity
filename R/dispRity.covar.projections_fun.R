@@ -1,5 +1,5 @@
 ## Projection of elements on an axis
-projections.fast <- function(matrix, point1 = 0, point2 = colMeans(matrix), measure = "position", scaled = TRUE) {
+projections.fast <- function(matrix, point1 = 0, point2 = colMeans(matrix), measure = "position", scaled = TRUE, centre = TRUE, abs = TRUE) {
 
 
     ## Get the point1 and point2
@@ -59,7 +59,18 @@ projections.fast <- function(matrix, point1 = 0, point2 = colMeans(matrix), meas
     ## Measure the thingy
     values <- list()
     if("position" %in% measure) {
-        values[["position"]] <- projections[,1]
+        if(centre && abs) {
+            values[["position"]] <-projections <- abs(projections[,1] - 0.5)/0.5
+        }
+        if(centre && !abs) {
+            values[["position"]] <-projections <- (projections[,1] - 0.5)/0.5
+        }
+        if(!centre && abs) {
+            values[["position"]] <-projections <- abs(projections[,1])
+        }
+        if(!centre && !abs) {
+            values[["position"]] <-projections[,1]
+        }
     }
     if("distance" %in% measure) {
         values[["distance"]] <- apply(matrix - projections, 1, function(row) sqrt(sum(row^2)))
@@ -73,13 +84,13 @@ projections.fast <- function(matrix, point1 = 0, point2 = colMeans(matrix), meas
 
 
 ## Reorder projections.fast arguments
-fun.proj <- function(axis, group, data, measure) {
-    return(projections.fast(data$matrix[[1]][group, data$call$dimensions, drop = FALSE], point1 = axis[1,], point2 = axis[2,], measure = measure))
+fun.proj <- function(axis, group, data, measure, dots) {
+    return(projections.fast(data$matrix[[1]][group, data$call$dimensions, drop = FALSE], point1 = axis[1,], point2 = axis[2,], measure = measure, centre = dots$centre, scale = dots$scale, abs = dots$abs))
 }
 
 ## Apply the projection per group and axes
-apply.proj <- function(axes, group, measure, data, verbose) {
+apply.proj <- function(axes, group, measure, data, verbose, dots) {
     if(verbose) message(".", appendLF = FALSE)
-    return(lapply(axes, fun.proj, group, data, measure))
+    return(lapply(axes, fun.proj, group, data, measure, dots))
 }
 

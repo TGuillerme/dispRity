@@ -14,8 +14,7 @@ dispRity.covar.projections(
   level = 0.95,
   output = c("position", "distance", "degree"),
   inc.base = FALSE,
-  centre.proj = TRUE,
-  absolute.proj = TRUE,
+  ...,
   verbose = FALSE
 )
 }
@@ -38,9 +37,7 @@ dispRity.covar.projections(
 
 \item{inc.base}{logical, when using \code{type = "elements"} with a supplied \code{base} argument, whether to also calculate the projections for the base group (\code{TRUE}) or not (\code{FALSE}; default).}
 
-\item{centre.proj}{logical, whether to centre projection results on 0.5 when using \code{type = "group"} (\code{TRUE}; default) or not (\code{FALSE}).}
-
-\item{absolute.proj}{logical, whether to make the projection results absolute (\code{TRUE}; default) or not (\code{FALSE}).}
+\item{...}{any optional arguments to pass to \code{\link{projections}} (such as \code{centre} or \code{abs}).}
 
 \item{verbose}{logical, whether to be verbose (\code{TRUE}) or not (\code{FALSE}, default).}
 }
