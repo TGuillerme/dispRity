@@ -239,7 +239,7 @@ one.tree.ace <- function(args_list, special.tokens, invariants, characters_state
 
     ## Replace NAs
     replace.NA <- function(character, characters_states, special.tokens) {
-        return(unname(sapply(character, function(x) ifelse(x == "NA", paste0(characters_states, collapse = sub("\\\\", "", special.tokens["uncertainty"])), x))))
+        return(unname(sapply(character, function(x) ifelse(x[[1]] == "NA", paste0(characters_states, collapse = sub("\\\\", "", special.tokens["uncertainty"])), x))))
     }
     ancestral_states <- mapply(replace.NA, ancestral_states, characters_states, MoreArgs = list(special.tokens = special.tokens), SIMPLIFY = FALSE)
 
