@@ -5,6 +5,7 @@
 #' @param group a logical vector for grouping
 #' @param space a matrix
 #' @param metric a metric dispRity style (up to two levels)
+#' @param ... any additional arguments to be passed to \code{metric}
 #' 
 #' @details
 #' \emph{IN DOUBT, USE \code{\link{dispRity}} INSTEAD OF THIS FUNCTION.}
@@ -29,9 +30,9 @@
 #' 
 #' @author Thomas Guillerme
 
-dispRity.fast <- function(group, space, metric) {
+dispRity.fast <- function(group, space, metric, ...) {
     ## Setting up the default args
-    args <- list(matrix = space[group, ])
+    args <- list(matrix = space[group, ], ...)
     ## Simple level 1 metric
     if(length(metric) == 1) {
         return(do.call(metric, args))

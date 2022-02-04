@@ -7,11 +7,6 @@ TODO: update the manual with all these new entries
  - [ ] covar entry
  - [ ] plot arguments options
 
-TODO: updates on as.covar
- - [ ] test case when the metric is as.covar AND uses tree
-
-
-
 
 ### NEW FEATURES
 

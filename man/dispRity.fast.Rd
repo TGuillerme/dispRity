@@ -4,7 +4,7 @@
 \alias{dispRity.fast}
 \title{Fast dispRity}
 \usage{
-dispRity.fast(group, space, metric)
+dispRity.fast(group, space, metric, ...)
 }
 \arguments{
 \item{group}{a logical vector for grouping}
@@ -12,6 +12,8 @@ dispRity.fast(group, space, metric)
 \item{space}{a matrix}
 
 \item{metric}{a metric dispRity style (up to two levels)}
+
+\item{...}{any additional arguments to be passed to \code{metric}}
 }
 \description{
 Fast disparity calculations. THIS FUNCTION IS LESS SAFE TO USE THAN \code{\link{dispRity}} (see details).

@@ -69,6 +69,71 @@ get.reduced.dispRity <- function(reduction, metric, dimensions, verbose, ...) {
     # return(dispRity.verbose(data = reduction, metric = metric, dimensions = dimensions, verbose = verbose, between.groups = FALSE)$disparity)
 }
 
+
+
+
+## Run the reduction for one type
+reduce.space.one.type2 <- function(type, data, steps, shift.options, verbose) {
+
+    ## Setting up the reduce space call (verbose)
+    reduce.space.call <- reduce.space
+    if(verbose) {
+        body(reduce.space.call)[[2]] <- substitute(message(".", appendLF = FALSE))
+    }
+
+    ## Run the reductions
+    to_remove <- lapply(add.steps.to.args(make.reduce.space.args(data[[1]], type, shift.options), c(0, steps)), function(args, fun) do.call(fun, args), fun = reduce.space.call)
+
+    ## Make it look fancy
+    if(type != "random") {
+        output <- list(to_remove[-1], lapply(to_remove[-length(to_remove)], `!`))
+        names(output[[1]]) <- as.character(steps*100)
+        names(output[[2]]) <- rev(as.character(steps*100))
+        switch(type,
+            "size"     = {names(output) <- c("size.inner", "size.outer")},
+            "density"  = {names(output) <- c("density.higher", "density.lower")},
+            "position" = {names(output) <- c("position.top", "position.bottom")},
+            "evenness" = {names(output) <- c("evenness.flattened", "evenness.compacted")},
+            )
+    } else {
+        output <- list("random" = to_remove[-1])
+    }
+    return(output)
+}
+
+## Getting the disparity
+get.reduced.dispRity2 <- function(reduction, metric, dimensions, verbose, data, ...) {
+
+    ## Run the disparity
+    options(warn = -1)
+
+    ## Calculating fast disparity
+    output <- lapply(reduction, dispRity.fast, data[[1]], metric, ...)
+    # output <- lapply(reduction, dispRity.fast, data[[1]], metric)
+
+    options(warn = 0)
+    if(verbose) message(".", appendLF = FALSE)
+    return(output)
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## Transforming the tables
 make.reduction.tables <- function(one_type_results) {
     ## Get the disparity values
