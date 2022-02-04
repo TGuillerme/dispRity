@@ -86,8 +86,8 @@ dispRity.covar.projections <- function(data, type, base, sample, n, major.axis =
     ## Check optionals
     dots <- list(...)
     ## Set the defaults
-    if(is.null(dots$scaled)) {
-        dots$scaled <- TRUE
+    if(is.null(dots$scale)) {
+        dots$scale <- TRUE
     }
     if(is.null(dots$centre)) {
         dots$centre <- TRUE
@@ -144,7 +144,7 @@ dispRity.covar.projections <- function(data, type, base, sample, n, major.axis =
 
         ## Use decompose.VCV directly
         if(verbose) message("Calculating projections:", appendLF = FALSE)
-        disparity_tmp <- lapply(list_of_pairs, decompose.VCV.internal, fun = as.covar(projections.between.fast), data = data_sub, use_array = FALSE, use_tree = FALSE, measure = output, centre = dots$centre, abs = dots$abs, scaled = dots$scaled)
+        disparity_tmp <- lapply(list_of_pairs, decompose.VCV.internal, fun = as.covar(projections.between.fast), data = data_sub, use_array = FALSE, use_tree = FALSE, measure = output, centre = dots$centre, abs = dots$abs, scale = dots$scale)
         # if(length(output) == 1) {
         #     disparity_tmp <- lapply(disparity_tmp, function(X) X[1,, drop = FALSE])
         # }

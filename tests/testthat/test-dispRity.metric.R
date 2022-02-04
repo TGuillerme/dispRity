@@ -731,7 +731,7 @@ test_that("projections", {
     ## Position default (from 0 to centroid)
     expect_equal(projections(matrix, centre = FALSE, abs = FALSE), c(0, 1, 2))
     ## Distance default (from 0 to centroid)
-    expect_equal(projections(matrix, measure = "distance"), c(0, 0, 0))
+    expect_equal(projections(matrix, measure = "distance", centre = FALSE), c(0, 0, 0))
     ## Position from 0 to 1)
     expect_equal(projections(matrix, point2 = c(2, 0), centre = FALSE, abs = FALSE), c(0, 0.5, 1))
     ## Distance default (from 0 to centroid)
@@ -750,7 +750,7 @@ test_that("projections", {
     ## Position from 0 to 1)
     expect_equal(projections(matrix, point2 = c(1, 0), centre = TRUE, abs = TRUE), c(1, 3, 5))
     ## Distance default (from 0 to centroid)
-    expect_equal(projections(matrix, point2 = c(0.5, 0), measure = "distance"), c(2, 4, 6))
+    expect_equal(projections(matrix, point2 = c(0.5, 0), measure = "distance"), c(1, 2, 3))
     ## Position from -1 to 1)
     expect_equal(projections(matrix, point1 = c(-1, 0), point2 = c(1, 0), centre = FALSE, abs = FALSE), c(1, 1.5, 2))  
 
@@ -762,7 +762,7 @@ test_that("projections", {
     expect_equal_round(test_res, c(1, 0.324, 0.141, 0.269, 0.265), 3)
     test_res <- projections(test, measure = "position", point1 = 1, point2 = 2, centre = TRUE, abs = FALSE)
     expect_equal_round(test_res, c(-3.148523, -2.934695, -3.019256, -3.181841, -2.855235), 3)
-    test_res <- projections(test, measure = "distance", point1 = colMeans(test), point2 = test["c",])
+    test_res <- projections(test, measure = "distance", point1 = colMeans(test), point2 = test["c",], centre = FALSE)
     expect_equal_round(test_res, c(1.023, 1.007, 0, 1.005, 0.953), 3)
     test_res <- projections(test, measure = "degree", point1 = colMeans(test), point2 = test["e",])
     expect_equal_round(test_res, c(106.11636, 99.19498,105.32585, 104.94005, 0), 3)
@@ -815,7 +815,7 @@ test_that("projections.tree ", {
                                 dummy_tree$node.label)
     error <- capture_error(projections.tree (named_matrix, dummy_tree, type = c("boot", "ancestor")))
     expect_equal_round(projections.tree (named_matrix, dummy_tree, type = c("root", "ancestor")) , c(1.05000187, 0.38219637, 0.52814845, 0.06458640, 0.34040743, NaN, NaN, NaN, 0.02510966), 3)
-    expect_equal_round(projections.tree (named_matrix, dummy_tree, type = c("nodes", "tips"), measure = "distance"), c(1.383, 0.860, 1.656, 0.886, 1.391, 1.080, 1.466, 1.366, 1.674), 3)
+    expect_equal_round(projections.tree (named_matrix, dummy_tree, type = c("nodes", "tips"), measure = "distance", centre = FALSE), c(1.383, 0.860, 1.656, 0.886, 1.391, 1.080, 1.466, 1.366, 1.674), 3)
     user.fun <- function(matrix, tree, row = NULL) {
          return(colMeans(matrix[tree$node.label[1:3], ]))
     }
@@ -853,10 +853,7 @@ test_that("projections.between works", {
     expect_equal_round(projections.between(matrix_1, matrix_2, centre = FALSE, abs = TRUE), 0.312014, 6)
     ## Projecting both second major 0.75 axes
     ## and getting the rejections (see projections() for option details)
-    expect_equal_round(projections.between(matrix_1, matrix_2,
-                                           measure = "distance",
-                                           axis = 4, level = 0.75),
-                        0.7356813, 6)
+    expect_equal_round(projections.between(matrix_1, matrix_2, measure = "distance", axis = 4, level = 0.75, centre = FALSE), 0.7356813, 6)
 
     ## Testing covarly
     data(charadriiformes)

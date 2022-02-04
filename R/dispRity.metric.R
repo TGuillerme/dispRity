@@ -842,7 +842,7 @@ get.rotation.matrix <- function(x, y){
     return(diag(length(x)) - u %*% t(u) - v %*% t(v) + cbind(u,v) %*% matrix(c(cost,-sint,sint,cost), 2) %*% t(cbind(u,v)))
 }
 ## Projection of elements on an axis
-projections <- function(matrix, point1 = 0, point2 = colMeans(matrix), measure = "position", scaled = TRUE, centre = TRUE, abs = TRUE) {
+projections <- function(matrix, point1 = 0, point2 = colMeans(matrix), measure = "position", scale = TRUE, centre = TRUE, abs = TRUE) {
     ## IMPORTANT: edits in this function must also be copy/pasted to dispRity.covar.projections_fun.R/projections.fast
     
     ## Get the point1 and point2
@@ -869,7 +869,7 @@ projections <- function(matrix, point1 = 0, point2 = colMeans(matrix), measure =
     }
 
     ## Scale the space
-    if(scaled) {
+    if(scale) {
         ## The scaled space
         space <- space/dist(space[-c(1:nrow(matrix)), , drop = FALSE])
     }
@@ -928,14 +928,18 @@ projections <- function(matrix, point1 = 0, point2 = colMeans(matrix), measure =
             values <- abs(values)
         }
     }
-
-
+    ## If distance, apply correction
+    if(measure == "distance") {
+        if(centre) {
+            values <- values/2
+        }
+    }
 
     return(unname(values))
 }
 
 ## Projections between covar matrices
-projections.between <- function(matrix, matrix2, axis = 1, level = 0.95, measure = "position", scaled = TRUE, centre = TRUE, abs = TRUE) {
+projections.between <- function(matrix, matrix2, axis = 1, level = 0.95, measure = "position", scale = TRUE, centre = TRUE, abs = TRUE) {
 
     ## Get the main axes from the VCV matrices
     # source("covar.utilities_fun.R")
@@ -956,7 +960,7 @@ projections.between <- function(matrix, matrix2, axis = 1, level = 0.95, measure
                     matrix[2,] + translation_vector)
 
     ## Measure the projection
-    return(projections(matrix, point1 = point1, point2 = point2, measure = measure, scaled = scaled, centre = centre, abs = abs)[-1]) #[-1] because the first value is the projection of the origin on the origin. Can be sometimes not equal to 0 though (but like something )
+    return(projections(matrix, point1 = point1, point2 = point2, measure = measure, scale = scale, centre = centre, abs = abs)[-1]) #[-1] because the first value is the projection of the origin on the origin. Can be sometimes not equal to 0 though (but like something )
 }
 
 ## Select the root coords

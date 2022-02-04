@@ -1,5 +1,5 @@
 ## Projection of elements on an axis
-projections.fast <- function(matrix, point1 = 0, point2 = colMeans(matrix), measure = "position", scaled = TRUE, centre = TRUE, abs = TRUE) {
+projections.fast <- function(matrix, point1 = 0, point2 = colMeans(matrix), measure = "position", scale = TRUE, centre = TRUE, abs = TRUE) {
 
 
     ## Get the point1 and point2
@@ -26,7 +26,7 @@ projections.fast <- function(matrix, point1 = 0, point2 = colMeans(matrix), meas
     }
 
     ## Scale the space
-    if(scaled) {
+    if(scale) {
         ## The scaled space
         space <- space/dist(space[-c(1:nrow(matrix)), , drop = FALSE])
     }
@@ -73,7 +73,11 @@ projections.fast <- function(matrix, point1 = 0, point2 = colMeans(matrix), meas
         }
     }
     if("distance" %in% measure) {
-        values[["distance"]] <- apply(matrix - projections, 1, function(row) sqrt(sum(row^2)))
+        if(centre) {
+            values[["distance"]] <- apply(matrix - projections, 1, function(row) sqrt(sum(row^2)))/2
+        } else {
+            values[["distance"]] <- apply(matrix - projections, 1, function(row) sqrt(sum(row^2)))
+        }
     }
     if("degree" %in% measure) {
         values[["degree"]] <- angles[,1]
