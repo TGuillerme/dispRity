@@ -73,9 +73,9 @@ projections.fast <- function(matrix, point1 = 0, point2 = colMeans(matrix), meas
     }
     if("distance" %in% measure) {
         values[["distance"]] <- apply(matrix - projections, 1, function(row) sqrt(sum(row^2)))
-        if(centre) {
-            values[["distance"]] <- values[["distance"]]/2
-        }
+        # if(centre) {
+            # values[["distance"]] <- values[["distance"]]/2
+        # }
     }
     if("degree" %in% measure) {
         values[["degree"]] <- angles[,1]
