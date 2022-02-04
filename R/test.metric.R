@@ -115,10 +115,15 @@ test.metric <- function(data, metric, ..., shifts, shift.options, model, replica
         data <- data$matrix
     }
 
+    ## Check the dimensions
+    if(!missing(dimensions)) {
+        data$matrix <- data$matrix[, dimensions, drop = FALSE]
+    }
+
     ## Get the metric list
-    metrics_list <- get.dispRity.metric.handle(metric, match_call, data = list(matrix = data), ...)
-    # metrics_list <- get.dispRity.metric.handle(metric, match_call, data = list(matrix = data))
-    metrics_list <- metrics_list$levels
+    # metrics_list <- get.dispRity.metric.handle(metric, match_call, data = list(matrix = data), ...)
+    # # metrics_list <- get.dispRity.metric.handle(metric, match_call, data = list(matrix = data))
+    # metrics_list <- metrics_list$levels
 
     ## shift
     available_methods <- c("random", "size", "density", "position", "evenness")
@@ -172,13 +177,13 @@ test.metric <- function(data, metric, ..., shifts, shift.options, model, replica
     ## Measure disparity on all the shifts
     if(verbose) message("Calculating disparity:", appendLF = FALSE)
     options(warn = -1)
-    all_disparity <- lapply(all_reductions, lapply, get.reduced.dispRity, metric, ..., dimensions, verbose)
+    all_disparity <- lapply(all_reductions, lapply, get.reduced.dispRity, metric, data, ..., verbose)
     options(warn = 0)
-    #all_disparity <- lapply(all_reductions, lapply, get.reduced.dispRity, metric, dimensions, verbose)
+    # all_disparity <- lapply(all_reductions, lapply, get.reduced.dispRity, metric, data, verbose)
     if(verbose) message("Done.\n", appendLF = FALSE)
 
     ## Sort the output
-    table_list <- lapply(all_disparity, lapply, make.reduction.tables)
+    table_list <- lapply(all_disparity, lapply, make.reduction.tables, steps)
     ## Combine the replicates
     results_list <- list()
     for(one_shift in 1:ifelse(any(shifts == "random"), (length(shifts)*2) - 1, length(shifts)*2)) {
@@ -201,6 +206,9 @@ test.metric <- function(data, metric, ..., shifts, shift.options, model, replica
 
     ## Save the steps
     if(save.steps) {
+        ## Make into disparity format
+        all_reductions <- lapply(all_reductions, lapply, transform.to.dispRity, data$matrix[[1]], steps, shift.options, verbose)
+
         ## Counting the failures in one replicate (accross all shifts)
         count.fails <- function(one_rep){
             unlist(lapply(lapply(one_rep, check.content), function(x) sum(!x)))

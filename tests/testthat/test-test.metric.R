@@ -13,7 +13,6 @@ test_that("test.metric works", {
     expect_error(test.metric(space, metric = "c(prod, ranges)", replicates = 1, steps = 10, dimensions = 2, verbose = FALSE))
     expect_error(test.metric(space, metric = c(prod, ranges), replicates = "1", steps = 10, dimensions = 2, verbose = FALSE, shifts = c("random", "evenness")))
     expect_error(test.metric(space, metric = c(prod, ranges), replicates = 1, steps = list(10), dimensions = 2, verbose = FALSE, shifts = c("random", "evenness")))
-    expect_error(test.metric(space, metric = c(prod, ranges), replicates = 1, steps = 10, dimensions = mean, verbose = FALSE, shifts = c("random", "evenness")))
     expect_error(test.metric(space, metric = c(prod, ranges), replicates = 1, steps = 10, dimensions = 2, verbose = "FALSE", shifts = c("random", "evenness")))
 
     error <- capture_error(test.metric(space, metric = c(prod, ranges), shifts = c("random", "evenness"), shift.options = 8))
@@ -136,7 +135,5 @@ test_that("test.metric works", {
     ## Visualising the tests results with several specific options
     expect_null(plot(test,
          specific.args = list(visualise.steps = c(1,4,5))))
-
-
 
 })

@@ -23,17 +23,10 @@ add.steps.to.args <- function(type_args, steps) {
     return(lapply(steps, function(x, args) return(c(args, "remove" = x)), type_args))
 }
 
-## Run the reduction for one type
-reduce.space.one.type <- function(type, data, steps, shift.options, verbose) {
+## Transform the reductions into dispRity format
+transform.to.dispRity <- function(to_remove, type, data, steps, shift.options, verbose) {
 
     ## Setting up the reduce space call (verbose)
-    reduce.space.call <- reduce.space
-    if(verbose) {
-        body(reduce.space.call)[[2]] <- substitute(message(".", appendLF = FALSE))
-    }
-
-    ## Run the reductions
-    to_remove <- lapply(add.steps.to.args(make.reduce.space.args(data[[1]], type, shift.options), c(0, steps)), function(args, fun) do.call(fun, args), fun = reduce.space.call)
     available_data1 <- lapply(to_remove[-1], function(x, matrix) return(rownames(matrix)[x]), data[[1]]) # select inner (minimum, low, positive)
     names(available_data1) <- as.character(steps*100)
 
@@ -58,22 +51,8 @@ reduce.space.one.type <- function(type, data, steps, shift.options, verbose) {
     }
 }
 
-## Getting the disparity
-get.reduced.dispRity <- function(reduction, metric, dimensions, verbose, ...) {
-
-    ## Run the disparity
-    options(warn = -1)
-    output <- dispRity(data = reduction, metric = metric, ..., dimensions = dimensions, verbose = FALSE, between.groups = FALSE)$disparity
-    if(verbose) message(".", appendLF = FALSE)
-    return(output)
-    # return(dispRity.verbose(data = reduction, metric = metric, dimensions = dimensions, verbose = verbose, between.groups = FALSE)$disparity)
-}
-
-
-
-
 ## Run the reduction for one type
-reduce.space.one.type2 <- function(type, data, steps, shift.options, verbose) {
+reduce.space.one.type <- function(type, data, steps, shift.options, verbose) {
 
     ## Setting up the reduce space call (verbose)
     reduce.space.call <- reduce.space
@@ -102,7 +81,7 @@ reduce.space.one.type2 <- function(type, data, steps, shift.options, verbose) {
 }
 
 ## Getting the disparity
-get.reduced.dispRity2 <- function(reduction, metric, dimensions, verbose, data, ...) {
+get.reduced.dispRity <- function(reduction, metric, data, verbose, ...) {
 
     ## Run the disparity
     options(warn = -1)
@@ -116,26 +95,8 @@ get.reduced.dispRity2 <- function(reduction, metric, dimensions, verbose, data, 
     return(output)
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## Transforming the tables
-make.reduction.tables <- function(one_type_results) {
+make.reduction.tables <- function(one_type_results, steps) {
     ## Get the disparity values
     disparity_results <- as.list(rep(NA, length(one_type_results)))
     disparity_values <- lapply(one_type_results, function(x) unname(unlist(x)))
@@ -148,6 +109,6 @@ make.reduction.tables <- function(one_type_results) {
     }
 
     ## Make into a dataframe
-    return(data.frame("reduction" = as.numeric(rep(names(disparity_values), result_lengths)),
+    return(data.frame("reduction" = as.numeric(rep(as.character(steps*100), result_lengths)),
                       "disparity" = unname(unlist(disparity_results))))
 }

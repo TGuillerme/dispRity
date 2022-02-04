@@ -32,7 +32,7 @@
 
 dispRity.fast <- function(group, space, metric, ...) {
     ## Setting up the default args
-    args <- list(matrix = space[group, ], ...)
+    args <- list(matrix = space[group, , drop = FALSE], ...)
     ## Simple level 1 metric
     if(length(metric) == 1) {
         return(do.call(metric, args))
