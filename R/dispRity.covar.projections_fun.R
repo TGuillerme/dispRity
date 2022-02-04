@@ -1,7 +1,6 @@
 ## Projection of elements on an axis
 projections.fast <- function(matrix, point1 = 0, point2 = colMeans(matrix), measure = "position", scale = TRUE, centre = TRUE, abs = TRUE) {
 
-
     ## Get the point1 and point2
     if(length(point1) != ncol(matrix)) {
         point1 <- rep(point1, ncol(matrix))[1:ncol(matrix)]
@@ -60,31 +59,64 @@ projections.fast <- function(matrix, point1 = 0, point2 = colMeans(matrix), meas
     values <- list()
     if("position" %in% measure) {
         if(centre && abs) {
-            values[["position"]] <-projections <- abs(projections[,1] - 0.5)/0.5
+            values[["position"]] <- abs(projections[,1] - 0.5)/0.5
         }
         if(centre && !abs) {
-            values[["position"]] <-projections <- (projections[,1] - 0.5)/0.5
+            values[["position"]] <- (projections[,1] - 0.5)/0.5
         }
         if(!centre && abs) {
-            values[["position"]] <-projections <- abs(projections[,1])
+            values[["position"]] <- abs(projections[,1])
         }
         if(!centre && !abs) {
-            values[["position"]] <-projections[,1]
+            values[["position"]] <- projections[,1]
         }
     }
     if("distance" %in% measure) {
+        values[["distance"]] <- apply(matrix - projections, 1, function(row) sqrt(sum(row^2)))
         if(centre) {
-            values[["distance"]] <- apply(matrix - projections, 1, function(row) sqrt(sum(row^2)))/2
-        } else {
-            values[["distance"]] <- apply(matrix - projections, 1, function(row) sqrt(sum(row^2)))
+            values[["distance"]] <- values[["distance"]]/2
         }
     }
     if("degree" %in% measure) {
         values[["degree"]] <- angles[,1]
     }
+
+    ## DEBUG
+    # values_out <<- values
     ## Rearrange the values in the input order
     return(values[measure])
 }
+
+# stop("DEBUG")
+
+# values_out <- x_fast <- x_nrom <- NULL
+# x_fast <- projections.fast(matrix, point1 = point1, point2 = point2, measure = "position", scale = scale, centre = centre, abs = abs)
+# x_norm <- projections(matrix, point1 = point1, point2 = point2, measure = "position", scale = scale, centre = centre, abs = abs)
+
+# all(c(x_fast[[1]]) == x_norm)
+# all(unname(values_out[["position"]]) == x_norm)
+# x_values <- values_out[["position"]]
+
+# values_out <- y_fast <- y_nrom <- NULL
+# y_fast <- projections.fast(matrix, point1 = point1, point2 = point2, measure = "distance", scale = scale, centre = centre, abs = abs)
+# y_norm <- projections(matrix, point1 = point1, point2 = point2, measure = "distance", scale = scale, centre = centre, abs = abs)
+
+# all(c(y_fast[[1]]) == y_norm)
+# all(unname(values_out[["distance"]]) == y_norm)
+# y_values <- values_out[["distance"]]
+
+# plot(x_fast[[1]], y_fast[[1]])
+# plot(x_values, y_values)
+
+
+# values_out <- xy_fast <- NULL
+# xy_fast <- projections.fast(matrix, point1 = point1, point2 = point2, measure = c("position", "distance"), scale = scale, centre = centre, abs = abs)
+# all(c(xy_fast[[1]]) == x_norm)
+# all(c(xy_fast[[2]]) == y_norm)
+# plot(xy_fast[[1]], xy_fast[[2]])
+
+# plot(values_out[["position"]], values_out[["distance"]])
+
 
 
 ## Reorder projections.fast arguments

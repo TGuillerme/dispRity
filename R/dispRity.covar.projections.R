@@ -206,6 +206,11 @@ dispRity.covar.projections <- function(data, type, base, sample, n, major.axis =
         ## Getting all the metrics for one group
         disparity_tmp <- mapply(apply.proj, base_axes, groups, MoreArgs = list(measure = output, data = data, verbose = verbose, dots = dots), SIMPLIFY = FALSE)
 
+        # warning("DEBUG")
+        # plot(disparity_tmp[[2]][[1]][[1]], disparity_tmp[[2]][[2]][[1]]) # NO!
+        # test <- apply.proj(base_axes[[2]], groups[[2]], measure = output, data = data, verbose = verbose, dots = dots)
+        # plot(test[[1]][[1]], test[[2]][[1]]) # NO!
+
         ## Get the call updated
         update_call <- list(metrics = list())
         get.call <- function(metric) return(match.call()$metric)
