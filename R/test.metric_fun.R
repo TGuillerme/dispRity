@@ -24,31 +24,13 @@ add.steps.to.args <- function(type_args, steps) {
 }
 
 ## Transform the reductions into dispRity format
-transform.to.dispRity <- function(to_remove, type, data, steps, shift.options, verbose) {
+transform.to.dispRity <- function(to_remove, data, steps) {
 
     ## Setting up the reduce space call (verbose)
-    available_data1 <- lapply(to_remove[-1], function(x, matrix) return(rownames(matrix)[x]), data[[1]]) # select inner (minimum, low, positive)
+    available_data1 <- lapply(to_remove, function(x, matrix) return(rownames(matrix)[x]), data[[1]]) # select inner (minimum, low, positive)
     names(available_data1) <- as.character(steps*100)
-
-    if(type != "random") {
-        available_data2 <- lapply(to_remove[-length(to_remove)], function(x, matrix) return(rownames(matrix)[!x]), data[[1]]) # select outer (maximum, high, negative)
-        names(available_data2) <- rev(as.character(steps*100))
-        output <- list("inner" = custom.subsets(data, group = available_data1),
-                       "outer" = custom.subsets(data, group = available_data2))
-
-        ## Renaming the types
-        switch(type,
-            "size"     = {names(output) <- c("size.inner", "size.outer")},
-            "density"  = {names(output) <- c("density.higher", "density.lower")},
-            "position" = {names(output) <- c("position.top", "position.bottom")},
-            "evenness" = {names(output) <- c("evenness.flattened", "evenness.compacted")},
-            )
-
-        ## Make the dispRity objects
-        return(output)
-    } else {
-        return(list("random" = custom.subsets(data, group = available_data1)))
-    }
+    
+    return(custom.subsets(data, group = available_data1))
 }
 
 ## Run the reduction for one type

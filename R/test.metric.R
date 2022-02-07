@@ -207,7 +207,7 @@ test.metric <- function(data, metric, ..., shifts, shift.options, model, replica
     ## Save the steps
     if(save.steps) {
         ## Make into disparity format
-        all_reductions <- lapply(all_reductions, lapply, transform.to.dispRity, data$matrix[[1]], steps, shift.options, verbose)
+        all_reductions <- lapply(all_reductions, lapply, transform.to.dispRity, data, steps)
 
         ## Counting the failures in one replicate (accross all shifts)
         count.fails <- function(one_rep){

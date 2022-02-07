@@ -2,7 +2,6 @@
 
 Thanks a lot to Andrew Beckerman, Natalie Cooper and Gavin Thomas for supporting the development of this version.
 
-
 TODO: update the manual with all these new entries
  - [ ] covar entry
  - [ ] plot arguments options
@@ -35,7 +34,6 @@ TODO: update the manual with all these new entries
  * Utility functions manuals are now grouped by topic (e.g. utilities related to `MCMCglmm` objects, `dispRity` objects in general, `dispRity` objects with subsets, ect...). It should now be much easier to find these sometimes overlooked functions.
  * Many updates and new entries in the `dispRity` manual, including a section on `covar` and `between.groups` specific analyses.
  * Improving speed for the `test.metric` (using the new official `dispRity.fast` function).
-       - [ ] TODO: IMPLETMENT
  * Most core functions in the package now have a garbage memory cleaning component. This improves the speed and the memory footprint when handling very large datasets.
  * Disparity results stored in `data$disparity` now don't have dimension names anymore (significantly reducing the size of `disparity` objects). However, you can always retrieve the dimensions names using `get.disparity`.
  * Updated the calculation options for `ellipse.volume`, you can now directly specify one of the following methods: `"pca"` to calculate the eigen values from the ordinated matrix; `"eigen"` to directly do an eigen decomposition of the matrix (new); or `"axes"` to directly measure the axes (new); or directly provide the eigen values.
