@@ -21,7 +21,7 @@
 #'
 #' ## Plotting the results
 #' plot(tree, show.tip.label = FALSE, edge.color = edge_colors)
-#' tiplabels(1:20, bg = vector)
+#' tiplabels(1:20, bg = tip_values)
 #' 
 #' 
 #' 
