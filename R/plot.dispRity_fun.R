@@ -953,7 +953,7 @@ plot.dtt <- function(data, quantiles, cent.tend, density, ...) {
             }
         )
     plot_args <- get.dots(plot_args, plot_args, "xlab", "scaled time")
-    plot_args <- get.dots(plot_args, plot_args, "ylab", paste0("scaled ", as.character(data$call[[3]])))
+    plot_args <- get.dots(plot_args, plot_args, "ylab", paste0("scaled ", paste(as.character(data$call[[3]]), collapse = " ")))
     plot_args <- get.dots(plot_args, plot_args, "col", c("black", grDevices::colorRampPalette(c("lightgrey", "grey"))(length(quantiles))))
 
     ## Add the data for the plot args
