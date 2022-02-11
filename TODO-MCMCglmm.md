@@ -3,7 +3,7 @@
 Thanks a lot to Andrew Beckerman, Natalie Cooper and Gavin Thomas for supporting the development of this version.
 
 TODO: update the manual with all these new entries
- - [ ] covar entry
+ - [x] covar entry
  - [ ] plot arguments options
 
 

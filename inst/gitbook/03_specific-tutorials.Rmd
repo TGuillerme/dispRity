@@ -2196,15 +2196,37 @@ covar.plot(my_covar, col = c("orange", "darkgreen", "blue", "grey"), main = "Mea
            points = FALSE, major.axes = mean)
 ## A bit of everything
 covar.plot(my_covar, col = c("orange", "darkgreen", "blue", "grey"), main = "Ten random VCV matrices",
-           points = TRUE, major.axes = TRUE, points.cex = 1/3, n = 10, ellipses = TRUE)
+           points = TRUE, major.axes = TRUE, points.cex = 1/3, n = 10, ellipses = TRUE, legend = TRUE)
 ```
 
 ### Disparity analyses with a `$covar` component
 
-`as.covar`
+You can then calculate disparity on the `"dispRity"` object like shown previously.
+For example, you can get the variances of the groups that where used in the model by using the normal `dispRity` function:
 
-#### Elaborations and explorations
+```{r}
+summary(dispRity(my_covar, metric = variances))
+```
 
-But see probably paper
+However this is not applied on the variance-covariance matrices from the posteriors of the `MCMCglmm`.
+To do that, you need to modify the metric to be recognised as a "covar" metric using the `as.covar` function.
+This function transforms any disparity metric (or disparity metric style function) to be applied to the `$covar` part of a `"dispRity"` object.
+Basically this `$covar` part is a list containing, for each posterior sample `$VCV`, the variance-covariance matrix and `$loc`, it's optional location in the traitspace.
 
-Finally there are other tools for manipulating MCMCglmm objects. See other [MCMCglmm utilities](#MCMCglmm-utilities)
+```{r}
+## The first variance covariance matrix for the "gulls" group
+my_covar$covar[["gulls"]][[1]]
+```
+
+And this is how `as.covar` modifies the disparity metric:
+
+```{r}
+## Using the variances function on a VCV matrix
+variances(my_covar$covar[["gulls"]][[1]]$VCV)
+
+## The same but using it as a covar metric
+as.covar(variances)(my_covar$covar[["gulls"]][[1]])
+
+## The same but applied to the dispRity function
+summary(dispRity(my_covar, metric = as.covar(variances)))
+```
