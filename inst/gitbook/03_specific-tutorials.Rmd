@@ -2129,16 +2129,75 @@ Of course this can be done with multiple trees and be combined with an approach 
 
 
 
-
 ## Disparity of variance-covariance matrices (covar) {#covar}
 
-
-What is a variance-covariance matrix
-How to get them: MCMCglmm @MCMCglmm from @hadfield2010 (but see also @mulTree)
+Variance-covariance matrices are sometimes a useful way to summarise multidimensional data.
+In fact, you can express the variation in your multidimensional dataset directly in terms of how your trait covary rather than simply the positions of your elements in the trait space.
+Furthermore, variance-covariance matrices can be estimated from multidimensional in sometimes more useful ways that simply looking at the the data in your trait space.
+This can be done by describing your data as hierarchical models like generalised linear mixed effect models (glmm).
+For example, you might have a multidimensional dataset where your observations have a nested structure (e.g. they are part of the same phylogeny).
+You can then analyse this data using a glmm with something like `my_data ~ observations + phylogeny + redisduals`.
+For more info on these models [start here](https://en.wikipedia.org/wiki/Generalized_linear_mixed_model).
+For more details on running these models, I suggest using the `MCMCglmm` package (@MCMCglmm) from @hadfield2010 (but see also @mulTree).
 
 ### Creating a `dispRity` object with a `$covar` component
 
+Once you have a trait space and variance-covariance matrices output from the `MCMCglmm` model, you can use the function `MCMCglmm.subsets` to create a `"dispRity"` object that contains the classic `"dispRity"` data (the matrix, the subsets, etc...) but also a the new `$covar` element:
+
+```{r}
+## Loading the charadriiformes data
+data(charadriiformes)
+```
+
+Here we using precaculated variance-covariance matrices from the charadriiformes dataset that contains a set of posteriors from a `MCMCglmm` model.
+The model here was `data ~ traits + clade specific phylogenetic effect + global phylogenetic effect + residuals`.
+We can retrieve the model information using the  [`MCMCglmm` utilities](#MCMCglmm-utilities) tools, namely the `MCMCglmm.levels` function to directly extract the terms names as used in the model and then build our `"dispRity"` object with the correct data, the posteriors and the correct term names:
+
+```{r}
+## The term names
+model_terms <- MCMCglmm.levels(charadriiformes$posteriors)[1:4]
+## Note that we're ignoring the 5th term of the model that's just the normal residuals
+
+## The dispRity object
+MCMCglmm.subsets(data = charadriiformes$data,
+                 posteriors = charadriiformes$posteriors,
+                 group = model_terms)
+```
+
+As you can see this creates a normal dispRity object with the information you are now familiar with.
+However, we can be more fancy and provide more understandable names for the groups and provide the underlying phylogenetic structure used:
+
+
+```{r}
+## A fancier dispRity object
+my_covar <- MCMCglmm.subsets(data = charadriiformes$data,
+                             posteriors = charadriiformes$posteriors,
+                             group = model_terms,
+                             tree = charadriiformes$tree,
+                             rename.groups = c(levels(charadriiformes$data$clade), "phylogeny"))
+## Note that the group names is contained in the clade column of the charadriiformes dataset as factors
+```
+
 ### Visualising covar objects
+
+One useful thing to do with these objects is then to visualise them in 2D.
+Here we can use the `covar.plot` function (that has many different options that just `plot.dispRity` for plotting covar objects) to plot the trait space, the 95% confidence interval ellipses of the variance-covariance matrices and the major axes from these ellipses.
+See the `?covar.plot` help page for all the options available:
+
+```{r}
+par(mfrow = c(2,2))
+## The traitspace
+covar.plot(my_covar, col = c("orange", "darkgreen", "blue"), main = "Trait space")
+## The traitspace's variance-covariance mean ellipses
+covar.plot(my_covar, col = c("orange", "darkgreen", "blue", "grey"), main = "Mean VCV ellipses",
+           points = FALSE, ellipses = mean) 
+## The traitspace's variance-covariance mean ellipses
+covar.plot(my_covar, col = c("orange", "darkgreen", "blue", "grey"), main = "Mean major axes",
+           points = FALSE, major.axes = mean)
+## A bit of everything
+covar.plot(my_covar, col = c("orange", "darkgreen", "blue", "grey"), main = "Ten random VCV matrices",
+           points = TRUE, major.axes = TRUE, points.cex = 1/3, n = 10, ellipses = TRUE)
+```
 
 ### Disparity analyses with a `$covar` component
 
