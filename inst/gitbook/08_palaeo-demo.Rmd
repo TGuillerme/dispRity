@@ -213,7 +213,7 @@ This is not a straightforward question but you can use the `test.metric` functio
 For example here, let see if the sum of variances picks up changes in size but not random changes:
 
 ```{r, fig.height = 16, fig.width = 8}
-my_test <- test.metric(my_matrix, metric = c(sum, variances), shifts = c("random", "size"))
+my_test <- test.metric(my_matrix, metric = c(sum, dispRity::variances), shifts = c("random", "size"))
 summary(my_test)
 plot(my_test)
 ```
@@ -228,7 +228,7 @@ Anyways, let's calculate the sum of variances on our bootstrapped and rarefied m
 
 ```{r}
 ## Calculating disparity for the bootstrapped and rarefied data
-disparity <- dispRity(rare_bin_morphospace , metric = c(sum, variances))
+disparity <- dispRity(rare_bin_morphospace , metric = c(sum, dispRity::variances))
 ```
 
 To display the actual calculated scores, we need to summarise the disparity object using the S3 method `summary` that is applied to a `dispRity` object (see `?summary.dispRity` for more details).

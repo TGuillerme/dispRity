@@ -83,7 +83,7 @@ matrix_character[sample(1:30, 8)] <- "0/1"
 ## Adding missing data
 matrix_character[sample(1:30, 5)] <- "?"
 
-## This is what it looks like now
+## This is what it looks like now
 matrix_character
 
 ## The hamming difference between columns including the special characters
@@ -215,7 +215,7 @@ You can use the functions `MCMCglmm.traits` for extracting the number of traits,
 
 ```{r}
 ## Loading the charadriiformes data that contains a MCMCglmm object
-data(charadriiformes)]
+data(charadriiformes)
 my_MCMCglmm <- charadriiformes$posteriors
 
 ## Which traits where used in this model?

@@ -752,7 +752,7 @@ dummy_groups <- custom.subsets(dummy_space,
                                group = list("group1" = 1:5,
                                             "group2" = 6:10))
 summary(dispRity(dummy_groups, metric = centroids,
-    centroid = colMeans(matrix.dispRity(dummy_groups, "group1"))))
+    centroid = colMeans(get.matrix(dummy_groups, "group1"))))
 ```
 
 The `displacements` distance is the ratio between the `centroids` distance and the `centroids` distance with `centroid = 0`.
@@ -1040,7 +1040,7 @@ Finally, the function runs 10 reductions by default from keeping 10% of the data
 This can be changed using the `steps` option.
 A good disparity metric for your dataset will typically have no trend in the `"random"` reduction (the metric is ideally not affected by sample size) but should have a trend for the reduction of interest.
 
-```{r, fig.height = 16, fig.width = 6}
+```{r, fig.height = 12, fig.width = 6}
 ## The results as a dispRity object
 example_test
 
@@ -1116,7 +1116,7 @@ The summary functions can also take various options such as:
 
  * `quantiles` values for the confidence interval levels (by default, the 50 and 95 quantiles are calculated)
  * `cent.tend` for the central tendency to use for summarising the results (default is `median`)
- * digits` option corresponding to the number of decimal places to print (default is `2`)
+ * `digits` option corresponding to the number of decimal places to print (default is `2`)
  * `recall` option for printing the call of the `dispRity` object as well (default is `FALSE`)
 
 These options can easily be changed from the defaults as follows:
@@ -1292,6 +1292,42 @@ plot(disparity_time_slices, main = "Disparity through time")
 plot(disparity_time_slices, type = "preview",
      main = "Two first dimensions of the trait space")
 ```
+
+### Graphical options
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## Testing disparity hypotheses
 
