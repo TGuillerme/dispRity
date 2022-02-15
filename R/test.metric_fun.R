@@ -47,7 +47,7 @@ reduce.space.one.type <- function(type, data, steps, shift.options, verbose) {
 
     ## Make it look fancy
     if(type != "random") {
-        output <- list(to_remove[-1], lapply(to_remove[-length(to_remove)], `!`))
+        output <- list(to_remove[-1], rev(lapply(to_remove[-length(to_remove)], `!`)))
         names(output[[1]]) <- as.character(steps*100)
         names(output[[2]]) <- rev(as.character(steps*100))
         switch(type,
