@@ -1293,40 +1293,47 @@ plot(disparity_time_slices, type = "preview",
      main = "Two first dimensions of the trait space")
 ```
 
-### Graphical options
 
+### Graphical options with `...`
 
+As mentioned above all the plots using `plot.dispRity` you can use the `...` options to add any type of graphical parameters recognised by `plot`.
+However, sometimes, plotting more advanced `"dispRity"` objects also calls other generic functions such as `lines`, `points` or `legend`.
+You can fine tune which specific function should be affected by `...` by using the syntax `<function>.<argument>` where `<function>` is usually the function to plot a specific element in the plot (e.g. `points`) and the `<argument>` is the specific argument you want to change for that function.
+For example, in a plot containing several elements, including circles (plotted internally with `points`), you can decide to colour everything in blue using the normal `col = "blue"` option.
+But you can also decide to _only_ colour the circles in blue using `points.col = "blue"`!
 
+Here is an example with multiple elements (lines and points) taken from the [disparity with trees](#dispRitree) section below:
 
+```{r}
+## Loading some demo data:
+## An ordinated matrix with node and tip labels
+data(BeckLee_mat99)
+## The corresponding tree with tip and node labels
+data(BeckLee_tree)
+## A list of tips ages for the fossil data
+data(BeckLee_ages)
 
+## Time slicing through the tree using the equal split algorithm
+time_slices <- chrono.subsets(data   = BeckLee_mat99,
+                              tree   = BeckLee_tree,
+                              FADLAD = BeckLee_ages,
+                              method = "continuous",
+                              model  = "acctran",
+                              time   = 15)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+par(mfrow = c(2,2))
+## The preview plot with the tree using only defaults
+plot(time_slices, type = "preview", specific.args = list(tree = TRUE))
+## The same plot but by applying general options
+plot(time_slices, type = "preview", specific.args = list(tree = TRUE),
+     col = "blue", main = "General options")
+## The same plot but by applying the colour only to the lines and change of shape only to the points
+plot(time_slices, type = "preview", specific.args = list(tree = TRUE),
+     lines.col = "blue", points.pch = 15, main = "Specific options")
+## And now without the legend
+plot(time_slices, type = "preview", specific.args = list(tree = TRUE),
+     lines.col = "blue", points.pch = 15, legend = FALSE)
+```
 
 
 ## Testing disparity hypotheses
@@ -2112,7 +2119,7 @@ With the unbound data, the slices are done across the three trees and applied to
 As we've seen before, this is incorrect in this case since the trees don't have the same topology (so the nodes selected by a slice through the second tree are not equivalent to the nodes in the first matrix) but it can be useful if the topology is fixed to integrate both uncertainty in branch length (slicing through different trees) and uncertainty from, say, ancestral states estimations (applying the slices on different matrices).
 
 
-## Disparity with trees: *dispRitree!*
+## Disparity with trees: *dispRitree!* {#dispRitree}
 
 Since the package's version 1.5.10, trees can be directly attached to `dispRity` objects.
 This allows any function in the package that has an input argument called "`tree`" to automatically intake the tree from the `dispRity` object.

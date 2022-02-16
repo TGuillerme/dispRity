@@ -4,7 +4,7 @@ Thanks a lot to Andrew Beckerman, Natalie Cooper and Gavin Thomas for supporting
 
 TODO: update the manual with all these new entries
  - [x] covar entry
- - [ ] plot arguments options
+ - [x] plot arguments options
 
 
 ### NEW FEATURES
