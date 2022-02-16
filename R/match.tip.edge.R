@@ -24,9 +24,6 @@
 #' tiplabels(1:20, bg = tip_values)
 #' 
 #' 
-#' 
-#' @seealso
-#' 
 #' @author Thomas Guillerme
 #' @export
 

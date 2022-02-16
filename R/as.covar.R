@@ -77,7 +77,7 @@ as.covar <- function(fun, ..., VCV = TRUE, loc = FALSE) {
         ## Toggle between the VCV loc options
         if(VCV && !loc) {
             ## Between groups fun
-            fun_covar <- function(matrix, matrix2, ...) {
+            fun.covar2 <- function(matrix, matrix2, ...) {
                 return(fun(matrix = matrix$VCV, matrix2 = matrix2$VCV, ...))
                 ## This should never be evaluated by the function but only internally
                 is_covar <- TRUE
@@ -85,7 +85,7 @@ as.covar <- function(fun, ..., VCV = TRUE, loc = FALSE) {
         }
         if(!VCV && loc) {
             ## Between groups fun
-            fun_covar <- function(matrix, matrix2, ...) {
+            fun.covar2 <- function(matrix, matrix2, ...) {
                 return(fun(matrix = matrix(matrix$loc, nrow = 1), matrix2 = matrix(matrix2$loc, nrow = 1), ...))
                 ## This should never be evaluated by the function but only internally
                 is_covar <- TRUE
@@ -93,36 +93,35 @@ as.covar <- function(fun, ..., VCV = TRUE, loc = FALSE) {
         }
         if(VCV && loc) {
             ## Between groups fun
-            fun_covar <- function(matrix, matrix2, ...) {
+            fun.covar2 <- function(matrix, matrix2, ...) {
                 return(fun(matrix = matrix$VCV, matrix2 = matrix2$VCV, loc = matrix$loc, loc2 = matrix2$loc, ...))
                 ## This should never be evaluated by the function but only internally
                 is_covar <- TRUE
             }
         }
 
-
-
+        return(fun.covar2)
 
     } else {
         ## Function for only one matrix
 
         ## Toggle between the VCV loc options
         if(VCV && !loc) {
-            fun_covar <- function(matrix, ...) {
+            fun.covar <- function(matrix, ...) {
                 return(fun(matrix = matrix$VCV, ...))
                 ## This should never be evaluated by the function but only internally
                 is_covar <- TRUE
             }
         }
         if(!VCV && loc) {
-            fun_covar <- function(matrix, ...) {
+            fun.covar<- function(matrix, ...) {
                 return(fun(matrix = matrix(matrix$loc, nrow = 1), ...))
                 ## This should never be evaluated by the function but only internally
                 is_covar <- TRUE
             }
         }
         if(VCV && loc) {
-            fun_covar <- function(matrix, ...) {
+            fun.covar <- function(matrix, ...) {
                 return(fun(matrix = matrix$VCV, loc = matrix$loc, ...))
                 ## This should never be evaluated by the function but only internally
                 is_covar <- TRUE
@@ -132,10 +131,10 @@ as.covar <- function(fun, ..., VCV = TRUE, loc = FALSE) {
         if(!is.null(avail_args) && avail_args[1] != "matrix") {
             
             ## Change the first argument
-            names(formals(fun_covar))[1] <- eval(substitute(noquote(avail_args[1])))
+            names(formals(fun.covar))[1] <- eval(substitute(noquote(avail_args[1])))
             
             ## Change the argument name in the body
-            fun_body <- deparse(body(fun_covar))
+            fun_body <- deparse(body(fun.covar))
 
             ## Toggle between the VCV/loc options
             if(VCV && !loc) {
@@ -148,10 +147,11 @@ as.covar <- function(fun, ..., VCV = TRUE, loc = FALSE) {
                 new_fun <- paste0(c(fun_body[1], paste0("    return(fun(", avail_args[1], " = ", avail_args[1], "$VCV, loc = ", avail_args[1], "$loc, ...))"), fun_body[3:4]), collapse="\n")
             }
 
-            body(fun_covar) <- as.expression(parse(text = new_fun))
+            body(fun.covar) <- as.expression(parse(text = new_fun))
         }
+
+        return(fun.covar)
     }
-    return(fun_covar)
 }
 
 
