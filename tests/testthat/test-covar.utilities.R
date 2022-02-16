@@ -3,8 +3,18 @@ load("covar_model_list.rda")
 load("covar_char_data.rda")
 load("covar_tree_data.rda")
 
-
 ## Test
+test_that("redimension internal works", {
+
+    one_post <- list(VCV = matrix(1:100, 10, 10), Sol = 1:10)
+    test <- redimension(one_post, c(1, 7, 8))
+
+    expect_equal(dim(test$VCV), c(3,3))
+    expect_equal(test$VCV, one_post$VCV[c(1,7,8), c(1,7,8)])
+    expect_equal(length(test$Sol), 3)
+    expect_equal(test$Sol, c(1,7,8))
+})
+
 test_that("get.covar works", {
     ## Works on a dispRity object
     data_test <- MCMCglmm.subsets(data = covar_char_data, posteriors = covar_model_list[[1]])
@@ -26,7 +36,7 @@ test_that("get.covar works", {
     expect_equal(length(test), length(MCMCglmm.levels(covar_model_list[[1]])))
     expect_equal(length(test[[1]]), 1)
     ## Only takes the n argument
-    warn <- capture_warnings(test <- get.covar(data_test, sample = 42, n = 7))
+    warn <- capture_warnings(test <- get.covar(data_test, sample = 42, n = 7, dimensions = c(2, 2, 2)))
     expect_equal(warn[[1]], "sample argument is ignored since n = 7 random samples are asked for.")
     expect_equal(length(test), length(get.covar(data_test)))
     expect_equal(length(test[[1]]), 7)
@@ -37,6 +47,11 @@ test_that("get.covar works", {
     expect_equal(length(test), 2)
     expect_equal(names(test), c("animal:clade_2", "animal:clade_1"))
     expect_equal(length(test[[1]]), 1)
+
+    ## Errors in argument select
+    error <- capture_error(get.covar(data_test, sample = 1, dimensions = 1:4))
+    expect_equal(error[[1]], "Incorrect number of dimensions.")
+    data_test$call$dimensions
     
 })
 

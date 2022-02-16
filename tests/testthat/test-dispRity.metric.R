@@ -869,7 +869,9 @@ test_that("projections.between works", {
     expect_equal_round(unname(unlist(disparity)), c(-0.1915237,-1.5257785,-1.5257785,0.2534359,0.2534359,1.0000000), 6)
 
     ## Testing the metric in the pipeline with covar option
-    is_covar <- dispRity(data, metric = as.covar(projections.between), between.groups = TRUE, centre = FALSE, abs = FALSE)
+    proj_metric <- as.covar(projections.between)
+    expect_equal(names(formals(proj_metric)), c("matrix", "matrix2", "..."))
+    is_covar <- dispRity(data, metric = proj_metric, between.groups = TRUE, centre = FALSE, abs = FALSE)
     ## Test the values out
     disparity <- get.disparity(is_covar, concatenate = FALSE)
     expect_equal(names(disparity), c("gulls:plovers", "gulls:sandpipers", "gulls:phylogeny", "plovers:sandpipers", "plovers:phylogeny", "sandpipers:phylogeny"))
