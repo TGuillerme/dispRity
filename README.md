@@ -36,16 +36,23 @@ https://programme.europa-organisation.com/slides/programme_jointCongressEvolBiol
 ## Installing dispRity
 
 ```r
-if(!require(devtools)) install.packages("devtools")
-library(devtools)
-install_github("TGuillerme/dispRity", ref = "release")
+install.packages("dispRity")
 library(dispRity)
 ```
 
-The following installs the latest release of dispRity (see patch notes below). For the piping hot development version (not recommended), replace the `ref = "release"` option with `ref = "master"`.
-If you're using the `master` branch, see the [patch notes](https://github.com/TGuillerme/dispRity/blob/master/NEWS.md) for the latest developments.
-
 The package is available in the [CRAN Task Views in Phylogenetics](https://CRAN.R-project.org/view=Phylogenetics).
+
+
+You can also install the piping hot development version (not always recommended!) by installing the package directly through github:
+
+```r
+if(!require(devtools)) install.packages("devtools")
+library(devtools)
+install_github("TGuillerme/dispRity")
+library(dispRity)
+```
+
+See the [patch notes](https://github.com/TGuillerme/dispRity/blob/master/NEWS.md) for the latest developments.
 
 ## Vignettes and manuals
 
@@ -71,7 +78,7 @@ You can also find more information in the [`dispRity` manual](https://rawcdn.git
 
 
 ## Latest major patch notes
-* 2022/01/24 v1.7 *MacMacGlimm*
+* 2022/02/16 v1.7 *MacMacGlimm*
 
  * *New* data function: `select.axes` for selecting and analysing the number of axes required to contain an arbitrary amount of variance.
  * *New* utility function: `randtest.dist` for measuring the distance between the observed statistic and a specific quantile of the simulated statistic (thanks to [Frane Babarovic](https://twitter.com/FBabarovic) for the inspiration).
@@ -82,7 +89,7 @@ You can also find more information in the [`dispRity` manual](https://rawcdn.git
  * New `dispRity.fast` function for the fastest disparity calculations at the expanses of pretty much everything this package does. This is a really situational function.
  * *New utility functions* for manipulating `MCMCglmm` objects: `MCMCglmm.traits` for extracting the number of traits, `MCMCglmm.levels` for extracting the level names, `MCMCglmm.sample` for sampling posterior IDs and `MCMCglmm.covars` for extracting variance-covariance matrices
  * *New utility functions* for `dispRity` objects with `covar` matrices: `get.covar` to extract the VCV matrices (or a subsample of them); `axes.covar` to extract the major axes of the VCV matrices and `as.covar` to transform `dispRity` metric function to use a covar object.
- * *New utility function* `match.tip.edge` for matching tip labels as factors/characters/numeric to tree edges.
+ * *New utility function* `match.tip.edge` for matching tip labels as factors/characters/integer to tree edges.
  * Adding `dispRity.covar.projections` function (a wrapper for covariance projections analyses).
  * One new demo datasets: `charadriiformes`, a `data.frame` and a `phylo` object of 359 _Charadriiformes_ species (gulls, plovers and sandpipers) from [Cooney et al 2017](https://www.nature.com/articles/d41586-021-02480-z) along with a `MCMCglmm` model with each clade as a random term.
  * Additional plot arguments `...` in all the `dispRity` plotting functions can now be targeted to a specific plotting element. When multiple elements are plot by default (e.g. lines, legend, points, etc...) it is now possible to pass a specific `...` argument to the specific plotted element using the syntax `<element>.<argument>` (e.g. `points.col = "blue"` will only apply the argument `col = "blue"` to the points).
@@ -97,8 +104,7 @@ You can also find more information in the [`dispRity` manual](https://rawcdn.git
  * Improving speed for the `test.metric` (using the new official `dispRity.fast` function).
  * Most core functions in the package now have a garbage memory cleaning component. This improves the speed and the memory footprint when handling very large datasets.
  * Disparity results stored in `data$disparity` now don't have dimension names anymore (significantly reducing the size of `disparity` objects). However, you can always retrieve the dimensions names using `get.disparity`.
- * Updated the calculation options for `ellipse.volume`, you can now directly specify one of the following methods: `"pca"` to calculate the eigen values from the ordinated matrix; `"eigen"` to directly do an eigen decomposition of the matrix (new); or `"axes"` to directly measure the axes (new); or directly provide the eigen values.
- * Update internal use of `is(data, c("array", "matrix"))` to `is.array(data)` for R 4.1.2. 
+ * Updated the calculation options for `ellipse.volume`, you can now directly specify one of the following methods: `"pca"` to calculate the eigen values from the ordinated matrix; `"eigen"` to directly do an eigen decomposition of the matrix (new); or `"axes"` to directly measure the axes (new); or directly provide the eigen values. 
  * Removed warning in `dispRity` when selecting a specific number of dimensions (old warning artefact).
  * Fixed bug in `plot.dispRity` when using `type = "preview"` on bootstrapped data and for `type = "box"` when the subsets to plot are from different sizes (now plots all the data correctly).
  * Fixed bug when using `chrono.subsets` with `"continuous"` method a `FADLAD` data containing only node values (now correctly taken into account; thanks to [Peng-Wei Li](https://www.researchgate.net/profile/Peng-Wei-Li) for noticing it) and when using `chrono.subsets` with `"gradual.*"` models on empty subsets.
