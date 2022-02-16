@@ -1,9 +1,9 @@
-Release:
+MCMCglmm - pre-release:
 
 [![R-CMD-check](https://github.com/TGuillerme/dispRity/workflows/R-CMD-check/badge.svg)](https://github.com/TGuillerme/dispRity/actions)
-[![codecov](https://codecov.io/gh/TGuillerme/dispRity/branch/master/graph/badge.svg)](https://codecov.io/gh/TGuillerme/dispRity)
+[![codecov](https://codecov.io/gh/TGuillerme/dispRity/branch/MCMCglmm/graph/badge.svg)](https://codecov.io/gh/TGuillerme/dispRity)
 [![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
-[![develVersion](https://img.shields.io/badge/devel%20version-1.6.8-green.svg?style=flat)](https://github.com/TGuillerme/dispRity)
+[![develVersion](https://img.shields.io/badge/devel%20version-1.6.9-green.svg?style=flat)](https://github.com/TGuillerme/dispRity)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1186467.svg)](https://doi.org/10.5281/zenodo.1186467)
 
 Development (master):
