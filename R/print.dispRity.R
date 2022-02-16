@@ -59,11 +59,11 @@ print.dispRity <- function(x, all = FALSE, ...) {
         ## ~~~~~~~
         ## Composite dispRity objects (subclasses)
         ## ~~~~~~~
+        x_classes <- class(x)
 
-
-        if(length(class(x)) > 1) {
+        if(length(x_classes) > 1) {
             ## randtest
-            switch(class(x)[[2]],
+            switch(x_classes[[2]],
                 randtest = {
                     ## Remove the call (messy)
                     remove.call <- function(element) {
@@ -249,7 +249,7 @@ print.dispRity <- function(x, all = FALSE, ...) {
         } else {
 
             ## Covar matrices
-            if(!is.null(x$call$subsets) && x$call$subsets == "covar") {
+            if(!is.null(x$call$subsets) && ("covar" %in% x$call$subsets)) {
                 cat(paste0("One covar matrix (", names(x$subsets), ") with "))
             }
 

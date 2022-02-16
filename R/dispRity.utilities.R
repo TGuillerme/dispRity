@@ -285,7 +285,7 @@ extract.dispRity <- function(...) {
 #' get.subsets(disparity, c(1,5))
 #'
 #' ## Generate subsets from a dummy matrix
-#' dummy_matrix <- matrix(rnorm(120), 40)
+#' dummy_matrix <- matrix(rnorm(120), 40, dimnames = list(c(1:40)))
 #' dummy_subsets <- custom.subsets(dummy_matrix,
 #'      group = list("a" = c(1:5), "b" = c(6:10), "c" = c(11:20),
 #'                   "d" = c(21:24), "e" = c(25:30), "f" = c(31:40)))

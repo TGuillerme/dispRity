@@ -49,7 +49,8 @@
 #' lapply(between_groups, summary)
 #' 
 #' ## Measuring the projection of the elements on their own average major axis
-#' elements_proj <- dispRity.covar.projections(my_covar, type = "elements", sample = mean, output = "position")
+#' elements_proj <- dispRity.covar.projections(my_covar, type = "elements", sample = mean,
+#'                                             output = "position")
 #' ## Visualizing the results
 #' plot(elements_proj[[1]])
 #'
