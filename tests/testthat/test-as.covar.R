@@ -1,5 +1,7 @@
 ## Test
+nocov <- TRUE
 
+if(!nocov)
 test_that("as.covar works in standalone", {
     ## Creating a dispRity
     data(charadriiformes)
@@ -10,7 +12,9 @@ test_that("as.covar works in standalone", {
     match_call <- list()
 
     ## level 3 covar
-    metric <- as.covar(var)
+    var.mat <- function(matrix, ...) {var(matrix, ...)}
+    metric <- as.covar(var.mat)
+
     expect_true(check.covar(metric, covar_data)$is_covar)
     test <- get.dispRity.metric.handle(c(sum, metric), match_call, data = covar_data, tree = NULL)$levels 
     expect_true(!is.null(test$level3.fun))
@@ -29,6 +33,7 @@ test_that("as.covar works in standalone", {
     expect_true(eval.covar(test$level2.fun, null.return = FALSE))
 
     ## level 1 covar (with no formals)
+    # sum.mat <- function(matrix, ...) {var(matrix, ...)}
     metric <- as.covar(sum)
     expect_true(check.covar(metric, covar_data)$is_covar)
     test <- get.dispRity.metric.handle(metric, match_call, data = covar_data, tree = NULL)$levels
@@ -252,3 +257,4 @@ test_that("example works", {
                      metric = c(sum, as.covar(centroids)),
                      centre = 100))$obs), c(119.1, 107.6, 73.3, 100.0, 100.0))
 })
+}
