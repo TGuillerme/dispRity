@@ -1,8 +1,11 @@
 ## Test
 nocov <- TRUE
 
-if(!nocov)
+
 test_that("as.covar works in standalone", {
+
+    if(!nocov) {
+
     ## Creating a dispRity
     data(charadriiformes)
     covar_data <- MCMCglmm.subsets(data       = charadriiformes$data,
@@ -80,9 +83,13 @@ test_that("as.covar works in standalone", {
     metric <- c(as.covar(sum), as.covar(variances))
     error <- capture_error(get.dispRity.metric.handle(metric, match_call, data = covar_data, tree = NULL))
     expect_equal(error[[1]], "Only one metric can be set as as.covar().")
+    }
 })
 
 test_that("as.covar works in dispRity", {
+
+    if(!nocov) {
+
     data(charadriiformes)
 
     ## Test works OK with base
@@ -225,9 +232,12 @@ test_that("as.covar works in dispRity", {
     expect_equal(names(test3), c("matrix", "tree", "call", "subsets", "covar", "disparity"))
     ## Different results
     expect_equal(c(summary(test3)$obs), c(-1.3, -16.8, -18.9))
+    }
 })
 
 test_that("example works", {
+
+    if(!nocov) {
 
     ## Creating a dispRity
     data(charadriiformes)
@@ -256,5 +266,5 @@ test_that("example works", {
     expect_equal(c(summary(dispRity(covar_data,
                      metric = c(sum, as.covar(centroids)),
                      centre = 100))$obs), c(119.1, 107.6, 73.3, 100.0, 100.0))
+    }
 })
-}
