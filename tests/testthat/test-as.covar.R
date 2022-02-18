@@ -1,5 +1,5 @@
 ## Test
-nocov <- TRUE
+nocov <- FALSE
 
 
 test_that("as.covar works in standalone", {

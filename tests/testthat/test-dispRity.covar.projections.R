@@ -2,7 +2,7 @@
 test_that("dispRity.covar.projections works", {
 
 ## Toggling nocov for bugs with covr
-nocov <- TRUE
+nocov <- FALSE
 
     data(charadriiformes)
 
