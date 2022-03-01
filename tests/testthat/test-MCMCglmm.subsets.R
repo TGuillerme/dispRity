@@ -1,5 +1,7 @@
 ## Test
 test_that("MCMCglmm.subsets and covar.plot works", {
+
+
     ## Testing the mini chains pipeline
     load("covar_model_list.rda")
     load("covar_char_data.rda")
@@ -101,6 +103,18 @@ test_that("MCMCglmm.subsets and covar.plot works", {
     expect_equal(length(test$covar), 4)
     expect_equal(names(test$covar), c("phylogeny", "clade_1", "clade_2", "clade_3"))
     expect_null(covar.plot(test, ellipses = mean, major.axes = TRUE, n = 100, col = c("grey","orange", "blue", "darkgreen"), legend = TRUE, points = TRUE, cex = 0.2, legend.cex = 1))
+
+    ## Plot with scaling
+    expect_null(covar.plot(test, ellipses = mean, major.axes = mean, n = 100, col = c("grey","orange", "blue", "darkgreen"), legend = TRUE, points = TRUE, cex = 0.2, legend.cex = 1, scale = "phylogeny"))
+
+
+    ## INTERNAL scale.VCV (in covar.plot_fun.R)
+    large <- test$covar[["clade_1"]][[1]]
+    small <- test$covar[["clade_2"]][[1]]
+    expect_equal_round(dist(get.one.axis(scale.VCV(small, large)))[1], dist(get.one.axis(large))[1], 7)
+    expect_equal_round(dist(get.one.axis(scale.VCV(large, large)))[1], dist(get.one.axis(large))[1], 7)
+    expect_equal_round(dist(get.one.axis(scale.VCV(large, small)))[1], dist(get.one.axis(small))[1], 7)
+    expect_equal_round(dist(get.one.axis(scale.VCV(small, small)))[1], dist(get.one.axis(small))[1], 7)
 
     # Try with not all subsets selected on a big model
     test <- MCMCglmm.subsets(data = covar_char_data, posteriors = covar_model_list[[7]], group = c(random = "animal", residual = "units"))

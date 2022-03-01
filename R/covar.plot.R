@@ -11,6 +11,7 @@
 #' @param level the confidence interval level of the major axes and ellipses (default is \code{0.95}).
 #' @param dimensions which dimensions (default is \code{c(1,2)}).
 #' @param centres optional, a way to determine ellipses or major axes positions. Can be either a \code{function} (default is \code{colMeans}), a \code{vector} or a \code{list} of coordinates vectors or \code{"intercept"}. See details.
+#' @param scale optional, the name of a group from \code{data} on which to scale the ellipses and major axis to be the same size.
 #' @param transparent.scale optional, if multiple major axes and/or ellipses are plotted, a scaling factor for the transparency. If left empty, the transparency is set to \code{1/n} or \code{0.1} (whichever is higher).
 #' @param add logical, whether to add the plot to an existing plot (\code{TRUE}) or not (\code{FALSE}; default).
 #' @param apply.to.VCV logical, if \code{ellipse} and/or \code{major.axes} is a \code{function}, whether to apply it on all the estimated ellipses/major axes (\code{FALSE}; default) or on the variance covariance matrices directly (\code{TRUE}). In other words, whether to apply the function to the ellipses/major axis or the the VCV first (e.g. the average ellipses or the ellipse of the average VCV).
@@ -48,14 +49,14 @@
 #' ## Same plot with more options
 #' covar.plot(covar, n = 50, ellipses = mean, major.axes = TRUE, 
 #'            col = c("orange", "blue", "darkgreen", "grey", "grey"),
-#'            legend = TRUE, points = TRUE, cex = 0.2,
+#'            legend = TRUE, points = TRUE, points.cex = 0.2,
 #'            main = "Charadriiformes shapespace")
 #'
 #' @seealso \code{\link{MCMCglmm.subsets}} \code{\link{covar.utilities}}
 #' 
 #' @author Thomas Guillerme
 #' @export
-covar.plot <- function(data, n, points = TRUE, major.axes = FALSE, ellipses = FALSE, level = 0.95, dimensions = c(1,2), centres = colMeans, transparent.scale, add = FALSE, apply.to.VCV = FALSE, ...) {
+covar.plot <- function(data, n, points = TRUE, major.axes = FALSE, ellipses = FALSE, level = 0.95, dimensions = c(1,2), centres = colMeans, scale, transparent.scale, add = FALSE, apply.to.VCV = FALSE, ...) {
 
     match_call <- match.call()
     dots <- list(...)
@@ -91,6 +92,14 @@ covar.plot <- function(data, n, points = TRUE, major.axes = FALSE, ellipses = FA
     }
     covars <- sample.n(data$covar, n)
 
+    ## Scaling
+    do_scale <- FALSE
+    if(!missing(scale)) {
+        check.class(scale, c("character", "numeric", "integer"))
+        check.subsets(scale, data)
+        do_scale <- TRUE
+    }
+
     ## Dimensions
     check.class(dimensions, c("integer", "numeric"))
     check.length(dimensions, 2, msg = " argument must contain only 2 dimensions (for now).")
@@ -124,6 +133,11 @@ covar.plot <- function(data, n, points = TRUE, major.axes = FALSE, ellipses = FA
     ellipses_class <- check.class(ellipses, c("logical", "function", "standardGeneric"), msg = " must be either logical or a function for summarising the ellipses.")
     do_ellipses <- !(ellipses_class == "logical" && !ellipses)
 
+    ## Scaling the VCVs
+    if(do_scale) {
+        scale_VCV <- covars[[scale]]
+        covars <- lapply(covars, function(one_covar, scale) mapply(scale.VCV, one_covar, scale, SIMPLIFY = FALSE), scale = scale_VCV)
+    }
 
     ## Measuring the axes
     if(do_major_axes) {
@@ -149,10 +163,10 @@ covar.plot <- function(data, n, points = TRUE, major.axes = FALSE, ellipses = FA
             ## Get the VCV central tendencies
             covars_cent_tend <- lapply(covars, VCV.cent.tend, ellipses)
             ## Get the major axis
-            all_ellipses <- lapply(level.ellipses(covars_cent_tend, dimensions, npoints = 50, centres), list)
+            all_ellipses <- lapply(level.ellipses(covars_cent_tend, dimensions, npoints = 50, centres, level = level), list)
         } else {
             ## Get the ellipses
-            all_ellipses <- lapply(covars, level.ellipses, dimensions, npoints = 50, centres)
+            all_ellipses <- lapply(covars, level.ellipses, dimensions, npoints = 50, centres, level = level)
             ## Summarising the ellipses (optional)
             if(is(ellipses, "standardGeneric") || is(ellipses, "function")) {
                 ## Summarising the axes using the provided function

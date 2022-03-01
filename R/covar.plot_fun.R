@@ -17,20 +17,21 @@ recentre <- function(one_group, one_centre, dimensions) {
 }
 
 ## Internal: making one ellipse
-make.ellipse <- function(one_sample, dimensions, npoints){
+make.ellipse <- function(one_sample, dimensions, npoints, level){
     return(ellipse::ellipse(x       = one_sample$VCV[dimensions, dimensions],
                             centre  = one_sample$loc[dimensions],
-                            npoints = npoints))
+                            npoints = npoints,
+                            level   = level))
 }
 
 ## Internal: making a list of ellipses for the level
-level.ellipses <- function(level_sample, dimensions, npoints, centre) {
+level.ellipses <- function(level_sample, dimensions, npoints, centre, level) {
 
     ## Recentreing the levels
     level_sample <- recentre.levels(level_sample, centre, dimensions)
 
     ## Get the ellipses for the level
-    return(lapply(level_sample, make.ellipse, dimensions, npoints))
+    return(lapply(level_sample, make.ellipse, dimensions, npoints, level))
 }
 
 ## Internal: changing the intercept ($loc)
@@ -64,4 +65,20 @@ VCV.cent.tend <- function(one_covar, fun) {
     locs <- lapply(one_covar, `[[`, "loc")
     return(list(VCV = apply(array(do.call(cbind, VCVs), dim = c(dim(VCVs[[1]]), length(VCVs))), c(1,2), fun),
                 loc = apply(do.call(rbind, locs), 2, fun)))
+}
+
+## Scale a VCV matrix to another one
+scale.VCV <- function(VCV1, VCV2) {
+    ## Dividing both VCVs
+    
+    ## Getting the off diagonal (the scaling ratio)
+    # VCV <- VCV1$VCV/VCV2$VCV
+    # ratio <- abs(VCV[(nrow(VCV))^2-(1:nrow(VCV))*(nrow(VCV)-1)])
+
+    ## Getting the scaling ratio based on the major axis length
+    ratio <- dist(get.one.axis(VCV1))[1]/dist(get.one.axis(VCV2))[1]
+
+    ## Scaling VCV1
+    VCV1$VCV <- VCV1$VCV/ratio^2
+    return(VCV1)
 }

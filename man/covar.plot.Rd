@@ -14,6 +14,7 @@ covar.plot(
   level = 0.95,
   dimensions = c(1, 2),
   centres = colMeans,
+  scale,
   transparent.scale,
   add = FALSE,
   apply.to.VCV = FALSE,
@@ -36,6 +37,8 @@ covar.plot(
 \item{dimensions}{which dimensions (default is \code{c(1,2)}).}
 
 \item{centres}{optional, a way to determine ellipses or major axes positions. Can be either a \code{function} (default is \code{colMeans}), a \code{vector} or a \code{list} of coordinates vectors or \code{"intercept"}. See details.}
+
+\item{scale}{optional, the name of a group from \code{data} on which to scale the ellipses and major axis to be the same size.}
 
 \item{transparent.scale}{optional, if multiple major axes and/or ellipses are plotted, a scaling factor for the transparency. If left empty, the transparency is set to \code{1/n} or \code{0.1} (whichever is higher).}
 
@@ -80,7 +83,7 @@ covar.plot(covar)
 ## Same plot with more options
 covar.plot(covar, n = 50, ellipses = mean, major.axes = TRUE, 
            col = c("orange", "blue", "darkgreen", "grey", "grey"),
-           legend = TRUE, points = TRUE, cex = 0.2,
+           legend = TRUE, points = TRUE, points.cex = 0.2,
            main = "Charadriiformes shapespace")
 
 }
