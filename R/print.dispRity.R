@@ -187,6 +187,12 @@ print.dispRity <- function(x, all = FALSE, ...) {
                         in_groups, ".\n"))
                     cat(paste0("You can use x$dimensions to select them or use plot(x) and summary(x) to summarise them.\n"))
                     return(invisible())
+                },
+                projection = {
+                    ## Print as a list
+                    class(x) <- "list"
+                    print(x)
+                    return(invisible())
                 }
             )
         }

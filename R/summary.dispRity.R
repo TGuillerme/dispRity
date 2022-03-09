@@ -238,6 +238,17 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
             return(round(combined_var[, col_order, drop = FALSE], digits = digits))
         }
 
+        ## projection summary
+        if(is(data, "projection")) {
+            ## Summarise each object
+            options(warn = -1)
+            summarised_data <- lapply(data, summary.dispRity, quantiles, cent.tend, recall = FALSE, digits)
+            options(warn = 0)
+
+            ## Print the list
+            return(summarised_data)
+        }
+
         ## No dual class summary available
         stop.call("", paste0("No specific summary for combined class \"dispRity\" and \"", class(data)[2], "\"."))
     } 

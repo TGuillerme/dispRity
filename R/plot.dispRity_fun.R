@@ -1480,3 +1480,63 @@ plot.axes <- function(data, ...) {
     par(op_tmp)
     return(invisible())
 }
+
+## Plot projections
+plot.projection <- function(data, specific.args, cent.tend, ...) {
+
+    dots <- list(...)
+
+    ## Check whether to do a correlation plot or not
+    do_correlation_plot <- !is.null(specific.args$correlation.plot)
+    
+    ## Don't do a correlation plot
+    if(!do_correlation_plot) {
+        ## Find the number of elements to plot
+        n_plots <- length(data)
+        ## Open the plot window
+        par(mfrow = c(1,n_plots))
+        ## Shmart plot
+        shmart.plot <- function(one_data, ylabs, ...) {
+            dots <- list(...)
+            if(is.null(dots$ylab)) {
+                plot.dispRity(one_data, ylab = ylabs, ...)
+            } else {
+                plot.dispRity(one_data, ...)
+            }
+        }
+        ## Plot all that
+        if(is.null(dots$ylab)) {
+            ylab <- names(data)
+        } else {
+            ylab <- dots$ylab
+            dots$ylab <- NULL
+        }
+        silent <- mapply(shmart.plot, data, ylabs = ylab, MoreArgs = list(...))
+    
+    } else {
+
+        ## Get the central tendencies
+        if(!all(specific.args$correlation.plot %in% names(data)) && length(specific.args$correlation.plot) != 2) {
+            stop(paste0("correlation.plot argument must contain 2 elements from data (data contains: ", paste(names(data), collapse = ", "), ")."))
+        }
+
+        ## Remove the phylogeny part (if exists)
+        if(n.subsets(data[[1]]) > 1) {
+            ## Check if any subset is the size of the entire matrix
+            global <- which(size.subsets(data[[1]]) == nrow(data[[1]]$matrix[[1]]))
+            if(length(global) != 0) {
+                nsets <- 1:n.subsets(data[[1]])
+                data <- lapply(data, function(x, subsets) get.subsets(x, subsets = subsets), subsets = nsets[-global])
+            }
+        }
+
+        ## Get the central tendencies
+        var1 <- unlist(lapply(lapply(data[[specific.args$correlation.plot[1]]]$disparity, function(X, type) return(X$elements)), function(X, fun) apply(X, 1, fun), fun = cent.tend))
+        var2 <- unlist(lapply(lapply(data[[specific.args$correlation.plot[2]]]$disparity, function(X, type) return(X$elements)), function(X, fun) apply(X, 1, fun), fun = cent.tend))
+        plot_data <- cbind(var1, var2)
+        colnames(plot_data) <- specific.args$correlation.plot
+
+        ## Plot the results
+        plot(plot_data, ...)
+    }
+}

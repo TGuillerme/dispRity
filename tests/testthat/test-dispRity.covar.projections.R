@@ -45,6 +45,15 @@ if(!nocov) {
         expect_equal(dim(summary(test[[i]])), c(6,8))
         expect_null(plot(test[[i]]))
     }
+
+    expect_is(test, c("dispRity", "projection"))
+    expect_equal(capture_output(print.dispRity(test)), capture_output(print(x <- as.list(test))))
+    expect_warning(sum_test <- summary(test))
+    expect_is(sum_test, "list")
+    for(i in 1:3) {
+        expect_equal(dim(sum_test[[i]]), c(6,8))
+    }
+    expect_null(plot(test, las = 2))
 }
 
 if(!nocov) {
@@ -53,6 +62,15 @@ if(!nocov) {
     expect_equal(names(test), c("degree", "position"))
     expect_equal(names(test[[1]]$disparity), c("gulls:phylogeny", "plovers:phylogeny",  "sandpipers:phylogeny"))
     expect_equal(dim(test[[1]]$disparity[[1]]$elements), c(1,1))
+
+    expect_is(test, c("dispRity", "projection"))
+    expect_equal(capture_output(print.dispRity(test)), capture_output(print(x <- as.list(test))))
+    sum_test <- summary(test)
+    expect_is(sum_test, "list")
+    for(i in 1:2) {
+        expect_equal(dim(sum_test[[i]]), c(3,4))
+    }
+    expect_null(plot(test, las = 2))
 }
 
 if(!nocov) {   
@@ -74,6 +92,17 @@ if(!nocov) {
         expect_equal(dim(summary(test[[i]])), c(4,7))
         expect_null(plot(test[[i]]))
     }
+
+    expect_is(test, c("dispRity", "projection"))
+    expect_equal(capture_output(print.dispRity(test)), capture_output(print(x <- as.list(test))))
+    sum_test <- summary(test)
+    expect_is(sum_test, "list")
+    for(i in 1:2) {
+        expect_equal(dim(sum_test[[i]]), c(4,7))
+    }
+    expect_null(plot(test))
+
+    expect_null(plot(test, specific.args = list(correlation.plot = c("degree", "distance")), cent.tend = sd, col = c("blue", "red"), pch = 19))
 
     ## Test within average phylo base
     test <- dispRity.covar.projections(data, type = "elements", sample = mean, output = c("position"), base = "phylogeny")

@@ -23,7 +23,7 @@ dispRity 0.2.0 (2016-04-01)
 <!--   * `dtt.dispRity` now works with time-slicing. -->
 
 
-dispRity v1.7.0 (2022-02-16) *MacMacGlimm*
+dispRity v1.7.0 (2022-04-09) *MacMacGlimm*
 =========================
 
 ### NEW FEATURES
@@ -38,7 +38,7 @@ dispRity v1.7.0 (2022-02-16) *MacMacGlimm*
  * *New utility functions* for manipulating `MCMCglmm` objects: `MCMCglmm.traits` for extracting the number of traits, `MCMCglmm.levels` for extracting the level names, `MCMCglmm.sample` for sampling posterior IDs and `MCMCglmm.covars` for extracting variance-covariance matrices
  * *New utility functions* for `dispRity` objects with `covar` matrices: `get.covar` to extract the VCV matrices (or a subsample of them); `axes.covar` to extract the major axes of the VCV matrices and `as.covar` to transform `dispRity` metric function to use a covar object.
  * *New utility function* `match.tip.edge` for matching tip labels as factors/characters/integer to tree edges.
- * Adding `dispRity.covar.projections` function (a wrapper for covariance projections analyses).
+ * *New wrapper function* `dispRity.covar.projections` for covariance projections analyses (with its associated S3 sub-class).
  * One new demo datasets: `charadriiformes`, a `data.frame` and a `phylo` object of 359 _Charadriiformes_ species (gulls, plovers and sandpipers) from [Cooney et al 2017](https://www.nature.com/articles/d41586-021-02480-z) along with a `MCMCglmm` model with each clade as a random term.
  * Additional plot arguments `...` in all the `dispRity` plotting functions can now be targeted to a specific plotting element. When multiple elements are plot by default (e.g. lines, legend, points, etc...) it is now possible to pass a specific `...` argument to the specific plotted element using the syntax `<element>.<argument>` (e.g. `points.col = "blue"` will only apply the argument `col = "blue"` to the points).
  

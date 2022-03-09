@@ -36,6 +36,7 @@
 #'          \item \code{tree}: whether to plot the underlying tree(s) or not. Can be either logical, whether to plot no tree (default is \code{specific.args = list(tree = FALSE)}), all trees (\code{specific.args = list(tree = TRUE)}) or a specific set of trees (e.g. \code{specific.args = list(tree = c(1,2))})
 #'      } 
 #'      \item if data is a \code{"test.metric"} result that was obtained with the option \code{save.steps = TRUE} (see \code{\link{test.metric}}), it is possible to specify which steps to by specifying the following specific argument: \code{specific.args = list(visualise.steps = c(1,4,5))} for visualising steps 1, 4 and 5 of the different shifts. By default, if the \code{"test.metric"} was obtained with the option \code{save.steps = TRUE}, four steps are displayed.
+#'      \item if data is a \code{"dispRity"} and \code{"projection"} object (from \code{\link{dispRity.covar.projections}}), it is possible to plot either the boxplot of disparity values for each projection (using \code{correlation.plot = NULL}; default) or to plot the correlation between two calculated elements (e.g. \code{correlation.plot = c("position", "distance")}).
 #' }
 #' 
 #' When plotting \code{"randtest"} or \code{"test.metric"} data or when using \code{type = "preview"} a legend is plotted by default. To remove the legend you can use the argument \code{legend = FALSE}. You can control specific arguments for the legend using the \code{...} optional arguments preceded by \code{legend.}. For example, to change the legend position you can use \code{legend.x = "topleft"} or \code{legend.x = 4.2} and \code{legend.y = 1.23}. General \code{legend} arguments such as \code{col}, \code{legend}, \code{pch}, etc... are recycled by the function but can always be specified using this syntax.
@@ -214,7 +215,18 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
 
             ## Exit subclass plots
             return(invisible())
-        }        
+        }
+
+        ## dispRity.covar.projections plots
+        if(is(data, c("dispRity")) && is(data, c("projection"))) {
+
+            ## Plot the data
+            plot.projection(data, specific.args, cent.tend, ...)
+            rm(data)
+
+            ## Exit subclass plots
+            return(invisible())
+        }  
     }
 
     ## ----

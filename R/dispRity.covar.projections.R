@@ -28,8 +28,9 @@
 #' }
 #' 
 #' @returns
-#' A \code{list} of \code{dispRity} objects corresponding to each projection value from \code{output}.
-#' To visualise/summarise each element you can either select them by name (e.g. \code{output$position}) or by ID (e.g. \code{output[[1]]}).
+#' A \code{list} of class \code{"dispRity"} and \code{"projection"} which contains \code{dispRity} objects corresponding to each projection value from \code{output}.
+#' The elements of the \code{list} can be accessed and analysed individually by selecting them by name (e.g. \code{output$position}) or by ID (e.g. \code{output[[1]]}).
+#' Alternatively, the list can be summarised and plotted using \code{\link{summary.dispRity}} \code{\link{plot.dispRity}}.
 #' 
 #' @examples
 #' data(charadriiformes)
@@ -46,13 +47,16 @@
 #' ## Running a projection analyses between groups (on 100 random samples)
 #' between_groups <- dispRity.covar.projections(my_covar, type = "groups", base = "phylo", n = 100)
 #' ## Summarising the results
-#' lapply(between_groups, summary)
+#' summary(between_groups)
 #' 
 #' ## Measuring the projection of the elements on their own average major axis
 #' elements_proj <- dispRity.covar.projections(my_covar, type = "elements", sample = mean,
-#'                                             output = "position")
-#' ## Visualizing the results
-#' plot(elements_proj[[1]])
+#'                                             output = c("position", "distance"))
+#' ## Visualising the results
+#' plot(elements_proj)
+#' 
+#' ## Visualising the correlation
+#' plot(elements_proj, speicfic.args = list(correlation.plot = c("position", "distance")))
 #'
 #' @seealso \code{\link{projections}} \code{\link{projections.between}} \code{\link{axis.covar}} \code{\link{dispRity}} \code{\link{MCMCglmm.subsets}}
 #' 
@@ -166,6 +170,7 @@ dispRity.covar.projections <- function(data, type, base, sample, n, major.axis =
             full_out[[i]]$call$disparity <- update_call
         }
         names(full_out) <- output
+        class(full_out) <- c("dispRity", "projection")
         return(full_out)
     }
 
@@ -234,6 +239,7 @@ dispRity.covar.projections <- function(data, type, base, sample, n, major.axis =
 
         if(verbose) message("Done.")
         names(full_out) <- output
+        class(full_out) <- c("dispRity", "projection")
         return(full_out)
     }
 }
