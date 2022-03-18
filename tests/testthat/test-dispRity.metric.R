@@ -677,6 +677,7 @@ test_that("min.distance", {
     expect_equal_round(group.dist(matrix, matrix2, probs = 0.5), 1.472447, digits = 3)
 
     ## Function gives the same results as hypervolume?
+    data(iris)
     matrix <- subset(iris, Species=="setosa")[,1:3]
     matrix2 <- subset(iris, Species=="virginica")[,1:3]
 
