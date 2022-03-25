@@ -881,7 +881,7 @@ if(!nocov) {
     expect_equal(names(disparity), c("gulls:plovers", "gulls:sandpipers", "gulls:phylogeny", "plovers:sandpipers", "plovers:phylogeny", "sandpipers:phylogeny"))
     expect_equal(unique(unlist(lapply(disparity, dim))), c(1, 1000))
     disparity <- get.disparity(is_covar)
-    expect_equal_round(unname(unlist(disparity)), c(2.8175937, 1.5718191, 1.2262642, 0.3840770, 0.2389399, 0.7011024), 5)
+    expect_equal_round(unname(unlist(disparity)), c(2.8211171, 1.5715049, 1.2262642, 0.3847654, 0.2392272, 0.7011024), 5)
 }
 
     ## Same as above but with options
@@ -896,6 +896,6 @@ if(!nocov) {
     expect_equal(names(disparity), c("gulls:plovers", "gulls:sandpipers", "gulls:phylogeny", "plovers:sandpipers", "plovers:phylogeny", "sandpipers:phylogeny"))
     expect_equal(unique(unlist(lapply(disparity, dim))), c(1, 1000))
     disparity <- get.disparity(is_covar)
-    expect_equal_round(unname(unlist(disparity)), c(25.115014, 11.407162, 9.240426, 25.986941, 27.336217, 10.353848), 4)
+    expect_equal_round(unname(unlist(disparity)), c(25.115014, 11.407162, 9.240426, 25.955810, 27.143367, 10.353848), 4)
 }
 })
