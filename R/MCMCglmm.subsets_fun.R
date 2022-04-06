@@ -6,9 +6,22 @@ get.one.group <- function(one_term, group_classifier, elements) {
         #return(1:length(elements))
         return(list(elements = matrix(1:length(elements), ncol = 1)))
     } else {
+
+        ## Find if the factor matches with the MCMCglmm output (some characters - like " " or "_" get removed by MCMCglmm without warning. Boo!)
+        group_classifier_names <- colnames(group_classifier)
+        if(!(one_term$factor %in% group_classifier_names)) {
+            group_classifier_names <- gsub(" ", "", gsub("_", "", group_classifier_names))
+            ## Rename the columns for the classifier potentially as output from MCMCglmm
+            # if(one_term$factor %in% group_classifier_names) {
+                colnames(group_classifier) <- group_classifier_names
+            # } else {
+                # stop("DEBUG")
+            # }
+        }
+
         ## Get the factor in group_classifier (dispRity format)
         #return(which(group_classifier[,one_term$factor] == levels(group_classifier[,one_term$factor])[one_term$level]))
-        return(list(elements = matrix(which(group_classifier[,one_term$factor] == levels(group_classifier[,one_term$factor])[one_term$level]), ncol = 1)))
+        return(list(elements = matrix(which(group_classifier[, one_term$factor] == levels(group_classifier[,one_term$factor])[one_term$level]), ncol = 1)))
     }
 }
 
