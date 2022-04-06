@@ -70,6 +70,10 @@ check.subsets <- function(subsets, data) {
 
     } else {
         
+        if(is(subsets, "list")) {
+            ## Flatten the list for checking for subsets
+            subsets <- unique(unlist(subsets))
+        }
 
         if(length(subsets) > length(data$subsets)) {
             stop("Not enough subsets in the original data.")
