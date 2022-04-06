@@ -23,7 +23,7 @@ dispRity.covar.projections(
 
 \item{type}{either \code{"groups"} for the projections between groups or \code{"elements"} for the projections of elements onto groups.}
 
-\item{base}{optional, a specific group to project the elements or the groups onto. If left empty, the groups are projected onto each other in a pairwise manner and the elements are projected onto their respective groups.}
+\item{base}{optional, a specific group to project the elements or the groups onto or a list of pairs of groups to compare (see \code{between.groups} argument in \code{\link{dispRity}}). If left empty, the groups are projected onto each other in a pairwise manner and the elements are projected onto their respective groups.}
 
 \item{sample}{optional, one or more specific posterior sample IDs (is ignored if n is used) or a function to summarise all axes.}
 

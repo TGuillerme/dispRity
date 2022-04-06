@@ -4,7 +4,7 @@
 #'
 #' @param data a \code{dispRity} object containing a \code{$covar} component(e.g. from \code{\link{MCMCglmm.subsets}})
 #' @param type either \code{"groups"} for the projections between groups or \code{"elements"} for the projections of elements onto groups.
-#' @param base optional, a specific group to project the elements or the groups onto. If left empty, the groups are projected onto each other in a pairwise manner and the elements are projected onto their respective groups.
+#' @param base optional, a specific group to project the elements or the groups onto or a list of pairs of groups to compare (see \code{between.groups} argument in \code{\link{dispRity}}). If left empty, the groups are projected onto each other in a pairwise manner and the elements are projected onto their respective groups.
 #' @param sample optional, one or more specific posterior sample IDs (is ignored if n is used) or a function to summarise all axes.
 #' @param n optional, a random number of covariance matrices to sample (if left empty, all are used).
 #' @param major.axis which major axis to use (default is \code{1}; see \code{\link{axis.covar}} for more details).
@@ -123,9 +123,14 @@ dispRity.covar.projections <- function(data, type, base, sample, n, major.axis =
             ## Get the pairwise list
             list_of_pairs <- unlist(apply(combn(1:length(data$subsets), 2), 2, list), recursive = FALSE)
         } else {
-            ## Get the list paired with the id
-            base_id <- which(names(data$subsets) == base)
-            list_of_pairs <- sapply((1:n.subsets(data))[-base_id], function(x, base_id) c(x, base_id), base_id = base_id, simplify = FALSE)
+            if(!is(base, "list")) {
+                ## Get the list paired with the id
+                base_id <- which(names(data$subsets) == base)
+                list_of_pairs <- sapply((1:n.subsets(data))[-base_id], function(x, base_id) c(x, base_id), base_id = base_id, simplify = FALSE)
+            } else {
+                ## Base is the list of pairs
+                list_of_pairs <- base
+            }
         }
 
         ## Get the subset names
