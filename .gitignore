@@ -1,3 +1,6 @@
+# security
+.coveralls.yml
+
 #pdf
 *.pdf
 *.Rapp.history
