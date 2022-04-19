@@ -23,7 +23,7 @@ dispRity 0.2.0 (2016-04-01)
 <!--   * `dtt.dispRity` now works with time-slicing. -->
 
 
-dispRity v1.6.9 (2022-04-06) *MacMacGlimm*
+dispRity v1.6.10 (2022-04-19) *MacMacGlimm*
 =========================
 
 ### NEW FEATURES
@@ -57,6 +57,7 @@ dispRity v1.6.9 (2022-04-06) *MacMacGlimm*
  * Disparity results stored in `data$disparity` now don't have dimension names anymore (significantly reducing the size of `disparity` objects). However, you can always retrieve the dimensions names using `get.disparity`.
  * Updated the calculation options for `ellipse.volume`, you can now directly specify one of the following methods: `"pca"` to calculate the eigen values from the ordinated matrix; `"eigen"` to directly do an eigen decomposition of the matrix (new); or `"axes"` to directly measure the axes (new); or directly provide the eigen values.
  * The interval function `check.subsets` now handles the checking of `"dispRity"` objects much faster making most functions relying on it slightly faster (this function is typically not called more than once per function).
+ * Updated `adonis.dispRity` to the newest `vegan::adonis2` code (thanks to Jari Oksanen for the notification).
 
 ### BUG FIXES
  
