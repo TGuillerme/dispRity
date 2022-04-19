@@ -23,7 +23,7 @@ dispRity 0.2.0 (2016-04-01)
 <!--   * `dtt.dispRity` now works with time-slicing. -->
 
 
-dispRity v1.6.8 (2022-01-24)
+dispRity v1.6.9 (2022-04-19)
 =========================
 
 ### NEW FEATURES
@@ -37,6 +37,7 @@ dispRity v1.6.8 (2022-01-24)
  * Added a `function.index.csv` list (and updater) to help developers find internal functions locations easily.
  * Restricted the type-I error inflation warning message in `test.dispRity` to only occur when using a test of class `"htest"`.
  * Continuous Integration has been moved from Travis-CI to GitHub Actions.
+ * Updated `adonis.dispRity` to the newest `vegan::adonis2` code (thanks to Jari Oksanen for the notification).
 
 ### BUG FIXES
  
