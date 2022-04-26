@@ -7,7 +7,7 @@
 geomorph.ordination(data, ordinate = TRUE, ...)
 }
 \arguments{
-\item{data}{An array (p x k x n) typically obtained from a Procrustes superimposition \code{\link[geomorph]{gpagen}} or a \code{\link[geomorph]{geomorph.data.frame}} object.}
+\item{data}{An array (p x k x n) typically obtained from a Procrustes superimposition \code{\link[geomorph]{gpagen}} or a \code{geomorph::geomorph.data.frame} object.}
 
 \item{ordinate}{Logical, whether to ordinate the data using \code{\link[stats]{prcomp}} (\code{TRUE}; default) or not (\code{FALSE}; the code then returns the raw coordinates matrix).}
 

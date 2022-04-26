@@ -4,7 +4,7 @@
 \alias{demo_data}
 \title{Demo datasets}
 \source{
-\url{https://onlinelibrary.wiley.com/doi/full/10.1002/ece3.6452}
+\url{https://doi.org/10.1002/ece3.6452}
 }
 \description{
 A set six trait spaces with different groups and different dimensions.
