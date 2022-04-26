@@ -2,7 +2,7 @@
 #'
 #' @description Takes geomorph Procrustes object or a geomorph.data.frame object and ordinates it.
 #'
-#' @param data An array (p x k x n) typically obtained from a Procrustes superimposition \code{\link[geomorph]{gpagen}} or a \code{\link[geomorph]{geomorph.data.frame}} object.
+#' @param data An array (p x k x n) typically obtained from a Procrustes superimposition \code{\link[geomorph]{gpagen}} or a \code{geomorph::geomorph.data.frame} object.
 #' @param ordinate Logical, whether to ordinate the data using \code{\link[stats]{prcomp}} (\code{TRUE}; default) or not (\code{FALSE}; the code then returns the raw coordinates matrix).
 #' @param ... Any optional arguments to be passed to \code{\link[stats]{prcomp}} (is ignored if \code{ordinate = FALSE}).
 #' 
