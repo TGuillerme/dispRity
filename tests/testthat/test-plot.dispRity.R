@@ -297,10 +297,12 @@ test_that("plot.dispRity with randtest data", {
 test_that("plot.dispRity with dtt data", {
     ## DTT
     ## Loading geiger's example data set
-    require(geiger)
-    geiger_data <- get(data(geospiza))
+    # require(geiger)
+    # geiger_data <- get(data(geospiza))
+    data(BeckLee_mat50)
+    data(BeckLee_tree)
     average.sq <- function(X) mean(pairwise.dist(X)^2)
-    expect_warning(dispRity_dtt <- dtt.dispRity(data = geiger_data$dat, metric = average.sq, tree = geiger_data$phy, nsim = 2))
+    dispRity_dtt <- dtt.dispRity(data = BeckLee_mat50, metric = average.sq, tree = BeckLee_tree, nsim = 2)
 
     ## Plotting the results
     expect_null(plot(dispRity_dtt, quantiles = c(0.1, 0.95)))
