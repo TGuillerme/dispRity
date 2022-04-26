@@ -38,6 +38,7 @@ dispRity v1.6.9 (2022-04-19)
  * Restricted the type-I error inflation warning message in `test.dispRity` to only occur when using a test of class `"htest"`.
  * Continuous Integration has been moved from Travis-CI to GitHub Actions.
  * Updated `adonis.dispRity` to the newest `vegan::adonis2` code (thanks to Jari Oksanen for the notification).
+ * Removed dependency to `geiger` for `dtt.dispRity` to avoid package maintenance errors. This leads to no changes at the user level and `geiger::dtt` is still acknowledged in the manual.
 
 ### BUG FIXES
  
@@ -50,7 +51,7 @@ dispRity v1.6.9 (2022-04-19)
  * Fixed bug with `null.test` which is now correctly managing the number of dimensions inherited from `dispRity` objects (thanks to [Alex Slavenko](https://alexslavenko.weebly.com/) for spotting this one and the two above).
  * Fixed bug when using level 2 dimension metrics on unidimensional data (the metric is now detected as a level 2 correctly; thanks to [Catherine Klein](https://www.researchgate.net/profile/Catherine-Klein) and [Rachel Warnock](https://www.gzn.nat.fau.de/palaeontologie/team/professors/rachel-warnock/) for noticing that one).
  * Update internal use of `is(data, c("array", "matrix"))` to `is.array(data)` for R 4.1.2.
- 
+
 dispRity v1.6.0 (2021-04-16) *dispRitree*
 =========================
 

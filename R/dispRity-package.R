@@ -10,21 +10,6 @@
 #'
 #' @concept disparity ordination phylogeny cladistic morphometric ecology
 #'
-# @import ape
-# @import stats
-# @importFrom geometry convhulln 
-# @importFrom ade4 randtest as.randtest 
-# @importFrom grDevices colorRampPalette grey 
-# @importFrom caper comparative.data 
-# @importFrom graphics axis boxplot hist image lines mtext par plot points polygon text legend
-# @importFrom utils combn data capture.output tail
-# @importFrom phyclust gen.seq.HKY 
-# @importFrom phangorn dist.hamming NJ RF.dist CI RI optim.parsimony parsimony
-# @importFrom vegan adonis vegdist
-# @importFrom geiger dtt ratematrix sim.char
-# @importFrom parallel parLapply detectCores makeCluster clusterExport stopCluster
-# @importFrom Claddis calculate_morphological_distances
-
 
 NULL
 
