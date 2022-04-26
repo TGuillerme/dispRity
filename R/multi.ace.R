@@ -145,7 +145,7 @@ multi.ace <- function(data, tree, models = "ER", threshold = TRUE, special.token
 
     ## tree
     check.class(tree, c("phylo", "multiPhylo"))
-    if(class(tree) == "phylo") {
+    if(is(tree, "phylo")) {
         tree <- list(tree)
         class(tree) <- "multiPhylo"
     }
@@ -222,7 +222,7 @@ multi.ace <- function(data, tree, models = "ER", threshold = TRUE, special.token
 
     ## threshold
     check.class(threshold, c("logical", "numeric"))
-    if(class(threshold) == "logical") {
+    if(is(threshold, "logical")) {
         if(threshold) {
             ## Use the relative threshold function
             threshold.type <- "relative"
