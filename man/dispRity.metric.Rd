@@ -267,7 +267,7 @@ pairwise.dist(dummy_matrix)
 ## The average squared pairwise distance
 mean(pairwise.dist(dummy_matrix)^2)
 ## equal to:
-geiger::disparity(data = dummy_matrix)
+# geiger::disparity(data = dummy_matrix)
 
 ## point.dist
 ## The distances from the rows dummy_matrix

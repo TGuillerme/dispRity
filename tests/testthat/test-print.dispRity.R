@@ -222,7 +222,7 @@ test_that("dtt printing", {
 
     expect_equal(print_dtt,
         c(
-        "Disparity-through-time test (modified from geiger:dtt)" ,
+        "Disparity-through-time test (modified from geiger::dtt)" ,
         "Call: dtt.dispRity(data = data, metric = average.sq, tree = tree, nsim = 10, model = \"BM\", alternative = \"two-sided\") ",
         "",
         "Observation: 0.100298654808419",

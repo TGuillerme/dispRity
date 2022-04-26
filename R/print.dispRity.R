@@ -119,7 +119,7 @@ print.dispRity <- function(x, all = FALSE, ...) {
                 dtt = {
                     if(length(x) != 2){
                         ## Tested dtt
-                        cat("Disparity-through-time test (modified from geiger:dtt)\n")
+                        cat("Disparity-through-time test (modified from geiger::dtt)\n")
                         cat(paste0("Call: ", as.expression(x$call), " \n\n"))
 
                         cat(paste0("Observation: ", x$MDI , "\n\n"))
