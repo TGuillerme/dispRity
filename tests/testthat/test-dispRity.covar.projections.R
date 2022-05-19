@@ -48,7 +48,7 @@ if(!nocov) {
 
     expect_is(test, c("dispRity", "projection"))
     expect_equal(capture_output(print.dispRity(test)), capture_output(print(x <- as.list(test))))
-    expect_warning(sum_test <- summary(test))
+    sum_test <- summary(test)
     expect_is(sum_test, "list")
     for(i in 1:3) {
         expect_equal(dim(sum_test[[i]]), c(6,8))

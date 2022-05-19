@@ -241,12 +241,7 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
         ## projection summary
         if(is(data, "projection")) {
             ## Summarise each object
-            options(warn = -1)
-            summarised_data <- lapply(data, summary.dispRity, quantiles, cent.tend, recall = FALSE, digits)
-            options(warn = 0)
-
-            ## Print the list
-            return(summarised_data)
+            return(lapply(data, summary.dispRity, quantiles = quantiles, cent.tend = cent.tend, recall = FALSE))
         }
 
         ## No dual class summary available
