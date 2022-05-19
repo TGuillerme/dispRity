@@ -31,6 +31,7 @@ jobs:
           - {os: ubuntu-20.04, r: 'release', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
 
     env:
+      RGL_USE_NULL: true
       _R_CHECK_CRAN_INCOMING_: true # Seemingly not set by --as-cran
       _R_CHECK_FORCE_SUGGESTS_: false # CRAN settings
       R_COMPILE_AND_INSTALL_PACKAGES: 'never'
