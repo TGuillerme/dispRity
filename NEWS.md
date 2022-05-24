@@ -23,7 +23,7 @@ dispRity 0.2.0 (2016-04-01)
 <!--   * `dtt.dispRity` now works with time-slicing. -->
 
 
-dispRity v1.6.10 (2022-04-26) *MacMacGlimm*
+dispRity v1.6.10 (2022-05-24) *MacMacGlimm*
 =========================
 
 ### NEW FEATURES
@@ -59,6 +59,7 @@ dispRity v1.6.10 (2022-04-26) *MacMacGlimm*
  * The interval function `check.subsets` now handles the checking of `"dispRity"` objects much faster making most functions relying on it slightly faster (this function is typically not called more than once per function).
  * Updated `adonis.dispRity` to the newest `vegan::adonis2` code (thanks to Jari Oksanen for the notification).
  * Removed dependency to `geiger` for `dtt.dispRity` to avoid package maintenance errors. This leads to no changes at the user level and `geiger::dtt` is still acknowledged in the manual.
+ * `tree.age` function's manual now makes it clear it does not estimate tree ages.
 
 ### BUG FIXES
  
