@@ -12,12 +12,12 @@ output:
 ---
 
 
-This vignette provides advanced details on the mini-chains MCMCglmm pipeline and provides code and detail to reproduce the results presented in the paper associated with this vignette.
-Due to the amount of data and computational time required to reproduce the results in the paper (2 CPU years and 350GB of data) we only demonstrate the method on the Charadriiformes order.
+This vignette provides advanced details on the mini chains `MCMCglmm` pipeline and provides code and details to reproduce the results presented in the paper associated with this vignette.
+Due to the amount of data and computational time required to reproduce the results in the paper (two CPU years and 350GB of data!) we only demonstrate the method on the order Charadriiformes (shorebirds).
 
 #### Important note on the structure of this vignette
 
-This vignette is intended to provide general details on the `mcmcmcglmmm` that will be written in plain text (like this sentence).
+This vignette is intended to provide general details on `mcmcmcglmmm` that will be written in plain text (like this sentence).
 
 ```{r}
 ## This vignette also contains reproducible examples written in R snippets
@@ -30,7 +30,7 @@ this_is_a_reproducible_R_snippet <- TRUE
 ## Installation and requirements
 
 ```{r header, echo = TRUE, results = 'hide', message = FALSE, warning = FALSE, eval = FALSE}
-## Installing the dispRity package from the CRAN
+## Installing the dispRity package from CRAN
 install.packages("dispRity")
 ```
 
@@ -41,10 +41,12 @@ library(dispRity)
 
 # Projection analyses
 
-With the variance-covariance matrices obtained from the `mcmcmcglmmm` analyses, we can use linear algebra to make a mathematical interpretation of @endler2005's elaboration and innovation (here innovation) patterns (Fig 1. in @endler2005).
-In fact, if we can interpret the variance-covariance matrix as estimated evolutionary space in the trait space that contains all the observed traits of a group and takes evolutionary history into account, we can then use the first eigen vector of that variance-covariance matrix as the major evolutionary axis, i.e. the axis in multidimensional space along which most trait values co-evolve.
-In other words, if the variance-covariance matrix is a multidimensional ellipse, it's major axis is its major evolutionary axis.
-Then, if species evolve parallel to this axis, they are elaborating on traits combinations; conversely, if species evolve orthogonaly to this axis, they are innovating new traits combinations (innovating).
+With the variance-covariance matrices obtained from the `mcmcmcglmmm` analyses, we can use linear algebra to make a mathematical interpretation of @endler2005's elaboration and innovation patterns (Fig 1. in @endler2005).
+In fact, if we can interpret the variance-covariance matrix as estimated evolutionary space in the trait-space that contains all the observed traits of a group and takes evolutionary history into account, we can then use the first eigenvector of that variance-covariance matrix as the major evolutionary axis, i.e. the axis in multidimensional space along which most trait values co-evolve.
+In other words, if the variance-covariance matrix is a multidimensional ellipse, its major axis is its major evolutionary axis.
+Then, if species evolve parallel to this axis, they are elaborating on trait combinations; conversely, if species evolve orthogonaly to this axis, they are innovating new traits combinations (innovating).
+
+% NC: Might need to re-write the above when GT finishes re-writing these sections of the paper/when we decide on our terminology.
 
 Mathematically we can use linear algebra to project and reject each species in the trait-space along this major axis of evolution [Figure 1](#fig1).
 The detailed operations are described in the [supplementary materials](#projections-supplementary).
@@ -54,16 +56,16 @@ source("test.rotation.R")
 ```
 
 ##### Figure 1: {#fig1}
-Consider a space with five elements named \"a\" to \"e\" (in grey) and one focal axes in this space defined as the vector from point1: \"d\" to point2: \"e\" (the thin solid grey line linking the grey \"d\" and \"e\"). We can then define all points from \"d\" (point1) as vectors (the dashed grey lines). We can then rotate the whole space so that the vector \"d\" to \"e\" becomes the reference coordinate vector (0,1) (the thick grey line) and rotate and translate all the other vectors accordingly (the solid grey lines linking the coloured letters \"a\" to \"c\"). We can then project each of these vectors on the reference vector and measure their distance *on* the reference vector (the projection; the coloured solid lines) and their distance *from* the reference vector (the rejection; the coloured dotted lines). We can then also measure the angles between each vector and their respective projections (the angles between a grey solid line to a coloured letter and the corresponding coloured vector). Note that if this angle is equal to 90 degrees, the projection is equal to 0 (point \"c\") or if that angle is > 90 degrees, the projection is negative (point \"b\").
+Consider a space with five elements named \"a\" to \"e\" (in grey) and one focal axis in this space defined as the vector from point1: \"d\" to point2: \"e\" (the thin solid grey line linking the grey \"d\" and \"e\"). We can then define all points from \"d\" (point1) as vectors (the dashed grey lines). We can then rotate the whole space so that the vector \"d\" to \"e\" becomes the reference coordinate vector (0,1) (the thick grey line) and rotate and translate all the other vectors accordingly (the solid grey lines linking the coloured letters \"a\" to \"c\"). We can then project each of these vectors on the reference vector and measure their distance *on* the reference vector (the projection; the coloured solid lines) and their distance *from* the reference vector (the rejection; the coloured dotted lines). We can then also measure the angles between each vector and their respective projections (the angles between a grey solid line to a coloured letter and the corresponding coloured vector). Note that if this angle is equal to 90 degrees, the projection is equal to 0 (point \"c\") or if that angle is > 90 degrees, the projection is negative (point \"b\").
 
 
-In practice, we can use these projections and rejections of vectors or points onto a specific other vector as a way to measure the elaboration and innovation species within a group or of entire groups.
-The first instance, measuring the elaboration and innovation of species within a group, is rather straightforward from [Figure 2](#fig2): the idea is to project each points (defined as the dashed vectors in [Figure 2](#fig21)) onto a vector of interest (e.g. either the group's own main axis of variance-covariance or the entire phylogeny's one).
+In practice, we can use these projections and rejections of vectors or points onto a specific other vector as a way to measure the elaboration and innovation of species within a group or of entire groups.
+The first instance, measuring the elaboration and innovation of species within a group, is rather straightforward from [Figure 2](#fig2): the idea is to project each point (defined as the dashed vectors in [Figure 2](#fig21)) onto a vector of interest (e.g. either the group's own main axis of variance-covariance or the entire phylogeny's one).
 
-We measured the innovation and elaboration using two main approaches (see [Figure 2](#fig2)):
+We measured innovation and elaboration using two main approaches (see [Figure 2](#fig2)):
 
- * By clades (i.e innovation/elaboration **between** clades), where we calculated the projections of the major axes of each clade onto the global phylogenetic major axes.
- * By species (i.e innovation/elaboration **within** clades), where we calculated the projections of each species onto 1) the global phylogenetic major axes and 2) the phylogenetic major axes of their respective clade.
+ * By clades (i.e innovation/elaboration **between** clades), where we calculated the projections of the major axis of each clade onto the global phylogenetic major axis.
+ * By species (i.e innovation/elaboration **within** clades), where we calculated the projections of each species onto 1) the global phylogenetic major axis and 2) the phylogenetic major axis of their respective clade.
 
 ```{r, echo = FALSE, eval = TRUE}
 source("../../R/covar.utilities_fun.R")
@@ -77,7 +79,6 @@ get.proj.line <- function(point, base) {
   return(rbind(cbind(proj_x, proj_y), point))
 }
 
-
 set.seed(42)
 ## Space plot
 cor_matrix <- matrix(cbind(1, 0.8, 0.8, 1), nrow = 2)
@@ -86,30 +87,32 @@ lim <- c(floor(range(space)[1]), ceiling(range(space)[2]))
 
 par(mfrow = c(2, 2))
 
-
 ## Plot original space
 plot(space, pch = 19, xlab = "Trait 1", ylab = "Trait 2", xlim = lim, ylim = lim, col = "black", main = "Original space")
 abline(v = 0, col = "grey", lwd = 0.5)
 abline(h = 0, col = "grey", lwd = 0.5)
+
 ## Plotting the ellipse
 lines(ellipse::ellipse(cor_matrix, level = 0.75), col = "blue", lwd = 1)
+
 ## Plotting the major axis
 lines(get.one.axis(list(VCV = cor_matrix, Sol = c(0,0)), level = 0.75), lwd = 3, col = "blue", lty = 1)
+
 ## Plotting a phylogenetic major axis
 lines(x = c(-1.2, 2), y = c(0, 0.75), lwd = 3, col = "orange")
 # legend("topright", pch = c(19, NA, NA, NA), lty = c(NA, 1,1,1), lwd = c(NA, 1, 3, 3), legend = c("Group of species", "95% CI ellipse for the group", "Major axis for the group", "Major axis for the phylogeny"), col = c("black", "blue", "blue", "orange"))
 legend("bottomright", legend = "A")
 
-
-
-
 ## Projections of the groups
+
 ## Translate the major axis
 plot(space, pch = 19, xlab = "Trait 1", ylab = "Trait 2", xlim = lim, ylim = lim, col = "grey", main = "Groups' projection\non the phylogeny")
 abline(v = 0, col = "grey", lwd = 0.5)
 abline(h = 0, col = "grey", lwd = 0.5)
+
 ## Plotting the ellipse
 lines(ellipse::ellipse(cor_matrix, level = 0.75), col = "grey", lwd = 1)
+
 ## Plotting the major axis
 lines(get.one.axis(list(VCV = cor_matrix, Sol = c(0,0)), level = 0.75), lwd = 3, col = "grey", lty = 1)
 lines(x = c(-1.2, 2), y = c(0, 0.75), lwd = 3, col = "orange")
@@ -133,32 +136,36 @@ matrix <- axis_trans
 point1 <- c(-1.2, 0)
 point2 <- c(2, 0.75)
 base_vector <- rbind(point1, point2)
+
 ## Get all the space (with the two last rows being the base vectors)
 space_cent <- rbind(matrix, base_vector)
+
 ## Centre all the space
 space_cent <- space_cent - rep(point1, rep.int(nrow(space_cent), ncol(space_cent)))
+
 ## Re-attribute the centred variables
 matrix_cent <- space_cent[1:nrow(matrix), ]
 base_vector_cent <- space_cent[-c(1:nrow(matrix)), ]
+
 ## Projected translation
 cent_proj <- get.proj.line(matrix_cent[1,], base_vector_cent[2, ])
 cent_proj[, 1] <- (cent_proj[, 1] + point1[1])
 lines(cent_proj, col = "darkgreen")
+
 ## Extend the phylogeny line
 extend_base <- rbind(base_vector[1, ], cent_proj[1, ])
 lines(extend_base, lwd = 1, col = "orange", lty = 2)
 
-
-
-
-
 ## Projections per species
+
 ## Translate the major axis
 plot(space, pch = 19, xlab = "Trait 1", ylab = "Trait 2", xlim = lim, ylim = lim, col = "grey", main = "Species' projection\non the phylogeny")
 abline(v = 0, col = "grey", lwd = 0.5)
 abline(h = 0, col = "grey", lwd = 0.5)
+
 ## Plotting the ellipse
 lines(ellipse::ellipse(cor_matrix, level = 0.75), col = "grey", lwd = 1)
+
 ## Plotting the major axis
 lines(get.one.axis(list(VCV = cor_matrix, Sol = c(0,0)), level = 0.75), lwd = 3, col = "grey", lty = 1)
 lines(x = c(-1.2, 2), y = c(0, 0.75), lwd = 3, col = "orange")
@@ -172,8 +179,10 @@ base_vector <- rbind(point1, point2)
 
 ## Get all the space (with the two last rows being the base vectors)
 space_cent <- rbind(matrix, base_vector)
+
 ## Centre all the space
 space_cent <- space_cent - rep(point1, rep.int(nrow(space_cent), ncol(space_cent)))
+
 ## Re-attribute the centred variables
 matrix_cent <- space_cent[1:nrow(matrix), ]
 base_vector_cent <- space_cent[-c(1:nrow(matrix)), ]
@@ -185,19 +194,15 @@ for(i in 1:nrow(matrix)) {
   lines(cent_proj, col = "darkgreen")
 }
 
-
-
-
-
-
-
 ## Species projection onto their own axis
 plot(space, pch = 19, xlab = "Trait 1", ylab = "Trait 2", xlim = lim, ylim = lim, col = "grey", main = "Species' projection\non their own axis")
 abline(v = 0, col = "grey", lwd = 0.5)
 abline(h = 0, col = "grey", lwd = 0.5)
 lines(x = c(-1.2, 2), y = c(0, 0.75), lwd = 3, col = "grey")
+
 ## Plotting the ellipse
 lines(ellipse::ellipse(cor_matrix, level = 0.75), col = "blue", lwd = 1)
+
 ## Plotting the major axis
 lines(get.one.axis(list(VCV = cor_matrix, Sol = c(0,0)), level = 0.75), lwd = 3, col = "blue", lty = 1)
 legend("bottomright", legend = "D")
@@ -210,11 +215,14 @@ point2 <- base_vector[2,]
 
 ## Get all the space (with the two last rows being the base vectors)
 space_cent <- rbind(matrix, base_vector)
+
 ## Centre all the space
 space_cent <- space_cent - rep(point1, rep.int(nrow(space_cent), ncol(space_cent)))
+
 ## Re-attribute the centred variables
 matrix_cent <- space_cent[1:nrow(matrix), ]
 base_vector_cent <- space_cent[-c(1:nrow(matrix)), ]
+
 ## Extend the base vector a little bit
 extend_base <- base_vector
 extend_base[1, ] <- extend_base[1,1] + 0.05
@@ -227,22 +235,19 @@ for(i in 1:nrow(matrix_cent)) {
   cent_proj[, 2] <- (cent_proj[, 2] + point1[2])
   lines(cent_proj, col = "darkgreen")
 }
-
-
-
 ```
 
 ##### Figure 2: {#fig2}
-Different types of elaboration innovation analyses for a group of species. A) Given a group of 10 species (in black) with two traits, we can calculate the 95% confidence interval variance-covariance ellipse and its major axis (in blue). Say we also calculated another vector (in orange) that could be for example the major axis of another variance-covariance matrix (e.g. from another group or the whole phylogeny). B) we can calculate the projection of the group's major axis on the other major axis by translating it (black doted arrow) and calculate it's elaboration relative to the orange vector (orange dashed line) or its relative innovation (green line). C) We can also calculate the elaboration and innovation scores for each individual species relative to the orange major axis (e.g. the phylognetic major axis); D) or relative to their own major axis.
+Different types of elaboration/innovation analyses for a group of species. A) Given a group of 10 species (in black) with two traits, we can calculate the 95% confidence interval variance-covariance ellipse and its major axis (in blue). We also calculate another vector (in orange), for example, the major axis of another variance-covariance matrix (e.g. from another group or the whole phylogeny). B) We can calculate the projection of the group's major axis on the other major axis by translating it (black dotted arrow) and calculating its elaboration relative to the orange vector (orange dashed line) or its relative innovation (green line). C) We can also calculate the elaboration and innovation scores for each individual species relative to the orange major axis (e.g. the phylogenetic major axis); D) or relative to their own major axis.
 
 <!-- Scaling and interpretation -->
 Note that the examples depicted in [Figure 2](#fig2) are not scaled for clarity.
 In the algorithm implemented in `dispRity`, the results are always effectively scaled as described in [Figure 1](#fig1) and in the [detailed algorithm](#projections-supplementary).
 In practice, this makes the vector onto which elements are projected of length one.
-Furthermore, because the projections happen based on the first point of the major axis of interest (which can be arbitrary), we advice to centre the elaboration results on 0.5 and rescaled (effectively removing 0.5 from the scaled projection value and rescaling it to 1) and to make them absolute.
+Furthermore, because the projections happen based on the first point of the major axis of interest (which can be arbitrary), we advise that you always centre the elaboration results on 0.5 and rescale to 1 (effectively removing 0.5 from the scaled projection value and rescaling it to 1) and to make them absolute.
 This makes the elaboration and innovation results more intuitive to interpret: an elaboration score comprised in $[0, 1]$ is distributed onto the major axis, a score of $[1, \infty)$ is beyond the major axis (in any _n_ direction).
-If the major axis is for example the 95% confidence interval from the phylogenetic variance-covariance matrix, this denotes a species that is especially elaborative.
-Similarly for innovation, any innovation score comprised in $[0, 1]$ indicates an innovation that is within the major axis' variance-covariance 95% confidence interval; a score of $[1, \infty)$ denotes a particularly explorative species.
+If the major axis is, for example, outside the 95% confidence interval from the phylogenetic variance-covariance matrix, this denotes a species that is especially elaborative.
+Similarly for innovation, any innovation score comprised in $[0, 1]$ indicates an innovation that is within the major axis' variance-covariance 95% confidence interval; a score of $[1, \infty)$ denotes a particularly innovative species.
 
 
 # Reproducible example
