@@ -142,6 +142,10 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
             data <- fill.dispRity(make.dispRity(data = check.dispRity.data(data)))
         }
     } else {
+        ## Make sure that data is not a dual class
+        if(length(class(data)) > 1) {
+            stop.call(match_call$data, " must be a raw dispRity object (i.e. not dual class).")
+        }
         ## Making sure matrix exist
         if(is.null(data$matrix[[1]])) {
             stop.call(match_call$data, " must contain a matrix or a list of matrices.")
