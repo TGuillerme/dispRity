@@ -252,17 +252,17 @@ Similarly for innovation, any innovation score comprised in $[0, 1]$ indicates a
 
 # Reproducible example
 
-Here we illustrate the elaboration and innovation analysis pipeline by applying it to a data set from @cooney2017 focused on the birds charadriiformes order.
+Here we illustrate the elaboration and innovation analysis pipeline by applying it to a data set from @cooney2017 focused on the bird order Charadriiformes (shorebirds).
 
 ## Data
 
-This order contains 359 species divided into three clades: gulls, sandpipers and plovers and sandpipers that have respectively 159, 102 and 98 species each.
+This order contains 359 species divided into three clades: gulls, sandpipers, and plovers that have respectively 159, 102 and 98 species each. %NC: Check numbers here as you had sandpipers twice so I'm not sure which was the number for them and which was for plovers.
 For each of these species, we used the 3D beak dataset from @cooney2017 that is an ordination of the shapes of the beaks of 8748 birds (the resulting shape space used here does not contain any information about the beak size - i.e. centroid size).
-We extracted the 359 charadriiformes species from this space where the first three dimensions account for more than 99% of the variance in the dataset.
-For the rest of the example analysis here, we used as a traitspace of these 359 species with 3 dimensions (hereafter the shapespace).
+We extracted the 359 charadriiform species from this space where the first three dimensions account for more than 99% of the variance in the dataset.
+For the rest of the example analysis here, we used these 359 species with three dimensions as a trait-space of (hereafter the shapespace).
 
 ```{r, echo = TRUE, eval = TRUE}
-## Loading the charadriiformes data
+## Loading the Charadriiformes data
 data(charadriiformes) 
 ```
 ```{r, echo = FALSE, eval = TRUE}
@@ -314,9 +314,9 @@ legend("topleft", legend = "D")
 ```
 
 ##### Figure 4: {#fig4}
-Visualisation of the posteriors of the model: A) the first two dimensions of the inpu trait space; B) the same space with the average ellipses and average major.axis scaled to the size of the phylogenetic (grey) ellipse's size; C) the distribution of 100 random ellipses (unscaled); D) the distribution of 100 random major axes (unscaled).
+Visualisation of the posteriors of the model: A) the first two dimensions of the input trait-space; B) the same space with the average ellipses and average major axis scaled to the size of the phylogenetic (grey) ellipse; C) the distribution of 100 random ellipses (unscaled); D) the distribution of 100 random major axes (unscaled).
 
-We can then use this `"dispRity"` object to calculate which of the three charadriiformes orders is the most elaborative and innovating ([Figure 2](#fig2)B) and then the distribution of species absolute ([Figure 2](#fig2)C) and relative ([Figure 2](#fig2)D) elaboration and innovation scores on the 1000 posterior samples.
+We can then use this `"dispRity"` object to calculate which of the three Charadriiformes clades is the most elaborative and innovative ([Figure 2](#fig2)B) and then the distribution of species absolute ([Figure 2](#fig2)C) and relative ([Figure 2](#fig2)D) elaboration and innovation scores on the 1000 posterior samples.
 
 > In THE_PAPER we calculated the results based on the 4000 posterior samples.
 
@@ -350,9 +350,10 @@ plot(group_differences[[2]], col = c("orange", "blue", "darkgreen", "grey"), yla
 
 ```{r, echo = FALSE, eval = TRUE, fig.height = 4, fig.width = 8}
 ## Creating the colouring vector
-colour_vector <- c(rep("orange",    size.subsets(species_differences_abs[[1]])[1]),
-                   rep("blue",      size.subsets(species_differences_abs[[1]])[2]),
+colour_vector <- c(rep("orange", size.subsets(species_differences_abs[[1]])[1]),
+                   rep("blue", size.subsets(species_differences_abs[[1]])[2]),
                    rep("darkgreen", size.subsets(species_differences_abs[[1]])[3]))
+
 ## Plotting the group correlations
 par(mfrow = c(1, 2))
 plot(species_differences_abs, specific.args = list(correlation.plot = c("position", "distance")),
@@ -365,10 +366,10 @@ plot(species_differences_rel, specific.args = list(correlation.plot = c("positio
 
 ## Detailed projection and rejection operations
 
-In details, we can define the major axes from the variance-covariance matrices and then project and reject each element of interest in the space onto this axis.
-The following steps are generalised to $n$ dimensions and detailed below (as well as the algorithm used in `dispRity` to perform the transformations:
+In more detail, we can define the major axis from the variance-covariance matrices and then project and reject each element of interest in the space onto this axis.
+The following steps are generalised to $n$ dimensions and detailed below (as well as the algorithm used in `dispRity` to perform the transformations):
 
-### Major axes definition
+### Major axis definition
 
 For $O_{n}$, the unit hypersphere matrix of $n$ dimensions and a radius composed of the two identity matrices $I_{n}$ and $-I_{n}$ so that: 
 
@@ -386,7 +387,7 @@ O_{n} =
     \end{pmatrix}
 \end{equation}
 
-In other words $O_{n}$ is the matrix representing the hypersphere of $n$ dimensions and of radius $1$ that fits in the centre of the trait space;
+In other words, $O_{n}$ is the matrix representing the hypersphere of $n$ dimensions and of radius $1$ that fits in the centre of the trait-space;
 
 And $O'_{n}$ is the scaled matrix hypersphere to the 95\% confidence interval size using the $\chi^2$ distribution:
 
@@ -412,16 +413,16 @@ We can get $M_{n}$, the matrix containing all the edge coordinates of the 0.95 C
 
 $$M_{n} = [(O'_{n}\sqrt{\lambda}) \times v]^{\text{T}}$$
 
-Finally, we can centre the matrix $M_{n}$ on the estimated solution of each generalised linear mixed model (`model$Sol`, in `MCMCglmm`) corresponding to the estimation of the position of the variance-covariance matrix in the trait space.
-$M_{n}$ then contains all the major axis of the 0.95 hyper-ellipse fitting the variance-covariance matrix.
+Finally, we can centre the matrix $M_{n}$ on the estimated solution of each GLMM (`model$Sol`, in `MCMCglmm`) corresponding to the estimation of the position of the variance-covariance matrix in the trait-space.
+$M_{n}$ then contains all the major axes of the 0.95 hyper-ellipse fitting the variance-covariance matrix.
 We can then define the first row of the matrix, $M_{1,n}$, as the major axis, the second row, $M_{2,n}$, as the second major axis (the minor axis in a 2D ellipse), etc.
 
 The detailed procedure was adapted from [李哲源's post on Stack Overflow](https://stackoverflow.com/questions/40300217/obtain-vertices-of-the-ellipse-on-an-ellipse-covariance-plot-created-by-care/40316331#40316331) and implemented in `dispRity::axis.covar`.
 
 ### Measuring projection and rejection
 
-Once we have defined a major axis, we can project any elements in the trait space onto that axis.
-Specifically, for any elements in the trait space, we can define it as the vector $\vec{a}$ with one set of coordinates in $n$ dimensions:
+Once we have defined a major axis, we can project any elements in the trait-space onto that axis.
+Specifically, for any elements in the trait-space, we can define it as the vector $\vec{a}$ with one set of coordinates in $n$ dimensions:
 
 \begin{equation}
     \vec{a} = 
@@ -460,7 +461,7 @@ And $\vec{a_{2}}$, the rejection of $\vec{a}$ onto $\vec{b}$:
 
 #### Generalisation of projection onto any vector in a set space
 
-Using this, we can generalise the procedure so as to calculate the projection and rejection for any element within a trait space $TS_{m,n}$:
+Using this, we can generalise the procedure so as to calculate the projection and rejection for any element within a trait-space $TS_{m,n}$:
 
 \begin{equation}
     TS_{m,n} = 
@@ -484,7 +485,7 @@ And any major axis defined as a vector $\vec{B}$:
     \end{bmatrix}
 \end{equation}
 
-By using the linear transformation $f_{\vec{B}}$ of the trait space $TS$ moving $\vec{B}$ onto $TS$'s first axes unit vector $\vec{\hat{\imath}}$:
+By using the linear transformation $f_{\vec{B}}$ of the trait-space $TS$ moving $\vec{B}$ onto $TS$'s first axis unit vector $\vec{\hat{\imath}}$:
 
 $$f_{\vec{B}}(TS) = \left( \frac{TS - [Bx_{1}, By_{1}, \cdots, Bn_{1}]^{\text{T}}}{\|\vec{B}\|} \right) \cdot R_{\vec{B}}$$
 
@@ -510,11 +511,11 @@ Or $\theta = acos (B_x)$ since both $\|\vec{B}\|$ and $\|\vec{\hat{\imath}}\|$ a
 
 In practice we followed [this procedure](https://math.stackexchange.com/questions/598750/finding-the-rotation-matrix-in-n-dimensions) and applied a modification of [this implementation](https://stackoverflow.com/questions/42520301/find-rotation-matrix-of-one-vector-to-another-using-r/42542385#42542385) (see @aguilera2004 for the formal generalisation of this algorithm in $n$ dimensions) using the following algorithm implemented in `dispRity::projections` (@guillermedisprity):
 
- 1. In the trait space, define $\vec{B}$ as the base vector (typically $\vec{B}$ is defined as the pair of coordinates set from the major axis described above).
- 2. Centre the trait space on the origin of $\vec{B}$ so that the first set of coordinates of $\vec{B}$ are 0.
- 3. Scale the trait space to the norm of $\vec{B}$ so that the norm of $\vec{B}$ is now 1.
- 4. Rotate the trait space using the rotation matrix $R_{\vec{B}}$ to satisfy the linear transformation $\vec{B} \rightarrow \vec{\hat{\imath}}$ (with $\vec{\hat{\imath}}$ being the first unit vector of the trait space - typically the x axes unit vector). 
- 5. Project/reject every element in the trait on $\vec{B}$ (that is now $\vec{\hat{\imath}}$). In practice, the first coordinate (x) of each element is now its projection onto $\vec{B}$.
+ 1. In the trait-space, define $\vec{B}$ as the base vector (typically $\vec{B}$ is defined as the pair of coordinates from the major axis described above).
+ 2. Centre the trait-space on the origin of $\vec{B}$ so that the first set of coordinates of $\vec{B}$ are 0.
+ 3. Scale the trait-space to the norm of $\vec{B}$ so that the norm of $\vec{B}$ is now 1.
+ 4. Rotate the trait-space using the rotation matrix $R_{\vec{B}}$ to satisfy the linear transformation $\vec{B} \rightarrow \vec{\hat{\imath}}$ (with $\vec{\hat{\imath}}$ being the first unit vector of the trait-space - typically the x axis unit vector). 
+ 5. Project/reject every element in the trait-space on $\vec{B}$ (that is now $\vec{\hat{\imath}}$). In practice, the first coordinate (x) of each element is now its projection onto $\vec{B}$.
 
 
 
