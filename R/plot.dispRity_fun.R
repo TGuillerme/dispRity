@@ -787,7 +787,7 @@ plot.preview <- function(data, specific.args, ...) {
         subsets <- lapply(data$subsets,`[[`, "elements")
         ## Make an empty classifier
         classifier <- rep(NA, nrow(data$matrix[[1]]))
-        for(class in 1:n_groups) {
+        for(class in match(sort(unlist(lapply(subsets, length)), decreasing = TRUE), unlist(lapply(subsets, length)))) {
             ## Store the selected subsets in the classifier (potentially overriding)
             if(dim(subsets[[1]])[2] == 1) {
                 classifier[c(subsets[[class]])] <- class 
@@ -849,6 +849,7 @@ plot.preview <- function(data, specific.args, ...) {
         ## Add the points per matrix
         point_args$x <- data$matrix[[specific.args$matrix[matrix]]][, specific.args$dimensions[1]]
         point_args$y <- data$matrix[[specific.args$matrix[matrix]]][, specific.args$dimensions[2]]
+
         ## Call the points
         do.call(points, point_args)
     }
