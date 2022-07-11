@@ -73,7 +73,10 @@ dispRity v1.6.11 (2022-06-30) *MacMacGlimm*
  * Fixed bug with `null.test` which is now correctly managing the number of dimensions inherited from `dispRity` objects (thanks to [Alex Slavenko](https://alexslavenko.weebly.com/) for spotting this one and the two above).
  * Fixed bug when using level 2 dimension metrics on unidimensional data (the metric is now detected as a level 2 correctly; thanks to [Catherine Klein](https://www.researchgate.net/profile/Catherine-Klein) and [Rachel Warnock](https://www.gzn.nat.fau.de/palaeontologie/team/professors/rachel-warnock/) for noticing that one).
  * Update internal use of `is(data, c("array", "matrix"))` to `is.array(data)` for R 4.1.2.
- * `matrix.dispRity` and `extract.dispRity` are now deprecated. You should now use `get.matrix` and `get.disparity` respectively instead (with the same options).
+
+### DEPRECATED AND DEFUNCT
+
+ * `matrix.dispRity` and `extract.dispRity` are now deprecated. You should now use respectively `get.matrix` and `get.disparity` instead (the arguments don't change though).
 
 dispRity v1.6.0 (2021-04-16) *dispRitree*
 =========================
