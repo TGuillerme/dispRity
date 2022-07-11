@@ -1389,7 +1389,7 @@ plot.test.metric <- function(data, specific.args, ...) {
                                     
                 ## Plotting the shift preview
                 par(mar = mar_base)
-                plot.dispRity(step_preview, type = "preview", col = select_col, specific.args = list(legend = FALSE), main = step_name,xaxt = xaxts[step], yaxt = yaxts[step], legend.bg = "white")
+                plot.dispRity(step_preview, type = "preview", legend = TRUE, col = select_col, main = step_name,xaxt = xaxts[step], yaxt = yaxts[step], legend.bg = "white")
             }
         }
         ## Reset the default plot margins
