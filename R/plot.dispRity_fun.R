@@ -865,6 +865,7 @@ plot.preview <- function(data, specific.args, ...) {
         legend_args <- get.dots(dots, legend_args, "col", col_order, fun = "legend")
         legend_args <- get.dots(dots, legend_args, "pch", pch_order, fun = "legend")
         legend_args <- get.dots(dots, legend_args, "cex", 2/3, fun = "legend")
+        legend_args <- get.dots(dots, legend_args, "bg", NULL, fun = "legend")
 
         ## Add the legend
         do.call(legend, legend_args)
@@ -1224,7 +1225,6 @@ plot.test.metric <- function(data, specific.args, ...) {
         legend_args_1 <- legend_args_2 <- legend_args_2_base <- legend_args
     }
 
-
     ## Separating the data
     plot_groups <- list()
     for(group in 1:length(unique(group_plot))) {
@@ -1372,8 +1372,12 @@ plot.test.metric <- function(data, specific.args, ...) {
                 ## Making a new subset without the negatives
                 step_preview$subsets$negatives$elements <- matrix((1:nrow(step_preview$matrix[[1]]))[-c(step_preview$subsets[[1]]$elements)], ncol = 1)
 
+                ## Rename the subsets
+                names(step_preview$subsets)[2] <- as.character(100 - as.numeric(names(step_preview$subsets)[1]))
+
                 ## Default title
                 step_name <- names(step_preview$subsets)[1]
+
                 ## Selecting the colours and the title
                 if(names(data$saved_steps)[[shift]] == "random") {
                     select_col <- c(plot_args$col[1], "grey")
@@ -1385,7 +1389,7 @@ plot.test.metric <- function(data, specific.args, ...) {
                                     
                 ## Plotting the shift preview
                 par(mar = mar_base)
-                plot.dispRity(step_preview, type = "preview", col = select_col, specific.args = list(legend = FALSE), main = step_name,xaxt = xaxts[step], yaxt = yaxts[step])
+                plot.dispRity(step_preview, type = "preview", col = select_col, specific.args = list(legend = FALSE), main = step_name,xaxt = xaxts[step], yaxt = yaxts[step], legend.bg = "white")
             }
         }
         ## Reset the default plot margins
