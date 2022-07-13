@@ -4,7 +4,15 @@
 \alias{MCMCglmm.subsets}
 \title{MCMCglmm.subsets}
 \usage{
-MCMCglmm.subsets(data, posteriors, group, tree, rename.groups, ...)
+MCMCglmm.subsets(
+  data,
+  posteriors,
+  group,
+  tree,
+  rename.groups,
+  set.loc = TRUE,
+  ...
+)
 }
 \arguments{
 \item{data}{The \code{data.frame} or \code{matrix} used for the \code{\link[MCMCglmm]{MCMCglmm}} model.}
@@ -15,7 +23,9 @@ MCMCglmm.subsets(data, posteriors, group, tree, rename.groups, ...)
 
 \item{tree}{Optional, the tree(s) used in the MCMCglmm analyses.}
 
-\item{rename.groups}{optional, a vector of group names for renaming them. See details.}
+\item{rename.groups}{Optional, a vector of group names for renaming them. See details.}
+
+\item{set.loc}{Optional, if no location is available for a subset (\code{$Sol = 0}), set the location of the subset from \code{data} (the centroid of the group) (default is \code{TRUE}).}
 
 \item{...}{Optional arguments to be passed to \code{\link{MCMCglmm.covars}}.}
 }

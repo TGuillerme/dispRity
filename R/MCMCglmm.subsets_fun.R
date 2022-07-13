@@ -43,3 +43,12 @@ split.term.name <- function(one_term) {
                 factor = factor,
                 level  = level))
 }
+
+## Set the location
+update.location <- function(covar, data, subsets, group, dimensions) {
+    ## Get the group mean
+    centroid <- unname(colMeans(data[subsets[[group]]$elements, ])[dimensions])
+    ## Update the centroids
+    covar[[group]] <- lapply(covar[[group]], function(X, centroid) {X$loc <- centroid; return(X)}, centroid = centroid)
+    return(covar)
+}

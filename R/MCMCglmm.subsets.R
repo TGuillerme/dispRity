@@ -6,7 +6,8 @@
 #' @param posteriors A \code{\link[MCMCglmm]{MCMCglmm}} object, the posteriors of the model.
 #' @param group Optional, a named vector of which group to include from the posteriors (if left empty the random and residual terms are used). See details.
 #' @param tree Optional, the tree(s) used in the MCMCglmm analyses.
-#' @param rename.groups optional, a vector of group names for renaming them. See details.
+#' @param rename.groups Optional, a vector of group names for renaming them. See details.
+#' @param set.loc Optional, if no location is available for a subset (\code{$Sol = 0}), set the location of the subset from \code{data} (the centroid of the group) (default is \code{TRUE}). 
 #' @param ... Optional arguments to be passed to \code{\link{MCMCglmm.covars}}.
 #' 
 #' @details
@@ -39,7 +40,7 @@
 #' @author Thomas Guillerme
 #' @export
 
-MCMCglmm.subsets <- function(data, posteriors, group, tree, rename.groups, ...) {
+MCMCglmm.subsets <- function(data, posteriors, group, tree, rename.groups, set.loc = TRUE, ...) {
 
     match_call <- match.call()
 
@@ -98,6 +99,19 @@ MCMCglmm.subsets <- function(data, posteriors, group, tree, rename.groups, ...) 
 
     ## Getting the covar matrices per group
     covar_matrices <- MCMCglmm.covars(posteriors, ...)[selected_groups]
+
+    ## Set location
+    if(set.loc) {
+        ## Detect the invariant (missing) locs 
+        invariants <- unlist(lapply(lapply(lapply(covar_matrices, lapply, function(X) return(X$loc)), function(X) c(unlist(X))), function(X) length(unique(X)))) == 1
+
+        ## Replace the location for the invariant groups
+        for(group in 1:length(invariants)) {
+            if(invariants[group]) {
+                covar_matrices <- update.location(covar_matrices, cleaned_data, subsets, group, dimensions)
+            }
+        }
+    }
 
     ## Renaming the groups
     if(!missing(rename.groups)) {
