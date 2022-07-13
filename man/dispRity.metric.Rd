@@ -32,6 +32,7 @@
 \alias{projections}
 \alias{projections.tree}
 \alias{projections.between}
+\alias{disalignment}
 \title{Disparity metrics}
 \usage{
 dimension.level3.fun(matrix, ...)
@@ -143,11 +144,13 @@ Other options include the centering of the projections on 0.5 (code{centre = TRU
 
 The currently implemented between.groups metrics are:
 \itemize{
-   \item \code{group.dist}: calculates the distance between two groups (by default, this is the minimum euclidean vector norm distance between groups). Negative distances are considered as 0. This function must intake two matrices (\code{matrix} and \code{matrix2}) and the quantiles to consider. For the minimum distance between two groups, the 100th quantiles are considered (default: \code{probs = c(0,1)}) but this can be changed to any values (e.g. distance between the two groups accounting based on the 95th CI: \code{probs = c(0.025, 0.975)}; distance between centroids: \code{probs = c(0.5)}, etc...). This function is the linear algebra equivalent of the \code{hypervolume::hypervolume_distance} function.
+  \item \code{disalignment}: calculates the rejection of a point from \code{matrix} from the major axis of \code{matrix2}. Options are, \code{axis} to choose which major axis to reject from (default is \code{axis = 1}); \code{level} for the ellipse' confidence interval (to calculate the axis) (default is \code{level = 0.95}) and \code{point.to.reject}, a numeric value for designating which point in \code{matrix} to use or a function for calculating it (default is \code{point.to.reject = colMeans} for \code{matrix}'s centroid).
 
-\item \code{point.dist}: calculates the distance between \code{matrix} and a point calculated from \code{matrix2}. By default, this point is the centroid of \code{matrix2}. This can be changed by passing a function to be applied to \code{matrix2} through the \code{point} argument (for example, for the centroid: \code{point.dist(..., point = colMeans)}). NOTE: distance is calculated as \code{"euclidean"} by default, this can be changed using the \code{method} argument.
+  \item \code{group.dist}: calculates the distance between two groups (by default, this is the minimum euclidean vector norm distance between groups). Negative distances are considered as 0. This function must intake two matrices (\code{matrix} and \code{matrix2}) and the quantiles to consider. For the minimum distance between two groups, the 100th quantiles are considered (default: \code{probs = c(0,1)}) but this can be changed to any values (e.g. distance between the two groups accounting based on the 95th CI: \code{probs = c(0.025, 0.975)}; distance between centroids: \code{probs = c(0.5)}, etc...). This function is the linear algebra equivalent of the \code{hypervolume::hypervolume_distance} function.
 
-\item \code{projections.between}: calculates the projection of the major axis between two matrices. It allows the same arguments as \code{projections}. If \code{point1} and \code{point2} are not provided (default), this function measures the major axis from both input matrices, centre their origins and projects the end of the vector of \code{matrix} onto the vector from \code{matrix2}. Which axis to measure can be changed with the option \code{axis} (for the major axis, \code{axis = 1}; default) and the confidence interval can be changed using \code{level} (for the 95 confidence interval, \code{level = 0.95}; default - see \code{\link{axis.covar}} for more details). If and input vector is provided through \code{point1} and \code{point2}, both matrices major axes are projected on the input vector.
+  \item \code{point.dist}: calculates the distance between \code{matrix} and a point calculated from \code{matrix2}. By default, this point is the centroid of \code{matrix2}. This can be changed by passing a function to be applied to \code{matrix2} through the \code{point} argument (for example, for the centroid: \code{point.dist(..., point = colMeans)}). NOTE: distance is calculated as \code{"euclidean"} by default, this can be changed using the \code{method} argument.
+
+  \item \code{projections.between}: calculates the projection of the major axis between two matrices. It allows the same arguments as \code{projections}. This function measures the major axis from both input matrices, centre their origins and projects the end of the vector of \code{matrix} onto the vector from \code{matrix2}. Which axis to measure can be changed with the option \code{axis} (for the major axis, \code{axis = 1}; default) and the confidence interval can be changed using \code{level} (for the 95 confidence interval, \code{level = 0.95}; default - see \code{\link{axis.covar}} for more details).
 }
 
 When used in the \code{\link{dispRity}} function, optional arguments are declared after the \code{metric} argument: for example
@@ -201,6 +204,17 @@ deviations(dummy_matrix, hyperplane = c(0,1,1,0,0,0,0,0,0,0,0))
 ## diagonal
 ## Matrix diagonal
 diagonal(dummy_matrix) # WARNING: only valid if the dimensions are orthogonal
+
+## disalignment
+## Two dummy matrices
+matrix_1 <- matrix(rnorm(16), 4, 4)
+matrix_2 <- matrix(rnorm(16), 4, 4)
+## Measuring the disalignment of matrix_1 from matrix_2
+disalignment(matrix_1, matrix_2)
+## Same but using the 2nd major axis of the 0.75 CI ellipse from matrix_2 and the first point from matrix_1.
+disalignment(matrix_1, matrix_2,
+             axis = 2, level = 0.75,
+             point.to.reject = 1)
 
 ## displacements
 ## displacement ratios (from the centre)

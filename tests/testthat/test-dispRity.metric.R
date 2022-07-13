@@ -8,7 +8,7 @@ test_that("dimension generic", {
     expect_equal(capture_output(dimension.level3.fun()), "No implemented Dimension level 3 functions implemented in dispRity!\nYou can create your own by using: ?make.metric")
     expect_equal(capture_output(dimension.level2.fun()), "Dimension level 2 functions implemented in dispRity:\n?ancestral.dist\n?angles\n?centroids\n?deviations\n?displacements\n?edge.length.tree\n?neighbours\n?pairwise.dist\n?point.dist\n?projections\n?projections.tree\n?ranges\n?radius\n?variances\n?span.tree.length")
     expect_equal(capture_output(dimension.level1.fun()), "Dimension level 1 functions implemented in dispRity:\n?convhull.surface\n?convhull.volume\n?diagonal\n?ellipse.volume\n?func.div\n?func.eve\n?group.dist\n?mode.val\n?n.ball.volume")
-    expect_equal(capture_output(between.groups.fun()), "Between groups functions implemented in dispRity:\n?group.dist # level 1\n?point.dist # level 2\n?projections.between # level 2")
+    expect_equal(capture_output(between.groups.fun()), "Between groups functions implemented in dispRity:\n?disalignment # level 1\n?group.dist # level 1\n?point.dist # level 2\n?projections.between # level 2")
 })
 
 test_that("select.method sanitizing works", {
@@ -899,5 +899,44 @@ if(!nocov) {
     disparity <- get.disparity(is_covar)
     #expect_equal_round(unname(unlist(disparity))[-c(4,5)], c(25.115014, 11.407162, 9.240426, 25.914558, 26.988654, 10.379432)[-c(4,5)], 3)
     expect_equal_round(unname(unlist(disparity))[-c(4,5)], c(25.115014, 11.407162, 9.240426, 25.986941, 27.336217, 10.353848)[-c(4,5)], 1)
+}
+})
+
+test_that("disalignment works", {
+
+    set.seed(1)
+    ## Two dummy matrices
+    matrix_1 <- matrix(rnorm(16), 4, 4)
+    matrix_2 <- matrix(rnorm(16), 4, 4)
+    ## Projecting the major axis of matrix_2 onto the one from matrix_1
+    expect_equal_round(disalignment(matrix_1, matrix_2), 0.01943912, 6)
+    expect_equal_round(disalignment(matrix_2, matrix_1), 0.03299811, 6)
+    expect_equal_round(disalignment(matrix_1, matrix_2, axis = 4, level = 0.75, point.to.reject = 2), 0.08092853, 6)
+
+    ## Testing covarly
+    data(charadriiformes)
+    data <- MCMCglmm.subsets(data       = charadriiformes$data,
+                             posteriors = charadriiformes$posteriors,
+                             group      = MCMCglmm.levels(charadriiformes$posteriors)[1:4],
+                             rename.groups = c(levels(charadriiformes$data$clade), "phylogeny"),
+                             n = 50)
+    ## Testing the metric in the pipeline without covar option
+    no_covar <- dispRity(data, metric = disalignment, between.groups = TRUE)
+    ## Test the values out
+    disparity <- get.disparity(no_covar)
+    expect_equal(names(disparity), c("gulls:plovers", "gulls:sandpipers", "gulls:phylogeny", "plovers:sandpipers", "plovers:phylogeny", "sandpipers:phylogeny"))
+    expect_equal_round(unname(unlist(disparity)), c(0.011727377, 0.015053696, 0.015053696,0.015278514,0.015278514,0.008913555), 6)
+
+if(!nocov) {
+    ## Testing the metric in the pipeline with covar option
+    cov_dis <- as.covar(disalignment, VCV = c(FALSE, TRUE), loc = c(TRUE, FALSE))
+    expect_equal(names(formals(cov_dis)), c("matrix", "matrix2", "..."))
+    is_covar <- dispRity(data, metric = cov_dis, between.groups = list(c(1,4), c(2,4), c(3, 4)))
+    ## Test the values out
+    disparity <- get.disparity(is_covar, concatenate = FALSE)
+    expect_equal(names(disparity), c("gulls:phylogeny", "plovers:phylogeny", "sandpipers:phylogeny"))
+    expect_equal(unique(unlist(lapply(disparity, dim))), c(1, 50))
+    #expect_equal_round(unname(unlist(disparity)), c(2.8460391, 1.5703472, 1.2262642, 0.3840770, 0.2397510, 0.7011024), 2)
+    expect_equal_round(unname(unlist(lapply(disparity, median))), c(0.02802677, 0.01268591, 0.03202816), 5)
 }
 })
