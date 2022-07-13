@@ -161,10 +161,13 @@ test_that("as.covar works in dispRity", {
     expect_equal(names(test2), c("matrix", "tree", "call", "subsets", "covar", "disparity"))
     ## Different results
     expect_equal(c(summary(test1)$obs), c(0.375, 0.017, 0.112))
-    expect_equal(c(summary(test2)$obs), c(119.1, 107.6,  73.3))
+    expect_equal(c(summary(test2)$obs), c(100.4, 100.0, 100.1))
 
     ## Test with VCV, loc toggles
     sum.var.dist <- function(matrix, loc = rep(0, ncol(matrix))) {
+        if(!is(matrix, "matrix")) {
+            matrix <- diag(matrix)
+        }
         ## Get the sum of the diagonal of the matrix
         sum_diag <- sum(diag(matrix))
         ## Get the distance between 0 and the loc
@@ -172,7 +175,21 @@ test_that("as.covar works in dispRity", {
         ## Return the sum of the diagonal minus the distance
         return(sum_diag - dist_loc)
     }
-    sum.var.group <- function(matrix, matrix2, loc = rep(0, ncol(matrix)), loc2 = rep(0, ncol(matrix2)), ...) {
+    sum.var.group <- function(matrix, matrix2, loc, loc2, ...) {
+        if(missing(loc)) {
+            if(!is(matrix, "matrix")) {
+                loc = rep(0, length(matrix))
+            } else {
+                loc = rep(0, ncol(matrix))
+            }       
+        }
+        if(missing(loc2)) {
+            if(!is(matrix2, "matrix")) {
+                loc2 = rep(0, length(matrix2))
+            } else {
+                loc2 = rep(0, ncol(matrix2))
+            }       
+        }
         return(sum.var.dist(matrix, loc) + sum.var.dist(matrix2, loc2))
     }
 
@@ -224,7 +241,7 @@ test_that("as.covar works in dispRity", {
     expect_is(test3, "dispRity")
     expect_equal(names(test3), c("matrix", "tree", "call", "subsets", "covar", "disparity"))
     ## Different results
-    expect_equal(c(summary(test3)$obs), c(1, 10, 11))
+    expect_equal(c(summary(test3)$obs), c(3, 30, 33))
 
     ## VCV && loc
     test3 <- dispRity(data, metric = as.covar(sum.var.group, VCV = TRUE, loc = TRUE), between.groups = TRUE)
@@ -265,6 +282,6 @@ test_that("example works", {
     ## The same but with additional options (centre = 100)
     expect_equal(c(summary(dispRity(covar_data,
                      metric = c(sum, as.covar(centroids)),
-                     centre = 100))$obs), c(119.1, 107.6, 73.3, 100.0, 100.0))
+                     centre = 100))$obs), c(100.4, 100.0, 100.1, 100.2, 100.0))
     }
 })

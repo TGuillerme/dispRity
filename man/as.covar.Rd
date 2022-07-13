@@ -11,9 +11,9 @@ as.covar(fun, ..., VCV = TRUE, loc = FALSE)
 
 \item{...}{any additional arguments to pass to fun.}
 
-\item{VCV}{logical, whether to use the \code{$VCV} component of the elements in \code{dispRity$covar} (\code{TRUE}; default) or not (\code{FALSE}).}
+\item{VCV}{logical, whether to use the \code{$VCV} component of the elements in \code{dispRity$covar} (\code{TRUE}; default) or not (\code{FALSE}) (see details).}
 
-\item{loc}{logical, whether to use the \code{$loc} component of the elements in \code{dispRity$covar} (\code{TRUE}) or not (\code{FALSE}; default).}
+\item{loc}{logical, whether to use the \code{$loc} component of the elements in \code{dispRity$covar} (\code{TRUE}) or not (\code{FALSE}; default) (see details).}
 }
 \description{
 Changes a dispRity metric to use the covar element from a dispRity object.
@@ -23,6 +23,8 @@ This function effectively transforms the input argument from \code{matrix} (or \
 Note that if the function does not have an argument called \code{matrix}, the first argument is estimated as being the one to be transformed (e.g. if the function has its first argument \code{x}, it will transform it to \code{x = x$VCV}).
 
 You can toggle between using the \code{$VCV} or the \code{$loc} argument in the \code{$covar} matrix by using either \code{VCV = TRUE, loc = FALSE} (to access only \code{fun(matrix = matrix$VCV, ...)}), \code{VCV = FALSE, loc = TRUE} (to access only \code{matrix = matrix(matrix$loc, nrow = 1), ...}) or \code{VCV = TRUE, loc = TRUE} (to access \code{fun(matrix = matrix$VCV, loc = matrix$loc, ...)}; provided \code{fun} has an extra \code{loc} argument).
+
+For \code{between.groups} metrics with \code{matrix} and \code{matrix2} arguments, you can provide multiple logicals for \code{VCV} and \code{loc} to be applied repspectively to \code{matrix} and \code{matrix2}. For example \code{VCV = TRUE} will reinterpret \code{matrix} and \code{matrix2} as \code{matrix$VCV} and \code{matrix2$VCV} but \code{loc = c(TRUE, FALSE)} will only reinterpret \code{matrix} as \code{matrix$loc} (and \code{matrix2} will not be reinterpreted).
 }
 \examples{
 ## Creating a dispRity
