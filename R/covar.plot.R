@@ -262,12 +262,12 @@ covar.plot <- function(data, n, points = TRUE, major.axes = FALSE, ellipses = FA
             lines_args$col <- rep(lines_args$col, length(data$subsets))
         }
         lines_args <- get.dots(dots, lines_args, "lty", 1, "lines")
-        if(length(lines_args$cex) < length(data$subsets)) {
-            lines_args$cex <- rep(lines_args$cex, length(data$subsets))
+        if(length(lines_args$lty) < length(data$subsets)) {
+            lines_args$lty <- rep(lines_args$lty, length(data$subsets))
         }
         lines_args <- get.dots(dots, lines_args, "lwd", 1, "lines")
-        if(length(lines_args$pch) < length(data$subsets)) {
-            lines_args$pch <- rep(lines_args$pch, length(data$subsets))
+        if(length(lines_args$lwd) < length(data$subsets)) {
+            lines_args$lwd <- rep(lines_args$lwd, length(data$subsets))
         }
     }
 
@@ -277,7 +277,8 @@ covar.plot <- function(data, n, points = TRUE, major.axes = FALSE, ellipses = FA
         for(one_group in 1:length(data$subsets)) {
             one_lines_args <- lines_args
             one_lines_args$col <- adjustcolor(one_lines_args$col[one_group], alpha.f = trans_ellipses)
-            #TODO: Add transparency
+            one_lines_args$lty <- lines_args$lty[one_group]
+            one_lines_args$lwd <- lines_args$lwd[one_group]
             lapply(all_ellipses[[one_group]], function(data, lines_args) {one_lines_args$x <- data ; do.call(lines, one_lines_args)}, one_lines_args)
         }
     }
@@ -288,7 +289,8 @@ covar.plot <- function(data, n, points = TRUE, major.axes = FALSE, ellipses = FA
         for(one_group in 1:length(data$subsets)) {
             one_lines_args <- lines_args
             one_lines_args$col <- adjustcolor(one_lines_args$col[one_group], alpha.f = trans_axes)
-            #TODO: Add transparency
+            one_lines_args$lty <- lines_args$lty[one_group]
+            one_lines_args$lwd <- lines_args$lwd[one_group]
             lapply(all_axes[[one_group]], function(data, lines_args) {one_lines_args$x <- data ; do.call(lines, one_lines_args)}, one_lines_args)
         }
     }
