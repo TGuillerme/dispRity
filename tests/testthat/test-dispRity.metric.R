@@ -937,6 +937,6 @@ if(!nocov) {
     expect_equal(names(disparity), c("gulls:phylogeny", "plovers:phylogeny", "sandpipers:phylogeny"))
     expect_equal(unique(unlist(lapply(disparity, dim))), c(1, 50))
     #expect_equal_round(unname(unlist(disparity)), c(2.8460391, 1.5703472, 1.2262642, 0.3840770, 0.2397510, 0.7011024), 2)
-    expect_equal_round(unname(unlist(lapply(disparity, median))), c(0.02802677, 0.01268591, 0.03202816), 5)
+    expect_equal_round(unname(unlist(lapply(disparity, median))), c(0.03030111, 0.01305523, 0.03424203), 5)
 }
 })
