@@ -154,7 +154,7 @@ To cite the [time slicing method](https://onlinelibrary.wiley.com/doi/abs/10.111
 
 Acknowledgments
 -------
-Some ideas/functionalities/implementations in this package where implemented following the suggestions of [Natalie Cooper](http://nhcooper123.github.io/), [Graeme Lloyd](http://www.graemetlloyd.com/), [Dave Bapst](https://github.com/dwbapst/), [Andrew Jackson](https://www.tcd.ie/Zoology/people/jacksoan) and [Martin Brazeau](http://www.imperial.ac.uk/people/m.brazeau).
+I have been developping this package while being hired succesively by these people (thanks a lot for supporting me develop this package, sometimes as a side project): [Natalie Cooper](http://nhcooper123.github.io/), [Martin Brazeau](http://www.imperial.ac.uk/people/m.brazeau), [Vera Weisbecker](https://www.flinders.edu.au/people/vera.weisbecker) and [Gavin Thomas](https://www.sheffield.ac.uk/biosciences/people/academic-staff/gavin-thomas).
 
 If you use the `dispRity` pacakge for morphological disparity analyses, you should also check the excellent [`Claddis`](https://github.com/graemetlloyd/Claddis) package!
 

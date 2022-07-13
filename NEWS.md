@@ -34,6 +34,8 @@ dispRity v1.6.11 (2022-07-11) *MacMacGlimm*
  * *New function* `covar.plot` for plotting the `covar` content of `dispRity` objects (this is separated from `plot.dispRity` because of the many different options).
  * *New function*: `MCMCglmm.subsets` is a function that allows to convert a `MCMCglmm` object into a `dispRity` object.
  * *New metric*: `projections.between` a between group metric for applying the `projections` metric between the major covariance axis of two matrices.
+ * *New metric*: `disalignment`: the (dis)alignment of a group compared to another one (i.e. the rejection from group B's centre on the group A's major axis).
+ a between group metric for applying the `projections` metric between the major covariance axis of two matrices.
  * New `dispRity.fast` function for the fastest disparity calculations at the expanses of pretty much everything this package does. This is a really situational function.
  * *New utility functions* for manipulating `MCMCglmm` objects: `MCMCglmm.traits` for extracting the number of traits, `MCMCglmm.levels` for extracting the level names, `MCMCglmm.sample` for sampling posterior IDs and `MCMCglmm.covars` for extracting variance-covariance matrices
  * *New utility functions* for `dispRity` objects with `covar` matrices: `get.covar` to extract the VCV matrices (or a subsample of them); `axes.covar` to extract the major axes of the VCV matrices and `as.covar` to transform `dispRity` metric function to use a covar object.
