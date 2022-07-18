@@ -771,6 +771,10 @@ test_that("projections", {
     expect_equal_round(test_res, c(106.11636, 99.19498,105.32585, 104.94005, 0), 3)
     test_res <- projections(test, measure = "radian")
     expect_equal_round(test_res, c(1.100621, 1.177726, 1.069398, 1.146989, 1.079798), 3)
+    ## Orthogonality
+    angles <-     c(0, 1, 89, 90, 91, 179, 180, 181, 269, 270, 271, 359, 360)
+    orthogonal <- c(0, 1, 89, 90, 89,   1,   0,   1,   89, 90,  89,   1,   0)
+    expect_equal(sapply(angles, orthogonise), orthogonal/90)
 })
 
 test_that("projections.tree ", {
