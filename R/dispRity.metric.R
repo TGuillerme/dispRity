@@ -905,7 +905,7 @@ projections <- function(matrix, point1 = 0, point2 = colMeans(matrix), measure =
     ## Project the vectors
     projections <- t(apply(matrix, 1, geometry::dot, y = base_vector[2,], d = 2))
     ## Calculate the angles
-    if(measure == "degree" || measure == "radian") {
+    if(measure %in% c("degree", "radian", "orthogonality")) {
         angles <- t(t(apply(matrix, 1, vector.angle, base_vector[2,])))
         angles <- ifelse(is.nan(angles), 0, angles)
     }
