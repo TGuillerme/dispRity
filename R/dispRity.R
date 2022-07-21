@@ -257,6 +257,16 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
         if(!any(metric_is_between.groups)) {
             stop.call(msg.pre = "The provided metric (", match_call$metric, msg = ") cannot be applied between groups. \"between.groups\" metrics must have at least \"matrix\" and \"matrix2\" as inputs.")
         }
+        ## If between.groups contains characters, convert them in subset numbers
+        is_character <- unlist(lapply(between.groups, function(X) is(X, "character")))
+        if(any(is_character)) {
+            for(i in 1:length(between.groups)) {
+                if(is_character[i]) {
+                    between.groups[[i]] <- match(between.groups[[i]], names(data$subsets))
+                }
+            }
+        }
+
         ## Serial is a list, check if it contains the right information (pairs of things that exist)
         pairs <- unique(unlist(lapply(between.groups, length))) 
         if(length(pairs) > 1 || pairs != 2 || max(unlist(between.groups)) > length(data$subsets)) {
