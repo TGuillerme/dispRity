@@ -188,7 +188,8 @@
 #' matrix_2 <- matrix(rnorm(16), 4, 4)
 #' ## Measuring the disalignment of matrix_1 from matrix_2
 #' disalignment(matrix_1, matrix_2)
-#' ## Same but using the 2nd major axis of the 0.75 CI ellipse from matrix_2 and the first point from matrix_1.
+#' ## Same but using the 2nd major axis of the 0.75 CI ellipse
+#' ## from matrix_2 and the first point from matrix_1.
 #' disalignment(matrix_1, matrix_2,
 #'              axis = 2, level = 0.75,
 #'              point.to.reject = 1)
