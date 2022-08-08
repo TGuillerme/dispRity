@@ -1,9 +1,13 @@
-## Utility functions for manipulating dispRity objects
-
-#' @title Creates a \code{dispRity} object.
+#' @name make.dispRity
+#' @aliases make.dispRity fill.dispRity
+#' 
+#' @title Make and fill \code{dispRity}.
 #' 
 #' @description Creating an empty \code{dispRity} object from a matrix
 #'
+#' @usage make.dispRity(data, tree, call, subsets)
+#' @usage fill.dispRity(data, tree)
+#' 
 #' @param data A \code{matrix}.
 #' @param tree Optional, a \code{phylo} or \code{multiPhylo} object.
 #' @param call Optional, a \code{list} to be a \code{dispRity} call.
@@ -14,8 +18,14 @@
 #' make.dispRity()
 #' 
 #' ## Still an empty dispRity object (with a matrix)
-#' make.dispRity(data = matrix(rnorm(12), ncol = 3))
-#'
+#' (empty <- make.dispRity(data = matrix(rnorm(12), ncol = 3)))
+#' 
+#' ## A dispRity object with a matrix of 4*3
+#' fill.dispRity(empty)
+#' 
+#' ## A dispRity object with a tree
+#' my_tree <- rtree(4, tip.label = c(1:4))
+#' fill.dispRity(empty, tree = my_tree)
 #' 
 #' @author Thomas Guillerme
 make.dispRity <- function(data, tree, call, subsets) {
@@ -61,28 +71,7 @@ make.dispRity <- function(data, tree, call, subsets) {
 
     return(dispRity_object)
 }
-
-#' @title Fills a \code{dispRity} object.
-#'
-#' @description Fills a \code{dispRity} object using the data from its matrix
-#'
-#' @param data A \code{dispRity} object.
-#' @param tree A \code{phylo} or \code{multiPhylo} object or \code{NULL} (default)
-#' 
-#' @examples
-#' ## An empty dispRity object (with a matrix)
-#' empty <- make.dispRity(data = matrix(rnorm(12), ncol = 3))
-#' 
-#' ## A dispRity object with a matrix of 4*3
-#' fill.dispRity(empty)
-#' 
-#' ## A dispRity object with a tree
-#' my_tree <- rtree(4, tip.label = c(1:4))
-#' fill.dispRity(empty, tree = my_tree)
-#' 
-#' @author Thomas Guillerme
-#' 
-fill.dispRity <- function(data, tree = NULL) {
+fill.dispRity <- function(data, tree) {
 
     ## Data have a matrix
     if(!is.null(data)) {
@@ -103,41 +92,61 @@ fill.dispRity <- function(data, tree = NULL) {
         }
     }
 
-    if(!is.null(tree)) {
+    if(!missing(tree)) {
         ## Add the trees
         data$tree <- check.dispRity.tree(tree, data = data)
     }
     return(data)
 }
 
-#' @name matrix.dispRity
-#' @title Fetching a matrix from a \code{dispRity} object.
-#' @aliases fetch.matrix
+
+#' @name get.matrix
+#' @aliases get.matrix get.disparity matrix.dispRity extract.dispRity
+#' 
+#' 
+#' 
+#' @title Extract elements from a \code{dispRity} object.
+#' 
+#' @usage get.matrix(data, subsets, rarefaction, bootstrap, matrix)
+#' @usage get.disparity(data, subsets, rarefaction, observed, concatenate)
 #'
-#' @description Fetching a specific matrix from a \code{dispRity} object.
+#' @description Extract a matrix or the disparity results from a \code{dispRity}.
 #'
 #' @param data A \code{dispRity} object.
-#' @param subsets Optional, a \code{numeric} value to select subsets.
-#' @param rarefaction Optional, a \code{numeric} value to select the rarefaction level (\code{0} is no rarefaction).
+#' @param subsets Optional, a \code{numeric} or \code{character} for which subsets to get (if missing, the value for all subsets are given).
+#' @param rarefaction Optional, a single \code{numeric} value corresponding to the rarefaction level (as the number of elements; if missing, the non-rarefied values are output).
 #' @param bootstrap Optional, a \code{numeric} value to select a specific bootstrap draw (\code{0} is no bootstrap).
 #' @param matrix A \code{numeric} value of which matrix to select (default is \code{1}).
+#' @param observed A \code{logical} value indicating whether to output the observed (\code{TRUE} (default)) or the bootstrapped values (\code{FALSE}).
+#' @param concatenate When the disparity metric is a distribution, whether to concatenate it returning the median (\code{TRUE}; default) or to return each individual values.
 #' 
 #' @examples
 #' ## Load the disparity data based on Beck & Lee 2014
 #' data(disparity)
 #' 
 #' ## To get the original matrix
-#' matrix.dispRity(disparity)
+#' get.matrix(disparity)
 #' 
 #' ## To get the un-bootstrapped matrix from the subset called "80"
-#' matrix.dispRity(disparity, subsets = "80")
+#' get.matrix(disparity, subsets = "80")
 #' 
 #' ## To get the 52nd bootstrap draw of the second rarefaction level (15) of the
 #' ## same subset
-#' matrix.dispRity(disparity, subsets = 2, rarefaction = 2, bootstrap = 52)
+#' get.matrix(disparity, subsets = 2, rarefaction = 2, bootstrap = 52)
+#'
+#' ## Extracting the observed disparity
+#' get.disparity(disparity)
+#'
+#' ## Extracting the bootstrapped disparity
+#' boot_disp <- get.disparity(disparity, observed = FALSE)
+#' str(boot_disp)
+#' ## Or only the rarefied (5) data
+#' boot_disp_rare <- get.disparity(disparity, observed = FALSE,
+#'      rarefaction = 5)
 #' 
+#' @seealso \code{\link{dispRity}}, \code{\link{get.subsets}}.
 #' @author Thomas Guillerme
-matrix.dispRity <- function(data, subsets, rarefaction, bootstrap, matrix = 1){
+get.matrix <- function(data, subsets, rarefaction, bootstrap, matrix = 1){
 
     ## Sanitizing
     check.class(data, "dispRity")
@@ -157,96 +166,7 @@ matrix.dispRity <- function(data, subsets, rarefaction, bootstrap, matrix = 1){
         }
     }
 }
-
-#' @title Extracts subsets from a dispRity object.
-#' @aliases get.dispRity, get.subsets.dispRity
-#'
-#' @description Extracting some subsets and data from a \code{dispRity} object.
-#'
-#' @param data A \code{dispRity} object.
-#' @param subsets A list of subset names or subset numbers to be extracted.
-#'
-#' @return
-#' This function outputs a \code{dispRity} object.
-#' 
-#' @examples
-#' ## Load the disparity data based on Beck & Lee 2014
-#' data(disparity)
-#'
-#' ## Get one subset
-#' get.subsets(disparity, "60")
-#'
-#' ## Get two subsets
-#' get.subsets(disparity, c(1,5))
-#'
-#' @seealso \code{\link{dispRity}}, \code{\link{extract.dispRity}}.
-#'
-#' @author Thomas Guillerme
-
-## DEBUG
-# source("sanitizing.R")
-# data(BeckLee_mat99) ; data(BeckLee_tree) 
-# subsets_full <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous",time = 5, model = "acctran")
-# bootstrapped_data <- boot.matrix(subsets_full, bootstraps = 10, rarefaction = c(3, 5))
-# disparity_data <- dispRity(bootstrapped_data, variances)
-# get.subsets(bootstrapped_data, subsets = "66.75552") # 1 subsets for 23 elements
-# get.subsets(subsets_full, subsets = 1) # 1 subsets for 3 elements
-# get.subsets(disparity_data, subsets = c(1,5)) # 2 subsets for 13 elements
-get.subsets <- function(data, subsets) {
-    ## data
-    check.class(data, "dispRity")
-
-    ## subsets
-    check.subsets(subsets, data)
-
-    ## create the new data set
-    data_out <- list("matrix" = data$matrix, "call" = data$call, "subsets" = data$subsets[subsets])
-
-    ## Add the disparity (if available)
-    if(!is.null(data$call$disparity)) {
-        data_out$disparity <- data$disparity[subsets]
-    }
-
-    class(data_out) <- "dispRity"
-    return(data_out)
-}
-
-#' @title Extracting disparity values.
-#'
-#' @description Extracts the disparity from a \code{dispRity} object.
-#'
-#' @param data A \code{dispRity} object containing disparity results.
-#' @param observed A \code{logical} value indicating whether to output the observed (\code{TRUE} (default)) or the bootstrapped values (\code{FALSE}).
-#' @param rarefaction Optional, a single \code{numeric} value corresponding to the rarefaction level (as the number of elements; if missing, the non-rarefied values are output).
-#' @param subsets Optional, a \code{numeric} or \code{character} for which subsets to get (if missing, the value for all subsets are given).
-#' @param concatenate When the disparity metric is a distribution, whether to concatenate it (\code{TRUE}; default) or to return each individual metric.
-#' 
-#' @examples
-#' ## Load the disparity data based on Beck & Lee 2014
-#' data(disparity)
-#'
-#' ## Extracting the observed disparity
-#' extract.dispRity(disparity)
-#'
-#' ## Extracting the bootstrapped disparity
-#' boot_disp <- extract.dispRity(disparity, observed = FALSE)
-#' str(boot_disp)
-#' ## Or only the rarefied (5) data
-#' boot_disp_rare <- extract.dispRity(disparity, observed = FALSE,
-#'      rarefaction = 5)
-#' 
-#' @seealso \code{\link{dispRity}}, \code{\link{get.subsets}}.
-#'
-#' @author Thomas Guillerme
-
-## DEBUG
-# source("sanitizing.R")
-# data(BeckLee_mat99) ; data(BeckLee_tree) 
-# subsets_full <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous",time = 5, model = "acctran")
-# bootstrapped_data <- boot.matrix(subsets_full, bootstraps = 10, rarefaction = c(3, 5))
-# data <- dispRity(bootstrapped_data, c(sum,variances))
-# extract.dispRity(data, observed = FALSE, rarefaction = 5,subsets = 2)
-extract.dispRity <- function(data, subsets, observed = TRUE, rarefaction = FALSE, concatenate = TRUE) {
+get.disparity <- function(data, subsets, rarefaction, observed = TRUE, concatenate = TRUE) {
     #----------------------
     # SANITIZING
     #----------------------
@@ -268,16 +188,15 @@ extract.dispRity <- function(data, subsets, observed = TRUE, rarefaction = FALSE
 
     ## subsets
     if(missing(subsets)) {
-        if(data$call$disparity$metrics$between.groups) {
-            subsets <- seq(1:length(data$disparity))
-        } else {
-            subsets <- seq(1:length(data$subsets))    
-        }
+        subsets <- seq(1:length(data$disparity))
     } else {
         check.subsets(subsets, data)
     }
 
     ## Rarefaction
+    if(missing(rarefaction)) {
+        rarefaction <- FALSE
+    }
     if(rarefaction) {
         check.class(rarefaction, c("numeric", "integer"))
         check.length(rarefaction, 1, errorif = FALSE, msg = "Only one rarefaction level can be used.")
@@ -295,190 +214,78 @@ extract.dispRity <- function(data, subsets, observed = TRUE, rarefaction = FALSE
         lapply.observed <- function(disparity) {
             return(c(apply(disparity$elements, 1, median, na.rm = TRUE)))
         }
-        return(lapply(data$disparity[subsets], lapply.observed))
+        if(concatenate) {
+            output <- lapply(data$disparity[subsets], lapply.observed)
+        } else {
+            output <- lapply(data$disparity[subsets], function(X) X$elements)
+        }
     } else {
         output <- lapply(as.list(subsets), extract.disparity.values, data, rarefaction, concatenate)
         names(output) <- names(data$subsets[subsets])
+    }
+
+    ## Add the dimnames if necessary
+    if(!data$call$disparity$metrics$between.groups) {
+        return(mapply(add.dimnames, output, as.list(subsets), MoreArgs = list(data = data), SIMPLIFY = FALSE))
+    } else {
         return(output)
     }
 }
-
-#' @title Rescaling and centering disparity results.
-#'
-#' @description Scales or/and centers the disparity measurements.
-#'
-#' @param data a \code{dispRity} object.
-#' @param center either a \code{logical} value or a \code{numeric} vector of length equal to the number of elements of \code{data} (default is \code{FALSE}).
-#' @param scale either a \code{logical} value or a \code{numeric} vector of length equal to the number of elements of \code{data} (default is \code{TRUE}).
-#' @param use.all \code{logical}, whether to scale/center using the full distribution (i.e. all the disparity values) or only the distribution within each subsets of bootstraps (default is \code{TRUE}).
-#' @param ... optional arguments to be passed to \code{scale}.
-#' 
-#' @examples
-#' ## Load the disparity data based on Beck & Lee 2014
-#' data(disparity)
-#' 
-#' ## Scaling the data
-#' summary(rescale.dispRity(disparity, scale = TRUE)) # Dividing by the maximum
-#' ## Multiplying by 10 (dividing by 0.1)
-#' summary(rescale.dispRity(disparity, scale = 0.1))
-#'
-#' @seealso \code{\link{dispRity}}, \code{\link{test.dispRity}}, \code{\link[base]{scale}}.
-#'
-#' @author Thomas Guillerme
-# @export
-
-## DEBUG
-# source("sanitizing.R")
-# data(BeckLee_mat50)
-# groups <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2), rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1, dimnames = list(rownames(BeckLee_mat50))))
-# customised_subsets <- custom.subsets(BeckLee_mat50, groups)
-# bootstrapped_data <- boot.matrix(customised_subsets, bootstraps = 7, rarefaction = c(10, 25))
-# data <- dispRity(bootstrapped_data, metric = c(sum, centroids))
-
-# summary(data) # No scaling
-# summary(rescale.dispRity(data, scale = TRUE)) # Dividing by the maximum
-# summary(rescale.dispRity(data, scale = 0.1)) # Multiplying by 10
-# summary(rescale.dispRity(data, center = TRUE, scale = TRUE)) # Scaling and centering
-
-rescale.dispRity <- function(data, center = FALSE, scale = TRUE, use.all = TRUE, ...) {
-
-    match_call <- match.call()
-
-    ## data
-    check.class(data, "dispRity")
-    if(is.null(data$call$disparity)) {
-        stop.call(match_call$data, "does not contain disparity values.")
-    }
-
-    ## Get the whole distribution
-    all_data <- unlist(extract.dispRity(data))
-    if(!is.null(data$call$bootstrap)) {
-        all_data <- c(all_data, unlist(extract.dispRity(data, observed = FALSE)))
-    }
-
-    ## Getting the center value
-    if(is(center, "logical")) {
-        if(center & use.all) {
-            center <- mean(all_data, na.rm = TRUE)
-        }
-    } else {
-        check.class(center, c("numeric", "integer", "logical"))
-        check.length(center, 1, " must be either logical or a single numeric value.")
-    }
-
-    ## Getting the scale value
-    if(is(scale, "logical")) {
-        if(scale & use.all) {
-            scale <- max(all_data)
-        }
-    } else {
-        check.class(scale, c("numeric", "integer", "logical"))
-        check.length(scale, 1, " must be either logical or a single numeric value.")
-    }
-
-    ## Lapply functions
-    lapply.scale <- function(X, center, scale) {return(t(scale(t(X), center, scale)))}
-
-    data$disparity <- lapply(data$disparity, lapply, lapply.scale, center, scale)
-
-    return(data)
+matrix.dispRity <- function(...) {
+    warning("The function matrix.dispRity is deprecated. Use get.matrix instead.")
+    return(get.matrix(...))
+}
+extract.dispRity <- function(...) {
+    warning("The function extract.dispRity is deprecated. Use get.disparity instead.")
+    return(get.matrix(...))
 }
 
 
-#' @title Sorting or ordering a \code{dispRity} object.
+
+
+
+
+
+
+
+
+#' @name get.subsets 
+#' @aliases n.subsets size.subsets get.subsets combine.subsets 
 #'
-#' @description Sort (or order) the subsets of a \code{dispRity} object.
-#'
-#' @param x A \code{dispRity} object.
-#' @param decreasing \code{logical}. Should the sort be in ascending or descending order? Is ignored if \code{sort} is used.
-#' @param sort An optional \code{vector} of \code{numeric} values corresponding to the order in which to return the subsets.
-#' @param ... optional arguments to be passed to \code{sort}.
+#' @title Extracts or modify subsets from a \code{dispRity} object.
+#' @description Extracting or modify some subsets' data and information from a \code{dispRity} object.
 #' 
-#' @examples
-#' ## Load the disparity data based on Beck & Lee 2014
-#' data(disparity)
-#' 
-#' ## Sorting the data
-#' summary(disparity)
-#' summary(sort(disparity, decreasing = TRUE))
-#' summary(sort(disparity, sort = c(7,1,3,4,5,2,6)))
-#'
-#' @seealso \code{\link{dispRity}}, \code{\link{test.dispRity}}, \code{\link{plot.dispRity}}, \code{\link{get.subsets}}, \code{\link{extract.dispRity}}.
-#'
-#' @author Thomas Guillerme
-# @export
-
-## DEBUG
-# source("sanitizing.R")
-# data(BeckLee_mat99) ; data(BeckLee_tree) 
-# subsets <- chrono.subsets(data = BeckLee_mat99, tree = BeckLee_tree, method = "continuous", time = 5, model = "acctran")
-# data <- dispRity(subsets, metric = mean)
-# summary(data)
-# summary(sort(data, decreasing = TRUE))
-# summary(sort(data, sort = c(7,1,3,4,5,2,6)))
-
-sort.dispRity <- function(x, decreasing = FALSE, sort, ...) {
-    data <- x
-
-    match_call <- match.call()
-
-    ## Sanitizing
-
-    ## data
-    check.class(data, "dispRity")
-    ## Initialising subsets length variable
-    length_subsets <- length(data$subsets)
-    if(length_subsets == 1) {
-        stop.call(match_call$x, " contains no subsets.")
-    }
-
-    ## decreasing
-    check.class(decreasing, "logical")
-
-    ## sort
-    if(!missing(sort)) {
-        check.class(sort, c("numeric", "integer"))
-        check.length(sort, length_subsets, " must be the same length as the number of subsets in data.")
-        if(all.equal(sort(sort), seq(from = 1, to = length_subsets)) != TRUE) {
-            stop.call("", paste0("The sort argument can only contain unique numbers between 1 and ", length_subsets, "."))
-        }
-    } else {
-        if(decreasing == FALSE) sort <- seq(from = 1, to = length_subsets)
-        if(decreasing == TRUE) sort <- rev(seq(from = 1, to = length_subsets))
-    }
-
-
-    ## Sorting the subsets
-    data$subsets <- data$subsets[sort]
-
-    ## Sorting the disparity
-    if(!is.null(data$call$disparity)) {
-        data$disparity <- data$disparity[sort]
-    }
-
-    return(data)
-}
-
-
-#' @title Combines or cleans subsets.
-#'
-#' @description Combines multiple subsets together or cleans a subset series to contain at least n elements.
+#' @usage n.subsets(data)
+#' @usage size.subsets(data)
+#' @usage get.subsets(data, subsets)
+#' @usage combine.subsets(data, subsets)
 #'
 #' @param data A \code{dispRity} object.
-#' @param subsets Either a \code{vector} of the number or name of the subsets to merge or a single \code{numeric} value of the minimum of elements for each series (see details).
-#' 
+#' @param subsets Either a \code{vector} of the number or name of the subsets to merge or a single. But see details for \code{combine.subsets}.
+#'
 #' @details  
+#' For the function \code{combine.subsets}, the argument \code{subsets} can ALSO be a \code{numeric} value of the minimum of elements for each series.
 #' If \code{subset} is a vector, the subsets are merged in the given input order. \code{c(1, 3, 4)} will merge subsets 1 and 3 into 4, while the opposite, \code{c(3, 4, 1)} will merge subsets 3 and 4 into 1.
 #' When a single numeric value is given, subsets are merged with the next subset until the correct number of elements for each subset is reached (apart from the last subset that gets merged with the previous one).
 #' 
-#' @return
-#' A \code{dispRity} object containing the original matrix and subsets.
-#' NOTE: if the data are already bootstrapped/rarefied or/and disparity already calculated the operation will have to be performed again.
-#' 
-#' 
 #' @examples
+#' ## Load the disparity data based on Beck & Lee 2014
+#' data(disparity)
+#' 
+#' ## How many subsets are in disparity?
+#' n.subsets(disparity)
+#'
+#' ## What are the number of elements per subsets?
+#' size.subsets(disparity)
+#' 
+#' ## Get one subset
+#' get.subsets(disparity, "60")
+#'
+#' ## Get two subsets
+#' get.subsets(disparity, c(1,5))
+#'
 #' ## Generate subsets from a dummy matrix
-#' dummy_matrix <- matrix(rnorm(120), 40)
+#' dummy_matrix <- matrix(rnorm(120), 40, dimnames = list(c(1:40)))
 #' dummy_subsets <- custom.subsets(dummy_matrix,
 #'      group = list("a" = c(1:5), "b" = c(6:10), "c" = c(11:20),
 #'                   "d" = c(21:24), "e" = c(25:30), "f" = c(31:40)))
@@ -492,20 +299,31 @@ sort.dispRity <- function(x, decreasing = FALSE, sort, ...) {
 #' ## Merging the subsets to contain at least 20 taxa
 #' combine.subsets(dummy_subsets, 10)
 #' 
-#' @seealso \code{\link{custom.subsets}}, \code{\link{chrono.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
+#' @seealso \code{\link{dispRity}}, \code{\link{get.disparity}}.
 #'
 #' @author Thomas Guillerme
+get.subsets <- function(data, subsets) {
+    ## data
+    check.class(data, "dispRity")
 
-#For testing
-# stop("DEBUG merge.chrono.subsets")
-# source("sanitizing.R")
-# source("dispRity.utilities_fun.R")
+    ## subsets
+    check.subsets(subsets, data)
 
-# data(disparity)
-# data <- disparity
-# data1 <- time_binsEQ_Beck
-# data2 <- time_binsEQ_Beck
-# after = TRUE
+    ## create the new data set
+    data_out <- list("matrix" = data$matrix, "call" = data$call, "subsets" = data$subsets[subsets])
+
+    ## Add the disparity (if available)
+    if(!is.null(data$call$disparity)) {
+        data_out$disparity <- data$disparity[subsets]
+    }
+    ## Add the covar (if available)
+    if(!is.null(data$covar)) {
+        data_out$covar <- data$covar[subsets]
+    }
+
+    class(data_out) <- "dispRity"
+    return(data_out)
+}
 
 combine.subsets <- function(data, subsets) {
 
@@ -525,8 +343,8 @@ combine.subsets <- function(data, subsets) {
     check.class(data, "dispRity")
     
     ## Check for previous data    
-    has_disparity <- ifelse(!is.null(data$call$disparity), TRUE, FALSE)
-    has_bootstrap <- ifelse(!is.null(data$call$bootstrap), TRUE, FALSE)
+    has_disparity <- !is.null(data$call$disparity)
+    has_bootstrap <- !is.null(data$call$bootstrap)
     if(has_disparity && has_bootstrap) {
         warning(paste(as.expression(match_call$data), "contained bootstrap and disparity data that has been discarded in the output."))
         data$disparity <- NULL
@@ -617,60 +435,275 @@ combine.subsets <- function(data, subsets) {
         return(data)
     }
 }
-
-
-
-#' @title Size subsets.
-#'
-#' @description Getting the size (number of elements) from each subsets of a dispRity object.
-#'
-#' @param data A \code{dispRity} object.
-#' 
-#' @examples
-#' ## Loading a dispRity object
-#' data(disparity)
-#' 
-#' ## What are the number of elements per subsets?
-#' size.subsets(disparity)
-#' 
-#' @seealso \code{\link{custom.subsets}}, \code{\link{chrono.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
-#'
-#' @author Thomas Guillerme
-
-#For testing
-# source("sanitizing.R")
-# source("dispRity.utilities_fun.R")
-
-# data(disparity)
-# data <- disparity
-
 size.subsets <- function(data) {
     ## Getting the size of subsets
     return(unlist(lapply(data$subsets, function(x) nrow(x$elements))))
 }
-
-
-#' @title Number of subsets.
-#'
-#' @description Getting the number of subsets from a dispRity object.
-#'
-#' @param data A \code{dispRity} object.
-#' 
-#' @examples
-#' ## Loading a dispRity object
-#' data(disparity)
-#' 
-#' ## What are the number of elements per subsets?
-#' n.subsets(disparity)
-#' 
-#' @seealso \code{\link{custom.subsets}}, \code{\link{chrono.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
-#'
-#' @author Thomas Guillerme
-
 n.subsets <- function(data) {
     ## Getting the size of subsets
     return(length(data$subsets))
 }
+
+
+
+
+
+
+
+
+
+
+
+
+#' @name add.tree
+#' @aliases add.tree get.tree remove.tree
+#' 
+#' @title Add, get or remove tree
+#'
+#' @usage add.tree(data, tree)
+#' @usage get.tree(data)
+#' @usage remove.tree(data)
+#' 
+#' @description Adding, extracting or removing the tree component from a \code{dispRity} object
+#'
+#' @param data A \code{dispRity} object.
+#' @param tree A \code{phylo} or \code{mutiPhylo} object.
+#' 
+#' @examples
+#' ## Loading a dispRity object
+#' data(disparity)
+#' ## Loading a tree
+#' data(BeckLee_tree)
+#' 
+#' ## Removing  the tree from the dispRity object
+#' (tree_data <- remove.tree(disparity))
+#' 
+#' ## Extracting the tree
+#' get.tree(tree_data) # is null
+#' 
+#' ## Adding a tree to the disparity object
+#' tree_data <- add.tree(tree_data, tree = BeckLee_tree)
+#'
+#' ## Extracting the tree
+#' get.tree(tree_data) # is a "phylo" object
+#' 
+#' @seealso \code{\link{custom.subsets}}, \code{\link{chrono.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
+#'
+#' @author Thomas Guillerme
+add.tree <- function(data, tree) {
+    ## Add the tree
+    if(is.null(data$tree[[1]])) {
+        data$tree <- check.dispRity.tree(tree = tree, data = data)
+    } else {
+        data$tree <- check.dispRity.tree(tree = c(get.tree(data$tree), tree), data = data)
+    }
+    return(data)
+}
+get.tree <- function(data) {
+    ## Return the tree
+    tree <- data$tree
+    if(length(tree) == 1) {
+        return(tree[[1]])
+    } else {
+        return(tree)
+    }
+}
+remove.tree <- function(data) {
+    ## Remove the tree
+    data$tree <- list(NULL)
+    return(data)
+}
+
+
+
+
+
+
+
+
+
+
+
+
+#' @title Rescaling and centering disparity results.
+#'
+#' @description Scales or/and centers the disparity measurements.
+#'
+#' @param data a \code{dispRity} object.
+#' @param center either a \code{logical} value or a \code{numeric} vector of length equal to the number of elements of \code{data} (default is \code{FALSE}).
+#' @param scale either a \code{logical} value or a \code{numeric} vector of length equal to the number of elements of \code{data} (default is \code{TRUE}).
+#' @param use.all \code{logical}, whether to scale/center using the full distribution (i.e. all the disparity values) or only the distribution within each subsets of bootstraps (default is \code{TRUE}).
+#' @param ... optional arguments to be passed to \code{scale}.
+#' 
+#' @examples
+#' ## Load the disparity data based on Beck & Lee 2014
+#' data(disparity)
+#' 
+#' ## Scaling the data
+#' summary(rescale.dispRity(disparity, scale = TRUE)) # Dividing by the maximum
+#' ## Multiplying by 10 (dividing by 0.1)
+#' summary(rescale.dispRity(disparity, scale = 0.1))
+#'
+#' @seealso \code{\link{dispRity}}, \code{\link{test.dispRity}}, \code{\link[base]{scale}}.
+#'
+#' @author Thomas Guillerme
+# @export
+
+## DEBUG
+# source("sanitizing.R")
+# data(BeckLee_mat50)
+# groups <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2), rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1, dimnames = list(rownames(BeckLee_mat50))))
+# customised_subsets <- custom.subsets(BeckLee_mat50, groups)
+# bootstrapped_data <- boot.matrix(customised_subsets, bootstraps = 7, rarefaction = c(10, 25))
+# data <- dispRity(bootstrapped_data, metric = c(sum, centroids))
+
+# summary(data) # No scaling
+# summary(rescale.dispRity(data, scale = TRUE)) # Dividing by the maximum
+# summary(rescale.dispRity(data, scale = 0.1)) # Multiplying by 10
+# summary(rescale.dispRity(data, center = TRUE, scale = TRUE)) # Scaling and centering
+rescale.dispRity <- function(data, center = FALSE, scale = TRUE, use.all = TRUE, ...) {
+
+    match_call <- match.call()
+
+    ## data
+    check.class(data, "dispRity")
+    if(is.null(data$call$disparity)) {
+        stop.call(match_call$data, "does not contain disparity values.")
+    }
+
+    ## Get the whole distribution
+    all_data <- unlist(get.disparity(data))
+    if(!is.null(data$call$bootstrap)) {
+        all_data <- c(all_data, unlist(get.disparity(data, observed = FALSE)))
+    }
+
+    ## Getting the center value
+    if(is(center, "logical")) {
+        if(center & use.all) {
+            center <- mean(all_data, na.rm = TRUE)
+        }
+    } else {
+        check.class(center, c("numeric", "integer", "logical"))
+        check.length(center, 1, " must be either logical or a single numeric value.")
+    }
+
+    ## Getting the scale value
+    if(is(scale, "logical")) {
+        if(scale & use.all) {
+            scale <- max(all_data)
+        }
+    } else {
+        check.class(scale, c("numeric", "integer", "logical"))
+        check.length(scale, 1, " must be either logical or a single numeric value.")
+    }
+
+    ## Lapply functions
+    lapply.scale <- function(X, center, scale) {return(t(scale(t(X), center, scale)))}
+
+    data$disparity <- lapply(data$disparity, lapply, lapply.scale, center, scale)
+
+    return(data)
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+#' @title Sorting or ordering a \code{dispRity} object.
+#'
+#' @description Sort (or order) the subsets of a \code{dispRity} object.
+#'
+#' @param x A \code{dispRity} object.
+#' @param decreasing \code{logical}. Should the sort be in ascending or descending order? Is ignored if \code{sort} is used.
+#' @param sort An optional \code{vector} of \code{numeric} values corresponding to the order in which to return the subsets.
+#' @param ... optional arguments to be passed to \code{sort}.
+#' 
+#' @examples
+#' ## Load the disparity data based on Beck & Lee 2014
+#' data(disparity)
+#' 
+#' ## Sorting the data
+#' summary(disparity)
+#' summary(sort(disparity, decreasing = TRUE))
+#' summary(sort(disparity, sort = c(7,1,3,4,5,2,6)))
+#'
+#' @seealso \code{\link{dispRity}}, \code{\link{test.dispRity}}, \code{\link{plot.dispRity}}, \code{\link{get.subsets}}, \code{\link{get.disparity}}.
+#'
+#' @author Thomas Guillerme
+# @export
+
+## DEBUG
+# source("sanitizing.R")
+# data(BeckLee_mat99) ; data(BeckLee_tree) 
+# subsets <- chrono.subsets(data = BeckLee_mat99, tree = BeckLee_tree, method = "continuous", time = 5, model = "acctran")
+# data <- dispRity(subsets, metric = mean)
+# summary(data)
+# summary(sort(data, decreasing = TRUE))
+# summary(sort(data, sort = c(7,1,3,4,5,2,6)))
+sort.dispRity <- function(x, decreasing = FALSE, sort, ...) {
+    data <- x
+
+    match_call <- match.call()
+
+    ## Sanitizing
+
+    ## data
+    check.class(data, "dispRity")
+    ## Initialising subsets length variable
+    length_subsets <- length(data$subsets)
+    if(length_subsets == 1) {
+        stop.call(match_call$x, " contains no subsets.")
+    }
+
+    ## decreasing
+    check.class(decreasing, "logical")
+
+    ## sort
+    if(!missing(sort)) {
+        check.class(sort, c("numeric", "integer"))
+        check.length(sort, length_subsets, " must be the same length as the number of subsets in data.")
+        if(all.equal(sort(sort), seq(from = 1, to = length_subsets)) != TRUE) {
+            stop.call("", paste0("The sort argument can only contain unique numbers between 1 and ", length_subsets, "."))
+        }
+    } else {
+        if(decreasing == FALSE) sort <- seq(from = 1, to = length_subsets)
+        if(decreasing == TRUE) sort <- rev(seq(from = 1, to = length_subsets))
+    }
+
+
+    ## Sorting the subsets
+    data$subsets <- data$subsets[sort]
+
+    ## Sorting the disparity
+    if(!is.null(data$call$disparity)) {
+        data$disparity <- data$disparity[sort]
+    }
+
+    ## Sorting the covar
+    if(!is.null(data$covar)) {
+        data$covar <- data$covar[sort]
+    }
+
+    return(data)
+}
+
+
+
+
+
+
+
+
+
+
 
 
 #' @title Getting the time subsets from at and after an extinction event
@@ -701,7 +734,6 @@ n.subsets <- function(data) {
 #' 
 #' @author Thomas Guillerme
 # @export
-
 extinction.subsets <- function(data, extinction, lag = 1, names = FALSE, as.list = FALSE) {
 
     match_call <- match.call()
@@ -776,60 +808,4 @@ extinction.subsets <- function(data, extinction, lag = 1, names = FALSE, as.list
 
     return(extinction_subset)
 
-}
-
-#' @name add.tree
-#' @aliases get.tree remove.tree
-#' 
-#' @title Add, get or remove tree
-#'
-#' @description Adding, extracting or removing the tree component from a \code{dispRity} object
-#'
-#' @param data A \code{dispRity} object.
-#' @param tree A \code{phylo} or \code{mutiPhylo} object.
-#' 
-#' @examples
-#' ## Loading a dispRity object
-#' data(disparity)
-#' ## Loading a tree
-#' data(BeckLee_tree)
-#' 
-#' ## Removing  the tree from the dispRity object
-#' (tree_data <- remove.tree(disparity))
-#' 
-#' ## Extracting the tree
-#' get.tree(tree_data) # is null
-#' 
-#' ## Adding a tree to the disparity object
-#' tree_data <- add.tree(tree_data, tree = BeckLee_tree)
-#'
-#' ## Extracting the tree
-#' get.tree(tree_data) # is a "phylo" object
-#' 
-#' @seealso \code{\link{custom.subsets}}, \code{\link{chrono.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
-#'
-#' @author Thomas Guillerme
-
-add.tree <- function(data, tree) {
-    ## Add the tree
-    if(is.null(data$tree[[1]])) {
-        data$tree <- check.dispRity.tree(tree = tree, data = data)
-    } else {
-        data$tree <- check.dispRity.tree(tree = c(get.tree(data$tree), tree), data = data)
-    }
-    return(data)
-}
-get.tree <- function(data) {
-    ## Return the tree
-    tree <- data$tree
-    if(length(tree) == 1) {
-        return(tree[[1]])
-    } else {
-        return(tree)
-    }
-}
-remove.tree <- function(data) {
-    ## Remove the tree
-    data$tree <- list(NULL)
-    return(data)
 }

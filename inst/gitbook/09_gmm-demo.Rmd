@@ -25,10 +25,10 @@ This section will really quickly cover how to make a Procrustes sumperimposition
 ## Loading geomorph
 library(geomorph)
 
-## Loading the plethodon dataset
+## Loading the plethodon dataset
 data(plethodon)
 
-## Running a simple Procrustes superimposition
+## Running a simple Procrustes superimposition
 gpa_plethodon <- gpagen(plethodon$land)
 
 ## Making a geomorph data frame object with the species and sites attributes
@@ -67,7 +67,7 @@ This automatically generates a `dispRity` object with the information of each gr
 ## The dispRity object
 morphospace
 
-## Plotting the morphospace
+## Plotting the morphospace
 plot(morphospace)
 ## Note that this only displays the two last groups (site.Allo and site.Symp) since they overlap!
 ```
@@ -82,10 +82,14 @@ Two aspects of disparity that would be interesting for our question (is there a 
 
 To choose which metric would cover best these two aspects, please check the @moms paper and associated [app](https://tguillerme.shinyapps.io/moms/). Here we are going to use the procrustes variance (`geomorph::morphol.disparity`) for measuring the size of the trait space and the average displacements [@moms] for the position in the trait space.
 
-```{r, fig.width = 8, fig.height = 16}
+```{r, fig.width = 8, fig.height = 16, eval = TRUE}
 ## Defining a the procrustes variance metric
 ## (as in geomorph::morphol.disparity)
 proc.var <- function(matrix) {sum(matrix^2)/nrow(matrix)}
+```
+
+```{r, fig.width = 8, fig.height = 16, eval = FALSE}
+
 ## The size metric
 test_size <- test.metric(morphospace, metric = proc.var,
                          shifts = c("random", "size"))
@@ -109,7 +113,7 @@ Alternatively you can define your metric prior to the disparity analysis like we
 Anyways, we can measure disparity using these two metrics on all the groups as follows:
 
 ```{r}
-## Bootstrapped disparity
+## Bootstrapped disparity
 disparity_size <-  dispRity(boot.matrix(morphospace), metric = proc.var)
 disparity_position <- dispRity(boot.matrix(morphospace), metric = c(mean, displacements))
 ```

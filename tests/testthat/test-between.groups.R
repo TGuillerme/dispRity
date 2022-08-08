@@ -150,13 +150,13 @@ test_that("dispRity works for between.groups metrics", {
     the_warning <- capture_warning(test2 <- dispRity(test1, metric = mean, between.groups = FALSE))
     expect_warning(test2 <- dispRity(test1, metric = mean, between.groups = FALSE))
     expect_equal(the_warning[[1]], "The disparity calculation (metric = mean) is not calculated between groups (between.groups = FALSE) but the input data (test1) contained a between groups calculation. The metric is thus only applied to the groups (not between them). If this is not the desired behaviour, use the following option:\n    dispRity(..., between.groups = TRUE)")
-    expect_equal(unlist(extract.dispRity(test2)), unlist(extract.dispRity(dispRity(custom, metric = mean))))
+    expect_equal(unlist(get.disparity(test2)), unlist(get.disparity(dispRity(custom, metric = mean))))
 
     test1 <- dispRity(custom, metric = mean, between.groups = FALSE)
-    the_warning <- capture_warning(test2 <- dispRity(test1, metric = level1_between.groups, between.groups = TRUE))
+    the_warning <- capture_warnings(test2 <- dispRity(test1, metric = level1_between.groups, between.groups = TRUE))
     expect_warning(test2 <- dispRity(test1, metric = level1_between.groups, between.groups = TRUE))
     expect_equal(the_warning[[1]], "The disparity calculation (metric = level1_between.groups) is calculated between groups (between.groups = TRUE) but the input data (test1) contained no between groups calculation. The metric is thus only applied between the groups (not to the previously calculated disparity). If this is not the desired behaviour, use the following option:\n    dispRity(..., between.groups = FALSE)")
-    expect_equal(unlist(extract.dispRity(test2)), unlist(extract.dispRity(dispRity(custom, metric = level1_between.groups, between.groups = TRUE))))
+    expect_equal(unlist(get.disparity(test2)), unlist(get.disparity(dispRity(custom, metric = level1_between.groups, between.groups = TRUE))))
 
 
     ## Handling multiple level metrics

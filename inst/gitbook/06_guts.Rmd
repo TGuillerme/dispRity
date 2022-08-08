@@ -79,18 +79,18 @@ disparity_obj$call
 disparity_obj$call
 ```
 
-####  `matrix.dispRity`
+####  `get.matrix`
 
 This function extracts a specific matrix from a disparity object.
 The matrix can be one of the bootstrapped matrices or/and a rarefied matrix.
 
 ```{r}
 ## Extracting the matrix containing the coordinates of the elements at time 50
-str(matrix.dispRity(disparity, "50"))
+str(get.matrix(disparity, "50"))
 
 ## Extracting the 3rd bootstrapped matrix with the 2nd rarefaction level
 ## (15 elements) from the second group (80 Mya)
-str(matrix.dispRity(disparity, subsets = 1, bootstrap = 3, rarefaction = 2))
+str(get.matrix(disparity, subsets = 1, bootstrap = 3, rarefaction = 2))
 ```
 
 
@@ -137,17 +137,17 @@ combine.subsets(disparity, c(1,2))
 
 Note that the computed values (bootstrapped data + disparity metric) are not merge.
 
-#### `extract.dispRity`
+#### `get.disparity`
 
 This function extracts the calculated disparity values of a specific matrix.
 
 ```{r, eval=FALSE}
 ## Extracting the observed disparity (default)
-extract.dispRity(disparity)
+get.disparity(disparity)
 
 ## Extracting the disparity from the bootstrapped values from the
 ## 10th rarefaction level from the second subsets (80 Mya)
-extract.dispRity(disparity, observed = FALSE, subsets = 2, rarefaction = 10)
+get.disparity(disparity, observed = FALSE, subsets = 2, rarefaction = 10)
 ```
 
 #### `rescale.dispRity`

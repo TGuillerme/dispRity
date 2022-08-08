@@ -44,17 +44,17 @@ The different methods are:
 
 \itemize{
      \item \code{"hamming"} The relative distance between characters. This is equal to the Gower distance for non-numeric comparisons (e.g. character tokens; Gower 1966).
-         \eqn{d(x,y) = sum[i,n](abs(x[i] - y[i])/n}
+         \eqn{d(x,y) = \sum[i,n](abs(x[i] - y[i])/n}
      \item \code{"manhattan"} The "raw" distance between characters:
-         \eqn{d(x,y) = sum[i,n](abs(x[i] - y[i])}
+         \eqn{d(x,y) = \sum[i,n](abs(x[i] - y[i])}
      \item \code{"comparable"} The number of comparable characters (i.e. the number of tokens that can be compared):
-         \eqn{d(x,y) = sum[i,n]((x[i] - y[i])/(x[i] - y[i]))}
+         \eqn{d(x,y) = \sum[i,n]((x[i] - y[i])/(x[i] - y[i]))}
      \item \code{"euclidean"} The euclidean distance between characters:
-         \eqn{d(x,y) = sqrt(sum[i,n]((x[i] - y[i])^2))}
+         \eqn{d(x,y) = \sqrt(\sum[i,n]((x[i] - y[i])^2))}
      \item \code{"maximum"} The maximum distance between characters:
          \eqn{d(x,y) = max(abs(x[i] - y[i]))}
      \item \code{"mord"} The maximum observable distance between characters (Lloyd 2016):
-         \eqn{d(x,y) =  sum[i,n](abs(x[i] - y[i])/sum[i,n]((x[i] - y[i])/(x[i] - y[i])}
+         \eqn{d(x,y) =  \sum[i,n](abs(x[i] - y[i])/\sum[i,n]((x[i] - y[i])/(x[i] - y[i])}
      \item \code{"none"} Returns the matrix with eventual converted and/or translated tokens.
      \item \code{"binary"} Returns the matrix with the binary characters.
 }

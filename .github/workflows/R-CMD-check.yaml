@@ -3,11 +3,13 @@
 on:
   push:
     branches:
+      - MCMCglmm
       - main
       - master
       - release
   pull_request:
     branches:
+      - MCMCglmm
       - main
       - master
       - release

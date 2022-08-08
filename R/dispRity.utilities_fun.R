@@ -70,6 +70,10 @@ check.subsets <- function(subsets, data) {
 
     } else {
         
+        if(is(subsets, "list")) {
+            ## Flatten the list for checking for subsets
+            subsets <- unique(unlist(subsets))
+        }
 
         if(length(subsets) > length(data$subsets)) {
             stop("Not enough subsets in the original data.")
@@ -111,4 +115,21 @@ detect.bin.age <- function(data, value, greater = FALSE) {
     }
 
     return(unlist(lapply(bin_times, detect.bin.ages.lapply, value, greater)))
+}
+
+## Adding dimnames (if necessary)
+add.dimnames <- function(one_output, one_subset, data) {
+    input <- data$matrix[[1]][data$subsets[[one_subset]]$elements, data$call$dimensions]
+    return(
+        switch(as.character(sum(which(dim(input) %in% length(one_output)))),
+                ## No matching dim
+                "0" = one_output,
+                ## Matching rows
+                "1" = {names(one_output) <- rownames(input); one_output},
+                ## Matching cols
+                "2" = {names(one_output) <- colnames(input); one_output},
+                ## Matching both (use rows as default)
+                "3" = {names(one_output) <- rownames(input); one_output}
+            )
+        )
 }

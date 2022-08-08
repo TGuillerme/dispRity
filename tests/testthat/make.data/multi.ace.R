@@ -35,7 +35,7 @@
 # no_overlap <- reduce.matrix(ifelse(matrix == "?" | matrix == "-", NA, 1))
 # no_overlap$rows.to.remove
 # matrix <- morpho_matrix[-which(names(morpho_matrix) %in% no_overlap$rows.to.remove)]
-# load("../Data/Processed/tree_list.Rda")
+# load("../Data/Processed/tree_list.rda")
 # tree <- tree_list[[1]]
 # use.poly = FALSE
 # use.uncertain = FALSE

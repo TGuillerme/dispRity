@@ -1,4 +1,27 @@
-get.dispRity.metric.handle <- function(metric, match_call, data.dim, tree = NULL, ...) {
+check.covar <- function(metric, data) {
+    ## Check whether the metric is a covar one
+    is_covar <- eval.covar(metric, null.return = FALSE)
+    if(is_covar) {
+        ## Check if data has a covar component
+        if(is.null(data$covar)) {
+            stop.call(msg = "Impossible to use a metric with as.covar() if the data has no $covar component.\nCheck MCMCglmm.subsets() function.", call = "")
+        } else {
+            dim_out <- rep(length(data$call$dimensions), 2)
+        }
+    } else {
+        ##TODO: This should be streamlined. data$matrix must always be a list!
+        if(is(data$matrix, "list")) {
+            dim_out <- dim(data$matrix[[1]])
+        } else {
+            dim_out <- dim(data$matrix)
+        }
+    }
+
+    return(list(is_covar = is_covar, data.dim = dim_out))
+}
+
+get.dispRity.metric.handle <- function(metric, match_call, data = list(matrix = list(matrix(NA, 5, 4))), tree = NULL, ...) {
+
     level3.fun <- level2.fun <- level1.fun <- NULL
     tree.metrics <- between.groups <- rep(FALSE, 3)
     length_metric <- length(metric)
@@ -12,9 +35,14 @@ get.dispRity.metric.handle <- function(metric, match_call, data.dim, tree = NULL
             check.class(metric[[1]], c("function", "standardGeneric"), report = 1)
             metric <- metric[[1]]
         }
+
+        ## Check the metric for covarness
+        checks <- check.covar(metric, data)
+
         ## Which level is the metric?
-        test_level <- make.metric(metric, silent = TRUE, check.between.groups = TRUE, data.dim = data.dim, tree = tree, ...)
-        # warning("DEBUG dispRity_fun") ; test_level <- make.metric(metric, silent = TRUE, check.between.groups = TRUE, data.dim = data.dim)
+        test_level <- make.metric(metric, silent = TRUE, check.between.groups = TRUE, data.dim = checks$data.dim, tree = tree, covar = checks$is_covar, ...)
+
+        # warning("DEBUG dispRity_fun") ; test_level <- make.metric(metric, silent = TRUE, check.between.groups = TRUE, data.dim = checks$data.dim, tree = tree, covar = checks$is_covar)
         level <- test_level$type
         between.groups[as.numeric(gsub("level", "", test_level$type))] <- test_level$between.groups
         tree.metrics[as.numeric(gsub("level", "", test_level$type))] <- test_level$tree
@@ -38,9 +66,15 @@ get.dispRity.metric.handle <- function(metric, match_call, data.dim, tree = NULL
                 stop.call(msg.pre = "metric argument ", call = match_call$metric[[i + 1]], msg = " is not a function.")
             }
         }
+
         ## Sorting the metrics by levels
+        lapply.wrapper <- function(metric, data, tree, ...) {
+            checks <- check.covar(metric, data)
+            return(make.metric(metric, silent = TRUE, check.between.groups = TRUE, data.dim = checks$data.dim, tree = tree, covar = checks$is_covar, ...))
+        }
+
         ## getting the metric levels
-        test_level <- lapply(metric, make.metric, silent = TRUE, data.dim = data.dim, check.between.groups = TRUE, tree = tree)
+        test_level <- lapply(metric, lapply.wrapper, data = data, tree = tree, ...)
         levels <- unlist(lapply(test_level, `[[` , 1))
         btw_groups <- unlist(lapply(test_level, `[[` , 2))
         tree_metrics <- unlist(lapply(test_level, `[[` , 3))
@@ -72,6 +106,20 @@ get.dispRity.metric.handle <- function(metric, match_call, data.dim, tree = NULL
             level3.fun <- metric[[match("level3", levels)]]
             between.groups[3] <- btw_groups[match("level3", levels)]
             tree.metrics[3] <- tree_metrics[match("level3", levels)]
+        }
+
+        ## Evaluate the covarness
+        covar_check <- unlist(lapply(list(level1.fun, level2.fun, level3.fun), eval.covar))
+        if(any(covar_check)) {
+            if(sum(covar_check) > 1) {
+                ## Stop if there are more than one covar meetirc
+                stop.call(msg = "Only one metric can be set as as.covar().", call = "")
+            } else {
+                if(!covar_check[length(covar_check)]) {
+                    ## Stop if the last dimension-level metric is not the covar one
+                    stop.call(msg = "Only the highest dimension-level metric can be set as as.covar().", call = "")
+                }
+            }
         }
     }
 
@@ -193,6 +241,38 @@ decompose.matrix <- function(one_subsets_bootstrap, fun, data, nrow, use_tree, .
     }
 }
 
+## Calculates disparity from a VCV matrix
+decompose.VCV <- function(one_subsets_bootstrap, fun, data, use_array, use_tree = FALSE, ...) {
+
+    # ## Return NA if no data
+    # if(length(na.omit(one_subsets_bootstrap)) < 2) {
+    #     return(NA)
+    # }
+    # ## Find which subset of the VCVs to use
+    # find.subset <- function(sub, cur) {
+    #     if(length(c(sub)) == length(c(cur))) {
+    #         return(all(c(sub) == c(cur)))
+    #     } else {
+    #         return(FALSE)
+    #     }
+    # }
+    verbose_place_holder <- NULL
+
+    ## Apply the fun
+    if(!use_tree) {
+        if(length(one_subsets_bootstrap) == 1) {
+            return(do.call(cbind, lapply(data$covar[[one_subsets_bootstrap]], fun, ...)))
+        } else {
+            return(do.call(cbind, mapply(fun, data$covar[[one_subsets_bootstrap[1]]], data$covar[[one_subsets_bootstrap[2]]], MoreArgs = list(...), SIMPLIFY = FALSE)))
+            #do.call(cbind, mapply(fun, data$covar[[one_subsets_bootstrap[1]]], data$covar[[one_subsets_bootstrap[2]]], SIMPLIFY = FALSE))
+            #fun(data$covar[[one_subsets_bootstrap[1]]][[1]], data$covar[[one_subsets_bootstrap[2]]][[2]])
+        }
+    } else {
+        stop("Impossible to use tree metric in dispRity with covar (yet!).")
+    }
+}
+
+
 ## Apply decompose matrix
 # fun = first_metric ; warning("DEBUG: dispRity_fun")
 decompose.matrix.wrapper <- function(one_subsets_bootstrap, fun, data, use_array, use_tree = FALSE, ...) {
@@ -251,11 +331,16 @@ disparity.bootstraps <- function(one_subsets_bootstrap, metrics_list, data, matr
         use_tree     <- metric_has_tree[first_metric[[3]]]
         first_metric <- first_metric[[1]]
 
-        ## Decompose the metric using the first metric
-        disparity_out <- decompose.matrix.wrapper(one_subsets_bootstrap, fun = first_metric, data = data, use_array = use_array, use_tree = use_tree, ...)
+        if(!eval.covar(first_metric, null.return = FALSE)) {
+            ## Decompose the metric using the first metric
+            disparity_out <- decompose.matrix.wrapper(one_subsets_bootstrap, fun = first_metric, data = data, use_array = use_array, use_tree = use_tree, ...)
+        } else {
+            disparity_out <- decompose.VCV(one_subsets_bootstrap, fun = first_metric, data = data, use_array = use_array, use_tree = use_tree, ...)
+        }
     } else {
         disparity_out <- one_subsets_bootstrap
     }
+    rm(one_subsets_bootstrap)
 
     #TODO: handle tree metrics after the matrix decomposition
 
@@ -285,9 +370,11 @@ disparity.bootstraps <- function(one_subsets_bootstrap, metrics_list, data, matr
         disparity_out <- t(as.matrix(disparity_out))
     }
 
+    ## Clean the dimnames
+    dimnames(disparity_out) <- NULL    
+
     return(disparity_out)
 }
-
 
 ## Lapply wrapper for disparity.bootstraps function
 # subsets <- lapply_loop[[1]] ; warning("DEBUG: dispRity_fun")

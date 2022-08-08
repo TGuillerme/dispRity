@@ -83,7 +83,7 @@ matrix_character[sample(1:30, 8)] <- "0/1"
 ## Adding missing data
 matrix_character[sample(1:30, 5)] <- "?"
 
-## This is what it looks like now
+## This is what it looks like now
 matrix_character
 
 ## The hamming difference between columns including the special characters
@@ -161,6 +161,82 @@ get.bin.ages(BeckLee_tree)
 Note that this function outputs the stratigraphic age limits by default but this can be customisable by specifying the `type` of data (e.g. `type = "Eon"` for eons).
 The function also intakes several optional arguments such as whether to output the startm end, range or midpoint of the stratigraphy or the year of reference of the International Commission of Stratigraphy.
 To see a more applied example: this function is used in [chapter 03: specific tutorials](#chrono-subsets).
+
+## `match.tip.edge`
+
+This function matches a vector of discreet tip values with the edges connecting these tips in the `"phylo"` structure.
+This can be used to pull the branches of interest for some specific trait of some group of species or for colouring tree tips based on clades.
+
+For example, with the `charadriiformes` dataset, you can plot the tree with the branches coloured by clade.
+To work properly, the function requires the characteristics of the tip labels (e.g. the clade colour) to match the order of the tips in the tree:
+
+```{r}
+## Loading the charadriiformes data
+data(charadriiformes) 
+## Extracting the tree
+my_tree <- charadriiformes$tree
+## Extracting the data column that contains the clade assignments
+my_data <- charadriiformes$data[, "clade"]
+## Changing the levels names (the clade names) to colours
+levels(my_data) <- c("orange", "blue", "darkgreen")
+my_data <- as.character(my_data)
+## Matching the data rownames to the tip order in the tree
+my_data <- my_data[match(ladderize(my_tree)$tip.label, rownames(charadriiformes$data))]
+```
+
+We can then match this tip data to their common descending edges.
+We will also colour the edges that is not descendant directly from a common coloured tip in grey using `"replace.na = "grey"`.
+Note that these edges are usually the edges at the root of the tree that are the descendant edges from multiple clades.
+
+```{r}
+## Matching the tip colours (labels) to their descending edges in the tree
+## (and making the non-match edges grey)
+clade_edges <- match.tip.edge(my_data, my_tree, replace.na = "grey")
+
+## Plotting the results
+plot(ladderize(my_tree), show.tip.label = FALSE, edge.color = clade_edges)
+```
+
+But you can also use this option to only select some specific edges and modify them (for example making them all equal to one):
+
+```{r}
+## Adding a fixed edge length to the green clade
+my_tree_modif <- my_tree
+green_clade <- which(clade_edges == "darkgreen")
+my_tree_modif$edge.length[green_clade] <- 1
+plot(ladderize(my_tree_modif), show.tip.label = FALSE, edge.color = clade_edges)
+```
+
+## `MCMCglmm` utilities {#MCMCglmm-utilities}
+
+Since version `1.7`, the `dispRity` package contains several utility functions for manipulating `"MCMCglmm"` (that is, objects returned by the function `MCMCglmm::MCMCglmm`).
+These objects are a modification of the `mcmc` object (from the package `coda`) and can be sometimes cumbersome to manipulate because of the huge amount of data in it.
+You can use the functions `MCMCglmm.traits` for extracting the number of traits, `MCMCglmm.levels` for extracting the level names, `MCMCglmm.sample` for sampling posterior IDs and `MCMCglmm.covars` for extracting variance-covariance matrices.
+
+```{r}
+## Loading the charadriiformes data that contains a MCMCglmm object
+data(charadriiformes)
+my_MCMCglmm <- charadriiformes$posteriors
+
+## Which traits where used in this model?
+MCMCglmm.traits(my_MCMCglmm)
+
+## Which levels where used for the model's random terms and/or residuals?
+MCMCglmm.levels(my_MCMCglmm)
+
+## The level names are converted for clarity but you can get them unconverted
+## (i.e. as they appear in the model)
+MCMCglmm.levels(my_MCMCglmm, convert = FALSE)
+
+## Sampling 2 random posteriors samples IDs
+(random_samples <- MCMCglmm.sample(my_MCMCglmm, n = 2))
+
+## Extracting these two random amples
+my_covars <- MCMCglmm.covars(my_MCMCglmm, sample = random_samples)
+```
+
+See more in the [`$covar` section](#covar) on what to do with these `"MCMCglmm"` objects.
+
 
 ## `pair.plot`
 

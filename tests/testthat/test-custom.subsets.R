@@ -434,3 +434,13 @@ test_that("custom.subsets works with tree", {
     expect_is(test$tree[[1]], "phylo")
     expect_equal(length(test$tree), 3)
 })
+
+test_that("custom.subsets works with a factor", {
+    data(charadriiformes)
+    ## Quick test
+    test <- custom.subsets(data  = charadriiformes$data[, -c(18, 19)],
+                           group = charadriiformes$data[, "clade"])
+    expect_is(test, "dispRity")
+    expect_equal(n.subsets(test), 3)
+    expect_equal(size.subsets(test), c("gulls" = 159, "plovers" = 98, "sandpipers" = 102))
+})

@@ -2,9 +2,12 @@
 % Please edit documentation in R/dispRity.utilities.R
 \name{make.dispRity}
 \alias{make.dispRity}
-\title{Creates a \code{dispRity} object.}
+\alias{fill.dispRity}
+\title{Make and fill \code{dispRity}.}
 \usage{
 make.dispRity(data, tree, call, subsets)
+
+fill.dispRity(data, tree)
 }
 \arguments{
 \item{data}{A \code{matrix}.}
@@ -23,8 +26,14 @@ Creating an empty \code{dispRity} object from a matrix
 make.dispRity()
 
 ## Still an empty dispRity object (with a matrix)
-make.dispRity(data = matrix(rnorm(12), ncol = 3))
+(empty <- make.dispRity(data = matrix(rnorm(12), ncol = 3)))
 
+## A dispRity object with a matrix of 4*3
+fill.dispRity(empty)
+
+## A dispRity object with a tree
+my_tree <- rtree(4, tip.label = c(1:4))
+fill.dispRity(empty, tree = my_tree)
 
 }
 \author{

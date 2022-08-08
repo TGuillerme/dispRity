@@ -30,8 +30,8 @@ dispRity(
 \item{tree}{\code{NULL} (default) or an optional \code{phylo} or \code{multiPhylo} object to be attached to the data. If this argument is not null, it will be recycled by \code{metric} when possible.}
 }
 \value{
-This function outputs a \code{dispRity} object containing:
-\item{matrix}{the multidimensional space (a \code{matrix}).}
+This function outputs a \code{dispRity} object containing at least the following:
+\item{matrix}{the multidimensional space (a list of \code{matrix}).}
 \item{call}{A \code{list} containing the called arguments.}
 \item{subsets}{A \code{list} containing matrices pointing to the elements present in each subsets.}
 \item{disparity}{A \code{list} containing the disparity in each subsets.}
