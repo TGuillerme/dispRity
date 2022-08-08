@@ -23,7 +23,7 @@ dispRity 0.2.0 (2016-04-01)
 <!--   * `dtt.dispRity` now works with time-slicing. -->
 
 
-dispRity v1.6.12 (2022-07-13) *MacMacGlimm*
+dispRity v1.6.12 (2022-08-05) *MacMacGlimm*
 =========================
 
 ### NEW FEATURES
@@ -63,6 +63,7 @@ dispRity v1.6.12 (2022-07-13) *MacMacGlimm*
  * Removed dependency to `geiger` for `dtt.dispRity` to avoid package maintenance errors. This leads to no changes at the user level and `geiger::dtt` is still acknowledged in the manual.
  * `tree.age` function's manual now makes it clear it does not estimate tree ages.
  * When using `plot.dispRity(..., type = "preview")`, group's colour attribution and plotting is now made so that the groups larger groups are plotted in the background and the smaller in the foreground.
+ * `NA`s are now better handled in internal checking functions. 
 
 ### BUG FIXES
  

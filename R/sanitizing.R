@@ -101,7 +101,7 @@ check.dist.matrix <- function(matrix, method, just.check = FALSE, ...) {
     ## Is the matrix square?
     if(dim(matrix)[1] == dim(matrix)[2] &&
        all(diag(as.matrix(matrix)) == 0) &&
-       all(matrix[upper.tri(matrix)] == matrix[rev(lower.tri(matrix))])) {
+       all(matrix[upper.tri(matrix)] == matrix[rev(lower.tri(matrix))], na.rm = TRUE)) {
         ## It was a distance matrix!
         was_dist <- TRUE
     }
