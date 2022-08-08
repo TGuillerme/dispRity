@@ -122,7 +122,7 @@ covar.plot <- function(data, n, points = TRUE, major.axes = FALSE, ellipses = FA
         covars <- mapply(recentre, covars, centres, MoreArgs = list(dimensions = dimensions), SIMPLIFY = FALSE)
     } else {
         ## Handled by ellipses and axes
-        if(centre) {
+        if(centres) {
             centres <- "intercept"
         }
     }

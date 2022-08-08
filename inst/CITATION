@@ -8,7 +8,6 @@ citEntry(entry = "Article",
          volume = "9",
          number = "7",
          pages = "1755-1763",
-         doi = "10.1111/2041-210X.13022",
          textVersion = "(1) Guillerme T. dispRity: A modular R package for measuring disparity. Methods Ecol Evol. 2018;00:1-9. https://doi.org/10.1111/2041-210X.13022"
          )
 
@@ -30,7 +29,6 @@ citEntry(entry = "Article",
          volume = "61",
          number = "4",
          pages = "481-493",
-         doi = "10.1111/pala.12364",
          textVersion = "(3) Guillerme, T. and Cooper, N. (2018), Time for a rethink: time sub-sampling methods in disparity-through-time analyses. Palaeontology, 61: 481-493. doi:10.1111/pala.12364"
          )
 
@@ -42,6 +40,5 @@ citEntry(entry = "Article",
          volume = "10",
          number = "14",
          pages = "7261-7275",
-         doi = "10.1002/ece3.6452",
          textVersion = "(4) Guillerme T, Puttick MN, Marcy AE, Weisbecker V. (2020), Shifting spaces: Which disparity or dissimilarity measurement best summarize occupancy in multidimensional spaces?. Ecology and evolution. 10(14):7261-75. doi:10.1002/ece3.6452"
          )

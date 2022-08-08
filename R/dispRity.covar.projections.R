@@ -65,6 +65,8 @@
 
 dispRity.covar.projections <- function(data, type, base, sample, n, major.axis = 1, level = 0.95, output = c("position", "distance", "degree"), inc.base = FALSE, ..., verbose = FALSE) {
 
+    match_call <- match.call()
+
     ## Check class data (dispRity)
     check.class(data, "dispRity")
     if(is.null(data$covar)) {
