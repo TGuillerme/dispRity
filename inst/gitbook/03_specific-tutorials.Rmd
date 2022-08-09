@@ -425,11 +425,11 @@ This can be done using the option `silent = TRUE` and will simply output the dim
 
 ```{r}
 ## Testing whether mean is dimension-level 1
-if(make.metric(mean, silent = TRUE) != "level1") {
+if(make.metric(mean, silent = TRUE)$type != "level1") {
     message("The metric is not dimension-level 1.")
 }
 ## Testing whether var is dimension-level 1
-if(make.metric(var, silent = TRUE) != "level1") {
+if(make.metric(var, silent = TRUE)$type != "level1") {
     message("The metric is not dimension-level 1.")
 }
 ```
@@ -1382,7 +1382,8 @@ plot(time_slices, type = "preview", specific.args = list(tree = TRUE))
 ## The same plot but by applying general options
 plot(time_slices, type = "preview", specific.args = list(tree = TRUE),
      col = "blue", main = "General options")
-## The same plot but by applying the colour only to the lines and change of shape only to the points
+## The same plot but by applying the colour only to the lines
+## and change of shape only to the points
 plot(time_slices, type = "preview", specific.args = list(tree = TRUE),
      lines.col = "blue", points.pch = 15, main = "Specific options")
 ## And now without the legend

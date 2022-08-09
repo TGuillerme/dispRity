@@ -4,27 +4,26 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>5 Making stuff up! | dispRity manual</title>
+  <title>5 Making stuff up! | Morphometric geometric demo: a between group analysis</title>
   <meta name="description" content="dispRity R package vignette" />
-  <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.27 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="5 Making stuff up! | dispRity manual" />
+  <meta property="og:title" content="5 Making stuff up! | Morphometric geometric demo: a between group analysis" />
   <meta property="og:type" content="book" />
-  
   
   <meta property="og:description" content="dispRity R package vignette" />
   <meta name="github-repo" content="TGuillerme/dispRity" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="5 Making stuff up! | dispRity manual" />
+  <meta name="twitter:title" content="5 Making stuff up! | Morphometric geometric demo: a between group analysis" />
   
   <meta name="twitter:description" content="dispRity R package vignette" />
   
 
-<meta name="author" content="Thomas Guillerme (guillert@tcd.ie), Mark Puttick (marknputtick@gmail.com) and Natalie Cooper (natalie.cooper@nhm.ac.uk)" />
+<meta name="author" content="Thomas Guillerme (guillert@tcd.ie)" />
 
 
-<meta name="date" content="2021-04-15" />
+<meta name="date" content="2022-08-09" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -33,7 +32,8 @@
   
 <link rel="prev" href="details-of-specific-functions.html"/>
 <link rel="next" href="other-functionalities.html"/>
-<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -49,29 +49,33 @@
 
 
 
-
+<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
 
 
 <style type="text/css">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
-code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
-pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
-pre.numberSource a.sourceLine::before
-  { content: attr(data-line-number);
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
     position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
+    border: none; display: inline-block;
     -webkit-touch-callout: none; -webkit-user-select: none;
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
@@ -80,9 +84,9 @@ pre.numberSource a.sourceLine::before
   }
 pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
-  {  }
+  {   }
 @media screen {
-a.sourceLine::before { text-decoration: underline; }
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
@@ -115,6 +119,7 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+
 <link rel="stylesheet" href="style.css" type="text/css" />
 </head>
 
@@ -131,42 +136,52 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="./">dispRity manual</a></li>
 
 <li class="divider"></li>
-<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> <code>dispRity</code></a><ul>
-<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#what-is-disprity"><i class="fa fa-check"></i><b>1.1</b> What is <code>dispRity</code>?</a><ul>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> <code>dispRity</code></a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#what-is-disprity"><i class="fa fa-check"></i><b>1.1</b> What is <code>dispRity</code>?</a>
+<ul>
 <li class="chapter" data-level="1.1.1" data-path="index.html"><a href="index.html#modular"><i class="fa fa-check"></i><b>1.1.1</b> Modular?</a></li>
 </ul></li>
 <li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#installing-and-running-the-package"><i class="fa fa-check"></i><b>1.2</b> Installing and running the package</a></li>
 <li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#version"><i class="fa fa-check"></i><b>1.3</b> Which version do I choose?</a></li>
 <li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#disprity-is-always-changing-how-do-i-know-its-not-broken"><i class="fa fa-check"></i><b>1.4</b> <code>dispRity</code> is always changing, how do I know it’s not broken?</a></li>
 <li class="chapter" data-level="1.5" data-path="index.html"><a href="index.html#help"><i class="fa fa-check"></i><b>1.5</b> Help</a></li>
-<li class="chapter" data-level="1.6" data-path="index.html"><a href="index.html#citations"><i class="fa fa-check"></i><b>1.6</b> Citations</a><ul>
+<li class="chapter" data-level="1.6" data-path="index.html"><a href="index.html#citations"><i class="fa fa-check"></i><b>1.6</b> Citations</a>
+<ul>
 <li class="chapter" data-level="1.6.1" data-path="index.html"><a href="index.html#why-is-it-important-to-cite-us"><i class="fa fa-check"></i><b>1.6.1</b> Why is it important to cite us?</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="2" data-path="glossary.html"><a href="glossary.html"><i class="fa fa-check"></i><b>2</b> Glossary</a><ul>
+<li class="chapter" data-level="2" data-path="glossary.html"><a href="glossary.html"><i class="fa fa-check"></i><b>2</b> Glossary</a>
+<ul>
 <li class="chapter" data-level="2.1" data-path="glossary.html"><a href="glossary.html#glossary-equivalences-in-palaeobiology-and-ecology"><i class="fa fa-check"></i><b>2.1</b> Glossary equivalences in palaeobiology and ecology</a></li>
 </ul></li>
-<li class="chapter" data-level="3" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html"><i class="fa fa-check"></i><b>3</b> Getting started with <code>dispRity</code></a><ul>
+<li class="chapter" data-level="3" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html"><i class="fa fa-check"></i><b>3</b> Getting started with <code>dispRity</code></a>
+<ul>
 <li class="chapter" data-level="3.1" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#what-sort-of-data-does-disprity-work-with"><i class="fa fa-check"></i><b>3.1</b> What sort of data does <code>dispRity</code> work with?</a></li>
-<li class="chapter" data-level="3.2" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#ordinated-matrices"><i class="fa fa-check"></i><b>3.2</b> Ordinated matrices</a><ul>
+<li class="chapter" data-level="3.2" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#ordinated-matrices"><i class="fa fa-check"></i><b>3.2</b> Ordinated matrices</a>
+<ul>
 <li class="chapter" data-level="3.2.1" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#ordination-matrices-from-geomorph"><i class="fa fa-check"></i><b>3.2.1</b> Ordination matrices from <code>geomorph</code></a></li>
 <li class="chapter" data-level="3.2.2" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#Claddis-ordination"><i class="fa fa-check"></i><b>3.2.2</b> Ordination matrices from <code>Claddis</code></a></li>
 <li class="chapter" data-level="3.2.3" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#other-kinds-of-ordination-matrices"><i class="fa fa-check"></i><b>3.2.3</b> Other kinds of ordination matrices</a></li>
 </ul></li>
-<li class="chapter" data-level="3.3" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#simpleanalysis"><i class="fa fa-check"></i><b>3.3</b> Performing a simple dispRity analysis</a><ul>
+<li class="chapter" data-level="3.3" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#simpleanalysis"><i class="fa fa-check"></i><b>3.3</b> Performing a simple dispRity analysis</a>
+<ul>
 <li class="chapter" data-level="3.3.1" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#example-data"><i class="fa fa-check"></i><b>3.3.1</b> Example data</a></li>
 <li class="chapter" data-level="3.3.2" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#disparity-through-time"><i class="fa fa-check"></i><b>3.3.2</b> Disparity through time</a></li>
 <li class="chapter" data-level="3.3.3" data-path="getting-started-with-disprity.html"><a href="getting-started-with-disprity.html#disparity-among-groups"><i class="fa fa-check"></i><b>3.3.3</b> Disparity among groups</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html"><i class="fa fa-check"></i><b>4</b> Details of specific functions</a><ul>
-<li class="chapter" data-level="4.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#chrono-subsets"><i class="fa fa-check"></i><b>4.1</b> Time slicing</a><ul>
+<li class="chapter" data-level="4" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html"><i class="fa fa-check"></i><b>4</b> Details of specific functions</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#chrono-subsets"><i class="fa fa-check"></i><b>4.1</b> Time slicing</a>
+<ul>
 <li class="chapter" data-level="4.1.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#time-binning"><i class="fa fa-check"></i><b>4.1.1</b> Time-binning</a></li>
 <li class="chapter" data-level="4.1.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#time-slicing"><i class="fa fa-check"></i><b>4.1.2</b> Time-slicing</a></li>
 </ul></li>
 <li class="chapter" data-level="4.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#custom-subsets"><i class="fa fa-check"></i><b>4.2</b> Customised subsets</a></li>
 <li class="chapter" data-level="4.3" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#bootstraps-and-rarefactions"><i class="fa fa-check"></i><b>4.3</b> Bootstraps and rarefactions</a></li>
-<li class="chapter" data-level="4.4" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-metrics"><i class="fa fa-check"></i><b>4.4</b> Disparity metrics</a><ul>
+<li class="chapter" data-level="4.4" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-metrics"><i class="fa fa-check"></i><b>4.4</b> Disparity metrics</a>
+<ul>
 <li class="chapter" data-level="4.4.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#the-function-dimension-levels"><i class="fa fa-check"></i><b>4.4.1</b> The function dimension-levels</a></li>
 <li class="chapter" data-level="4.4.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#betweengroupmetricsexplain"><i class="fa fa-check"></i><b>4.4.2</b> Between groups metrics</a></li>
 <li class="chapter" data-level="4.4.3" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#makemetric"><i class="fa fa-check"></i><b>4.4.3</b> <code>make.metric</code></a></li>
@@ -176,17 +191,21 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.4.7" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#using-the-different-disparity-metrics"><i class="fa fa-check"></i><b>4.4.7</b> Using the different disparity metrics</a></li>
 <li class="chapter" data-level="4.4.8" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#which-disparity-metric-to-choose"><i class="fa fa-check"></i><b>4.4.8</b> Which disparity metric to choose?</a></li>
 </ul></li>
-<li class="chapter" data-level="4.5" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#summarising-disprity-data-plots"><i class="fa fa-check"></i><b>4.5</b> Summarising dispRity data (plots)</a><ul>
+<li class="chapter" data-level="4.5" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#summarising-disprity-data-plots"><i class="fa fa-check"></i><b>4.5</b> Summarising dispRity data (plots)</a>
+<ul>
 <li class="chapter" data-level="4.5.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#summarising-disprity-data"><i class="fa fa-check"></i><b>4.5.1</b> Summarising <code>dispRity</code> data</a></li>
 <li class="chapter" data-level="4.5.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#plotting-disprity-data"><i class="fa fa-check"></i><b>4.5.2</b> Plotting <code>dispRity</code> data</a></li>
 <li class="chapter" data-level="4.5.3" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#type-preview"><i class="fa fa-check"></i><b>4.5.3</b> <code>type = preview</code></a></li>
+<li class="chapter" data-level="4.5.4" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#graphical-options-with-..."><i class="fa fa-check"></i><b>4.5.4</b> Graphical options with <code>...</code></a></li>
 </ul></li>
-<li class="chapter" data-level="4.6" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#testing-disparity-hypotheses"><i class="fa fa-check"></i><b>4.6</b> Testing disparity hypotheses</a><ul>
+<li class="chapter" data-level="4.6" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#testing-disparity-hypotheses"><i class="fa fa-check"></i><b>4.6</b> Testing disparity hypotheses</a>
+<ul>
 <li class="chapter" data-level="4.6.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#adonis"><i class="fa fa-check"></i><b>4.6.1</b> NPMANOVA in <code>dispRity</code></a></li>
 <li class="chapter" data-level="4.6.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#dtt"><i class="fa fa-check"></i><b>4.6.2</b> <code>geiger::dtt</code> model fitting in <code>dispRity</code></a></li>
 <li class="chapter" data-level="4.6.3" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#null-test"><i class="fa fa-check"></i><b>4.6.3</b> null morphospace testing with <code>null.test</code></a></li>
 </ul></li>
-<li class="chapter" data-level="4.7" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#model-fitting"><i class="fa fa-check"></i><b>4.7</b> Fitting modes of evolution to disparity data</a><ul>
+<li class="chapter" data-level="4.7" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#model-fitting"><i class="fa fa-check"></i><b>4.7</b> Fitting modes of evolution to disparity data</a>
+<ul>
 <li class="chapter" data-level="4.7.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#simple-modes-of-disparity-change-through-time"><i class="fa fa-check"></i><b>4.7.1</b> Simple modes of disparity change through time</a></li>
 <li class="chapter" data-level="4.7.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#plot-and-run-simulation-tests-in-a-single-step"><i class="fa fa-check"></i><b>4.7.2</b> Plot and run simulation tests in a single step</a></li>
 <li class="chapter" data-level="4.7.3" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#multiple-modes-of-evolution-time-shifts"><i class="fa fa-check"></i><b>4.7.3</b> Multiple modes of evolution (time shifts)</a></li>
@@ -195,58 +214,79 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.8" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-distribution"><i class="fa fa-check"></i><b>4.8</b> Disparity as a distribution</a></li>
 <li class="chapter" data-level="4.9" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#other-matrices"><i class="fa fa-check"></i><b>4.9</b> Disparity from other matrices</a></li>
 <li class="chapter" data-level="4.10" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#multi.input"><i class="fa fa-check"></i><b>4.10</b> Disparity from multiple matrices (and multiple trees!)</a></li>
-<li class="chapter" data-level="4.11" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-with-trees-dispritree"><i class="fa fa-check"></i><b>4.11</b> Disparity with trees: <em>dispRitree!</em></a></li>
+<li class="chapter" data-level="4.11" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#dispRitree"><i class="fa fa-check"></i><b>4.11</b> Disparity with trees: <em>dispRitree!</em></a></li>
+<li class="chapter" data-level="4.12" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#covar"><i class="fa fa-check"></i><b>4.12</b> Disparity of variance-covariance matrices (covar)</a>
+<ul>
+<li class="chapter" data-level="4.12.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#creating-a-disprity-object-with-a-covar-component"><i class="fa fa-check"></i><b>4.12.1</b> Creating a <code>dispRity</code> object with a <code>$covar</code> component</a></li>
+<li class="chapter" data-level="4.12.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#visualising-covar-objects"><i class="fa fa-check"></i><b>4.12.2</b> Visualising covar objects</a></li>
+<li class="chapter" data-level="4.12.3" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-analyses-with-a-covar-component"><i class="fa fa-check"></i><b>4.12.3</b> Disparity analyses with a <code>$covar</code> component</a></li>
 </ul></li>
-<li class="chapter" data-level="5" data-path="making-stuff-up.html"><a href="making-stuff-up.html"><i class="fa fa-check"></i><b>5</b> Making stuff up!</a><ul>
-<li class="chapter" data-level="5.1" data-path="making-stuff-up.html"><a href="making-stuff-up.html#simulating-discrete-morphological-data"><i class="fa fa-check"></i><b>5.1</b> Simulating discrete morphological data</a><ul>
+</ul></li>
+<li class="chapter" data-level="5" data-path="making-stuff-up.html"><a href="making-stuff-up.html"><i class="fa fa-check"></i><b>5</b> Making stuff up!</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="making-stuff-up.html"><a href="making-stuff-up.html#simulating-discrete-morphological-data"><i class="fa fa-check"></i><b>5.1</b> Simulating discrete morphological data</a>
+<ul>
 <li class="chapter" data-level="5.1.1" data-path="making-stuff-up.html"><a href="making-stuff-up.html#a-more-detailed-description"><i class="fa fa-check"></i><b>5.1.1</b> A more detailed description</a></li>
 <li class="chapter" data-level="5.1.2" data-path="making-stuff-up.html"><a href="making-stuff-up.html#parameters-for-a-realisticish-matrix"><i class="fa fa-check"></i><b>5.1.2</b> Parameters for a realistic(ish) matrix</a></li>
 </ul></li>
-<li class="chapter" data-level="5.2" data-path="making-stuff-up.html"><a href="making-stuff-up.html#simulating-multidimensional-spaces"><i class="fa fa-check"></i><b>5.2</b> Simulating multidimensional spaces</a><ul>
+<li class="chapter" data-level="5.2" data-path="making-stuff-up.html"><a href="making-stuff-up.html#simulating-multidimensional-spaces"><i class="fa fa-check"></i><b>5.2</b> Simulating multidimensional spaces</a>
+<ul>
 <li class="chapter" data-level="5.2.1" data-path="making-stuff-up.html"><a href="making-stuff-up.html#personalised-dimensions-distributions"><i class="fa fa-check"></i><b>5.2.1</b> Personalised dimensions distributions</a></li>
 <li class="chapter" data-level="5.2.2" data-path="making-stuff-up.html"><a href="making-stuff-up.html#visualising-the-space"><i class="fa fa-check"></i><b>5.2.2</b> Visualising the space</a></li>
 <li class="chapter" data-level="5.2.3" data-path="making-stuff-up.html"><a href="making-stuff-up.html#generating-realistic-spaces"><i class="fa fa-check"></i><b>5.2.3</b> Generating realistic spaces</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="6" data-path="other-functionalities.html"><a href="other-functionalities.html"><i class="fa fa-check"></i><b>6</b> Other functionalities</a><ul>
+<li class="chapter" data-level="6" data-path="other-functionalities.html"><a href="other-functionalities.html"><i class="fa fa-check"></i><b>6</b> Other functionalities</a>
+<ul>
 <li class="chapter" data-level="6.1" data-path="other-functionalities.html"><a href="other-functionalities.html#char.diff"><i class="fa fa-check"></i><b>6.1</b> <code>char.diff</code></a></li>
 <li class="chapter" data-level="6.2" data-path="other-functionalities.html"><a href="other-functionalities.html#clean.data"><i class="fa fa-check"></i><b>6.2</b> <code>clean.data</code></a></li>
 <li class="chapter" data-level="6.3" data-path="other-functionalities.html"><a href="other-functionalities.html#crown.stem"><i class="fa fa-check"></i><b>6.3</b> <code>crown.stem</code></a></li>
 <li class="chapter" data-level="6.4" data-path="other-functionalities.html"><a href="other-functionalities.html#get.bin.ages"><i class="fa fa-check"></i><b>6.4</b> <code>get.bin.ages</code></a></li>
-<li class="chapter" data-level="6.5" data-path="other-functionalities.html"><a href="other-functionalities.html#pair.plot"><i class="fa fa-check"></i><b>6.5</b> <code>pair.plot</code></a></li>
-<li class="chapter" data-level="6.6" data-path="other-functionalities.html"><a href="other-functionalities.html#reduce.matrix"><i class="fa fa-check"></i><b>6.6</b> <code>reduce.matrix</code></a></li>
-<li class="chapter" data-level="6.7" data-path="other-functionalities.html"><a href="other-functionalities.html#slice.tree"><i class="fa fa-check"></i><b>6.7</b> <code>slice.tree</code></a></li>
-<li class="chapter" data-level="6.8" data-path="other-functionalities.html"><a href="other-functionalities.html#slide.nodes-and-remove.zero.brlen"><i class="fa fa-check"></i><b>6.8</b> <code>slide.nodes</code> and <code>remove.zero.brlen</code></a></li>
-<li class="chapter" data-level="6.9" data-path="other-functionalities.html"><a href="other-functionalities.html#tree.age"><i class="fa fa-check"></i><b>6.9</b> <code>tree.age</code></a></li>
+<li class="chapter" data-level="6.5" data-path="other-functionalities.html"><a href="other-functionalities.html#match.tip.edge"><i class="fa fa-check"></i><b>6.5</b> <code>match.tip.edge</code></a></li>
+<li class="chapter" data-level="6.6" data-path="other-functionalities.html"><a href="other-functionalities.html#MCMCglmm-utilities"><i class="fa fa-check"></i><b>6.6</b> <code>MCMCglmm</code> utilities</a></li>
+<li class="chapter" data-level="6.7" data-path="other-functionalities.html"><a href="other-functionalities.html#pair.plot"><i class="fa fa-check"></i><b>6.7</b> <code>pair.plot</code></a></li>
+<li class="chapter" data-level="6.8" data-path="other-functionalities.html"><a href="other-functionalities.html#reduce.matrix"><i class="fa fa-check"></i><b>6.8</b> <code>reduce.matrix</code></a></li>
+<li class="chapter" data-level="6.9" data-path="other-functionalities.html"><a href="other-functionalities.html#select.axes"><i class="fa fa-check"></i><b>6.9</b> <code>select.axes</code></a></li>
+<li class="chapter" data-level="6.10" data-path="other-functionalities.html"><a href="other-functionalities.html#slice.tree"><i class="fa fa-check"></i><b>6.10</b> <code>slice.tree</code></a></li>
+<li class="chapter" data-level="6.11" data-path="other-functionalities.html"><a href="other-functionalities.html#slide.nodes-and-remove.zero.brlen"><i class="fa fa-check"></i><b>6.11</b> <code>slide.nodes</code> and <code>remove.zero.brlen</code></a></li>
+<li class="chapter" data-level="6.12" data-path="other-functionalities.html"><a href="other-functionalities.html#tree.age"><i class="fa fa-check"></i><b>6.12</b> <code>tree.age</code></a></li>
 </ul></li>
-<li class="chapter" data-level="7" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html"><i class="fa fa-check"></i><b>7</b> The guts of the <code>dispRity</code> package</a><ul>
+<li class="chapter" data-level="7" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html"><i class="fa fa-check"></i><b>7</b> The guts of the <code>dispRity</code> package</a>
+<ul>
 <li class="chapter" data-level="7.1" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#manipulating-disprity-objects"><i class="fa fa-check"></i><b>7.1</b> Manipulating <code>dispRity</code> objects</a></li>
-<li class="chapter" data-level="7.2" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#utilities"><i class="fa fa-check"></i><b>7.2</b> <code>dispRity</code> utilities</a><ul>
+<li class="chapter" data-level="7.2" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#utilities"><i class="fa fa-check"></i><b>7.2</b> <code>dispRity</code> utilities</a>
+<ul>
 <li class="chapter" data-level="7.2.1" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#disprity-object-utilities"><i class="fa fa-check"></i><b>7.2.1</b> <code>dispRity</code> object utilities <a name="dispRity.utilities"></a></a></li>
 </ul></li>
-<li class="chapter" data-level="7.3" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#disprity-object"><i class="fa fa-check"></i><b>7.3</b> The <code>dispRity</code> object content</a><ul>
+<li class="chapter" data-level="7.3" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#disprity-object"><i class="fa fa-check"></i><b>7.3</b> The <code>dispRity</code> object content</a>
+<ul>
 <li class="chapter" data-level="7.3.1" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#matrix"><i class="fa fa-check"></i><b>7.3.1</b> <code>$matrix</code></a></li>
 <li class="chapter" data-level="7.3.2" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#call"><i class="fa fa-check"></i><b>7.3.2</b> <code>$call</code></a></li>
 <li class="chapter" data-level="7.3.3" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#subsets"><i class="fa fa-check"></i><b>7.3.3</b> <code>$subsets</code></a></li>
 <li class="chapter" data-level="7.3.4" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#disparity"><i class="fa fa-check"></i><b>7.3.4</b> <code>$disparity</code></a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="8" data-path="ecology-demo.html"><a href="ecology-demo.html"><i class="fa fa-check"></i><b>8</b> Ecology demo</a><ul>
+<li class="chapter" data-level="8" data-path="ecology-demo.html"><a href="ecology-demo.html"><i class="fa fa-check"></i><b>8</b> Ecology demo</a>
+<ul>
 <li class="chapter" data-level="8.1" data-path="ecology-demo.html"><a href="ecology-demo.html#data"><i class="fa fa-check"></i><b>8.1</b> Data</a></li>
 <li class="chapter" data-level="8.2" data-path="ecology-demo.html"><a href="ecology-demo.html#classic-analysis"><i class="fa fa-check"></i><b>8.2</b> Classic analysis</a></li>
-<li class="chapter" data-level="8.3" data-path="ecology-demo.html"><a href="ecology-demo.html#a-multidimensional-approach-with-disprity"><i class="fa fa-check"></i><b>8.3</b> A multidimensional approach with <code>dispRity</code></a><ul>
+<li class="chapter" data-level="8.3" data-path="ecology-demo.html"><a href="ecology-demo.html#a-multidimensional-approach-with-disprity"><i class="fa fa-check"></i><b>8.3</b> A multidimensional approach with <code>dispRity</code></a>
+<ul>
 <li class="chapter" data-level="8.3.1" data-path="ecology-demo.html"><a href="ecology-demo.html#bootstrapping-the-data"><i class="fa fa-check"></i><b>8.3.1</b> Bootstrapping the data</a></li>
 <li class="chapter" data-level="8.3.2" data-path="ecology-demo.html"><a href="ecology-demo.html#calculating-disparity"><i class="fa fa-check"></i><b>8.3.2</b> Calculating disparity</a></li>
 <li class="chapter" data-level="8.3.3" data-path="ecology-demo.html"><a href="ecology-demo.html#summarising-the-results-plot"><i class="fa fa-check"></i><b>8.3.3</b> Summarising the results (plot)</a></li>
 <li class="chapter" data-level="8.3.4" data-path="ecology-demo.html"><a href="ecology-demo.html#testing-hypothesis"><i class="fa fa-check"></i><b>8.3.4</b> Testing hypothesis</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="9" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html"><i class="fa fa-check"></i><b>9</b> Palaeobiology demo: disparity-through-time and within groups</a><ul>
-<li class="chapter" data-level="9.1" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#before-starting"><i class="fa fa-check"></i><b>9.1</b> Before starting</a><ul>
+<li class="chapter" data-level="9" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html"><i class="fa fa-check"></i><b>9</b> Palaeobiology demo: disparity-through-time and within groups</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#before-starting"><i class="fa fa-check"></i><b>9.1</b> Before starting</a>
+<ul>
 <li class="chapter" data-level="9.1.1" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#the-morphospace"><i class="fa fa-check"></i><b>9.1.1</b> The morphospace</a></li>
 <li class="chapter" data-level="9.1.2" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#setting-up-your-own-data"><i class="fa fa-check"></i><b>9.1.2</b> Setting up your own data</a></li>
 </ul></li>
-<li class="chapter" data-level="9.2" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#a-disparity-through-time-analysis"><i class="fa fa-check"></i><b>9.2</b> A disparity-through-time analysis</a><ul>
+<li class="chapter" data-level="9.2" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#a-disparity-through-time-analysis"><i class="fa fa-check"></i><b>9.2</b> A disparity-through-time analysis</a>
+<ul>
 <li class="chapter" data-level="9.2.1" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#splitting-the-morphospace-through-time"><i class="fa fa-check"></i><b>9.2.1</b> Splitting the morphospace through time</a></li>
 <li class="chapter" data-level="9.2.2" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#bootstrapping-the-data-1"><i class="fa fa-check"></i><b>9.2.2</b> Bootstrapping the data</a></li>
 <li class="chapter" data-level="9.2.3" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#calculating-disparity-1"><i class="fa fa-check"></i><b>9.2.3</b> Calculating disparity</a></li>
@@ -255,8 +295,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="9.3" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#some-more-advanced-stuff"><i class="fa fa-check"></i><b>9.3</b> Some more advanced stuff</a></li>
 </ul></li>
-<li class="chapter" data-level="10" data-path="morphometric-geometric-demo-a-between-group-analysis.html"><a href="morphometric-geometric-demo-a-between-group-analysis.html"><i class="fa fa-check"></i><b>10</b> Morphometric geometric demo: a between group analysis</a><ul>
-<li class="chapter" data-level="10.1" data-path="morphometric-geometric-demo-a-between-group-analysis.html"><a href="morphometric-geometric-demo-a-between-group-analysis.html#before-starting-1"><i class="fa fa-check"></i><b>10.1</b> Before starting</a><ul>
+<li class="chapter" data-level="10" data-path="morphometric-geometric-demo-a-between-group-analysis.html"><a href="morphometric-geometric-demo-a-between-group-analysis.html"><i class="fa fa-check"></i><b>10</b> Morphometric geometric demo: a between group analysis</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="morphometric-geometric-demo-a-between-group-analysis.html"><a href="morphometric-geometric-demo-a-between-group-analysis.html#before-starting-1"><i class="fa fa-check"></i><b>10.1</b> Before starting</a>
+<ul>
 <li class="chapter" data-level="10.1.1" data-path="morphometric-geometric-demo-a-between-group-analysis.html"><a href="morphometric-geometric-demo-a-between-group-analysis.html#the-morphospace-1"><i class="fa fa-check"></i><b>10.1.1</b> The morphospace</a></li>
 </ul></li>
 <li class="chapter" data-level="10.2" data-path="morphometric-geometric-demo-a-between-group-analysis.html"><a href="morphometric-geometric-demo-a-between-group-analysis.html#calculating-disparity-2"><i class="fa fa-check"></i><b>10.2</b> Calculating disparity</a></li>
@@ -275,7 +317,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">dispRity manual</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Morphometric geometric demo: a between group analysis</a>
           </h1>
         </div>
 
@@ -283,132 +325,132 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="making-stuff-up" class="section level1">
-<h1><span class="header-section-number">5</span> Making stuff up!</h1>
+<div id="making-stuff-up" class="section level1 hasAnchor" number="5">
+<h1><span class="header-section-number">5</span> Making stuff up!<a href="making-stuff-up.html#making-stuff-up" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p>The <code>dispRity</code> package also offers some advanced data simulation features to allow to test hypothesis, explore ordinate-spaces or metrics properties or simply playing around with data!
 All the following functions are based on the same modular architecture of the package and therefore can be used with most of the functions of the package.</p>
-<div id="simulating-discrete-morphological-data" class="section level2">
-<h2><span class="header-section-number">5.1</span> Simulating discrete morphological data</h2>
+<div id="simulating-discrete-morphological-data" class="section level2 hasAnchor" number="5.1">
+<h2><span class="header-section-number">5.1</span> Simulating discrete morphological data<a href="making-stuff-up.html#simulating-discrete-morphological-data" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>The function <code>sim.morpho</code> allows to simulate discrete morphological data matrices (sometimes referred to as “cladistic” matrices).
 It allows to evolve multiple discrete characters on a given phylogenetic trees, given different models, rates, and states.
 It even allows to include “proper” inapplicable data to make datasets as messy as in real life!</p>
 <p>In brief, the function <code>sim.morpho</code> takes a phylogenetic tree, the number of required characters, the evolutionary model, and a function from which to draw the rates.
 The package also contains a function for quickly checking the matrix’s phylogenetic signal (as defined in systematics not phylogenetic comparative methods) using parsimony.
 The methods are described in details below</p>
-<div class="sourceCode" id="cb403"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb403-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">3</span>)</a>
-<a class="sourceLine" id="cb403-2" data-line-number="2"><span class="co">## Simulating a starting tree with 15 taxa as a random coalescent tree</span></a>
-<a class="sourceLine" id="cb403-3" data-line-number="3">my_tree &lt;-<span class="st"> </span><span class="kw">rcoal</span>(<span class="dv">15</span>)</a>
-<a class="sourceLine" id="cb403-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb403-5" data-line-number="5"><span class="co">## Generating a matrix with 100 characters (85% binary and 15% three state) and</span></a>
-<a class="sourceLine" id="cb403-6" data-line-number="6"><span class="co">## an equal rates model with a gamma rate distribution (0.5, 1) with no </span></a>
-<a class="sourceLine" id="cb403-7" data-line-number="7"><span class="co">## invariant characters.</span></a>
-<a class="sourceLine" id="cb403-8" data-line-number="8">my_matrix &lt;-<span class="st"> </span><span class="kw">sim.morpho</span>(<span class="dt">tree =</span> my_tree, <span class="dt">characters =</span> <span class="dv">100</span>, <span class="dt">states =</span> <span class="kw">c</span>(<span class="fl">0.85</span>,</a>
-<a class="sourceLine" id="cb403-9" data-line-number="9">    <span class="fl">0.15</span>), <span class="dt">rates =</span> <span class="kw">c</span>(rgamma, <span class="fl">0.5</span>, <span class="dv">1</span>), <span class="dt">invariant =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb403-10" data-line-number="10"></a>
-<a class="sourceLine" id="cb403-11" data-line-number="11"><span class="co">## The first few lines of the matrix</span></a>
-<a class="sourceLine" id="cb403-12" data-line-number="12">my_matrix[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>]</a></code></pre></div>
+<div class="sourceCode" id="cb413"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb413-1"><a href="making-stuff-up.html#cb413-1" aria-hidden="true"></a><span class="kw">set.seed</span>(<span class="dv">3</span>)</span>
+<span id="cb413-2"><a href="making-stuff-up.html#cb413-2" aria-hidden="true"></a><span class="co">## Simulating a starting tree with 15 taxa as a random coalescent tree</span></span>
+<span id="cb413-3"><a href="making-stuff-up.html#cb413-3" aria-hidden="true"></a>my_tree &lt;-<span class="st"> </span><span class="kw">rcoal</span>(<span class="dv">15</span>)</span>
+<span id="cb413-4"><a href="making-stuff-up.html#cb413-4" aria-hidden="true"></a></span>
+<span id="cb413-5"><a href="making-stuff-up.html#cb413-5" aria-hidden="true"></a><span class="co">## Generating a matrix with 100 characters (85% binary and 15% three state) and</span></span>
+<span id="cb413-6"><a href="making-stuff-up.html#cb413-6" aria-hidden="true"></a><span class="co">## an equal rates model with a gamma rate distribution (0.5, 1) with no </span></span>
+<span id="cb413-7"><a href="making-stuff-up.html#cb413-7" aria-hidden="true"></a><span class="co">## invariant characters.</span></span>
+<span id="cb413-8"><a href="making-stuff-up.html#cb413-8" aria-hidden="true"></a>my_matrix &lt;-<span class="st"> </span><span class="kw">sim.morpho</span>(<span class="dt">tree =</span> my_tree, <span class="dt">characters =</span> <span class="dv">100</span>, <span class="dt">states =</span> <span class="kw">c</span>(<span class="fl">0.85</span>,</span>
+<span id="cb413-9"><a href="making-stuff-up.html#cb413-9" aria-hidden="true"></a>    <span class="fl">0.15</span>), <span class="dt">rates =</span> <span class="kw">c</span>(rgamma, <span class="fl">0.5</span>, <span class="dv">1</span>), <span class="dt">invariant =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb413-10"><a href="making-stuff-up.html#cb413-10" aria-hidden="true"></a></span>
+<span id="cb413-11"><a href="making-stuff-up.html#cb413-11" aria-hidden="true"></a><span class="co">## The first few lines of the matrix</span></span>
+<span id="cb413-12"><a href="making-stuff-up.html#cb413-12" aria-hidden="true"></a>my_matrix[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>]</span></code></pre></div>
 <pre><code>##     [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
-## t10 &quot;1&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  
-## t1  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;1&quot;  
-## t9  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;1&quot;  
-## t14 &quot;1&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;1&quot;  
-## t13 &quot;1&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;1&quot;</code></pre>
-<div class="sourceCode" id="cb405"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb405-1" data-line-number="1"><span class="co">## Checking the matrix properties with a quick Maximum Parsimony tree search</span></a>
-<a class="sourceLine" id="cb405-2" data-line-number="2"><span class="kw">check.morpho</span>(my_matrix, my_tree)</a></code></pre></div>
-<pre><code>##                                    
-## Maximum parsimony        144.000000
-## Consistency index          0.750000
-## Retention index            0.918552
-## Robinson-Foulds distance   4.000000</code></pre>
+## t10 &quot;1&quot;  &quot;0&quot;  &quot;1&quot;  &quot;1&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;1&quot;  
+## t1  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;1&quot;  
+## t9  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;1&quot;  
+## t14 &quot;1&quot;  &quot;0&quot;  &quot;1&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;1&quot;  
+## t13 &quot;1&quot;  &quot;0&quot;  &quot;1&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;1&quot;</code></pre>
+<div class="sourceCode" id="cb415"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb415-1"><a href="making-stuff-up.html#cb415-1" aria-hidden="true"></a><span class="co">## Checking the matrix properties with a quick Maximum Parsimony tree search</span></span>
+<span id="cb415-2"><a href="making-stuff-up.html#cb415-2" aria-hidden="true"></a><span class="kw">check.morpho</span>(my_matrix, my_tree)</span></code></pre></div>
+<pre><code>##                                     
+## Maximum parsimony        143.0000000
+## Consistency index          0.7482517
+## Retention index            0.9168591
+## Robinson-Foulds distance   2.0000000</code></pre>
 <p>Note that this example produces a tree with a great consistency index and an identical topology to the random coalescent tree!
 Nearly too good to be true…</p>
-<div id="a-more-detailed-description" class="section level3">
-<h3><span class="header-section-number">5.1.1</span> A more detailed description</h3>
-<p>The protocol implemented here to generate discrete morphological matrices is based on the ones developed in <span class="citation">(Guillerme and Cooper <a href="#ref-GuillermeCooper">2016</a>; O’Reilly et al. <a href="#ref-OReilly2016">2016</a>; Puttick et al. <a href="#ref-puttick2017uncertain">2017</a>; E. et al., <a href="#ref-OReilly2017">n.d.</a>)</span>.</p>
+<div id="a-more-detailed-description" class="section level3 hasAnchor" number="5.1.1">
+<h3><span class="header-section-number">5.1.1</span> A more detailed description<a href="making-stuff-up.html#a-more-detailed-description" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The protocol implemented here to generate discrete morphological matrices is based on the ones developed in <span class="citation">(Guillerme and Cooper <a href="#ref-GuillermeCooper" role="doc-biblioref">2016</a>; O’Reilly et al. <a href="#ref-OReilly2016" role="doc-biblioref">2016</a>; Puttick et al. <a href="#ref-puttick2017uncertain" role="doc-biblioref">2017</a>; E. et al., <a href="#ref-OReilly2017" role="doc-biblioref">n.d.</a>)</span>.</p>
 <ul>
 <li>The first <code>tree</code> argument will be the tree on which to “evolve” the characters and therefore requires branch length.
-You can generate quick and easy random Yule trees using <code>ape::rtree(number_of_taxa)</code> but I would advise to use more realistic trees for more realistic simulations based on more realistic models (really realistic then) using the function <code>tree.bd</code> from the <a href="http://www.zoology.ubc.ca/prog/diversitree/"><code>diversitree</code></a> package <span class="citation">(FitzJohn <a href="#ref-fitzjohndiversitree2012">2012</a>)</span>.</li>
+You can generate quick and easy random Yule trees using <code>ape::rtree(number_of_taxa)</code> but I would advise to use more realistic trees for more realistic simulations based on more realistic models (really realistic then) using the function <code>tree.bd</code> from the <a href="http://www.zoology.ubc.ca/prog/diversitree/"><code>diversitree</code></a> package <span class="citation">(FitzJohn <a href="#ref-fitzjohndiversitree2012" role="doc-biblioref">2012</a>)</span>.</li>
 <li>The second argument, <code>character</code> is the number of characters. Pretty straight forward.</li>
 <li>The third, <code>states</code> is the proportion of characters states above two (yes, the minimum number of states is two). This argument intakes the proportion of <em>n</em>-states characters, for example <code>states = c(0.5,0.3,0.2)</code> will generate 50% of binary-state characters, 30% of three-state characters and 20% of four-state characters. There is no limit in the number of state characters proportion as long as the total makes up 100%.</li>
 <li>The forth, <code>model</code> is the evolutionary model for generating the character(s). More about this below.</li>
 <li>The fifth and sixth, <code>rates</code> and <code>substitution</code> are the model parameters described below as well.</li>
 <li>Finally, the two logical arguments, are self explanatory: <code>invariant</code> whether to allow invariant characters (i.e. characters that don’t change) and <code>verbose</code> whether to print the simulation progress on your console.</li>
 </ul>
-<div id="available-evolutionary-models" class="section level4">
-<h4><span class="header-section-number">5.1.1.1</span> Available evolutionary models</h4>
+<div id="available-evolutionary-models" class="section level4 hasAnchor" number="5.1.1.1">
+<h4><span class="header-section-number">5.1.1.1</span> Available evolutionary models<a href="making-stuff-up.html#available-evolutionary-models" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>There are currently three evolutionary models implemented in <code>sim.morpho</code> but more will come in the future.
 Note also that they allow fine tuning parameters making them pretty plastic!</p>
 <ul>
-<li><code>&quot;ER&quot;</code>: this model allows any number of character states and is based on the Mk model <span class="citation">(Lewis <a href="#ref-lewisa2001">2001</a>)</span>. It assumes a unique overall evolutionary rate equal substitution rate between character states. This model is based on the <code>ape::rTraitDisc</code> function.</li>
-<li><code>&quot;HKY&quot;</code>: this is binary state character model based on the molecular HKY model <span class="citation">(Hasegawa, Kishino, and Yano <a href="#ref-HKY85">1985</a>)</span>. It uses the four molecular states (A,C,G,T) with a unique overall evolutionary rate and a biased substitution rate towards transitions (A &lt;-&gt; G or C &lt;-&gt; T) against transvertions (A &lt;-&gt; C and G &lt;-&gt; T). After evolving the nucleotide, this model transforms them into binary states by converting the purines (A and G) into state 0 and the pyrimidines (C and T) into state 1. This method is based on the <code>phyclust::seq.gen.HKY</code> function and was first proposed by <span class="citation">O’Reilly et al. (<a href="#ref-OReilly2016">2016</a>)</span>.</li>
-<li><code>&quot;MIXED&quot;</code>: this model uses a random (uniform) mix between both the <code>&quot;ER&quot;</code> and the <code>&quot;HKY&quot;</code> models.</li>
+<li><code>"ER"</code>: this model allows any number of character states and is based on the Mk model <span class="citation">(Lewis <a href="#ref-lewisa2001" role="doc-biblioref">2001</a>)</span>. It assumes a unique overall evolutionary rate equal substitution rate between character states. This model is based on the <code>ape::rTraitDisc</code> function.</li>
+<li><code>"HKY"</code>: this is binary state character model based on the molecular HKY model <span class="citation">(Hasegawa, Kishino, and Yano <a href="#ref-HKY85" role="doc-biblioref">1985</a>)</span>. It uses the four molecular states (A,C,G,T) with a unique overall evolutionary rate and a biased substitution rate towards transitions (A &lt;-&gt; G or C &lt;-&gt; T) against transvertions (A &lt;-&gt; C and G &lt;-&gt; T). After evolving the nucleotide, this model transforms them into binary states by converting the purines (A and G) into state 0 and the pyrimidines (C and T) into state 1. This method is based on the <code>phyclust::seq.gen.HKY</code> function and was first proposed by <span class="citation">O’Reilly et al. (<a href="#ref-OReilly2016" role="doc-biblioref">2016</a>)</span>.</li>
+<li><code>"MIXED"</code>: this model uses a random (uniform) mix between both the <code>"ER"</code> and the <code>"HKY"</code> models.</li>
 </ul>
 <p>The models can take the following parameters:
 (1) <code>rates</code> is the evolutionary rate (i.e. the rate of changes along a branch: the evolutionary speed) and (2) <code>substitution</code> is the frequency of changes between one state or another.
 For example if a character can have high probability of changing (the <em>evolutionary</em> rate) with, each time a change occurs a probability of changing from state <em>X</em> to state <em>Y</em> (the <em>substitution</em> rate).
-Note that in the <code>&quot;ER&quot;</code> model, the substitution rate is ignore because… by definition this (substitution) rate is equal!</p>
+Note that in the <code>"ER"</code> model, the substitution rate is ignore because… by definition this (substitution) rate is equal!</p>
 <p>The parameters arguments <code>rates</code> and <code>substitution</code> takes a distributions from which to draw the parameters values for each character.
-For example, if you want an <code>&quot;HKY&quot;</code> model with an evolutionary rate (i.e. speed) drawn from a uniform distribution bounded between 0.001 and 0.005, you can define it as <code>rates = c(runif, min = 0.001, max = 0.005)</code>, <code>runif</code> being the function for random draws from a uniform distribution and <code>max</code> and <code>min</code> being the distribution parameters.
+For example, if you want an <code>"HKY"</code> model with an evolutionary rate (i.e. speed) drawn from a uniform distribution bounded between 0.001 and 0.005, you can define it as <code>rates = c(runif, min = 0.001, max = 0.005)</code>, <code>runif</code> being the function for random draws from a uniform distribution and <code>max</code> and <code>min</code> being the distribution parameters.
 These distributions should always be passed in the format <code>c(random_distribution_function, distribution_parameters)</code> with the names of the distribution parameters arguments.</p>
 </div>
-<div id="checking-the-results" class="section level4">
-<h4><span class="header-section-number">5.1.1.2</span> Checking the results</h4>
+<div id="checking-the-results" class="section level4 hasAnchor" number="5.1.1.2">
+<h4><span class="header-section-number">5.1.1.2</span> Checking the results<a href="making-stuff-up.html#checking-the-results" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>An additional function, <code>check.morpho</code> runs a quick Maximum Parsimony tree search using the <code>phangorn</code> parsimony algorithm.
 It quickly calculates the parsimony score, the consistency and retention indices and, if a tree is provided (e.g. the tree used to generate the matrix) it calculates the Robinson-Foulds distance between the most parsimonious tree and the provided tree to determine how different they are.</p>
 </div>
-<div id="adding-inapplicable-characters" class="section level4">
-<h4><span class="header-section-number">5.1.1.3</span> Adding inapplicable characters</h4>
+<div id="adding-inapplicable-characters" class="section level4 hasAnchor" number="5.1.1.3">
+<h4><span class="header-section-number">5.1.1.3</span> Adding inapplicable characters<a href="making-stuff-up.html#adding-inapplicable-characters" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>Once a matrix is generated, it is possible to apply inapplicable characters to it for increasing realism!
 Inapplicable characters are commonly designated as <code>NA</code> or simply <code>-</code>.
-They differ from missing characters <code>?</code> in their nature by being inapplicable rather than unknown<span class="citation">(see Brazeau, Guillerme, and Smith <a href="#ref-brazeau2018">2018</a> for more details)</span>.
+They differ from missing characters <code>?</code> in their nature by being inapplicable rather than unknown<span class="citation">(see Brazeau, Guillerme, and Smith <a href="#ref-brazeau2018" role="doc-biblioref">2018</a> for more details)</span>.
 For example, considering a binary character defined as “colour of the tail” with the following states “blue” and “red”; on a taxa with no tail, the character should be coded as inapplicable (“<code>-</code>”) since the state of the character “colour of tail” is <em>known</em>: it’s neither “blue” or “red”, it’s just not there!
 It contrasts with coding it as missing (“<code>?</code>” - also called as ambiguous) where the state is <em>unknown</em>, for example, the taxon of interest is a fossil where the tail has no colour preserved or is not present at all due to bad conservation!</p>
 <p>This type of characters can be added to the simulated matrices using the <code>apply.NA</code> function/
 It takes, as arguments, the <code>matrix</code>, the source of inapplicability (<code>NAs</code> - more below), the <code>tree</code> used to generate the matrix and the two same <code>invariant</code> and <code>verbose</code> arguments as defined above.
 The <code>NAs</code> argument allows two types of sources of inapplicability:</p>
 <ul>
-<li><code>&quot;character&quot;</code> where the inapplicability is due to the character (e.g. coding a character tail for species with no tail).
-In practice, the algorithm chooses a character <em>X</em> as the underlying character (e.g. “presence and absence of tail”), arbitrarily chooses one of the states as “absent” (e.g. 0 = absent) and changes in the next character <em>Y</em> any state next to character <em>X</em> state 0 into an inapplicable token (“<code>-</code>”).
+<li><code>"character"</code> where the inapplicability is due to the character (e.g. coding a character tail for species with no tail).
+In practice, the algorithm chooses a character <em>X</em> as the underlying character (e.g. “presence and absence of tail”), arbitrarily chooses one of the states as “absent” (e.g. 0 = absent) and changes in the next character <em>Y</em> any state next to character <em>X</em> state 0 into an inapplicable token (“<code>-</code>”).
 This simulates the inapplicability induced by coding the characters (i.e. not always biological).</li>
-<li><code>&quot;clade&quot;</code> where the inapplicability is due to evolutionary history (e.g. a clade loosing its tail).
+<li><code>"clade"</code> where the inapplicability is due to evolutionary history (e.g. a clade loosing its tail).
 In practice, the algorithm chooses a random clade in the tree and a random character <em>Z</em> and replaces the state of the taxa present in the clade by the inapplicable token (“<code>-</code>”).
 This simulates the inapplicability induced by evolutionary biology (e.g. the lose of a feature in a clade).</li>
 </ul>
 <p>To apply these sources of inapplicability, simply repeat the number of inapplicable sources for the desired number of characters with inapplicable data.</p>
-<div class="sourceCode" id="cb407"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb407-1" data-line-number="1"><span class="co">## Generating 5 &quot;character&quot; NAs and 10 &quot;clade&quot; NAs</span></a>
-<a class="sourceLine" id="cb407-2" data-line-number="2">my_matrix_NA &lt;-<span class="st"> </span><span class="kw">apply.NA</span>(my_matrix, <span class="dt">tree =</span> my_tree,</a>
-<a class="sourceLine" id="cb407-3" data-line-number="3">                         <span class="dt">NAs =</span> <span class="kw">c</span>(<span class="kw">rep</span>(<span class="st">&quot;character&quot;</span>, <span class="dv">5</span>),</a>
-<a class="sourceLine" id="cb407-4" data-line-number="4">                                 <span class="kw">rep</span>(<span class="st">&quot;clade&quot;</span>, <span class="dv">10</span>)))</a>
-<a class="sourceLine" id="cb407-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb407-6" data-line-number="6"><span class="co">## The first few lines of the resulting matrix</span></a>
-<a class="sourceLine" id="cb407-7" data-line-number="7">my_matrix_NA[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dv">90</span><span class="op">:</span><span class="dv">100</span>]</a></code></pre></div>
+<div class="sourceCode" id="cb417"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb417-1"><a href="making-stuff-up.html#cb417-1" aria-hidden="true"></a><span class="co">## Generating 5 &quot;character&quot; NAs and 10 &quot;clade&quot; NAs</span></span>
+<span id="cb417-2"><a href="making-stuff-up.html#cb417-2" aria-hidden="true"></a>my_matrix_NA &lt;-<span class="st"> </span><span class="kw">apply.NA</span>(my_matrix, <span class="dt">tree =</span> my_tree,</span>
+<span id="cb417-3"><a href="making-stuff-up.html#cb417-3" aria-hidden="true"></a>                         <span class="dt">NAs =</span> <span class="kw">c</span>(<span class="kw">rep</span>(<span class="st">&quot;character&quot;</span>, <span class="dv">5</span>),</span>
+<span id="cb417-4"><a href="making-stuff-up.html#cb417-4" aria-hidden="true"></a>                                 <span class="kw">rep</span>(<span class="st">&quot;clade&quot;</span>, <span class="dv">10</span>)))</span>
+<span id="cb417-5"><a href="making-stuff-up.html#cb417-5" aria-hidden="true"></a></span>
+<span id="cb417-6"><a href="making-stuff-up.html#cb417-6" aria-hidden="true"></a><span class="co">## The first few lines of the resulting matrix</span></span>
+<span id="cb417-7"><a href="making-stuff-up.html#cb417-7" aria-hidden="true"></a>my_matrix_NA[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dv">90</span><span class="op">:</span><span class="dv">100</span>]</span></code></pre></div>
 <pre><code>##     [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11]
-## t10 &quot;1&quot;  &quot;0&quot;  &quot;1&quot;  &quot;1&quot;  &quot;2&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;   &quot;1&quot;  
-## t1  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;2&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;   &quot;1&quot;  
-## t9  &quot;1&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;2&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;   &quot;1&quot;  
-## t14 &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;2&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;   &quot;0&quot;  
-## t13 &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;2&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;   &quot;0&quot;  
-## t5  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;2&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;   &quot;0&quot;  
-## t2  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;2&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;   &quot;0&quot;  
-## t8  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;2&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;   &quot;0&quot;  
-## t6  &quot;0&quot;  &quot;1&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;1&quot;  &quot;2&quot;  &quot;0&quot;  &quot;1&quot;   &quot;1&quot;  
-## t15 &quot;0&quot;  &quot;1&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;1&quot;  &quot;2&quot;  &quot;0&quot;  &quot;1&quot;   &quot;1&quot;</code></pre>
+## t10 &quot;1&quot;  &quot;0&quot;  &quot;1&quot;  &quot;1&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;   &quot;1&quot;  
+## t1  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;   &quot;1&quot;  
+## t9  &quot;1&quot;  &quot;2&quot;  &quot;1&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;   &quot;1&quot;  
+## t14 &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;   &quot;1&quot;  
+## t13 &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;   &quot;1&quot;  
+## t5  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;   &quot;1&quot;  
+## t2  &quot;1&quot;  &quot;2&quot;  &quot;-&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;   &quot;1&quot;  
+## t8  &quot;1&quot;  &quot;1&quot;  &quot;-&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;   &quot;1&quot;  
+## t6  &quot;1&quot;  &quot;2&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;1&quot;  &quot;2&quot;  &quot;0&quot;  &quot;1&quot;   &quot;0&quot;  
+## t15 &quot;1&quot;  &quot;2&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;1&quot;  &quot;2&quot;  &quot;0&quot;  &quot;1&quot;   &quot;0&quot;</code></pre>
 </div>
 </div>
-<div id="parameters-for-a-realisticish-matrix" class="section level3">
-<h3><span class="header-section-number">5.1.2</span> Parameters for a realistic(ish) matrix</h3>
+<div id="parameters-for-a-realisticish-matrix" class="section level3 hasAnchor" number="5.1.2">
+<h3><span class="header-section-number">5.1.2</span> Parameters for a realistic(ish) matrix<a href="making-stuff-up.html#parameters-for-a-realisticish-matrix" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>There are many parameters that can create a “realistic” matrix (i.e. not too different from the input tree with a consistency and retention index close to what is seen in the literature) but because of the randomness of the matrix generation not all parameters combination end up creating “good” matrices.
 The following parameters however, seem to generate fairly “realist” matrices with a starting coalescent tree, equal rates model with 0.85 binary characters and 0.15 three state characters, a gamma distribution with a shape parameter (<span class="math inline">\(\alpha\)</span>) of 5 and no scaling (<span class="math inline">\(\beta\)</span> = 1) with a rate of 100.</p>
-<div class="sourceCode" id="cb409"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb409-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">0</span>)</a>
-<a class="sourceLine" id="cb409-2" data-line-number="2"><span class="co">## tree</span></a>
-<a class="sourceLine" id="cb409-3" data-line-number="3">my_tree &lt;-<span class="st"> </span><span class="kw">rcoal</span>(<span class="dv">15</span>)</a>
-<a class="sourceLine" id="cb409-4" data-line-number="4"><span class="co">## matrix</span></a>
-<a class="sourceLine" id="cb409-5" data-line-number="5">morpho_mat &lt;-<span class="st"> </span><span class="kw">sim.morpho</span>(my_tree,</a>
-<a class="sourceLine" id="cb409-6" data-line-number="6">                         <span class="dt">characters =</span> <span class="dv">100</span>,</a>
-<a class="sourceLine" id="cb409-7" data-line-number="7">                         <span class="dt">model =</span> <span class="st">&quot;ER&quot;</span>,</a>
-<a class="sourceLine" id="cb409-8" data-line-number="8">                         <span class="dt">rates =</span> <span class="kw">c</span>(rgamma, <span class="dt">rate =</span> <span class="dv">100</span>, <span class="dt">shape =</span> <span class="dv">5</span>),</a>
-<a class="sourceLine" id="cb409-9" data-line-number="9">                         <span class="dt">invariant =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb409-10" data-line-number="10"><span class="kw">check.morpho</span>(morpho_mat, my_tree)</a></code></pre></div>
+<div class="sourceCode" id="cb419"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb419-1"><a href="making-stuff-up.html#cb419-1" aria-hidden="true"></a><span class="kw">set.seed</span>(<span class="dv">0</span>)</span>
+<span id="cb419-2"><a href="making-stuff-up.html#cb419-2" aria-hidden="true"></a><span class="co">## tree</span></span>
+<span id="cb419-3"><a href="making-stuff-up.html#cb419-3" aria-hidden="true"></a>my_tree &lt;-<span class="st"> </span><span class="kw">rcoal</span>(<span class="dv">15</span>)</span>
+<span id="cb419-4"><a href="making-stuff-up.html#cb419-4" aria-hidden="true"></a><span class="co">## matrix</span></span>
+<span id="cb419-5"><a href="making-stuff-up.html#cb419-5" aria-hidden="true"></a>morpho_mat &lt;-<span class="st"> </span><span class="kw">sim.morpho</span>(my_tree,</span>
+<span id="cb419-6"><a href="making-stuff-up.html#cb419-6" aria-hidden="true"></a>                         <span class="dt">characters =</span> <span class="dv">100</span>,</span>
+<span id="cb419-7"><a href="making-stuff-up.html#cb419-7" aria-hidden="true"></a>                         <span class="dt">model =</span> <span class="st">&quot;ER&quot;</span>,</span>
+<span id="cb419-8"><a href="making-stuff-up.html#cb419-8" aria-hidden="true"></a>                         <span class="dt">rates =</span> <span class="kw">c</span>(rgamma, <span class="dt">rate =</span> <span class="dv">100</span>, <span class="dt">shape =</span> <span class="dv">5</span>),</span>
+<span id="cb419-9"><a href="making-stuff-up.html#cb419-9" aria-hidden="true"></a>                         <span class="dt">invariant =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb419-10"><a href="making-stuff-up.html#cb419-10" aria-hidden="true"></a><span class="kw">check.morpho</span>(morpho_mat, my_tree)</span></code></pre></div>
 <pre><code>##                                     
 ## Maximum parsimony        103.0000000
 ## Consistency index          0.9708738
@@ -418,27 +460,27 @@ The following parameters however, seem to generate fairly “realist” matrices
 <!-- TG: Add tutorial for evolving "morpho" shapes -->
 </div>
 </div>
-<div id="simulating-multidimensional-spaces" class="section level2">
-<h2><span class="header-section-number">5.2</span> Simulating multidimensional spaces</h2>
+<div id="simulating-multidimensional-spaces" class="section level2 hasAnchor" number="5.2">
+<h2><span class="header-section-number">5.2</span> Simulating multidimensional spaces<a href="making-stuff-up.html#simulating-multidimensional-spaces" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Another way to simulate data is to directly simulate an ordinated space with the <code>space.maker</code> function.
 This function allows users to simulate multidimensional spaces with a certain number of properties.
 For example, it is possible to design a multidimensional space with a specific distribution on each axis, a correlation between the axes and a specific cumulative variance per axis.
-This can be useful for creating ordinated spaces for null hypothesis, for example if you’re using the function <code>null.test</code> <span class="citation">(Díaz et al. <a href="#ref-diaz2016global">2016</a>)</span>.</p>
-<p>This function takes as arguments the number of elements (data points - <code>elements</code> argument) and dimensions (<code>dimensions</code> argument) to create the space and the distribution functions to be used for each axis.
+This can be useful for creating ordinated spaces for null hypothesis, for example if you’re using the function <code>null.test</code> <span class="citation">(Dı́az et al. <a href="#ref-diaz2016global" role="doc-biblioref">2016</a>)</span>.</p>
+<p>This function takes as arguments the number of elements (data points - <code>elements</code> argument) and dimensions (<code>dimensions</code> argument) to create the space and the distribution functions to be used for each axis.
 The distributions are passed through the <code>distribution</code> argument as… modular functions!
 You can either pass a single distribution function for all the axes (for example <code>distribution = runif</code> for all the axis being uniform) or a specific distribution function for each specific axis (for example <code>distribution = c(runif, rnorm, rgamma))</code> for the first axis being uniform, the second normal and the third gamma).
 You can of course use your very own functions or use the ones implemented in <code>dispRity</code> for more complex ones (see below).
 Specific optional arguments for each of these distributions can be passed as a list via the <code>arguments</code> argument.</p>
 <p>Furthermore, it is possible to add a correlation matrix to add a correlation between the axis via the <code>cor.matrix</code> argument or even a vector of proportion of variance to be bear by each axis via the <code>scree</code> argument to simulate realistic ordinated spaces.</p>
 <p>Here is a simple two dimensional example:</p>
-<div class="sourceCode" id="cb411"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb411-1" data-line-number="1"><span class="co">## Graphical options</span></a>
-<a class="sourceLine" id="cb411-2" data-line-number="2">op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">bty =</span> <span class="st">&quot;n&quot;</span>)</a>
-<a class="sourceLine" id="cb411-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb411-4" data-line-number="4"><span class="co">## A square space</span></a>
-<a class="sourceLine" id="cb411-5" data-line-number="5">square_space &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<span class="dv">100</span>, <span class="dv">2</span>, runif)</a>
-<a class="sourceLine" id="cb411-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb411-7" data-line-number="7"><span class="co">## The resulting 2D matrix</span></a>
-<a class="sourceLine" id="cb411-8" data-line-number="8"><span class="kw">head</span>(square_space)</a></code></pre></div>
+<div class="sourceCode" id="cb421"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb421-1"><a href="making-stuff-up.html#cb421-1" aria-hidden="true"></a><span class="co">## Graphical options</span></span>
+<span id="cb421-2"><a href="making-stuff-up.html#cb421-2" aria-hidden="true"></a>op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">bty =</span> <span class="st">&quot;n&quot;</span>)</span>
+<span id="cb421-3"><a href="making-stuff-up.html#cb421-3" aria-hidden="true"></a></span>
+<span id="cb421-4"><a href="making-stuff-up.html#cb421-4" aria-hidden="true"></a><span class="co">## A square space</span></span>
+<span id="cb421-5"><a href="making-stuff-up.html#cb421-5" aria-hidden="true"></a>square_space &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<span class="dv">100</span>, <span class="dv">2</span>, runif)</span>
+<span id="cb421-6"><a href="making-stuff-up.html#cb421-6" aria-hidden="true"></a></span>
+<span id="cb421-7"><a href="making-stuff-up.html#cb421-7" aria-hidden="true"></a><span class="co">## The resulting 2D matrix</span></span>
+<span id="cb421-8"><a href="making-stuff-up.html#cb421-8" aria-hidden="true"></a><span class="kw">head</span>(square_space)</span></code></pre></div>
 <pre><code>##           [,1]       [,2]
 ## [1,] 0.2878797 0.82110157
 ## [2,] 0.5989886 0.72890558
@@ -446,178 +488,178 @@ Specific optional arguments for each of these distributions can be passed as a l
 ## [4,] 0.3663870 0.75545936
 ## [5,] 0.2122375 0.98768804
 ## [6,] 0.9612441 0.07285561</code></pre>
-<div class="sourceCode" id="cb413"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb413-1" data-line-number="1"><span class="co">## Visualising the space</span></a>
-<a class="sourceLine" id="cb413-2" data-line-number="2"><span class="kw">plot</span>(square_space, <span class="dt">pch =</span> <span class="dv">20</span>, <span class="dt">xlab =</span> <span class="st">&quot;&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;&quot;</span>,</a>
-<a class="sourceLine" id="cb413-3" data-line-number="3">     <span class="dt">main =</span> <span class="st">&quot;Uniform 2D space&quot;</span>)</a></code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-125-1.png" width="768" /></p>
+<div class="sourceCode" id="cb423"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb423-1"><a href="making-stuff-up.html#cb423-1" aria-hidden="true"></a><span class="co">## Visualising the space</span></span>
+<span id="cb423-2"><a href="making-stuff-up.html#cb423-2" aria-hidden="true"></a><span class="kw">plot</span>(square_space, <span class="dt">pch =</span> <span class="dv">20</span>, <span class="dt">xlab =</span> <span class="st">&quot;&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;&quot;</span>,</span>
+<span id="cb423-3"><a href="making-stuff-up.html#cb423-3" aria-hidden="true"></a>     <span class="dt">main =</span> <span class="st">&quot;Uniform 2D space&quot;</span>)</span></code></pre></div>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-136-1.png" width="768" /></p>
 <p>Of course, more complex spaces can be created by changing the distributions, their arguments or adding a correlation matrix or a cumulative variance vector:</p>
-<div class="sourceCode" id="cb414"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb414-1" data-line-number="1"><span class="co">## A plane space: uniform with one dimensions equal to 0</span></a>
-<a class="sourceLine" id="cb414-2" data-line-number="2">plane_space &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<span class="dv">2500</span>, <span class="dv">3</span>, <span class="kw">c</span>(runif, runif, runif),</a>
-<a class="sourceLine" id="cb414-3" data-line-number="3">                           <span class="dt">arguments =</span> <span class="kw">list</span>(<span class="kw">list</span>(<span class="dt">min =</span> <span class="dv">0</span>, <span class="dt">max =</span> <span class="dv">0</span>),</a>
-<a class="sourceLine" id="cb414-4" data-line-number="4">                           <span class="ot">NULL</span>, <span class="ot">NULL</span>))</a>
-<a class="sourceLine" id="cb414-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb414-6" data-line-number="6"><span class="co">## Correlation matrix for a 3D space</span></a>
-<a class="sourceLine" id="cb414-7" data-line-number="7">(cor_matrix &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">cbind</span>(<span class="dv">1</span>, <span class="fl">0.8</span>, <span class="fl">0.2</span>, <span class="fl">0.8</span>, <span class="dv">1</span>, <span class="fl">0.7</span>, <span class="fl">0.2</span>, <span class="fl">0.7</span>, <span class="dv">1</span>), <span class="dt">nrow =</span> <span class="dv">3</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb424"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb424-1"><a href="making-stuff-up.html#cb424-1" aria-hidden="true"></a><span class="co">## A plane space: uniform with one dimensions equal to 0</span></span>
+<span id="cb424-2"><a href="making-stuff-up.html#cb424-2" aria-hidden="true"></a>plane_space &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<span class="dv">2500</span>, <span class="dv">3</span>, <span class="kw">c</span>(runif, runif, runif),</span>
+<span id="cb424-3"><a href="making-stuff-up.html#cb424-3" aria-hidden="true"></a>                           <span class="dt">arguments =</span> <span class="kw">list</span>(<span class="kw">list</span>(<span class="dt">min =</span> <span class="dv">0</span>, <span class="dt">max =</span> <span class="dv">0</span>),</span>
+<span id="cb424-4"><a href="making-stuff-up.html#cb424-4" aria-hidden="true"></a>                           <span class="ot">NULL</span>, <span class="ot">NULL</span>))</span>
+<span id="cb424-5"><a href="making-stuff-up.html#cb424-5" aria-hidden="true"></a></span>
+<span id="cb424-6"><a href="making-stuff-up.html#cb424-6" aria-hidden="true"></a><span class="co">## Correlation matrix for a 3D space</span></span>
+<span id="cb424-7"><a href="making-stuff-up.html#cb424-7" aria-hidden="true"></a>(cor_matrix &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">cbind</span>(<span class="dv">1</span>, <span class="fl">0.8</span>, <span class="fl">0.2</span>, <span class="fl">0.8</span>, <span class="dv">1</span>, <span class="fl">0.7</span>, <span class="fl">0.2</span>, <span class="fl">0.7</span>, <span class="dv">1</span>), <span class="dt">nrow =</span> <span class="dv">3</span>))</span></code></pre></div>
 <pre><code>##      [,1] [,2] [,3]
 ## [1,]  1.0  0.8  0.2
 ## [2,]  0.8  1.0  0.7
 ## [3,]  0.2  0.7  1.0</code></pre>
-<div class="sourceCode" id="cb416"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb416-1" data-line-number="1"><span class="co">## An ellipsoid space (normal space with correlation)</span></a>
-<a class="sourceLine" id="cb416-2" data-line-number="2">ellipse_space &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<span class="dv">2500</span>, <span class="dv">3</span>, rnorm,</a>
-<a class="sourceLine" id="cb416-3" data-line-number="3">                             <span class="dt">cor.matrix =</span> cor_matrix)</a>
-<a class="sourceLine" id="cb416-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb416-5" data-line-number="5"><span class="co">## A cylindrical space with decreasing axes variance</span></a>
-<a class="sourceLine" id="cb416-6" data-line-number="6">cylindrical_space &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<span class="dv">2500</span>, <span class="dv">3</span>, <span class="kw">c</span>(rnorm, rnorm, runif),</a>
-<a class="sourceLine" id="cb416-7" data-line-number="7">                                 <span class="dt">scree =</span> <span class="kw">c</span>(<span class="fl">0.7</span>, <span class="fl">0.2</span>, <span class="fl">0.1</span>))</a></code></pre></div>
-<div id="personalised-dimensions-distributions" class="section level3">
-<h3><span class="header-section-number">5.2.1</span> Personalised dimensions distributions</h3>
+<div class="sourceCode" id="cb426"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb426-1"><a href="making-stuff-up.html#cb426-1" aria-hidden="true"></a><span class="co">## An ellipsoid space (normal space with correlation)</span></span>
+<span id="cb426-2"><a href="making-stuff-up.html#cb426-2" aria-hidden="true"></a>ellipse_space &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<span class="dv">2500</span>, <span class="dv">3</span>, rnorm,</span>
+<span id="cb426-3"><a href="making-stuff-up.html#cb426-3" aria-hidden="true"></a>                             <span class="dt">cor.matrix =</span> cor_matrix)</span>
+<span id="cb426-4"><a href="making-stuff-up.html#cb426-4" aria-hidden="true"></a></span>
+<span id="cb426-5"><a href="making-stuff-up.html#cb426-5" aria-hidden="true"></a><span class="co">## A cylindrical space with decreasing axes variance</span></span>
+<span id="cb426-6"><a href="making-stuff-up.html#cb426-6" aria-hidden="true"></a>cylindrical_space &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<span class="dv">2500</span>, <span class="dv">3</span>, <span class="kw">c</span>(rnorm, rnorm, runif),</span>
+<span id="cb426-7"><a href="making-stuff-up.html#cb426-7" aria-hidden="true"></a>                                 <span class="dt">scree =</span> <span class="kw">c</span>(<span class="fl">0.7</span>, <span class="fl">0.2</span>, <span class="fl">0.1</span>))</span></code></pre></div>
+<div id="personalised-dimensions-distributions" class="section level3 hasAnchor" number="5.2.1">
+<h3><span class="header-section-number">5.2.1</span> Personalised dimensions distributions<a href="making-stuff-up.html#personalised-dimensions-distributions" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Following the modular architecture of the package, it is of course possible to pass home made distribution functions to the <code>distribution</code> argument.
 For example, the <code>random.circle</code> function is a personalised one implemented in <code>dispRity</code>.
 This function allows to create circles based on basic trigonometry allowing to axis to covary to produce circle coordinates.
 By default, this function generates two sets of coordinates with a <code>distribution</code> argument and a minimum and maximum boundary (<code>inner</code> and <code>outer</code> respectively) to create nice sharp edges to the circle.
 The maximum boundary is equivalent to the radius of the circle (it removes coordinates beyond the circle radius) and the minimum is equivalent to the radius of a smaller circle with no data (it removes coordinates below this inner circle radius).</p>
-<div class="sourceCode" id="cb417"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb417-1" data-line-number="1"><span class="co">## Graphical options</span></a>
-<a class="sourceLine" id="cb417-2" data-line-number="2">op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">bty =</span> <span class="st">&quot;n&quot;</span>)</a>
-<a class="sourceLine" id="cb417-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb417-4" data-line-number="4"><span class="co">## Generating coordinates for a normal circle with a upper boundary of 1</span></a>
-<a class="sourceLine" id="cb417-5" data-line-number="5">circle &lt;-<span class="st"> </span><span class="kw">random.circle</span>(<span class="dv">1000</span>, rnorm, <span class="dt">inner =</span> <span class="dv">0</span>, <span class="dt">outer =</span> <span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb417-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb417-7" data-line-number="7"><span class="co">## Plotting the circle</span></a>
-<a class="sourceLine" id="cb417-8" data-line-number="8"><span class="kw">plot</span>(circle, <span class="dt">xlab =</span> <span class="st">&quot;x&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;y&quot;</span>, <span class="dt">main =</span> <span class="st">&quot;A normal circle&quot;</span>)</a></code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-127-1.png" width="768" /></p>
-<div class="sourceCode" id="cb418"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb418-1" data-line-number="1"><span class="co">## Creating doughnut space (a spherical space with a hole)</span></a>
-<a class="sourceLine" id="cb418-2" data-line-number="2">doughnut_space &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<span class="dv">5000</span>, <span class="dv">3</span>, <span class="kw">c</span>(rnorm, random.circle),</a>
-<a class="sourceLine" id="cb418-3" data-line-number="3">     <span class="dt">arguments =</span> <span class="kw">list</span>(<span class="kw">list</span>(<span class="dt">mean =</span> <span class="dv">0</span>),</a>
-<a class="sourceLine" id="cb418-4" data-line-number="4">                      <span class="kw">list</span>(runif, <span class="dt">inner =</span> <span class="fl">0.5</span>, <span class="dt">outer =</span> <span class="dv">1</span>)))</a></code></pre></div>
+<div class="sourceCode" id="cb427"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb427-1"><a href="making-stuff-up.html#cb427-1" aria-hidden="true"></a><span class="co">## Graphical options</span></span>
+<span id="cb427-2"><a href="making-stuff-up.html#cb427-2" aria-hidden="true"></a>op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">bty =</span> <span class="st">&quot;n&quot;</span>)</span>
+<span id="cb427-3"><a href="making-stuff-up.html#cb427-3" aria-hidden="true"></a></span>
+<span id="cb427-4"><a href="making-stuff-up.html#cb427-4" aria-hidden="true"></a><span class="co">## Generating coordinates for a normal circle with a upper boundary of 1</span></span>
+<span id="cb427-5"><a href="making-stuff-up.html#cb427-5" aria-hidden="true"></a>circle &lt;-<span class="st"> </span><span class="kw">random.circle</span>(<span class="dv">1000</span>, rnorm, <span class="dt">inner =</span> <span class="dv">0</span>, <span class="dt">outer =</span> <span class="dv">1</span>)</span>
+<span id="cb427-6"><a href="making-stuff-up.html#cb427-6" aria-hidden="true"></a></span>
+<span id="cb427-7"><a href="making-stuff-up.html#cb427-7" aria-hidden="true"></a><span class="co">## Plotting the circle</span></span>
+<span id="cb427-8"><a href="making-stuff-up.html#cb427-8" aria-hidden="true"></a><span class="kw">plot</span>(circle, <span class="dt">xlab =</span> <span class="st">&quot;x&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;y&quot;</span>, <span class="dt">main =</span> <span class="st">&quot;A normal circle&quot;</span>)</span></code></pre></div>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-138-1.png" width="768" /></p>
+<div class="sourceCode" id="cb428"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb428-1"><a href="making-stuff-up.html#cb428-1" aria-hidden="true"></a><span class="co">## Creating doughnut space (a spherical space with a hole)</span></span>
+<span id="cb428-2"><a href="making-stuff-up.html#cb428-2" aria-hidden="true"></a>doughnut_space &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<span class="dv">5000</span>, <span class="dv">3</span>, <span class="kw">c</span>(rnorm, random.circle),</span>
+<span id="cb428-3"><a href="making-stuff-up.html#cb428-3" aria-hidden="true"></a>     <span class="dt">arguments =</span> <span class="kw">list</span>(<span class="kw">list</span>(<span class="dt">mean =</span> <span class="dv">0</span>),</span>
+<span id="cb428-4"><a href="making-stuff-up.html#cb428-4" aria-hidden="true"></a>                      <span class="kw">list</span>(runif, <span class="dt">inner =</span> <span class="fl">0.5</span>, <span class="dt">outer =</span> <span class="dv">1</span>)))</span></code></pre></div>
 </div>
-<div id="visualising-the-space" class="section level3">
-<h3><span class="header-section-number">5.2.2</span> Visualising the space</h3>
+<div id="visualising-the-space" class="section level3 hasAnchor" number="5.2.2">
+<h3><span class="header-section-number">5.2.2</span> Visualising the space<a href="making-stuff-up.html#visualising-the-space" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>I suggest using the excellent <code>scatterplot3d</code> package to play around and visualise the simulated spaces:</p>
-<div class="sourceCode" id="cb419"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb419-1" data-line-number="1"><span class="co">## Graphical options</span></a>
-<a class="sourceLine" id="cb419-2" data-line-number="2">op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">mfrow =</span> (<span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">2</span>)), <span class="dt">bty =</span> <span class="st">&quot;n&quot;</span>)</a>
-<a class="sourceLine" id="cb419-3" data-line-number="3"><span class="co">## Visualising 3D spaces</span></a>
-<a class="sourceLine" id="cb419-4" data-line-number="4"><span class="kw">require</span>(scatterplot3d)</a></code></pre></div>
+<div class="sourceCode" id="cb429"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb429-1"><a href="making-stuff-up.html#cb429-1" aria-hidden="true"></a><span class="co">## Graphical options</span></span>
+<span id="cb429-2"><a href="making-stuff-up.html#cb429-2" aria-hidden="true"></a>op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">mfrow =</span> (<span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">2</span>)), <span class="dt">bty =</span> <span class="st">&quot;n&quot;</span>)</span>
+<span id="cb429-3"><a href="making-stuff-up.html#cb429-3" aria-hidden="true"></a><span class="co">## Visualising 3D spaces</span></span>
+<span id="cb429-4"><a href="making-stuff-up.html#cb429-4" aria-hidden="true"></a><span class="kw">require</span>(scatterplot3d)</span></code></pre></div>
 <pre><code>## Loading required package: scatterplot3d</code></pre>
-<div class="sourceCode" id="cb421"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb421-1" data-line-number="1"><span class="co">## The plane space</span></a>
-<a class="sourceLine" id="cb421-2" data-line-number="2"><span class="kw">scatterplot3d</span>(plane_space, <span class="dt">pch =</span> <span class="dv">20</span>, <span class="dt">xlab =</span> <span class="st">&quot;&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;&quot;</span>, <span class="dt">zlab =</span> <span class="st">&quot;&quot;</span>,</a>
-<a class="sourceLine" id="cb421-3" data-line-number="3">              <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="fl">0.5</span>, <span class="fl">0.5</span>), <span class="dt">main =</span> <span class="st">&quot;Plane space&quot;</span>)</a>
-<a class="sourceLine" id="cb421-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb421-5" data-line-number="5"><span class="co">## The ellipsoid space</span></a>
-<a class="sourceLine" id="cb421-6" data-line-number="6"><span class="kw">scatterplot3d</span>(ellipse_space, <span class="dt">pch =</span> <span class="dv">20</span>, <span class="dt">xlab =</span> <span class="st">&quot;&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;&quot;</span>, <span class="dt">zlab =</span> <span class="st">&quot;&quot;</span>,</a>
-<a class="sourceLine" id="cb421-7" data-line-number="7">              <span class="dt">main =</span> <span class="st">&quot;Normal ellipsoid space&quot;</span>)</a>
-<a class="sourceLine" id="cb421-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb421-9" data-line-number="9"><span class="co">## A cylindrical space with a decreasing variance per axis</span></a>
-<a class="sourceLine" id="cb421-10" data-line-number="10"><span class="kw">scatterplot3d</span>(cylindrical_space, <span class="dt">pch =</span> <span class="dv">20</span>, <span class="dt">xlab =</span> <span class="st">&quot;&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;&quot;</span>, <span class="dt">zlab =</span> <span class="st">&quot;&quot;</span>,</a>
-<a class="sourceLine" id="cb421-11" data-line-number="11">              <span class="dt">main =</span> <span class="st">&quot;Normal cylindrical space&quot;</span>)</a>
-<a class="sourceLine" id="cb421-12" data-line-number="12"><span class="co">## Axes have different orders of magnitude</span></a>
-<a class="sourceLine" id="cb421-13" data-line-number="13"></a>
-<a class="sourceLine" id="cb421-14" data-line-number="14"><span class="co">## Plotting the doughnut space</span></a>
-<a class="sourceLine" id="cb421-15" data-line-number="15"><span class="kw">scatterplot3d</span>(doughnut_space[,<span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">3</span>)], <span class="dt">pch =</span> <span class="dv">20</span>, <span class="dt">xlab =</span> <span class="st">&quot;&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;&quot;</span>,</a>
-<a class="sourceLine" id="cb421-16" data-line-number="16">              <span class="dt">zlab =</span> <span class="st">&quot;&quot;</span>, <span class="dt">main =</span> <span class="st">&quot;Doughnut space&quot;</span>)</a></code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-128-1.png" width="768" /></p>
-<div class="sourceCode" id="cb422"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb422-1" data-line-number="1"><span class="kw">par</span>(op)</a></code></pre></div>
+<div class="sourceCode" id="cb431"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb431-1"><a href="making-stuff-up.html#cb431-1" aria-hidden="true"></a><span class="co">## The plane space</span></span>
+<span id="cb431-2"><a href="making-stuff-up.html#cb431-2" aria-hidden="true"></a><span class="kw">scatterplot3d</span>(plane_space, <span class="dt">pch =</span> <span class="dv">20</span>, <span class="dt">xlab =</span> <span class="st">&quot;&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;&quot;</span>, <span class="dt">zlab =</span> <span class="st">&quot;&quot;</span>,</span>
+<span id="cb431-3"><a href="making-stuff-up.html#cb431-3" aria-hidden="true"></a>              <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="fl">0.5</span>, <span class="fl">0.5</span>), <span class="dt">main =</span> <span class="st">&quot;Plane space&quot;</span>)</span>
+<span id="cb431-4"><a href="making-stuff-up.html#cb431-4" aria-hidden="true"></a></span>
+<span id="cb431-5"><a href="making-stuff-up.html#cb431-5" aria-hidden="true"></a><span class="co">## The ellipsoid space</span></span>
+<span id="cb431-6"><a href="making-stuff-up.html#cb431-6" aria-hidden="true"></a><span class="kw">scatterplot3d</span>(ellipse_space, <span class="dt">pch =</span> <span class="dv">20</span>, <span class="dt">xlab =</span> <span class="st">&quot;&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;&quot;</span>, <span class="dt">zlab =</span> <span class="st">&quot;&quot;</span>,</span>
+<span id="cb431-7"><a href="making-stuff-up.html#cb431-7" aria-hidden="true"></a>              <span class="dt">main =</span> <span class="st">&quot;Normal ellipsoid space&quot;</span>)</span>
+<span id="cb431-8"><a href="making-stuff-up.html#cb431-8" aria-hidden="true"></a></span>
+<span id="cb431-9"><a href="making-stuff-up.html#cb431-9" aria-hidden="true"></a><span class="co">## A cylindrical space with a decreasing variance per axis</span></span>
+<span id="cb431-10"><a href="making-stuff-up.html#cb431-10" aria-hidden="true"></a><span class="kw">scatterplot3d</span>(cylindrical_space, <span class="dt">pch =</span> <span class="dv">20</span>, <span class="dt">xlab =</span> <span class="st">&quot;&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;&quot;</span>, <span class="dt">zlab =</span> <span class="st">&quot;&quot;</span>,</span>
+<span id="cb431-11"><a href="making-stuff-up.html#cb431-11" aria-hidden="true"></a>              <span class="dt">main =</span> <span class="st">&quot;Normal cylindrical space&quot;</span>)</span>
+<span id="cb431-12"><a href="making-stuff-up.html#cb431-12" aria-hidden="true"></a><span class="co">## Axes have different orders of magnitude</span></span>
+<span id="cb431-13"><a href="making-stuff-up.html#cb431-13" aria-hidden="true"></a></span>
+<span id="cb431-14"><a href="making-stuff-up.html#cb431-14" aria-hidden="true"></a><span class="co">## Plotting the doughnut space</span></span>
+<span id="cb431-15"><a href="making-stuff-up.html#cb431-15" aria-hidden="true"></a><span class="kw">scatterplot3d</span>(doughnut_space[,<span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">3</span>)], <span class="dt">pch =</span> <span class="dv">20</span>, <span class="dt">xlab =</span> <span class="st">&quot;&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;&quot;</span>,</span>
+<span id="cb431-16"><a href="making-stuff-up.html#cb431-16" aria-hidden="true"></a>              <span class="dt">zlab =</span> <span class="st">&quot;&quot;</span>, <span class="dt">main =</span> <span class="st">&quot;Doughnut space&quot;</span>)</span></code></pre></div>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-139-1.png" width="768" /></p>
+<div class="sourceCode" id="cb432"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb432-1"><a href="making-stuff-up.html#cb432-1" aria-hidden="true"></a><span class="kw">par</span>(op)</span></code></pre></div>
 </div>
-<div id="generating-realistic-spaces" class="section level3">
-<h3><span class="header-section-number">5.2.3</span> Generating realistic spaces</h3>
+<div id="generating-realistic-spaces" class="section level3 hasAnchor" number="5.2.3">
+<h3><span class="header-section-number">5.2.3</span> Generating realistic spaces<a href="making-stuff-up.html#generating-realistic-spaces" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>It is possible to generate “realistic” spaces by simply extracting the parameters of an existing space and scaling it up to the simulated space.
 For example, we can extract the parameters of the <code>BeckLee_mat50</code> ordinated space and simulate a similar space.</p>
-<div class="sourceCode" id="cb423"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb423-1" data-line-number="1"><span class="co">## Loading the data</span></a>
-<a class="sourceLine" id="cb423-2" data-line-number="2"><span class="kw">data</span>(BeckLee_mat50)</a>
-<a class="sourceLine" id="cb423-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb423-4" data-line-number="4"><span class="co">## Number of dimensions</span></a>
-<a class="sourceLine" id="cb423-5" data-line-number="5">obs_dim &lt;-<span class="st"> </span><span class="kw">ncol</span>(BeckLee_mat50)</a>
-<a class="sourceLine" id="cb423-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb423-7" data-line-number="7"><span class="co">## Observed correlation between the dimensions</span></a>
-<a class="sourceLine" id="cb423-8" data-line-number="8">obs_correlations &lt;-<span class="st"> </span><span class="kw">cor</span>(BeckLee_mat50)</a>
-<a class="sourceLine" id="cb423-9" data-line-number="9"></a>
-<a class="sourceLine" id="cb423-10" data-line-number="10"><span class="co">## Observed mean and standard deviation per axis</span></a>
-<a class="sourceLine" id="cb423-11" data-line-number="11">obs_mu_sd_axis &lt;-<span class="st"> </span><span class="kw">mapply</span>(<span class="cf">function</span>(x,y) <span class="kw">list</span>(<span class="st">&quot;mean&quot;</span> =<span class="st"> </span>x, <span class="st">&quot;sd&quot;</span> =<span class="st"> </span>y),</a>
-<a class="sourceLine" id="cb423-12" data-line-number="12">                         <span class="kw">as.list</span>(<span class="kw">apply</span>(BeckLee_mat50, <span class="dv">2</span>, mean)),</a>
-<a class="sourceLine" id="cb423-13" data-line-number="13">                         <span class="kw">as.list</span>(<span class="kw">apply</span>(BeckLee_mat50, <span class="dv">2</span>, sd)), <span class="dt">SIMPLIFY =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb423-14" data-line-number="14"></a>
-<a class="sourceLine" id="cb423-15" data-line-number="15"><span class="co">## Observed overall mean and standard deviation</span></a>
-<a class="sourceLine" id="cb423-16" data-line-number="16">obs_mu_sd_glob &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="st">&quot;mean&quot;</span> =<span class="st"> </span><span class="kw">mean</span>(BeckLee_mat50), <span class="st">&quot;sd&quot;</span> =<span class="st"> </span><span class="kw">sd</span>(BeckLee_mat50))</a>
-<a class="sourceLine" id="cb423-17" data-line-number="17"></a>
-<a class="sourceLine" id="cb423-18" data-line-number="18"><span class="co">## Scaled observed variance per axis (scree plot)</span></a>
-<a class="sourceLine" id="cb423-19" data-line-number="19">obs_scree &lt;-<span class="st"> </span><span class="kw">variances</span>(BeckLee_mat50)<span class="op">/</span><span class="kw">sum</span>(<span class="kw">variances</span>(BeckLee_mat50))</a>
-<a class="sourceLine" id="cb423-20" data-line-number="20"></a>
-<a class="sourceLine" id="cb423-21" data-line-number="21"><span class="co">## Generating our simulated space</span></a>
-<a class="sourceLine" id="cb423-22" data-line-number="22">simulated_space &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<span class="dv">1000</span>, <span class="dt">dimensions =</span> obs_dim, </a>
-<a class="sourceLine" id="cb423-23" data-line-number="23">                               <span class="dt">distribution =</span> <span class="kw">rep</span>(<span class="kw">list</span>(rnorm), obs_dim),</a>
-<a class="sourceLine" id="cb423-24" data-line-number="24">                               <span class="dt">arguments =</span> obs_mu_sd_axis,</a>
-<a class="sourceLine" id="cb423-25" data-line-number="25">                               <span class="dt">cor.matrix =</span> obs_correlations)</a>
-<a class="sourceLine" id="cb423-26" data-line-number="26"></a>
-<a class="sourceLine" id="cb423-27" data-line-number="27"><span class="co">## Visualising the fit of our data in the space (in the two first dimensions)</span></a>
-<a class="sourceLine" id="cb423-28" data-line-number="28"><span class="kw">plot</span>(simulated_space[,<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>], <span class="dt">xlab =</span> <span class="st">&quot;PC1&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;PC2&quot;</span>)</a>
-<a class="sourceLine" id="cb423-29" data-line-number="29"><span class="kw">points</span>(BeckLee_mat50[,<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>], <span class="dt">col =</span> <span class="st">&quot;red&quot;</span>, <span class="dt">pch =</span> <span class="dv">20</span>)</a>
-<a class="sourceLine" id="cb423-30" data-line-number="30"><span class="kw">legend</span>(<span class="st">&quot;topleft&quot;</span>, <span class="dt">legend =</span> <span class="kw">c</span>(<span class="st">&quot;observed&quot;</span>, <span class="st">&quot;simulated&quot;</span>),</a>
-<a class="sourceLine" id="cb423-31" data-line-number="31">        <span class="dt">pch =</span> <span class="kw">c</span>(<span class="dv">20</span>,<span class="dv">21</span>), <span class="dt">col =</span> <span class="kw">c</span>(<span class="st">&quot;red&quot;</span>, <span class="st">&quot;black&quot;</span>))</a></code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-129-1.png" width="768" /></p>
+<div class="sourceCode" id="cb433"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb433-1"><a href="making-stuff-up.html#cb433-1" aria-hidden="true"></a><span class="co">## Loading the data</span></span>
+<span id="cb433-2"><a href="making-stuff-up.html#cb433-2" aria-hidden="true"></a><span class="kw">data</span>(BeckLee_mat50)</span>
+<span id="cb433-3"><a href="making-stuff-up.html#cb433-3" aria-hidden="true"></a></span>
+<span id="cb433-4"><a href="making-stuff-up.html#cb433-4" aria-hidden="true"></a><span class="co">## Number of dimensions</span></span>
+<span id="cb433-5"><a href="making-stuff-up.html#cb433-5" aria-hidden="true"></a>obs_dim &lt;-<span class="st"> </span><span class="kw">ncol</span>(BeckLee_mat50)</span>
+<span id="cb433-6"><a href="making-stuff-up.html#cb433-6" aria-hidden="true"></a></span>
+<span id="cb433-7"><a href="making-stuff-up.html#cb433-7" aria-hidden="true"></a><span class="co">## Observed correlation between the dimensions</span></span>
+<span id="cb433-8"><a href="making-stuff-up.html#cb433-8" aria-hidden="true"></a>obs_correlations &lt;-<span class="st"> </span><span class="kw">cor</span>(BeckLee_mat50)</span>
+<span id="cb433-9"><a href="making-stuff-up.html#cb433-9" aria-hidden="true"></a></span>
+<span id="cb433-10"><a href="making-stuff-up.html#cb433-10" aria-hidden="true"></a><span class="co">## Observed mean and standard deviation per axis</span></span>
+<span id="cb433-11"><a href="making-stuff-up.html#cb433-11" aria-hidden="true"></a>obs_mu_sd_axis &lt;-<span class="st"> </span><span class="kw">mapply</span>(<span class="cf">function</span>(x,y) <span class="kw">list</span>(<span class="st">&quot;mean&quot;</span> =<span class="st"> </span>x, <span class="st">&quot;sd&quot;</span> =<span class="st"> </span>y),</span>
+<span id="cb433-12"><a href="making-stuff-up.html#cb433-12" aria-hidden="true"></a>                         <span class="kw">as.list</span>(<span class="kw">apply</span>(BeckLee_mat50, <span class="dv">2</span>, mean)),</span>
+<span id="cb433-13"><a href="making-stuff-up.html#cb433-13" aria-hidden="true"></a>                         <span class="kw">as.list</span>(<span class="kw">apply</span>(BeckLee_mat50, <span class="dv">2</span>, sd)), <span class="dt">SIMPLIFY =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb433-14"><a href="making-stuff-up.html#cb433-14" aria-hidden="true"></a></span>
+<span id="cb433-15"><a href="making-stuff-up.html#cb433-15" aria-hidden="true"></a><span class="co">## Observed overall mean and standard deviation</span></span>
+<span id="cb433-16"><a href="making-stuff-up.html#cb433-16" aria-hidden="true"></a>obs_mu_sd_glob &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="st">&quot;mean&quot;</span> =<span class="st"> </span><span class="kw">mean</span>(BeckLee_mat50), <span class="st">&quot;sd&quot;</span> =<span class="st"> </span><span class="kw">sd</span>(BeckLee_mat50))</span>
+<span id="cb433-17"><a href="making-stuff-up.html#cb433-17" aria-hidden="true"></a></span>
+<span id="cb433-18"><a href="making-stuff-up.html#cb433-18" aria-hidden="true"></a><span class="co">## Scaled observed variance per axis (scree plot)</span></span>
+<span id="cb433-19"><a href="making-stuff-up.html#cb433-19" aria-hidden="true"></a>obs_scree &lt;-<span class="st"> </span><span class="kw">variances</span>(BeckLee_mat50)<span class="op">/</span><span class="kw">sum</span>(<span class="kw">variances</span>(BeckLee_mat50))</span>
+<span id="cb433-20"><a href="making-stuff-up.html#cb433-20" aria-hidden="true"></a></span>
+<span id="cb433-21"><a href="making-stuff-up.html#cb433-21" aria-hidden="true"></a><span class="co">## Generating our simulated space</span></span>
+<span id="cb433-22"><a href="making-stuff-up.html#cb433-22" aria-hidden="true"></a>simulated_space &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<span class="dv">1000</span>, <span class="dt">dimensions =</span> obs_dim, </span>
+<span id="cb433-23"><a href="making-stuff-up.html#cb433-23" aria-hidden="true"></a>                               <span class="dt">distribution =</span> <span class="kw">rep</span>(<span class="kw">list</span>(rnorm), obs_dim),</span>
+<span id="cb433-24"><a href="making-stuff-up.html#cb433-24" aria-hidden="true"></a>                               <span class="dt">arguments =</span> obs_mu_sd_axis,</span>
+<span id="cb433-25"><a href="making-stuff-up.html#cb433-25" aria-hidden="true"></a>                               <span class="dt">cor.matrix =</span> obs_correlations)</span>
+<span id="cb433-26"><a href="making-stuff-up.html#cb433-26" aria-hidden="true"></a></span>
+<span id="cb433-27"><a href="making-stuff-up.html#cb433-27" aria-hidden="true"></a><span class="co">## Visualising the fit of our data in the space (in the two first dimensions)</span></span>
+<span id="cb433-28"><a href="making-stuff-up.html#cb433-28" aria-hidden="true"></a><span class="kw">plot</span>(simulated_space[,<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>], <span class="dt">xlab =</span> <span class="st">&quot;PC1&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;PC2&quot;</span>)</span>
+<span id="cb433-29"><a href="making-stuff-up.html#cb433-29" aria-hidden="true"></a><span class="kw">points</span>(BeckLee_mat50[,<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>], <span class="dt">col =</span> <span class="st">&quot;red&quot;</span>, <span class="dt">pch =</span> <span class="dv">20</span>)</span>
+<span id="cb433-30"><a href="making-stuff-up.html#cb433-30" aria-hidden="true"></a><span class="kw">legend</span>(<span class="st">&quot;topleft&quot;</span>, <span class="dt">legend =</span> <span class="kw">c</span>(<span class="st">&quot;observed&quot;</span>, <span class="st">&quot;simulated&quot;</span>),</span>
+<span id="cb433-31"><a href="making-stuff-up.html#cb433-31" aria-hidden="true"></a>        <span class="dt">pch =</span> <span class="kw">c</span>(<span class="dv">20</span>,<span class="dv">21</span>), <span class="dt">col =</span> <span class="kw">c</span>(<span class="st">&quot;red&quot;</span>, <span class="st">&quot;black&quot;</span>))</span></code></pre></div>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-140-1.png" width="768" /></p>
 <p>It is now possible to simulate a space using these observed arguments to test several hypothesis:</p>
 <ul>
 <li>Is the space uniform or normal?</li>
 <li>If the space is normal, is the mean and variance global or specific for each axis?</li>
 </ul>
-<div class="sourceCode" id="cb424"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb424-1" data-line-number="1"><span class="co">## Measuring disparity as the sum of variance</span></a>
-<a class="sourceLine" id="cb424-2" data-line-number="2">observed_disp &lt;-<span class="st"> </span><span class="kw">dispRity</span>(BeckLee_mat50, <span class="dt">metric =</span> <span class="kw">c</span>(median, centroids))</a>
-<a class="sourceLine" id="cb424-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb424-4" data-line-number="4"><span class="co">## Is the space uniform?</span></a>
-<a class="sourceLine" id="cb424-5" data-line-number="5">test_unif &lt;-<span class="st"> </span><span class="kw">null.test</span>(observed_disp, <span class="dt">null.distrib =</span> runif)</a>
-<a class="sourceLine" id="cb424-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb424-7" data-line-number="7"><span class="co">## Is the space normal with a mean of 0 and a sd of 1?</span></a>
-<a class="sourceLine" id="cb424-8" data-line-number="8">test_norm1 &lt;-<span class="st"> </span><span class="kw">null.test</span>(observed_disp, <span class="dt">null.distrib =</span> rnorm)</a>
-<a class="sourceLine" id="cb424-9" data-line-number="9"></a>
-<a class="sourceLine" id="cb424-10" data-line-number="10"><span class="co">## Is the space normal with the observed mean and sd and cumulative variance</span></a>
-<a class="sourceLine" id="cb424-11" data-line-number="11">test_norm2 &lt;-<span class="st"> </span><span class="kw">null.test</span>(observed_disp, <span class="dt">null.distrib =</span> <span class="kw">rep</span>(<span class="kw">list</span>(rnorm), obs_dim),</a>
-<a class="sourceLine" id="cb424-12" data-line-number="12">                        <span class="dt">null.args =</span> <span class="kw">rep</span>(<span class="kw">list</span>(obs_mu_sd_glob), obs_dim),</a>
-<a class="sourceLine" id="cb424-13" data-line-number="13">                        <span class="dt">null.scree =</span> obs_scree)</a>
-<a class="sourceLine" id="cb424-14" data-line-number="14"></a>
-<a class="sourceLine" id="cb424-15" data-line-number="15"><span class="co">## Is the space multiple normal with multiple means and sds and a correlation?</span></a>
-<a class="sourceLine" id="cb424-16" data-line-number="16">test_norm3 &lt;-<span class="st"> </span><span class="kw">null.test</span>(observed_disp, <span class="dt">null.distrib =</span> <span class="kw">rep</span>(<span class="kw">list</span>(rnorm), obs_dim),</a>
-<a class="sourceLine" id="cb424-17" data-line-number="17">                        <span class="dt">null.args =</span> obs_mu_sd_axis, <span class="dt">null.cor =</span> obs_correlations)</a>
-<a class="sourceLine" id="cb424-18" data-line-number="18"></a>
-<a class="sourceLine" id="cb424-19" data-line-number="19"><span class="co">## Graphical options</span></a>
-<a class="sourceLine" id="cb424-20" data-line-number="20">op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">mfrow =</span> (<span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">2</span>)), <span class="dt">bty =</span> <span class="st">&quot;n&quot;</span>)</a>
-<a class="sourceLine" id="cb424-21" data-line-number="21"><span class="co">## Plotting the results</span></a>
-<a class="sourceLine" id="cb424-22" data-line-number="22"><span class="kw">plot</span>(test_unif, <span class="dt">main =</span> <span class="st">&quot;Uniform (0,1)&quot;</span>)</a>
-<a class="sourceLine" id="cb424-23" data-line-number="23"><span class="kw">plot</span>(test_norm1, <span class="dt">main =</span> <span class="st">&quot;Normal (0,1)&quot;</span>)</a>
-<a class="sourceLine" id="cb424-24" data-line-number="24"><span class="kw">plot</span>(test_norm2, <span class="dt">main =</span> <span class="kw">paste0</span>(<span class="st">&quot;Normal (&quot;</span>, <span class="kw">round</span>(obs_mu_sd_glob[[<span class="dv">1</span>]], <span class="dt">digit =</span> <span class="dv">3</span>),</a>
-<a class="sourceLine" id="cb424-25" data-line-number="25">                              <span class="st">&quot;,&quot;</span>, <span class="kw">round</span>(obs_mu_sd_glob[[<span class="dv">2</span>]], <span class="dt">digit =</span> <span class="dv">3</span>), <span class="st">&quot;)&quot;</span>))</a>
-<a class="sourceLine" id="cb424-26" data-line-number="26"><span class="kw">plot</span>(test_norm3, <span class="dt">main =</span> <span class="st">&quot;Normal (variable + correlation)&quot;</span>)</a></code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-130-1.png" width="768" /></p>
+<div class="sourceCode" id="cb434"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb434-1"><a href="making-stuff-up.html#cb434-1" aria-hidden="true"></a><span class="co">## Measuring disparity as the sum of variance</span></span>
+<span id="cb434-2"><a href="making-stuff-up.html#cb434-2" aria-hidden="true"></a>observed_disp &lt;-<span class="st"> </span><span class="kw">dispRity</span>(BeckLee_mat50, <span class="dt">metric =</span> <span class="kw">c</span>(median, centroids))</span>
+<span id="cb434-3"><a href="making-stuff-up.html#cb434-3" aria-hidden="true"></a></span>
+<span id="cb434-4"><a href="making-stuff-up.html#cb434-4" aria-hidden="true"></a><span class="co">## Is the space uniform?</span></span>
+<span id="cb434-5"><a href="making-stuff-up.html#cb434-5" aria-hidden="true"></a>test_unif &lt;-<span class="st"> </span><span class="kw">null.test</span>(observed_disp, <span class="dt">null.distrib =</span> runif)</span>
+<span id="cb434-6"><a href="making-stuff-up.html#cb434-6" aria-hidden="true"></a></span>
+<span id="cb434-7"><a href="making-stuff-up.html#cb434-7" aria-hidden="true"></a><span class="co">## Is the space normal with a mean of 0 and a sd of 1?</span></span>
+<span id="cb434-8"><a href="making-stuff-up.html#cb434-8" aria-hidden="true"></a>test_norm1 &lt;-<span class="st"> </span><span class="kw">null.test</span>(observed_disp, <span class="dt">null.distrib =</span> rnorm)</span>
+<span id="cb434-9"><a href="making-stuff-up.html#cb434-9" aria-hidden="true"></a></span>
+<span id="cb434-10"><a href="making-stuff-up.html#cb434-10" aria-hidden="true"></a><span class="co">## Is the space normal with the observed mean and sd and cumulative variance</span></span>
+<span id="cb434-11"><a href="making-stuff-up.html#cb434-11" aria-hidden="true"></a>test_norm2 &lt;-<span class="st"> </span><span class="kw">null.test</span>(observed_disp, <span class="dt">null.distrib =</span> <span class="kw">rep</span>(<span class="kw">list</span>(rnorm), obs_dim),</span>
+<span id="cb434-12"><a href="making-stuff-up.html#cb434-12" aria-hidden="true"></a>                        <span class="dt">null.args =</span> <span class="kw">rep</span>(<span class="kw">list</span>(obs_mu_sd_glob), obs_dim),</span>
+<span id="cb434-13"><a href="making-stuff-up.html#cb434-13" aria-hidden="true"></a>                        <span class="dt">null.scree =</span> obs_scree)</span>
+<span id="cb434-14"><a href="making-stuff-up.html#cb434-14" aria-hidden="true"></a></span>
+<span id="cb434-15"><a href="making-stuff-up.html#cb434-15" aria-hidden="true"></a><span class="co">## Is the space multiple normal with multiple means and sds and a correlation?</span></span>
+<span id="cb434-16"><a href="making-stuff-up.html#cb434-16" aria-hidden="true"></a>test_norm3 &lt;-<span class="st"> </span><span class="kw">null.test</span>(observed_disp, <span class="dt">null.distrib =</span> <span class="kw">rep</span>(<span class="kw">list</span>(rnorm), obs_dim),</span>
+<span id="cb434-17"><a href="making-stuff-up.html#cb434-17" aria-hidden="true"></a>                        <span class="dt">null.args =</span> obs_mu_sd_axis, <span class="dt">null.cor =</span> obs_correlations)</span>
+<span id="cb434-18"><a href="making-stuff-up.html#cb434-18" aria-hidden="true"></a></span>
+<span id="cb434-19"><a href="making-stuff-up.html#cb434-19" aria-hidden="true"></a><span class="co">## Graphical options</span></span>
+<span id="cb434-20"><a href="making-stuff-up.html#cb434-20" aria-hidden="true"></a>op &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">mfrow =</span> (<span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">2</span>)), <span class="dt">bty =</span> <span class="st">&quot;n&quot;</span>)</span>
+<span id="cb434-21"><a href="making-stuff-up.html#cb434-21" aria-hidden="true"></a><span class="co">## Plotting the results</span></span>
+<span id="cb434-22"><a href="making-stuff-up.html#cb434-22" aria-hidden="true"></a><span class="kw">plot</span>(test_unif, <span class="dt">main =</span> <span class="st">&quot;Uniform (0,1)&quot;</span>)</span>
+<span id="cb434-23"><a href="making-stuff-up.html#cb434-23" aria-hidden="true"></a><span class="kw">plot</span>(test_norm1, <span class="dt">main =</span> <span class="st">&quot;Normal (0,1)&quot;</span>)</span>
+<span id="cb434-24"><a href="making-stuff-up.html#cb434-24" aria-hidden="true"></a><span class="kw">plot</span>(test_norm2, <span class="dt">main =</span> <span class="kw">paste0</span>(<span class="st">&quot;Normal (&quot;</span>, <span class="kw">round</span>(obs_mu_sd_glob[[<span class="dv">1</span>]], <span class="dt">digit =</span> <span class="dv">3</span>),</span>
+<span id="cb434-25"><a href="making-stuff-up.html#cb434-25" aria-hidden="true"></a>                              <span class="st">&quot;,&quot;</span>, <span class="kw">round</span>(obs_mu_sd_glob[[<span class="dv">2</span>]], <span class="dt">digit =</span> <span class="dv">3</span>), <span class="st">&quot;)&quot;</span>))</span>
+<span id="cb434-26"><a href="making-stuff-up.html#cb434-26" aria-hidden="true"></a><span class="kw">plot</span>(test_norm3, <span class="dt">main =</span> <span class="st">&quot;Normal (variable + correlation)&quot;</span>)</span></code></pre></div>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-141-1.png" width="768" /></p>
 <p>If we measure disparity as the median distance from the morphospace centroid, we can explain the distribution of the data as normal with the variable observed mean and standard deviation and with a correlation between the dimensions.</p>
 
 </div>
 </div>
 </div>
-<h3>References</h3>
-<div id="refs" class="references">
+<h3>References<a href="references.html#references" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="refs" class="references hanging-indent">
 <div id="ref-brazeau2018">
-<p>Brazeau, Martin D, Thomas Guillerme, and Martin R Smith. 2018. “An algorithm for Morphological Phylogenetic Analysis with Inapplicable Data.” <em>Systematic Biology</em> 68 (4): 619–31. <a href="https://doi.org/10.1093/sysbio/syy083" class="uri">https://doi.org/10.1093/sysbio/syy083</a>.</p>
+<p>Brazeau, Martin D, Thomas Guillerme, and Martin R Smith. 2018. “An algorithm for Morphological Phylogenetic Analysis with Inapplicable Data.” <em>Systematic Biology</em> 68 (4): 619–31. <a href="https://doi.org/10.1093/sysbio/syy083">https://doi.org/10.1093/sysbio/syy083</a>.</p>
 </div>
 <div id="ref-diaz2016global">
-<p>Díaz, Sandra, Jens Kattge, Johannes HC Cornelissen, Ian J Wright, Sandra Lavorel, Stéphane Dray, Björn Reu, et al. 2016. “The Global Spectrum of Plant Form and Function.” <em>Nature</em> 529 (7585). Nature Publishing Group: 167. <a href="http://dx.doi.org/10.1038/nature16489" class="uri">http://dx.doi.org/10.1038/nature16489</a>.</p>
+<p>Dı́az, Sandra, Jens Kattge, Johannes HC Cornelissen, Ian J Wright, Sandra Lavorel, Stéphane Dray, Björn Reu, et al. 2016. “The Global Spectrum of Plant Form and Function.” <em>Nature</em> 529 (7585): 167. <a href="http://dx.doi.org/10.1038/nature16489">http://dx.doi.org/10.1038/nature16489</a>.</p>
 </div>
 <div id="ref-OReilly2017">
-<p>E., O’Reilly Joseph, Puttick Mark N., Pisani Davide, and Donoghue Philip C. J. n.d. “Probabilistic Methods Surpass Parsimony When Assessing Clade Support in Phylogenetic Analyses of Discrete Morphological Data.” <em>Palaeontology</em> 61 (1): 105–18. <a href="https://doi.org/10.1111/pala.12330" class="uri">https://doi.org/10.1111/pala.12330</a>.</p>
+<p>E., O’Reilly Joseph, Puttick Mark N., Pisani Davide, and Donoghue Philip C. J. n.d. “Probabilistic Methods Surpass Parsimony When Assessing Clade Support in Phylogenetic Analyses of Discrete Morphological Data.” <em>Palaeontology</em> 61 (1): 105–18. <a href="https://doi.org/10.1111/pala.12330">https://doi.org/10.1111/pala.12330</a>.</p>
 </div>
 <div id="ref-fitzjohndiversitree2012">
-<p>FitzJohn, Richard G. 2012. “Diversitree: Comparative Phylogenetic Analyses of Diversification in R.” <em>Methods in Ecology and Evolution</em> 3 (6). Blackwell Publishing Ltd: 1084–92. <a href="https://doi.org/10.1111/j.2041-210X.2012.00234.x" class="uri">https://doi.org/10.1111/j.2041-210X.2012.00234.x</a>.</p>
+<p>FitzJohn, Richard G. 2012. “Diversitree: Comparative Phylogenetic Analyses of Diversification in R.” <em>Methods in Ecology and Evolution</em> 3 (6): 1084–92. <a href="https://doi.org/10.1111/j.2041-210X.2012.00234.x">https://doi.org/10.1111/j.2041-210X.2012.00234.x</a>.</p>
 </div>
 <div id="ref-GuillermeCooper">
-<p>Guillerme, Thomas, and Natalie Cooper. 2016. “Effects of Missing Data on Topological Inference Using a Total Evidence Approach.” <em>Molecular Phylogenetics and Evolution</em> 94, Part A: 146–58. <a href="https://doi.org/http://dx.doi.org/10.1016/j.ympev.2015.08.023" class="uri">https://doi.org/http://dx.doi.org/10.1016/j.ympev.2015.08.023</a>.</p>
+<p>Guillerme, Thomas, and Natalie Cooper. 2016. “Effects of Missing Data on Topological Inference Using a Total Evidence Approach.” <em>Molecular Phylogenetics and Evolution</em> 94, Part A: 146–58. <a href="https://doi.org/http://dx.doi.org/10.1016/j.ympev.2015.08.023">https://doi.org/http://dx.doi.org/10.1016/j.ympev.2015.08.023</a>.</p>
 </div>
 <div id="ref-HKY85">
 <p>Hasegawa, M., H. Kishino, and T. A. Yano. 1985. “Dating of the Human Ape Splitting by a Molecular Clock of Mitochondrial-DNA.” <em>Journal of Molecular Evolution</em> 22 (2): 160–74.</p>
 </div>
 <div id="ref-lewisa2001">
-<p>Lewis, P. 2001. “A Likelihood Approach to Estimating Phylogeny from Discrete Morphological Character Data.” <em>Systematic Biology</em> 50 (6): 913–25. <a href="https://doi.org/10.1080/106351501753462876" class="uri">https://doi.org/10.1080/106351501753462876</a>.</p>
+<p>Lewis, P. 2001. “A Likelihood Approach to Estimating Phylogeny from Discrete Morphological Character Data.” <em>Systematic Biology</em> 50 (6): 913–25. <a href="https://doi.org/10.1080/106351501753462876">https://doi.org/10.1080/106351501753462876</a>.</p>
 </div>
 <div id="ref-OReilly2016">
-<p>O’Reilly, Joseph E., Mark N. Puttick, Luke Parry, Alastair R. Tanner, James E. Tarver, James Fleming, Davide Pisani, and Philip C. J. Donoghue. 2016. “Bayesian Methods Outperform Parsimony but at the Expense of Precision in the Estimation of Phylogeny from Discrete Morphological Data.” <em>Biology Letters</em> 12 (4). The Royal Society. <a href="https://doi.org/10.1098/rsbl.2016.0081" class="uri">https://doi.org/10.1098/rsbl.2016.0081</a>.</p>
+<p>O’Reilly, Joseph E., Mark N. Puttick, Luke Parry, Alastair R. Tanner, James E. Tarver, James Fleming, Davide Pisani, and Philip C. J. Donoghue. 2016. “Bayesian Methods Outperform Parsimony but at the Expense of Precision in the Estimation of Phylogeny from Discrete Morphological Data.” <em>Biology Letters</em> 12 (4). <a href="https://doi.org/10.1098/rsbl.2016.0081">https://doi.org/10.1098/rsbl.2016.0081</a>.</p>
 </div>
 <div id="ref-puttick2017uncertain">
-<p>Puttick, Mark N, Joseph E O’Reilly, Alastair R Tanner, James F Fleming, James Clark, Lucy Holloway, Jesus Lozano-Fernandez, et al. 2017. “Uncertain-Tree: Discriminating Among Competing Approaches to the Phylogenetic Analysis of Phenotype Data.” <em>Proceedings of the Royal Society B</em> 284 (1846). The Royal Society: 20162290. <a href="http://dx.doi.org/10.1098/rspb.2016.2290" class="uri">http://dx.doi.org/10.1098/rspb.2016.2290</a>.</p>
+<p>Puttick, Mark N, Joseph E O’Reilly, Alastair R Tanner, James F Fleming, James Clark, Lucy Holloway, Jesus Lozano-Fernandez, et al. 2017. “Uncertain-Tree: Discriminating Among Competing Approaches to the Phylogenetic Analysis of Phenotype Data.” <em>Proceedings of the Royal Society B</em> 284 (1846): 20162290. <a href="http://dx.doi.org/10.1098/rspb.2016.2290">http://dx.doi.org/10.1098/rspb.2016.2290</a>.</p>
 </div>
 </div>
             </section>
@@ -630,7 +672,6 @@ For example, we can extract the parameters of the <code>BeckLee_mat50</code> ord
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
 <script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
@@ -649,6 +690,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
 },
 "fontsettings": {
@@ -669,6 +711,10 @@ gitbook.start({
 "text": null
 },
 "download": null,
+"search": {
+"engine": "fuse",
+"options": null
+},
 "toc": {
 "collapse": "subsection"
 }

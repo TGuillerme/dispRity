@@ -204,7 +204,8 @@ But you can also use this option to only select some specific edges and modify t
 my_tree_modif <- my_tree
 green_clade <- which(clade_edges == "darkgreen")
 my_tree_modif$edge.length[green_clade] <- 1
-plot(ladderize(my_tree_modif), show.tip.label = FALSE, edge.color = clade_edges)
+plot(ladderize(my_tree_modif), show.tip.label = FALSE,
+     edge.color = clade_edges)
 ```
 
 ## `MCMCglmm` utilities {#MCMCglmm-utilities}
@@ -248,7 +249,8 @@ This can be useful when getting pairwise comparisons and if you'd like to see at
 data <- matrix(data = runif(42), ncol = 2)
 
 ## Plotting the first column as a pairwise comparisons
-pair.plot(data, what = 1, col = c("orange", "blue"), legend = TRUE, diag = 1)
+pair.plot(data, what = 1, col = c("orange", "blue"), legend = TRUE,
+          diag = 1)
 ```
 
 Here blue squares are ones that have a high value and orange ones the ones that have low values.
@@ -257,9 +259,12 @@ Note that the values plotted correspond the first column of the data as designat
 It is also possible to add some tokens or symbols to quickly highlight to specific cells, for example which elements in the data are below a certain value:
 
 ```{r}
-## The same plot as before without the diagonal being the maximal observed value
-pair.plot(data, what = 1, col = c("orange", "blue"), legend = TRUE, diag = "max")
-## Highlighting with an asterisk which squares have a value below 0.2
+## The same plot as before without the diagonal being
+## the maximal observed value
+pair.plot(data, what = 1, col = c("orange", "blue"), legend = TRUE,
+          diag = "max")
+## Highlighting with an asterisk which squares have a value
+## below 0.2
 pair.plot(data, what = 1, binary = 0.2, add = "*", cex = 2)
 ```
 
@@ -308,7 +313,8 @@ The functions needs as an input the type of distance that will be used, say a `"
 We can not remove the rows 1 and 9 and see if that improved the overlap:
 
 ```{r}
-image(t(na_matrix[-as.numeric(reduction$rows.to.remove), ]), col = "black")
+image(t(na_matrix[-as.numeric(reduction$rows.to.remove), ]),
+      col = "black")
 ```
 
 ## `select.axes`

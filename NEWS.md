@@ -23,7 +23,7 @@ dispRity 0.2.0 (2016-04-01)
 <!--   * `dtt.dispRity` now works with time-slicing. -->
 
 
-dispRity v1.6.12 (2022-08-05) *MacMacGlimm*
+dispRity v1.7 (2022-08-08) *MacMacGlimm*
 =========================
 
 ### NEW FEATURES
