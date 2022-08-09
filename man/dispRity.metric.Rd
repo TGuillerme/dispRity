@@ -31,6 +31,8 @@
 \alias{point.dist}
 \alias{projections}
 \alias{projections.tree}
+\alias{projections.between}
+\alias{disalignment}
 \title{Disparity metrics}
 \usage{
 dimension.level3.fun(matrix, ...)
@@ -66,9 +68,12 @@ The currently implemented dimension-level 1 metrics are:
          \item WARNING: This function is the generalisation of Pythagoras' theorem and thus \bold{works only if each dimensions are orthogonal to each other}.
      }
 
-  \item \code{ellipse.volume}: calculates the ellipsoid volume of a matrix.
+  \item \code{ellipse.volume}: calculates the ellipsoid volume of a matrix. This function tries to determine the nature of the input matrix and uses one of these following methods to calculate the volume. You can always specify the method using \code{method = "my_choice"} to overrun the automatic method choice.
      \itemize{
-         \item WARNING: this function assumes that the input matrix is ordinated and calculates the matrix' eigen values from the matrix as \code{abs(apply(var(matrix),2, sum))} (which is equivalent to \code{eigen(var(matrix))$values} but faster). These values are the correct eigen values for any matrix but differ from the ones output from \code{\link[stats]{cmdscale}} and \code{\link[ape]{pcoa}} because these later have their eigen values multiplied by the number of elements - 1 (i.e. \code{abs(apply(var(matrix),2, sum)) * nrow(matrix) -1 }). Specific eigen values can always be provided manually through \code{ellipse.volume(matrix, eigen.value = my_val)} (or \code{dispRity(matrix, metric = ellipse.volume, eigen.value = my_val)}).
+            \item \code{"eigen"}: this method directly calculates the eigen values from the input matrix (using \code{\link{eigen}}). This method is automatically selected if the input matrix is "distance like" (i.e. square with two mirrored triangles and a diagonal).
+            \item \code{"pca"}: this method calculates the eigen values as the sum of the variances of the matrix (\code{abs(apply(var(matrix),2, sum))}). This is automatically selected if the input matrix is NOT "distance like". Note that this method is faster than \code{"eigen"} but only works if the input matrix is an ordinated matrix from a PCA, PCO, PCoA, NMDS or MDS.
+            \item \code{"axes"}: this method calculates the actual semi axes length using the input matrix. It is never automatically selected. By default this method calculates the length of the major axes based on the 0.95 confidence interval ellipse but this can be modified by providing additional arguments from \code{\link{axis.covar}}.
+            \item \code{<a numeric vector>}: finally, you can directly provide a numeric vector of eigen values. This method is never automatically selected and overrides any other options.
      }
 
   \item \code{func.div}: The functional divergence (Vill'{e}ger et al. 2008): the ratio of deviation from the centroid (this is similar to \code{FD::dbFD()$FDiv}).
@@ -107,9 +112,11 @@ The currently implemented dimension-level 2 metrics are:
      \item \code{measure = "distance"}, the euclidean distance of each element \emph{from} the vector (\code{point1}, \code{point2}).
      \item \code{measure = "degree"}, the angle between the vector (\code{point1}, \code{point2}) and any vector (\code{point1}, \code{element}) in degrees.
      \item \code{measure = "radian"}, the angle between the vector (\code{point1}, \code{point2}) and any vector (\code{point1}, \code{element}) in radians.
+     \item \code{measure = "orthogonality"}, the angle between the vector (\code{point1}, \code{point2}) and any vector (\code{point1}, \code{element}) expressed in right angle ranging between 0 (non angle) and 1 (right angle).
  }
 By default, \code{point1} is the centre of the space (coordinates \code{0, 0, 0, ...}) and \code{point2} is the centroid of the space (coordinates \code{colMeans(matrix)}). Coordinates for \code{point1} and \code{point2} can be given as a single value to be repeated (e.g. \code{point1 = 1} is translated into \code{point1 = c(1, 1, ...)}) or a specific set of coordinates.
-Furtheremore, by default, the space is scaled so that the vector (\code{point1}, \code{point2}) becomes the unit vector (distance (\code{point1}, \code{point2}) is set to 1; option \code{scale = TRUE}; default). You can use the unit vector of the space using the option \code{scale = FALSE}.
+Furthermore, by default, the space is scaled so that the vector (\code{point1}, \code{point2}) becomes the unit vector (distance (\code{point1}, \code{point2}) is set to 1; option \code{scale = TRUE}; default). You can use the unit vector of the space using the option \code{scale = FALSE}.
+Other options include the centering of the projections on 0.5 (code{centre = TRUE}; default) ranging the projection onto the vector (\code{point1}, \code{point2}) between -1 and 1 (higher or lower values project beyond the vector); and whether to output the projection values as absolute values (\code{abs = TRUE}; default). These two last options only affect the results from \code{measure = "position"}.
 
   \item \code{projections.tree}: calculates the \code{projections} metric but drawing the vectors from a phylogenetic tree. This metric can intake any argument from \code{projections} (see above) but for \code{point1} and \code{point2} that are replaced by the argument \code{type}. \code{type} is a \code{vector} or a \code{list} of two elements that designates which vector to draw and can be any pair of the following options (the first element being the origin of the vector and the second where the vector points to):
      \itemize{
@@ -138,13 +145,13 @@ Furtheremore, by default, the space is scaled so that the vector (\code{point1},
 
 The currently implemented between.groups metrics are:
 \itemize{
-   \item \code{group.dist}: calculates the distance between two groups (by default, this is the minimum euclidean vector norm distance between groups). Negative distances are considered as 0. This function must intake two matrices (\code{matrix} and \code{matrix2}) and the quantiles to consider. For the minimum distance between two groups, the 100th quantiles are considered (default: \code{probs = c(0,1)}) but this can be changed to any values (e.g. distance between the two groups accounting based on the 95th CI: \code{probs = c(0.025, 0.975)}; distance between centroids: \code{probs = c(0.5)}, etc...). This function is the linear algebra equivalent of the \code{\link[hypervolume]{hypervolume_distance}} function.
+  \item \code{disalignment}: calculates the rejection of a point from \code{matrix} from the major axis of \code{matrix2}. Options are, \code{axis} to choose which major axis to reject from (default is \code{axis = 1}); \code{level} for the ellipse' confidence interval (to calculate the axis) (default is \code{level = 0.95}) and \code{point.to.reject}, a numeric value for designating which point in \code{matrix} to use or a function for calculating it (default is \code{point.to.reject = colMeans} for \code{matrix}'s centroid).
 
+  \item \code{group.dist}: calculates the distance between two groups (by default, this is the minimum euclidean vector norm distance between groups). Negative distances are considered as 0. This function must intake two matrices (\code{matrix} and \code{matrix2}) and the quantiles to consider. For the minimum distance between two groups, the 100th quantiles are considered (default: \code{probs = c(0,1)}) but this can be changed to any values (e.g. distance between the two groups accounting based on the 95th CI: \code{probs = c(0.025, 0.975)}; distance between centroids: \code{probs = c(0.5)}, etc...). This function is the linear algebra equivalent of the \code{hypervolume::hypervolume_distance} function.
 
-\item \code{point.dist}: calculates the distance between \code{matrix} and a point calculated from \code{matrix2}. By default, this point is the centroid of \code{matrix2}. This can be changed by passing a function to be applied to \code{matrix2} through the \code{point} argument (for example, for the centroid: \code{point.dist(..., point = colMeans)}). NOTE: distance is calculated as \code{"euclidean"} by default, this can be changed using the \code{method} argument.
+  \item \code{point.dist}: calculates the distance between \code{matrix} and a point calculated from \code{matrix2}. By default, this point is the centroid of \code{matrix2}. This can be changed by passing a function to be applied to \code{matrix2} through the \code{point} argument (for example, for the centroid: \code{point.dist(..., point = colMeans)}). NOTE: distance is calculated as \code{"euclidean"} by default, this can be changed using the \code{method} argument.
 
-
-
+  \item \code{projections.between}: calculates the projection of the major axis between two matrices. It allows the same arguments as \code{projections}. This function measures the major axis from both input matrices, centre their origins and projects the end of the vector of \code{matrix} onto the vector from \code{matrix2}. Which axis to measure can be changed with the option \code{axis} (for the major axis, \code{axis = 1}; default) and the confidence interval can be changed using \code{level} (for the 95 confidence interval, \code{level = 0.95}; default - see \code{\link{axis.covar}} for more details).
 }
 
 When used in the \code{\link{dispRity}} function, optional arguments are declared after the \code{metric} argument: for example
@@ -199,6 +206,18 @@ deviations(dummy_matrix, hyperplane = c(0,1,1,0,0,0,0,0,0,0,0))
 ## Matrix diagonal
 diagonal(dummy_matrix) # WARNING: only valid if the dimensions are orthogonal
 
+## disalignment
+## Two dummy matrices
+matrix_1 <- matrix(rnorm(16), 4, 4)
+matrix_2 <- matrix(rnorm(16), 4, 4)
+## Measuring the disalignment of matrix_1 from matrix_2
+disalignment(matrix_1, matrix_2)
+## Same but using the 2nd major axis of the 0.75 CI ellipse
+## from matrix_2 and the first point from matrix_1.
+disalignment(matrix_1, matrix_2,
+             axis = 2, level = 0.75,
+             point.to.reject = 1)
+
 ## displacements
 ## displacement ratios (from the centre)
 displacements(dummy_matrix)
@@ -225,8 +244,8 @@ edge.length.tree(named_matrix, tree = dummy_tree, to.root = FALSE)
 ellipse.volume(dummy_matrix)
 ## Calculating the same volume with provided eigen values
 ordination <- prcomp(dummy_matrix)
-## Calculating the ellipsoid volume
-ellipse.volume(ordination$x, eigen.value = ordination$sdev^2)
+## Calculating the ellipsoid volume by providing your own eigen values
+ellipse.volume(ordination$x, method = ordination$sdev^2)
 
 ## func.div
 ## Functional divergence
@@ -264,7 +283,7 @@ pairwise.dist(dummy_matrix)
 ## The average squared pairwise distance
 mean(pairwise.dist(dummy_matrix)^2)
 ## equal to:
-geiger::disparity(data = dummy_matrix)
+# geiger::disparity(data = dummy_matrix)
 
 ## point.dist
 ## The distances from the rows dummy_matrix
@@ -313,6 +332,18 @@ user.fun <- function(matrix, tree, row = NULL) {
 ## 0,0,0 and a user defined function
 projections.tree(named_matrix, dummy_tree,
                   type = c(0, user.fun))
+
+## projections.between
+## Two dummy matrices
+matrix_1 <- matrix(rnorm(16), 4, 4)
+matrix_2 <- matrix(rnorm(16), 4, 4)
+## Projecting the major axis of matrix_2 onto the one from matrix_1
+projections.between(matrix_1, matrix_2)
+## Projecting both second major 0.75 axes
+## and getting the rejections (see projections() for option details)
+projections.between(matrix_1, matrix_2,
+                    measure = "distance",
+                    axis = 2, level = 0.75)
 
 ## quantiles
 ## The 95 quantiles

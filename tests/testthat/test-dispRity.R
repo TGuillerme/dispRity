@@ -14,10 +14,13 @@ verbose = TRUE
 data <- data_subsets_boot
 
 test_that("get.dispRity.metric.handle", {
+    data(disparity)
+
     match_call <- list("data" = NA, "metric" = NA, "verbose" = FALSE)
+    data <- disparity
     
     ## Level1
-    test <- get.dispRity.metric.handle(sum, match_call, data.dim = c(5,4))
+    test <- get.dispRity.metric.handle(sum, match_call, data = data)
     expect_equal(names(test), c("levels", "between.groups", "tree.metrics"))
     test <- test$levels
     expect_is(test, "list")
@@ -26,7 +29,7 @@ test_that("get.dispRity.metric.handle", {
     expect_is(test[[3]], "function")
 
     ## Level2
-    test <- get.dispRity.metric.handle(ranges, match_call, data.dim = c(5,4))
+    test <- get.dispRity.metric.handle(ranges, match_call, data = data)
     expect_equal(names(test), c("levels", "between.groups", "tree.metrics"))
     test <- test$levels
     expect_is(test, "list")
@@ -35,8 +38,8 @@ test_that("get.dispRity.metric.handle", {
     expect_null(test[[3]])
 
     ## Level3
-    expect_error(test <- get.dispRity.metric.handle(var, match_call, data.dim = c(5,4)))
-    test <- get.dispRity.metric.handle(c(sd, var), match_call, data.dim = c(5,4))
+    expect_error(test <- get.dispRity.metric.handle(var, match_call, data = data))
+    test <- get.dispRity.metric.handle(c(sd, var), match_call, data = data)
     expect_equal(names(test), c("levels", "between.groups", "tree.metrics"))
     test <- test$levels
     expect_is(test, "list")
@@ -47,9 +50,9 @@ test_that("get.dispRity.metric.handle", {
     ## Serial
     test.between.groups <- function(matrix, matrix2) {return(42)}
     test.between.groups.no <- function(matrix, matrix3) {return(42)}
-    test <- get.dispRity.metric.handle(test.between.groups, match_call, data.dim = c(5,4))
+    test <- get.dispRity.metric.handle(test.between.groups, match_call, data = data)
     expect_equal(test$between.groups, c(FALSE, FALSE, TRUE))
-    test <- get.dispRity.metric.handle(test.between.groups.no, match_call, data.dim = c(5,4))
+    test <- get.dispRity.metric.handle(test.between.groups.no, match_call, data = data)
     expect_equal(test$between.groups, c(FALSE, FALSE, FALSE))
 })
 
@@ -477,31 +480,31 @@ test_that("dispRity works with function recycling", {
     set.seed(1)
     mat <- matrix(rnorm(25), 5, 5, dimnames = list(c(1:5)))
     level2 <- dispRity(mat, metric = centroids)
-    expect_equal(extract.dispRity(level2)[[1]], centroids(mat))
+    expect_equal(get.disparity(level2)[[1]], centroids(mat))
     expect_equal(names(level2$call$disparity$metric), c("name", "fun", "between.groups"))
     expect_equal(as.character(level2$call$disparity$metric$name[[1]]), "centroids")
 
     level1 <- dispRity(level2, metric = mean)
-    expect_equal(extract.dispRity(level1)[[1]], mean(centroids(mat)))
+    expect_equal(get.disparity(level1)[[1]], mean(centroids(mat)))
     expect_equal(names(level1$call$disparity$metric), c("name", "fun", "between.groups"))
     expect_equal(as.character(level1$call$disparity$metric$name), c("centroids", "mean"))
 
     ## With arguments
     level2 <- dispRity(mat, metric = centroids, centroid = 0)
-    expect_equal(extract.dispRity(level2)[[1]], centroids(mat, centroid = 0))
+    expect_equal(get.disparity(level2)[[1]], centroids(mat, centroid = 0))
     expect_equal(names(level2$call$disparity$metric), c("name", "fun", "between.groups", "args"))
     expect_equal(as.character(level2$call$disparity$metric$name[[1]]), "centroids")
     expect_equal(level2$call$disparity$metric$args, list("centroid" = 0))
 
     level1 <- dispRity(level2, metric = mean)
-    expect_equal(extract.dispRity(level1)[[1]], mean(centroids(mat, centroid = 0)))
+    expect_equal(get.disparity(level1)[[1]], mean(centroids(mat, centroid = 0)))
     expect_equal(names(level1$call$disparity$metric), c("name", "fun", "between.groups", "args"))
     expect_equal(as.character(level1$call$disparity$metric$name), c("centroids", "mean"))
     expect_equal(level2$call$disparity$metric$args, list("centroid" = 0))
 })
 
 test_that("dispRity works with multiple trees from time-slicing", {
-    load("paleotree_test_data.Rda")
+    load("paleotree_test_data.rda")
     tree <- paleotree_data$tree
     data <- paleotree_data$data
 
@@ -582,7 +585,7 @@ test_that("dispRity works with multiple matrices", {
 
 test_that("dispRity works with multiple matrices from chrono.subsets", {
 
-    load("bound_test_data.Rda")
+    load("bound_test_data.rda")
     matrices <- bound_test_data$matrices
     trees <- bound_test_data$trees
     

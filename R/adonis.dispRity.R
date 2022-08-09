@@ -1,18 +1,18 @@
-#' @title adonis dispRity (from \code{vegan::adonis})
+#' @title adonis dispRity (from \code{vegan::adonis2})
 #'
-#' @description Passing \code{dispRity} objects to the \code{\link[vegan]{adonis}} function from the \code{vegan} package.
+#' @description Passing \code{dispRity} objects to the \code{\link[vegan]{adonis2}} function from the \code{vegan} package.
 #'
 #' @param data A \code{dispRity} object with subsets
 #' @param formula The model formula (default is \code{matrix ~ group}, see details)
-#' @param method The distance method to be passed to \code{\link[vegan]{adonis}} and eventually to \code{\link[vegan]{vegdist}} (see details - default \code{method ="euclidean"})
-#' @param ... Any optional arguments to be passed to \code{\link[vegan]{adonis}}
+#' @param method The distance method to be passed to \code{\link[vegan]{adonis2}} and eventually to \code{\link[vegan]{vegdist}} (see details - default \code{method ="euclidean"})
+#' @param ... Any optional arguments to be passed to \code{\link[vegan]{adonis2}}
 #' @param warn \code{logical}, whether to print internal warnings (\code{TRUE}; default - advised) or not (\code{FALSE}).
 #' @param matrix \code{numeric}, which matrix to use (default is \code{1}).
 #' 
 #' @details
 #' The first element of the formula (the response) must be called \code{matrix} and the predictors must be existing in the subsets of the \code{dispRity} object.
 #'
-#' If \code{data$matrix[[1]]} is not a distance matrix, distance is calculated using the \code{\link[stats]{dist}} function. The type of distance can be passed via the standard \code{method} argument that will be recycled by \code{\link[vegan]{adonis}}.
+#' If \code{data$matrix[[1]]} is not a distance matrix, distance is calculated using the \code{\link[stats]{dist}} function. The type of distance can be passed via the standard \code{method} argument that will be recycled by \code{\link[vegan]{adonis2}}.
 #' 
 #' If the \code{dispRity} data has custom subsets with a single group, the formula is set to \code{matrix ~ group}.
 #' 
@@ -21,7 +21,7 @@
 #' If the \code{dispRity} data has time subsets, the predictor is automatically set to \code{time}.
 #' 
 #' @seealso
-#' \code{\link[vegan]{adonis}}, \code{\link{test.dispRity}}, \code{\link{custom.subsets}}, \code{\link{chrono.subsets}}.
+#' \code{\link[vegan]{adonis2}}, \code{\link{test.dispRity}}, \code{\link{custom.subsets}}, \code{\link{chrono.subsets}}.
 #' 
 #' @examples
 #' ## Adonis with one groups 
@@ -218,8 +218,12 @@ adonis.dispRity <- function(data, formula = matrix ~ group, method = "euclidean"
     }
 
     ## Run adonis
-    adonis_out <- vegan::adonis(formula, predictors, method = method, ...)
-    #adonis_out <- vegan::adonis(formula, predictors, method = method) ; warning("DEBUG adonis.dispRity")
+    ## Modifying adonis2 to only check the parent environment (not the global one: matrix input here should be present in the environment
+    adonis2.modif <- vegan::adonis2
+    formals(adonis2.modif) <-c(formals(vegan::adonis2), "matrix_input" = NA)
+    body(adonis2.modif)[[5]] <- substitute(lhs <- matrix_input)
+    adonis_out <- adonis2.modif(formula, predictors, method = method, matrix_input = matrix, ...)
+    # adonis_out <- adonis2.modif(formula, predictors, method = method, matrix_input = matrix) ; warning("DEBUG adonis.dispRity")
 
     ## Update the formula
     if(time_subsets) {
@@ -235,14 +239,10 @@ adonis.dispRity <- function(data, formula = matrix ~ group, method = "euclidean"
         formula[[2]] <- matrix_f[[2]]
     }
 
-    ## Update the call
-    adonis_out$call[[which(names(adonis_out$call) == "formula")]] <- as.expression(formula)[[1]]
-    adonis_out$call[[which(names(adonis_out$call) == "data")]] <- match_call$data
-    if(method == "euclidean") {
-        adonis_out$call[[which(names(adonis_out$call) == "method")]] <- "euclidean"
-    } else {
-        adonis_out$call[[which(names(adonis_out$call) == "method")]] <- match_call$method
-    }
+    ## Update the call (cleaning it)
+    call_update <- attr(adonis_out, "heading")[2]
+    call_update <- gsub("adonis2.modif", "vegan::adonis2", gsub(", matrix_input = matrix", "", gsub("method = method", paste0("method = \"", method, "\""), gsub(", data = predictors", "", gsub("formula = formula", paste0("formula = ", as.expression(formula)), call_update)))))
+    attr(adonis_out, "heading")[2] <- call_update
 
     return(adonis_out)
 }

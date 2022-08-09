@@ -5,12 +5,12 @@ select.model.list <- function(data, observed = TRUE, cent.tend = median, rarefac
 
     if(observed) {
         ## If observed is required
-        central_tendency <- unlist(extract.dispRity(data, observed = TRUE))
+        central_tendency <- unlist(get.disparity(data, observed = TRUE))
 
         ## If disparity is a single value
         if(unique(unlist(lapply(data$disparity, lapply, lapply, length))) != 1) {
             ## Calculate the variance from the disparity data
-            variance <- unlist(lapply(extract.dispRity(data, observed = FALSE), lapply, var, na.rm = TRUE))
+            variance <- unlist(lapply(get.disparity(data, observed = FALSE), lapply, var, na.rm = TRUE))
         } else {
             ## Extract directly the variance from the data
             variance <- sapply(data[[4]], function(x) var(data$matrix[[matrix]][x[[1]]], na.rm = TRUE))
@@ -20,9 +20,9 @@ select.model.list <- function(data, observed = TRUE, cent.tend = median, rarefac
 
         ## Getting the disparity
         if(!missing(rarefaction)) {
-            disparity_tmp <- extract.dispRity(data, observed = FALSE, rarefaction = rarefaction)    
+            disparity_tmp <- get.disparity(data, observed = FALSE, rarefaction = rarefaction)    
         } else {
-            disparity_tmp <- extract.dispRity(data, observed = FALSE)
+            disparity_tmp <- get.disparity(data, observed = FALSE)
         }
         ## Calculating the central tendency
         central_tendency <- unlist(lapply(disparity_tmp, lapply, cent.tend))

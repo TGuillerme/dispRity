@@ -8,7 +8,6 @@ data("disparity")
 #######################
 #Testing
 #######################
-
 test_that("get.data.params works", {
     test <- get.data.params(disparity)
     expect_is(test, "list")
@@ -133,6 +132,58 @@ test_that("get.plot.params works", {
                                   observed_args = list(observed = TRUE),
                                   ylab = c("1","2", "3")))
     expect_equal(error[[1]], "ylab can have maximum of two elements.")
+})
+
+test_that("get.dots works", {
+    ## Default
+    my_args <- list(something = 1)
+    expect_equal(my_args$something, 1)
+    ## Empty dots
+    dots <- list()
+    test <- get.dots(dots, my_args, "anything", 2)
+    expect_equal(test$something, 1)
+    expect_equal(test$anything, 2)
+    test <- get.dots(dots, test, "bob", 3)
+    expect_equal(test$something, 1)
+    expect_equal(test$anything, 2)
+    expect_equal(test$bob, 3)
+    test <- get.dots(dots, test, "def")
+    expect_equal(test$something, 1)
+    expect_equal(test$anything, 2)
+    expect_equal(test$bob, 3)
+    expect_null(test$def)
+
+    ## Some args
+    dots <- list("bob" = 4)
+    test <- get.dots(dots, my_args, "anything", 2)
+    expect_equal(test$something, 1)
+    expect_equal(test$anything, 2)
+    test <- get.dots(dots, test, "bob", 3)
+    expect_equal(test$something, 1)
+    expect_equal(test$anything, 2)
+    expect_equal(test$bob, 4)
+    test <- get.dots(dots, test, "def")
+    expect_equal(test$something, 1)
+    expect_equal(test$anything, 2)
+    expect_equal(test$bob, 4)
+    expect_null(test$def)
+
+    ## Some args with fun
+    dots <- list("bib.bob" = 5)
+    test <- get.dots(dots, my_args, "anything", 2, fun = "bib")
+    expect_equal(test$something, 1)
+    expect_equal(test$anything, 2)
+    test <- get.dots(dots, test, "bob", 3, fun = "bib")
+    expect_equal(test$something, 1)
+    expect_equal(test$anything, 2)
+    expect_equal(test$bob, 5)
+    test <- get.dots(dots, test, "def", fun = "bib")
+    expect_equal(test$something, 1)
+    expect_equal(test$anything, 2)
+    expect_equal(test$bob, 5)
+    expect_null(test$def)
+    test <- get.dots(dots, my_args, "bob", 1000)
+    expect_equal(test$bob, 1000)
 })
 
 test_that("get.shift works", {
@@ -266,8 +317,8 @@ test_that("plot.dispRity with preview", {
     expect_null(plot.preview(data_slice, specific.args = list(dimensions = c(1,2), matrix = 1)))
     expect_null(plot(data_cust))
     expect_null(plot(data_slice, type = "preview", specific.args = list(dimensions = c(38, 22)), main = "Ha!"))
-    expect_null(plot(data_slice, type = "preview", specific.args = list(legend = FALSE), main = "Ha!"))
-    expect_null(plot(data_slice, type = "preview", specific.args = list(legend = list(x = 0, y = 0)), main = "Ha!"))
+    expect_null(plot(data_slice, type = "preview", legend = FALSE, main = "Ha!"))
+    expect_null(plot(data_slice, type = "preview", legend.x = 0, legend.y = 0, main = "Ha!"))
     error <- capture_error(plot(data_slice, type = "p"))
     expect_equal(error[[1]], "data_slice must contain disparity data.\nTry running dispRity(data_slice, ...)")
     expect_null(plot.dispRity(x = matrix(rnorm(50), 25, 2)))
@@ -290,32 +341,34 @@ test_that("plot.dispRity with randtest data", {
     expect_null(plot(results_one, main = "hahaha", col = "blue"))
     expect_null(plot(results_two))
     expect_null(plot(results_two, main = "same"))
-    expect_null(plot(results_two, specific.args = list(legend = FALSE)))
-    expect_null(plot(results_two, specific.args = list(legend = list(title = "legend"))))
+    expect_null(plot(results_two, legend = FALSE))
+    expect_null(plot(results_two, points.col = "red", lty = 2, legend.x = "bottomright", legend.bty = "o"))
 })
 
 test_that("plot.dispRity with dtt data", {
     ## DTT
     ## Loading geiger's example data set
-    require(geiger)
-    geiger_data <- get(data(geospiza))
+    # require(geiger)
+    # geiger_data <- get(data(geospiza))
+    data(BeckLee_mat50)
+    data(BeckLee_tree)
     average.sq <- function(X) mean(pairwise.dist(X)^2)
-    expect_warning(dispRity_dtt <- dtt.dispRity(data = geiger_data$dat, metric = average.sq, tree = geiger_data$phy, nsim = 2))
+    dispRity_dtt <- dtt.dispRity(data = BeckLee_mat50, metric = average.sq, tree = BeckLee_tree, nsim = 2)
 
     ## Plotting the results
     expect_null(plot(dispRity_dtt, quantiles = c(0.1, 0.95)))
+    expect_null(plot(dispRity_dtt, quantiles = c(0.1, 0.95), main = "ho!", lines.col = "blue", lwd = 5))
     expect_error(plot(dispRity_dtt, quantiles = c(10, 110)))
     expect_error(plot(dispRity_dtt, cent.tend = var))
 })
 
 test_that("plot.dispRity with model.test data", {
-    load("model_test_data.Rda")
+    load("model_test_data.rda")
     ## Run two models (silent)
     models <- list("BM", "OU")
     set.seed(42)
     tested_models <- model.test(model_test_data, models, time.split = 65, fixed.optima = TRUE, verbose = FALSE)
-    summary_model.tests <- summary(tested_models)
-    expect_null(plot(tested_models, col = c("blue", "pink"), main = "ho"))
+    expect_null(plot(tested_models, col = c("blue", "pink"), main = "ho", lwd = 2))
 
     ## Testing normal model
     model_simulation_empty <- model.test.sim(sim = 10, model = "BM")
@@ -331,10 +384,10 @@ test_that("plot.dispRity with model.test data", {
     expect_null(plot(model_simulation_inherit, add = TRUE))
 })
 
-test_that("preview works with fuzzy matrices and tres", {
+test_that("preview works with fuzzy matrices and trees", {
 
   ## Get some bound data
-  load("bound_test_data.Rda")
+  load("bound_test_data.rda")
   data <- bound_test_data$matrices
   ## Simple plot
   expect_null(plot(make.dispRity(data[[1]])))
@@ -347,12 +400,13 @@ test_that("preview works with fuzzy matrices and tres", {
   expect_null(plot(data))
   expect_null(plot(data, specific.args = list(matrix = 1)))
 
-  ## Plot with multiple trees
+  ## Plot with multiple trees
   data <- bound_test_data$matrices
   tree <- bound_test_data$trees
   expect_null(plot(make.dispRity(data[[1]], tree[[1]]), specific.args = list(tree = TRUE)))
   expect_null(plot(make.dispRity(data[[1]], tree), specific.args = list(tree = TRUE)))
   expect_null(plot(make.dispRity(data, tree[[1]]), specific.args = list(tree = TRUE)))
+  expect_null(plot(make.dispRity(data, tree[[1]]), lty = 3, specific.args = list(tree = TRUE)))
 
   ## Plot with groups
   data <- custom.subsets(data, group = list(tips = bound_test_data$tree[[1]]$tip.label, nodes = bound_test_data$tree[[1]]$node.label), tree = tree)

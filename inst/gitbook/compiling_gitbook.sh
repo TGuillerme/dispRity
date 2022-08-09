@@ -1,5 +1,3 @@
-#!/bin/sh
-
 rm dispRity_manual.Rmd
 
 ## Remove files before hand
@@ -14,7 +12,7 @@ sed 's/<!-- badges out start -->/<!-- badges out start/g' index.Rmd > index.tmp
 sed 's/<!-- badges out end   -->/badges out end   -->/g' index.tmp > index.Rmd
 rm index.tmp
 
-## Compile the pdf
+## Compile the pdf
 ## Remove the demos
 mkdir tmp
 mv 07_ecology-demo.Rmd tmp/

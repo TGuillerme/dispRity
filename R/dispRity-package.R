@@ -1,6 +1,6 @@
 #' Measuring Disparity in R
 #' 
-#' A modular package for measuring disparity from multidimensional matrices. Disparity can be calculated from any matrix defining a multidimensional space. The package provides a set of implemented metrics to measure properties of the space and allows users to provide and test their own metrics. The package also provides functions for looking at disparity in a serial way (e.g. disparity through time) or per groups as well as visualising the results. Finally, this package provides several basic statistical tests for disparity analysis.
+#' A modular package for measuring disparity (multidimensional space occupancy). Disparity can be calculated from any matrix defining a multidimensional space. The package provides a set of implemented metrics to measure properties of the space and allows users to provide and test their own metrics (Guillerme (2018) <doi:10.1111/2041-210X.13022>). The package also provides functions for looking at disparity in a serial way (e.g. disparity through time - Guillerme and Cooper (2018) <doi:10.1111/pala.12364>) or per groups as well as visualising the results. Finally, this package provides several statistical tests for disparity analysis.
 #' 
 #' @name dispRity-package
 #'
@@ -10,21 +10,6 @@
 #'
 #' @concept disparity ordination phylogeny cladistic morphometric ecology
 #'
-# @import ape
-# @import stats
-# @importFrom geometry convhulln 
-# @importFrom ade4 randtest as.randtest 
-# @importFrom grDevices colorRampPalette grey 
-# @importFrom caper comparative.data 
-# @importFrom graphics axis boxplot hist image lines mtext par plot points polygon text legend
-# @importFrom utils combn data capture.output tail
-# @importFrom phyclust gen.seq.HKY 
-# @importFrom phangorn dist.hamming NJ RF.dist CI RI optim.parsimony parsimony
-# @importFrom vegan adonis vegdist
-# @importFrom geiger dtt ratematrix sim.char
-# @importFrom parallel parLapply detectCores makeCluster clusterExport stopCluster
-# @importFrom Claddis calculate_morphological_distances
-
 
 NULL
 
@@ -138,7 +123,7 @@ NULL
 #'   \item \code{healy} A life history analysis of the pace of life in animals. The data is a 6 dimensions ordination (PCA) of 6 life history traits from 285 animal species.
 #' }
 #' 
-#' @source \url{https://onlinelibrary.wiley.com/doi/full/10.1002/ece3.6452}
+#' @source \doi{https://doi.org/10.1002/ece3.6452}
 #' @references Guillerme T, Puttick MN, Marcy AE, Weisbecker V. \bold{2020} Shifting spaces: Which disparity or dissimilarity measurement best summarize occupancy in multidimensional spaces?. Ecol Evol. 2020;00:1-16. (doi:10.1002/ece3.6452)
 #' @references Beck, R. M., & Lee, M. S. (2014). Ancient dates or accelerated rates? Morphological clocks and the antiquity of placental mammals. Proceedings of the Royal Society B: Biological Sciences, 281(1793), 20141278.
 #' @references Wright, D. F. (2017). Bayesian estimation of fossil phylogenies and the evolution of early to middle Paleozoic crinoids (Echinodermata). Journal of Paleontology, 91(4), 799-814.
@@ -172,3 +157,72 @@ NULL
  
 NULL
 
+
+
+#' @title Charadriiformes
+#' @name charadriiformes
+#'
+#' @description An example of a \code{\link[MCMCglmm]{MCMCglmm}} model.
+#'
+#' @details This dataset is based on a random subset of 359 Charadriiformes (gulls, plovers and sandpipers) from Cooney et al 2017 and trees from Jetz et al 2012.
+#' It contains:
+#' \itemize{
+#'   \item \code{data} A \code{"data.frame"} .
+#'   \item \code{tree} A consensus tree of 359 charadriiformes species (\code{"phylo"}).
+#'   \item \code{posteriors} The posteriors from a \code{"MCMCglmm"} model (see example below).
+#'   \item \code{tree_distribution} A random distribution of 10 trees of the 359 charadriiformes species (\code{"multiPhylo"}).
+#' }
+#'
+#' @format one \code{data.frame}, one \code{phylo} and one \code{MCMCglmm}.
+#'
+#' @references Cooney CR, Bright JA, Capp EJ, Chira AM,Hughes EC, Moody CJ, Nouri LO, Varley ZK, Thomas GH. Mega-evolutionary dynamics of the adaptive radiation of birds. Nature. 2017 Feb;542(7641):344-7.
+#' @references Jetz W, Thomas GH, Joy JB, Hartmann K, Mooers AO. The global diversity of birds in space and time. Nature. 2012 Nov;491(7424):444-8.
+#' 
+#' @examples
+# set.seed(42)
+#' \dontrun{
+#' ## Reproducing the MCMCglmm model
+#' require(MCMCglmm)
+#' data(charadriiformes)
+#' 
+#' ## Setting up the model parameters:
+#' ## 1 - The formula (the first three PC axes)
+#' model_formula <- cbind(PC1, PC2, PC3) ~ trait:clade-1
+#' ## 2 - The residual term
+#' model_residuals <- ~us(trait):units
+#' ## 3 - The random terms
+#' ## (one per clade and one for the whole phylogeny)
+#' model_randoms <- ~ us(at.level(clade,1):trait):animal
+#'                  + us(at.level(clade,2):trait):animal
+#'                  + us(at.level(clade,3):trait):animal
+#'                  + us(trait):animal
+#' 
+#' ## Flat priors for the residuals and random terms
+#' flat_priors <- list(
+#'      ## The residuals priors
+#'      R = list(
+#'          R1 = list(V = diag(3), nu = 0.002)), 
+#'      ## The random priors (the phylogenetic terms)
+#'      G = list(
+#'          G1 = list(V = diag(3), nu = 0.002),
+#'          G2 = list(V = diag(3), nu = 0.002),
+#'          G3 = list(V = diag(3), nu = 0.002),
+#'          G4 = list(V = diag(3), nu = 0.002)))
+#' 
+#' ## Run the model for 110000 iterations
+#' ## sampled every 100 with a burnin (discard)
+#' ## of the first 10000 iterations)
+#' model <- MCMCglmm(formula  = model_formula,
+#'                   rcov     = model_residual,
+#'                   random   = model_randoms,
+#'                   family   = rep("gaussian", 3),
+#'                   prior    = flat_priors,
+#'                   nitt     = 110000,
+#'                   burnin   = 10000,
+#'                   thin     = 100,
+#'                   pedigree = charadriiformes$tree,
+#'                   data     = charadriiformes$data)
+#' }
+# charadriiformes <- list(data = charadriiformes$data, tree = charadriiformes$tree, model = model)
+# save(charadriiformes, file = "../Data/charadriiformes.rda")
+NULL

@@ -6,13 +6,13 @@ test_that("randtest.dist works", {
     dummy_matrix[c(1,2,3), ] <- rep(1, 5)
     dummy_matrix[c(4,5,6), ] <- rep(-1, 5)
     test <- randtest.dispRity(dummy_matrix,
-                              subset = sample(1:100, 20),
+                              subsets = sample(1:100, 20),
                               metric = mean)
     test_right <- randtest.dispRity(dummy_matrix,
-                              subset = c(1,2,3),
+                              subsets = c(1,2,3),
                               metric = mean)
     test_left <- randtest.dispRity(dummy_matrix,
-                              subset = c(4,5,6),
+                              subsets = c(4,5,6),
                               metric = mean)
     
     quant <- c(0.4, 0.6)

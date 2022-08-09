@@ -7,7 +7,7 @@ data(BeckLee_mat50)
 data(BeckLee_ages)
 data(BeckLee_mat99)
 
-# load("test_data.Rda")
+# load("test_data.rda")
 tree <- BeckLee_tree
 data <- BeckLee_mat50
 FADLAD <- BeckLee_ages
@@ -534,7 +534,7 @@ test_that("cbind.fill and recursive.combine list works", {
 
 test_that("chrono.subsets works with multiPhylo", {
     #Simulate some fossil ranges with simFossilRecord
-    load("paleotree_test_data.Rda")
+    load("paleotree_test_data.rda")
     tree <- paleotree_data$tree
     data <- paleotree_data$data
 
@@ -599,7 +599,7 @@ test_that("chrono.subsets works with multiple matrices", {
     expect_equal(length(test$matrix), 2)
     expect_equal(dim(test$matrix[[1]]), c(50, 48))
 
-    load("bound_test_data.Rda")
+    load("bound_test_data.rda")
     trees <- bound_test_data$trees
     matrices <- bound_test_data$matrices
 

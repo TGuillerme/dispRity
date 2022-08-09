@@ -212,7 +212,7 @@ test_that("get.quantiles.from.table internal fun", {
 
 ## Set up data for tests
 data(disparity)
-extracted_data <- extract.dispRity(disparity, observed = FALSE, rarefaction = FALSE, concatenate = TRUE)
+extracted_data <- get.disparity(disparity, observed = FALSE, rarefaction = FALSE, concatenate = TRUE)
 ## Set up data for sequential test
 comp_subsets <- set.comparisons.list("sequential", extracted_data, "sequential")
 
@@ -490,7 +490,7 @@ test_that("adonis and dtt works fine", {
    expect_warning(test_group_adonis2 <- test.dispRity(groups, test = vegan::adonis))
    expect_warning(test_time_adonis <- test.dispRity(time, test = adonis.dispRity))
 
-    expect_is(test_group_adonis, "adonis")
-    expect_is(test_group_adonis2, "adonis")
-    expect_is(test_time_adonis, "adonis")
+    expect_is(test_group_adonis, "anova.cca")
+    expect_is(test_group_adonis2, "anova.cca")
+    expect_is(test_time_adonis, "anova.cca")
 })

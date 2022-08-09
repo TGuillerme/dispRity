@@ -290,8 +290,8 @@ test_that("fill.dispRity", {
     expect_equal(length(test$matrix), 1)
 })
 
-## matrix.dispRity
-test_that("matrix.dispRity", {
+## get.matrix
+test_that("get.matrix", {
     ## Load the Beck & Lee 2014 data
     data(BeckLee_mat50)
 
@@ -305,22 +305,22 @@ test_that("matrix.dispRity", {
 
 
     expect_error(
-        matrix.dispRity(matrix(rnorm(12), ncol = 3))
+        get.matrix(matrix(rnorm(12), ncol = 3))
         )
     expect_true(
-        all(matrix.dispRity(dispRity_data) == BeckLee_mat50)
+        all(get.matrix(dispRity_data) == BeckLee_mat50)
         )
     expect_equal(
-        dim(matrix.dispRity(dispRity_data, subsets = 2))
+        dim(get.matrix(dispRity_data, subsets = 2))
         , c(25, 48))
     expect_equal(
-        rownames(matrix.dispRity(dispRity_data, subsets = 2))
+        rownames(get.matrix(dispRity_data, subsets = 2))
         , c("Rhombomylus","Gomphos","Mimotona","Soricidae","Solenodon","Eoryctes","Potamogalinae","Rhynchocyon","Procavia","Moeritherium","Dasypodidae","Bradypus","Myrmecophagidae","Dilambdogale","Widanelfarasia","Todralestes","unnamed_zalambdalestid","unnamed_cimolestid","Oxyclaenus","Protictis","Icaronycteris","Patriomanis","Cynocephalus","Pezosiren","Trichechus"))
     expect_equal(
-        dim(matrix.dispRity(dispRity_data, subsets = 2, rarefaction = 2, bootstrap = 52))
+        dim(get.matrix(dispRity_data, subsets = 2, rarefaction = 2, bootstrap = 52))
         , c(15, 48))
     expect_equal(
-        rownames(matrix.dispRity(dispRity_data, subsets = 2, rarefaction = 2, bootstrap = 52))
+        rownames(get.matrix(dispRity_data, subsets = 2, rarefaction = 2, bootstrap = 52))
         , c("Eoryctes", "Rhynchocyon", "Pezosiren", "Potamogalinae", "Soricidae", "Myrmecophagidae", "Protictis", "Protictis", "unnamed_cimolestid", "Bradypus", "Mimotona", "Todralestes", "Moeritherium", "Dasypodidae", "Bradypus"))
 })
 
@@ -394,30 +394,30 @@ test_that("get.subsets", {
         ,"variances")
 })
 
-## extract.dispRity
-test_that("extract.dispRity", {
+## get.disparity
+test_that("get.disparity", {
     data(BeckLee_mat99) ; data(BeckLee_tree) 
     subsets_full <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous",time = 5, model = "acctran")
     bootstrapped_data <- boot.matrix(subsets_full, bootstraps = 10, rarefaction = c(3, 5))
     data <- dispRity(bootstrapped_data, c(sum,variances))
 
     expect_error(
-        extract.dispRity(subsets_full)
+        get.disparity(subsets_full)
         )
 
     expect_error(
-        extract.dispRity(data, 1, rarefaction = 4, observed = FALSE)
+        get.disparity(data, 1, rarefaction = 4, observed = FALSE)
         )
 
     expect_warning(
-        test1 <- extract.dispRity(data, 1, rarefaction = 3, observed = TRUE)
+        test1 <- get.disparity(data, 1, rarefaction = 3, observed = TRUE)
         )
     expect_equal(test1,
-        extract.dispRity(data, 1, observed = TRUE)
+        get.disparity(data, 1, observed = TRUE)
         )
 
 
-    test <- extract.dispRity(data)
+    test <- get.disparity(data)
     expect_is(
         test
         ,"list")
@@ -431,7 +431,7 @@ test_that("extract.dispRity", {
         round(test[[5]], digit = 5)
         ,4.09234)
 
-    test <- extract.dispRity(data, observed = FALSE)
+    test <- get.disparity(data, observed = FALSE)
     expect_is(
         test
         ,"list")
@@ -445,7 +445,7 @@ test_that("extract.dispRity", {
         length(test[[5]][[1]])
         ,data$call$bootstrap[[1]])
 
-    test <- extract.dispRity(data, observed = FALSE, rarefaction = 5)
+    test <- get.disparity(data, observed = FALSE, rarefaction = 5)
     expect_is(
         test
         ,"list")
@@ -458,7 +458,7 @@ test_that("extract.dispRity", {
     expect_null(
         test[[1]])
 
-    test <- extract.dispRity(data, observed = FALSE, subsets = c(1,5))
+    test <- get.disparity(data, observed = FALSE, subsets = c(1,5))
     expect_is(
         test
         ,"list")
@@ -472,8 +472,8 @@ test_that("extract.dispRity", {
 
     ## Test whithout disparity but with distribution
     data <- dispRity(BeckLee_mat99, metric = centroids)
-    expect_error(extract.dispRity(data, observed = FALSE))
-    test <- extract.dispRity(data, observed = TRUE)
+    expect_error(get.disparity(data, observed = FALSE))
+    test <- get.disparity(data, observed = TRUE)
     expect_is(test, "list")
     expect_equal(length(test[[1]]), nrow(BeckLee_mat99))
 })

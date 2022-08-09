@@ -56,6 +56,7 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
 
     ## Renaming object
     data <- object
+    rm(object)
 
     #----------------------
     # SANITIZING
@@ -237,6 +238,12 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
             return(round(combined_var[, col_order, drop = FALSE], digits = digits))
         }
 
+        ## projection summary
+        if(is(data, "projection")) {
+            ## Summarise each object
+            return(lapply(data, summary.dispRity, quantiles = quantiles, cent.tend = cent.tend, recall = FALSE))
+        }
+
         ## No dual class summary available
         stop.call("", paste0("No specific summary for combined class \"dispRity\" and \"", class(data)[2], "\"."))
     } 
@@ -249,7 +256,7 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
     is_distribution <- ifelse(length(data$disparity[[1]]$elements) != 1, TRUE, FALSE)
 
     ## Check the bootstraps
-    bootstrapped <- ifelse(!is.null(data$call$bootstrap), TRUE, FALSE)
+    bootstrapped <- !is.null(data$call$bootstrap) && !(data$call$bootstrap[[2]] == "covar")
 
     ## Get the elements per subsets
     elements <- lapply(data$subsets, lapply.get.elements, bootstrapped)
@@ -314,7 +321,7 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
         names(summary_results)[obs_col] <- "obs"
     }
 
-    if(!is.null(data$call$bootstrap)) {
+    if(bootstrapped) {
         ## Calculate the central tendencies and the quantiles
         summary_results <- cbind(summary_results, matrix(unlist(lapply(data$disparity, lapply.summary, cent.tend, quantiles, ...)), byrow = TRUE, ncol = (1+length(quantiles)*2)))
         ## Adding the labels
@@ -357,7 +364,7 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
     # OUTPUT
     #----------------------
     if(recall) print.dispRity(data)
-
+    rm(data)
     return(summary_results)
 
     #Summary sequential.test shortcut

@@ -311,7 +311,7 @@ test_that("summary.dispRity works with small, empty/subsets", {
 })
 
 test_that("summary.dispRity with model.test data", {
-    load("model_test_data.Rda")
+    load("model_test_data.rda")
 
     ## Run two models (silent)
     models <- list("BM", "OU")
@@ -343,7 +343,6 @@ test_that("summary.dispRity with model.test data", {
     expect_equal(colnames(summary_model.sim2), c("subsets", "n", "var", "median", "2.5%", "25%", "75%", "97.5%"))
     expect_equal(rownames(summary_model.sim2), as.character(rev(25:1)))
 })
-
 
 # test_that("Test seq.test object management", {
 #     data(BeckLee_mat50)

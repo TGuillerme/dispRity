@@ -29,7 +29,7 @@ summary(sort(disparity, sort = c(7,1,3,4,5,2,6)))
 
 }
 \seealso{
-\code{\link{dispRity}}, \code{\link{test.dispRity}}, \code{\link{plot.dispRity}}, \code{\link{get.subsets}}, \code{\link{extract.dispRity}}.
+\code{\link{dispRity}}, \code{\link{test.dispRity}}, \code{\link{plot.dispRity}}, \code{\link{get.subsets}}, \code{\link{get.disparity}}.
 }
 \author{
 Thomas Guillerme

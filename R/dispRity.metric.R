@@ -1,5 +1,5 @@
 #' @name dispRity.metric
-#' @aliases dimension.level3.fun dimension.level2.fun dimension.level1.fun between.groups.fun variances ranges centroids mode.val ellipse.volume edge.length.tree convhull.surface convhull.volume diagonal ancestral.dist pairwise.dist span.tree.length n.ball.volume radius neighbours displacements quantiles func.eve func.div angles deviations group.dist point.dist projections projections.tree
+#' @aliases dimension.level3.fun dimension.level2.fun dimension.level1.fun between.groups.fun variances ranges centroids mode.val ellipse.volume edge.length.tree convhull.surface convhull.volume diagonal ancestral.dist pairwise.dist span.tree.length n.ball.volume radius neighbours displacements quantiles func.eve func.div angles deviations group.dist point.dist projections projections.tree projections.between disalignment
 #' @title Disparity metrics
 #'
 #' @description Different implemented disparity metrics.
@@ -31,9 +31,12 @@
 #'          \item WARNING: This function is the generalisation of Pythagoras' theorem and thus \bold{works only if each dimensions are orthogonal to each other}.
 #'      }
 #'
-#'   \item \code{ellipse.volume}: calculates the ellipsoid volume of a matrix.
+#'   \item \code{ellipse.volume}: calculates the ellipsoid volume of a matrix. This function tries to determine the nature of the input matrix and uses one of these following methods to calculate the volume. You can always specify the method using \code{method = "my_choice"} to overrun the automatic method choice.
 #'      \itemize{
-#'          \item WARNING: this function assumes that the input matrix is ordinated and calculates the matrix' eigen values from the matrix as \code{abs(apply(var(matrix),2, sum))} (which is equivalent to \code{eigen(var(matrix))$values} but faster). These values are the correct eigen values for any matrix but differ from the ones output from \code{\link[stats]{cmdscale}} and \code{\link[ape]{pcoa}} because these later have their eigen values multiplied by the number of elements - 1 (i.e. \code{abs(apply(var(matrix),2, sum)) * nrow(matrix) -1 }). Specific eigen values can always be provided manually through \code{ellipse.volume(matrix, eigen.value = my_val)} (or \code{dispRity(matrix, metric = ellipse.volume, eigen.value = my_val)}).
+#'             \item \code{"eigen"}: this method directly calculates the eigen values from the input matrix (using \code{\link{eigen}}). This method is automatically selected if the input matrix is "distance like" (i.e. square with two mirrored triangles and a diagonal).
+#'             \item \code{"pca"}: this method calculates the eigen values as the sum of the variances of the matrix (\code{abs(apply(var(matrix),2, sum))}). This is automatically selected if the input matrix is NOT "distance like". Note that this method is faster than \code{"eigen"} but only works if the input matrix is an ordinated matrix from a PCA, PCO, PCoA, NMDS or MDS.
+#'             \item \code{"axes"}: this method calculates the actual semi axes length using the input matrix. It is never automatically selected. By default this method calculates the length of the major axes based on the 0.95 confidence interval ellipse but this can be modified by providing additional arguments from \code{\link{axis.covar}}.
+#'             \item \code{<a numeric vector>}: finally, you can directly provide a numeric vector of eigen values. This method is never automatically selected and overrides any other options.
 #'      }
 #' 
 #'   \item \code{func.div}: The functional divergence (Vill'{e}ger et al. 2008): the ratio of deviation from the centroid (this is similar to \code{FD::dbFD()$FDiv}).
@@ -72,9 +75,11 @@
 #'      \item \code{measure = "distance"}, the euclidean distance of each element \emph{from} the vector (\code{point1}, \code{point2}).
 #'      \item \code{measure = "degree"}, the angle between the vector (\code{point1}, \code{point2}) and any vector (\code{point1}, \code{element}) in degrees.
 #'      \item \code{measure = "radian"}, the angle between the vector (\code{point1}, \code{point2}) and any vector (\code{point1}, \code{element}) in radians.
+#'      \item \code{measure = "orthogonality"}, the angle between the vector (\code{point1}, \code{point2}) and any vector (\code{point1}, \code{element}) expressed in right angle ranging between 0 (non angle) and 1 (right angle).
 #'  }
 #' By default, \code{point1} is the centre of the space (coordinates \code{0, 0, 0, ...}) and \code{point2} is the centroid of the space (coordinates \code{colMeans(matrix)}). Coordinates for \code{point1} and \code{point2} can be given as a single value to be repeated (e.g. \code{point1 = 1} is translated into \code{point1 = c(1, 1, ...)}) or a specific set of coordinates.
-#' Furtheremore, by default, the space is scaled so that the vector (\code{point1}, \code{point2}) becomes the unit vector (distance (\code{point1}, \code{point2}) is set to 1; option \code{scale = TRUE}; default). You can use the unit vector of the space using the option \code{scale = FALSE}.
+#' Furthermore, by default, the space is scaled so that the vector (\code{point1}, \code{point2}) becomes the unit vector (distance (\code{point1}, \code{point2}) is set to 1; option \code{scale = TRUE}; default). You can use the unit vector of the space using the option \code{scale = FALSE}.
+#' Other options include the centering of the projections on 0.5 (code{centre = TRUE}; default) ranging the projection onto the vector (\code{point1}, \code{point2}) between -1 and 1 (higher or lower values project beyond the vector); and whether to output the projection values as absolute values (\code{abs = TRUE}; default). These two last options only affect the results from \code{measure = "position"}.
 #'
 #'   \item \code{projections.tree}: calculates the \code{projections} metric but drawing the vectors from a phylogenetic tree. This metric can intake any argument from \code{projections} (see above) but for \code{point1} and \code{point2} that are replaced by the argument \code{type}. \code{type} is a \code{vector} or a \code{list} of two elements that designates which vector to draw and can be any pair of the following options (the first element being the origin of the vector and the second where the vector points to):
 #'      \itemize{
@@ -103,13 +108,13 @@
 #' 
 #' The currently implemented between.groups metrics are:
 #' \itemize{
-#'    \item \code{group.dist}: calculates the distance between two groups (by default, this is the minimum euclidean vector norm distance between groups). Negative distances are considered as 0. This function must intake two matrices (\code{matrix} and \code{matrix2}) and the quantiles to consider. For the minimum distance between two groups, the 100th quantiles are considered (default: \code{probs = c(0,1)}) but this can be changed to any values (e.g. distance between the two groups accounting based on the 95th CI: \code{probs = c(0.025, 0.975)}; distance between centroids: \code{probs = c(0.5)}, etc...). This function is the linear algebra equivalent of the \code{\link[hypervolume]{hypervolume_distance}} function.
+#'   \item \code{disalignment}: calculates the rejection of a point from \code{matrix} from the major axis of \code{matrix2}. Options are, \code{axis} to choose which major axis to reject from (default is \code{axis = 1}); \code{level} for the ellipse' confidence interval (to calculate the axis) (default is \code{level = 0.95}) and \code{point.to.reject}, a numeric value for designating which point in \code{matrix} to use or a function for calculating it (default is \code{point.to.reject = colMeans} for \code{matrix}'s centroid).
+#'
+#'   \item \code{group.dist}: calculates the distance between two groups (by default, this is the minimum euclidean vector norm distance between groups). Negative distances are considered as 0. This function must intake two matrices (\code{matrix} and \code{matrix2}) and the quantiles to consider. For the minimum distance between two groups, the 100th quantiles are considered (default: \code{probs = c(0,1)}) but this can be changed to any values (e.g. distance between the two groups accounting based on the 95th CI: \code{probs = c(0.025, 0.975)}; distance between centroids: \code{probs = c(0.5)}, etc...). This function is the linear algebra equivalent of the \code{hypervolume::hypervolume_distance} function.
 #' 
+#'   \item \code{point.dist}: calculates the distance between \code{matrix} and a point calculated from \code{matrix2}. By default, this point is the centroid of \code{matrix2}. This can be changed by passing a function to be applied to \code{matrix2} through the \code{point} argument (for example, for the centroid: \code{point.dist(..., point = colMeans)}). NOTE: distance is calculated as \code{"euclidean"} by default, this can be changed using the \code{method} argument.
 #' 
-#' \item \code{point.dist}: calculates the distance between \code{matrix} and a point calculated from \code{matrix2}. By default, this point is the centroid of \code{matrix2}. This can be changed by passing a function to be applied to \code{matrix2} through the \code{point} argument (for example, for the centroid: \code{point.dist(..., point = colMeans)}). NOTE: distance is calculated as \code{"euclidean"} by default, this can be changed using the \code{method} argument.
-#' 
-#' 
-#' 
+#'   \item \code{projections.between}: calculates the projection of the major axis between two matrices. It allows the same arguments as \code{projections}. This function measures the major axis from both input matrices, centre their origins and projects the end of the vector of \code{matrix} onto the vector from \code{matrix2}. Which axis to measure can be changed with the option \code{axis} (for the major axis, \code{axis = 1}; default) and the confidence interval can be changed using \code{level} (for the 95 confidence interval, \code{level = 0.95}; default - see \code{\link{axis.covar}} for more details).
 #' }
 #' 
 #' When used in the \code{\link{dispRity}} function, optional arguments are declared after the \code{metric} argument: for example
@@ -177,6 +182,18 @@
 #' ## Matrix diagonal
 #' diagonal(dummy_matrix) # WARNING: only valid if the dimensions are orthogonal
 #'
+#' ## disalignment
+#' ## Two dummy matrices
+#' matrix_1 <- matrix(rnorm(16), 4, 4)
+#' matrix_2 <- matrix(rnorm(16), 4, 4)
+#' ## Measuring the disalignment of matrix_1 from matrix_2
+#' disalignment(matrix_1, matrix_2)
+#' ## Same but using the 2nd major axis of the 0.75 CI ellipse
+#' ## from matrix_2 and the first point from matrix_1.
+#' disalignment(matrix_1, matrix_2,
+#'              axis = 2, level = 0.75,
+#'              point.to.reject = 1)
+#'
 #' ## displacements
 #' ## displacement ratios (from the centre)
 #' displacements(dummy_matrix)
@@ -184,7 +201,7 @@
 #' displacements(dummy_matrix, reference = c(1,2,3,4,5,6,7,8,9,10))
 #' ## displacement ratios from the centre (manhattan distance)
 #' displacements(dummy_matrix, method = "manhattan")
-#' 
+#'
 #' ## edge.length.tree
 #' ## Making a dummy tree with node labels
 #' dummy_tree <- makeNodeLabel(rtree((nrow(dummy_matrix)/2)+1))
@@ -203,8 +220,8 @@
 #' ellipse.volume(dummy_matrix)
 #' ## Calculating the same volume with provided eigen values
 #' ordination <- prcomp(dummy_matrix)
-#' ## Calculating the ellipsoid volume
-#' ellipse.volume(ordination$x, eigen.value = ordination$sdev^2)
+#' ## Calculating the ellipsoid volume by providing your own eigen values
+#' ellipse.volume(ordination$x, method = ordination$sdev^2)
 #' 
 #' ## func.div
 #' ## Functional divergence
@@ -242,7 +259,7 @@
 #' ## The average squared pairwise distance
 #' mean(pairwise.dist(dummy_matrix)^2)
 #' ## equal to:
-#' geiger::disparity(data = dummy_matrix)
+#' # geiger::disparity(data = dummy_matrix)
 #' 
 #' ## point.dist
 #' ## The distances from the rows dummy_matrix
@@ -291,6 +308,18 @@
 #' ## 0,0,0 and a user defined function
 #' projections.tree(named_matrix, dummy_tree,
 #'                   type = c(0, user.fun))
+#'
+#' ## projections.between
+#' ## Two dummy matrices
+#' matrix_1 <- matrix(rnorm(16), 4, 4)
+#' matrix_2 <- matrix(rnorm(16), 4, 4)
+#' ## Projecting the major axis of matrix_2 onto the one from matrix_1
+#' projections.between(matrix_1, matrix_2)
+#' ## Projecting both second major 0.75 axes
+#' ## and getting the rejections (see projections() for option details)
+#' projections.between(matrix_1, matrix_2,
+#'                     measure = "distance",
+#'                     axis = 2, level = 0.75)
 #' 
 #' ## quantiles
 #' ## The 95 quantiles
@@ -367,17 +396,20 @@ dimension.level1.fun <- function(matrix, ...) {
 
 between.groups.fun <- function(matrix, matrix2, ...) {
     cat("Between groups functions implemented in dispRity:")
+    cat("\n?disalignment # level 1")
     cat("\n?group.dist # level 1")
     cat("\n?point.dist # level 2")
+    cat("\n?projections.between # level 2")
 }
 
 ## kth root scaling
 k.root <- function(data, dimensions){
+
     return(data^(1/dimensions))
 }
 
 ## Calculating the variance of each axis
-variances <- function(matrix, k.root = FALSE) {
+variances <- function(matrix, k.root = FALSE, ...) {
     if(!k.root) {
         return(apply(matrix, 2, var, na.rm = TRUE))
     } else {
@@ -386,7 +418,7 @@ variances <- function(matrix, k.root = FALSE) {
 }
 
 ## Calculating the range of each axis
-ranges <- function(matrix, k.root = FALSE) {
+ranges <- function(matrix, k.root = FALSE, ...) {
     if(!k.root) {
         return(as.vector(abs(diff(apply(matrix, 2, range)))))
     } else {
@@ -395,7 +427,7 @@ ranges <- function(matrix, k.root = FALSE) {
 }
 
 ## Calculate the quantiles range in a matrix
-quantiles <- function(matrix, quantile = 95, k.root = FALSE) {
+quantiles <- function(matrix, quantile = 95, k.root = FALSE, ...) {
     if(!k.root) {
         return(as.vector(abs(diff(apply(matrix, 2, quantile, prob = CI.converter(quantile), na.rm = TRUE)))))
     } else {
@@ -405,12 +437,15 @@ quantiles <- function(matrix, quantile = 95, k.root = FALSE) {
 
 ## Euclidean distance from the centroid
 fun.dist.euclidean <- function(row, centroid) {
+
     return(sqrt(sum((row-centroid)^2)))
 }
 ## Manhattan distance from the centroid
 fun.dist.manhattan <- function(row, centroid) {
+
     return(sum(abs(row-centroid)))
 }
+
 ## Select either method
 select.method <- function(method) {
     ## Switch methods
@@ -425,8 +460,9 @@ select.method <- function(method) {
         return(fun.dist)
     }
 }
+
 ## Calculating the distance from centroid
-centroids <- function(matrix, centroid, method = "euclidean") {
+centroids <- function(matrix, centroid, method = "euclidean", ...) {
 
     ## Select the fun distance
     fun.dist <- select.method(method)
@@ -445,13 +481,13 @@ centroids <- function(matrix, centroid, method = "euclidean") {
 }
 
 ## Calculate the relative displacements
-displacements <- function(matrix, method = "euclidean", reference = 0) {
+displacements <- function(matrix, method = "euclidean", reference = 0, ...) {
+    ## Get displacement
     return(dispRity::centroids(matrix = matrix, centroid = reference, method = method)/dispRity::centroids(matrix = matrix, method = method))
 }
 
-
 ## Calculate the neighbours distances
-neighbours <- function(matrix, which = min, method = "euclidean") {
+neighbours <- function(matrix, which = min, method = "euclidean", ...) {
     ## Check if the matrix is a distance matrix first
     distances <- as.matrix(check.dist.matrix(matrix, method = method)[[1]])
     ## Remove the diagonals
@@ -460,65 +496,63 @@ neighbours <- function(matrix, which = min, method = "euclidean") {
     return(unname(apply(distances, 1, which, na.rm = TRUE)))
 }
 
-
 ## Calculate the mode of a vector
 mode.val <- function(matrix, ...){
+    ## Get mode
     return(as.numeric(names(sort(-table(matrix))[1])))
 }
 
-## Calculate the ellipsoid volume of an eigen matrix (modified from Donohue et al 2013, Ecology Letters)
-ellipse.volume <- function(matrix, eigen.value) {
+## Calculate the ellipse volume of matrix
+ellipse.volume <- function(matrix, method, ...) {
 
     ## Initialising the variables
     ncol_matrix <- ncol(matrix)
 
-    ## The eigenvalue is equal to the sum of the variance/covariance within each axis (* nrow(matrix) as used in pco/pcoa)
-    if(missing(eigen.value)) {
-        eigen.value <- abs(apply(var(matrix, na.rm = TRUE), 2, sum)) # * (nrow(matrix) - 1)
-    } else {
-        eigen.value <- eigen.value[1:ncol_matrix]
+    ## Calculating the semi axes
+    if(missing(method)) {
+        ## Detect the method
+        is_dist <- check.dist.matrix(matrix, just.check = TRUE)
+        if(is_dist) {
+            ## Use the eigen method
+            method <- "eigen"
+        } else {
+            ## Use the pca method
+            method <- "pca"
+        }
     }
 
-    ## volume (from Donohue et al 2013, Ecology Letters)
-    volume <- pi^(ncol_matrix/2)/gamma((ncol_matrix/2)+1)*prod(eigen.value^(0.5))
+    if(is(method, "character")) {
+        ## Select the semi axes
+        semi_axes <- switch(method, 
+            ## Simply get the eigen values
+            "eigen" = {sqrt(eigen(matrix)$values)},
+            ## The eigenvalue is equal to the sum of the variance/covariance within each axis (* nrow(matrix) as used in pco/pcoa)
+            "pca"   = {sqrt(abs(apply(var(matrix, na.rm = TRUE), 2, sum)))},
+            ## Calculate the 
+            "axes"  = {(sapply(1:ncol(matrix), function(dim, VCV) {dist(get.one.axis(VCV, axis = dim, ...))}, VCV = matrix))/2})            
+    } else {
+        semi_axes <- method[1:ncol_matrix]
+    }
 
-    return(volume)
+
+    ## Volume (from https://keisan.casio.com/exec/system/1223381019)
+    return(pi^(ncol_matrix/2)/gamma((ncol_matrix/2)+1)*prod(semi_axes))
 }
 
 ## Calculate the convex hull hypersurface
-convhull.surface <- function(matrix) {
+convhull.surface <- function(matrix, ...) {
     ## calculate the area
     return(geometry::convhulln(matrix, options = "FA")$area)
 }
 
 ## Calculate the convex hull hyper-volume
-convhull.volume <- function(matrix) {
+convhull.volume <- function(matrix, ...) {
     ## calculate the volume
     return(geometry::convhulln(matrix, options = "FA")$vol)
 }
 
-## Calculate the hypervolume using hypervolume::hypervolume
-# hyper.volume <- function(matrix, method = "box", print.output = FALSE, ...) {
-#     ## Calculate the volume
-#     output <- utils::capture.output(volume <- hypervolume::get_volume(hypervolume::hypervolume(matrix, method = method, ...)))
-#     # volume <- hypervolume::get_volume(hypervolume::hypervolume(matrix, method = method)) ; warning("DEBUG hyper.volume")
-#     names(volume) <- NULL
-
-#     if(print.output) {
-#         cat(output)
-#     }
-
-#     return(volume)
-# }
-
-# Hypervolume distances
-# hypervolume_distance
-
-# ordihull::vegan
-# convex.hull::igraph
-
 ## Diagonal
-diagonal <- function(matrix) {
+diagonal <- function(matrix, ...) {
     ## If all the dimensions of the space are orthogonal to each other, then, following Pythagoras' theorem, the longest distance in this space is equal to the square root of sum of the distances of each dimension.
     return(sqrt(sum(ranges(matrix))))
 }
@@ -534,7 +568,7 @@ get.root.dist <- function(row, tree, data, fun.dist) {
     ## Get the distance
     return(fun.dist(data[row, ], data[tree$node.label[1], ]))
 }
-ancestral.dist <- function(matrix, tree, to.root = FALSE, method = "euclidean", reference.data = matrix) {
+ancestral.dist <- function(matrix, tree, to.root = FALSE, method = "euclidean", reference.data = matrix, ...) {
     if(!to.root) {
         ## Get the distance between each tip/node and their ancestor
         return(sapply(rownames(matrix), get.ancestor.dist, tree = tree, data = reference.data, fun.dist = select.method(method)))
@@ -544,16 +578,8 @@ ancestral.dist <- function(matrix, tree, to.root = FALSE, method = "euclidean", 
     }
 }
 
-
-
-
-
-
-
-
-
 ## Calculates the hyperbox volume (or hypercube if cube = TRUE)
-span.tree.length <- function(matrix, toolong = 0, method = "euclidean") {
+span.tree.length <- function(matrix, toolong = 0, method = "euclidean", ...) {
     ## Check if the matrix is a distance matrix first
     distances <- check.dist.matrix(matrix, method = method)[[1]]
     ## Get the span tree length
@@ -561,7 +587,7 @@ span.tree.length <- function(matrix, toolong = 0, method = "euclidean") {
 }
 
 ## Calculates the pairwise distance between elements
-pairwise.dist <- function(matrix, method = "euclidean") {
+pairwise.dist <- function(matrix, method = "euclidean", ...) {
     ## Check for distance
     distances <- check.dist.matrix(matrix, method = method)[[1]]
     ## Return distances
@@ -569,7 +595,7 @@ pairwise.dist <- function(matrix, method = "euclidean") {
 }
 
 ## Calculate the radius for each dimensions
-radius <- function(matrix, type = max) {
+radius <- function(matrix, type = max, ...) {
     ## Calculate the maximum distance from the centres per axis
     differences <- mapply(function(x, y) abs(x - y), unlist(apply(matrix, 2, list), recursive = FALSE), as.list(colMeans(matrix)), SIMPLIFY = FALSE)
 
@@ -578,7 +604,7 @@ radius <- function(matrix, type = max) {
 }
 
 ## Calculates the n-ball volume
-n.ball.volume <- function(matrix, sphere = TRUE) {
+n.ball.volume <- function(matrix, sphere = TRUE, ...) {
     ## Dimensions
     n <- ncol(matrix)
 
@@ -594,7 +620,7 @@ n.ball.volume <- function(matrix, sphere = TRUE) {
 }
 
 ## Minimal spanning tree distances evenness
-func.eve <- function(matrix, method = "euclidean") {
+func.eve <- function(matrix, method = "euclidean", ...) {
     ## Distance matrix
     distances <- check.dist.matrix(matrix, method = method)[[1]]
     ## weighted evenness (EW) for equal weighted species
@@ -610,7 +636,7 @@ func.eve <- function(matrix, method = "euclidean") {
 }
 
 ## Distance from centroid deviation ratio
-func.div <- function(matrix) {
+func.div <- function(matrix, ...) {
     ## The distance from centroid (dGi)
     dist_centroid <- centroids(matrix)
     ## The mean distance from centroid (dG)
@@ -621,17 +647,17 @@ func.div <- function(matrix) {
     return((sum(dist_centroid) - mean_dis_cent * (obs-1)) / ((sum(abs(dist_centroid - mean_dis_cent) + dist_centroid))/obs))
 }
 
-
 ## Select the right slope function
 get.slope.significant <- function(X, base_angle) {
     model <- lm(base_angle ~ X)
     return(ifelse(summary(model)[[4]][[8]] < 0.05, model$coefficients[[2]], 0))
 }
 get.slope.nonsignificant <- function(X, base_angle) {
+
     lm(base_angle ~ X)$coefficients[[2]]
 }
 ## Angles measurements
-angles <- function(matrix, unit = "degree", base = 0, significant = FALSE) {
+angles <- function(matrix, unit = "degree", base = 0, significant = FALSE, ...) {
 
     ## Check the unit
     all_methods <- c("degree", "radian", "slope")
@@ -722,7 +748,7 @@ deviations <- function(matrix, hyperplane, ..., significant = FALSE) {
 }
 
 ## Edge length tree
-edge.length.tree <- function(matrix, tree, to.root = TRUE) {
+edge.length.tree <- function(matrix, tree, to.root = TRUE, ...) {
     if(to.root) {
         ## Get the distances to the root
         out <- castor::get_all_distances_to_root(tree)[match(rownames(matrix), c(tree$tip.label, tree$node.label))]
@@ -741,14 +767,16 @@ centre.matrix <- function(matrix, group) {
 }
 ## Function for getting the projected lengths
 get.proj.length <- function(point, centroid, length) {
+
     return(geometry::dot(centroid, point)/length)
 }
 ## Function for getting the quantiles per groups
 quantiles.per.groups <- function(group, lengths, probs) {
+
     return(quantile(lengths[group], probs = probs))
 }
 ## Euclidean distance between two groups
-group.dist <- function(matrix, matrix2, probs = c(0,1)) {
+group.dist <- function(matrix, matrix2, probs = c(0,1), ...) {
     ## Make the combined matrix
     combined_matrix <- as.matrix(rbind(matrix, matrix2))
     ## Get the groups IDs
@@ -756,7 +784,7 @@ group.dist <- function(matrix, matrix2, probs = c(0,1)) {
     ## Centre that matrix onto the centroid of group 1
     centred_matrix <- centre.matrix(combined_matrix, groups[[1]])
     ## Get the centroid vector in the centred matrix (the centroid of group 2)
-    centroid <- colMeans(centred_matrix[groups[[2]],])
+    centroid <- colMeans(centred_matrix[groups[[2]], , drop = FALSE])
     ## Get the length of each projected points on the centroid vector
     projected_lengths <- apply(centred_matrix, 1, get.proj.length, centroid = centroid, length = sqrt(sum(centroid^2)))
     ## Get the quantile of the projections for each group
@@ -791,6 +819,7 @@ point.dist <- function(matrix, matrix2, point = colMeans, method = "euclidean", 
 
 ## Angle between two vectors
 vector.angle <- function(v1, v2){
+
     return(acos(geometry::dot(v1, v2, d = 1) / (sqrt(sum(v1^2))*sqrt(sum(v2^2)))) *180/pi)
 }
 ## Rotate a matrix along one axis (y)
@@ -808,9 +837,30 @@ get.rotation.matrix <- function(x, y){
 
     return(diag(length(x)) - u %*% t(u) - v %*% t(v) + cbind(u,v) %*% matrix(c(cost,-sint,sint,cost), 2) %*% t(cbind(u,v)))
 }
-## Projection of elements on an axis
-projections <- function(matrix, point1 = 0, point2 = colMeans(matrix), measure = "position", scaled = TRUE) {
+## Make an angle orthogonal
+orthogonise <- function(angle) {
+    ## Get the modulo
+    if((angle > 90 && angle < 180) || (angle > 270 && angle < 360)) {
+        ortho <- 90 - angle %% 90
+    } else {
+        ortho <- angle %% 90     
+    }
 
+    ## Convert the results
+    if(ortho == 0 && (angle %in% c(0, 180, 360))) {
+        return(0)
+    }
+    if(ortho == 0 && angle > 0) {
+        return(1)
+    }
+
+    return(ortho/90)
+}
+
+## Projection of elements on an axis
+projections <- function(matrix, point1 = 0, point2 = colMeans(matrix), measure = "position", scale = TRUE, centre = TRUE, abs = TRUE, ...) {
+    ## IMPORTANT: edits in this function must also be copy/pasted to dispRity.covar.projections_fun.R/projections.fast
+    
     ## Get the point1 and point2
     if(length(point1) != ncol(matrix)) {
         point1 <- rep(point1, ncol(matrix))[1:ncol(matrix)]
@@ -835,7 +885,7 @@ projections <- function(matrix, point1 = 0, point2 = colMeans(matrix), measure =
     }
 
     ## Scale the space
-    if(scaled) {
+    if(scale) {
         ## The scaled space
         space <- space/dist(space[-c(1:nrow(matrix)), , drop = FALSE])
     }
@@ -856,7 +906,7 @@ projections <- function(matrix, point1 = 0, point2 = colMeans(matrix), measure =
     ## Project the vectors
     projections <- t(apply(matrix, 1, geometry::dot, y = base_vector[2,], d = 2))
     ## Calculate the angles
-    if(measure == "degree" || measure == "radian") {
+    if(measure %in% c("degree", "radian", "orthogonality")) {
         angles <- t(t(apply(matrix, 1, vector.angle, base_vector[2,])))
         angles <- ifelse(is.nan(angles), 0, angles)
     }
@@ -869,7 +919,7 @@ projections <- function(matrix, point1 = 0, point2 = colMeans(matrix), measure =
     values <- switch(measure,
         "position" = { #distance on
             ## Measure the position on the vectors and their orientation
-            projections[,1]
+            projections[, 1]
         },
         "distance" = { #distance from
             ## Get the rejection distance
@@ -880,9 +930,76 @@ projections <- function(matrix, point1 = 0, point2 = colMeans(matrix), measure =
         },
         "radian"  = {
             c(angles/180*pi)
+        },
+        "orthogonality" = {
+            sapply(angles, orthogonise)
         })
 
+    ## If position, apply correction
+    if(measure == "position") {
+        if(centre && abs) {
+            values <- abs(values - 0.5)/0.5
+        }
+        if(centre && !abs) {
+            values <- (values - 0.5)/0.5
+        }
+        if(!centre && abs) {
+            values <- abs(values)
+        }
+    }
+    ## If distance, apply correction
+    if(measure == "distance") {
+        if(centre) {
+            values <- values/2
+        }
+    }
+
     return(unname(values))
+}
+
+## Projections between covar matrices
+projections.between <- function(matrix, matrix2, axis = 1, level = 0.95, measure = "position", scale = TRUE, centre = TRUE, abs = TRUE, ...) {
+
+    ## Get the main axes from the VCV matrices
+    # source("covar.utilities_fun.R")
+    base_vector  <- get.one.axis(matrix2, axis, level, dimensions = 1:length(diag(matrix2)))
+    projected_vector <- get.one.axis(matrix, axis, level, dimensions = 1:length(diag(matrix)))
+
+    ## Translating into projections format
+    matrix <- projected_vector
+    point1 <- base_vector[1,]
+    point2 <- base_vector[2,]
+
+    ## Moving the two axes so that there origins are the same:
+    ## 1 - Get the translation vector to point1
+    translation_vector <- point1 - matrix[1,]
+ 
+    ## 2 - Align the matrix with point1
+    matrix <- rbind(matrix[1,] + translation_vector,
+                    matrix[2,] + translation_vector)
+
+    ## Measure the projection
+    return(projections(matrix, point1 = point1, point2 = point2, measure = measure, scale = scale, centre = centre, abs = abs)[-1]) #[-1] because the first value is the projection of the origin on the origin. Can be sometimes not equal to 0 though (but like something )
+}
+
+## Alignement between two matrices
+disalignment <- function(matrix, matrix2, axis = 1, level = 0.95, point.to.reject = colMeans, ...) {
+    ## Get the major axis
+    base_vector  <- get.one.axis(matrix2, axis = axis, level = level, dimensions = 1:length(diag(matrix2)))
+
+    ## Get the point of interest
+    if(is(matrix, "vector")) {
+        rejection_point <- matrix(matrix, nrow = 1)
+    } else {
+        if(is(point.to.reject, "numeric")) {
+            rejection_point <- matrix[point.to.reject, , drop = FALSE]
+        } else {
+            rejection_point <- matrix(point.to.reject(matrix), nrow = 1)
+        }
+    }
+
+    ## Measure the projection
+    return(projections(rejection_point, point1 = base_vector[1,], point2 = base_vector[2,], measure = "distance"))
 }
 
 ## Select the root coords

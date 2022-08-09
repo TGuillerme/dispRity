@@ -3,7 +3,7 @@
 #context("make.metric")
 
 #Loading the data
-#load("test_data.Rda")
+#load("test_data.rda")
 #data<-test_data$ord_data_tips
 
 test_that("check.metric works", {

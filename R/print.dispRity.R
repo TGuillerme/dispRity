@@ -59,11 +59,11 @@ print.dispRity <- function(x, all = FALSE, ...) {
         ## ~~~~~~~
         ## Composite dispRity objects (subclasses)
         ## ~~~~~~~
+        x_classes <- class(x)
 
-
-        if(length(class(x)) > 1) {
+        if(length(x_classes) > 1) {
             ## randtest
-            switch(class(x)[[2]],
+            switch(x_classes[[2]],
                 randtest = {
                     ## Remove the call (messy)
                     remove.call <- function(element) {
@@ -119,7 +119,7 @@ print.dispRity <- function(x, all = FALSE, ...) {
                 dtt = {
                     if(length(x) != 2){
                         ## Tested dtt
-                        cat("Disparity-through-time test (modified from geiger:dtt)\n")
+                        cat("Disparity-through-time test (modified from geiger::dtt)\n")
                         cat(paste0("Call: ", as.expression(x$call), " \n\n"))
 
                         cat(paste0("Observation: ", x$MDI , "\n\n"))
@@ -187,6 +187,12 @@ print.dispRity <- function(x, all = FALSE, ...) {
                         in_groups, ".\n"))
                     cat(paste0("You can use x$dimensions to select them or use plot(x) and summary(x) to summarise them.\n"))
                     return(invisible())
+                },
+                projection = {
+                    ## Print as a list
+                    class(x) <- "list"
+                    print(x)
+                    return(invisible())
                 }
             )
         }
@@ -223,19 +229,12 @@ print.dispRity <- function(x, all = FALSE, ...) {
                 method <- x$call$subsets
 
                 switch(method[1],
-                    "discrete" = {cat(paste(length(subsets), method[1], "time subsets for", nrow(x$matrix[[1]]), "elements"))},
-                    "continuous" = {cat(paste(length(subsets),  paste(method[1], " (", method[2],")", sep = ""), "time subsets for", nrow(x$matrix[[1]]), "elements"))},
-                    "customised" = {cat(paste(length(subsets), method[1], "subsets for", nrow(x$matrix[[1]]), "elements"))}
+                    "discrete"   = cat(paste(length(subsets), method[1], "time subsets for", nrow(x$matrix[[1]]), "elements")),
+                    "continuous" = cat(paste(length(subsets), paste(method[1], " (", method[2],")", sep = ""), "time subsets for", nrow(x$matrix[[1]]), "elements")),
+                    "customised" = cat(paste(length(subsets), method[1], "subsets for", nrow(x$matrix[[1]]), "elements")),
+                    "covar"      = cat(paste(length(subsets), method[1], "subsets for", nrow(x$matrix[[1]]), "elements"))
                     )
 
-                # if(method[1] != "discrete") {
-                #     method <- paste(method[1], " (", method[2],")", sep = "")
-                # }
-                # if(method[1] == "customised") {
-                #     cat(paste(length(subsets), method[1], "subsets for", nrow(x$matrix[[1]]), "elements"))    
-                # } else {
-                #     cat(paste(length(subsets), method[1], "time subsets for", nrow(x$matrix[[1]]), "elements"))
-                # }
                 if(length(x$matrix) > 1) {
                     cat(paste0(" in ", length(x$matrix), " matrices"), sep = "")
                 } else {
@@ -254,6 +253,12 @@ print.dispRity <- function(x, all = FALSE, ...) {
                 }
             }
         } else {
+
+            ## Covar matrices
+            if(!is.null(x$call$subsets) && ("covar" %in% x$call$subsets)) {
+                cat(paste0("One covar matrix (", names(x$subsets), ") with "))
+            }
+
             cat(paste(nrow(x$matrix[[1]]), "elements"))
             if(length(x$matrix) > 1) {
                 cat(paste0(" in ", length(x$matrix), " matrices"), sep = "")
@@ -267,7 +272,11 @@ print.dispRity <- function(x, all = FALSE, ...) {
         ## Print the bootstrap information
         if(any(names(x$call) == "bootstrap")) {
             if(x$call$bootstrap[[1]] != 0) {
-                cat(paste("Data was bootstrapped ", x$call$bootstrap[[1]], " times (method:\"", x$call$bootstrap[[2]], "\")", sep = ""))
+                if(x$call$bootstrap[[2]] == "covar") {
+                    cat(paste0("Data is based on ", length(x$covar[[1]]), " posterior sample", ifelse(length(x$covar[[1]]) > 1, "s","")))
+                } else {
+                    cat(paste("Data was bootstrapped ", x$call$bootstrap[[1]], " times (method:\"", x$call$bootstrap[[2]], "\")", sep = ""))
+                }
             }
             if(!is.null(x$call$bootstrap[[3]])) {
                 if(x$call$bootstrap[[3]][[1]] == "full") {

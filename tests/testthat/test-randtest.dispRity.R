@@ -21,7 +21,7 @@ test_that("randtest.dispRity works", {
     error <- capture_error(randtest.dispRity(data = dummy_matrix, subsets = test_subset, metric = mean, replicates = c(1,2.2), resample = TRUE, alter = "lesser"))
     expect_equal(error[[1]], "replicates must be a single numeric value.")
 
-  error <- capture_error(randtest.dispRity(data = dummy_matrix, subsets = test_subset, metric = mean, replicates = -1, resample = TRUE, alter = "lesser"))
+    error <- capture_error(randtest.dispRity(data = dummy_matrix, subsets = test_subset, metric = mean, replicates = -1, resample = TRUE, alter = "lesser"))
     expect_equal(error[[1]], "At least one replicate must be run.")
 
     error <- capture_error(randtest.dispRity(data = dummy_matrix, subsets = test_subset, metric = mean, replicates = 100, resample = "TRUE", alter = "lesser"))

@@ -1,6 +1,6 @@
-#' @title Calculating the age of nodes and tips in a tree.
+#' @title Extracting the age of nodes and tips in a tree.
 #'
-#' @description Calculates the age of each node and tip in a tree give the height of the tree or some specified age.
+#' @description Extracting the age of each node and tip in a tree give the height of the tree or some specified age.
 #'
 #' @param tree A \code{phylo} object.
 #' @param age The age of the tree. If missing the age is set to be the tree height.
@@ -8,7 +8,7 @@
 #' @param fossil \code{logical}, whether to always consider the tree as containing at least one living taxa (\code{TRUE}) or allowing only fossil taxa (\code{FALSE} - default), see details.
 #' @param digits A \code{numeric} value or \code{integer} for the precision of the output.
 #' 
-#' @details When \code{fossil = TRUE}, if the \code{tree} contains a \code{tree$root.time} element (for tree's root age), and that \code{order} is set to \code{"past"}, the output ages are adjusted to be starting from the root.time. Else, if no \code{tree$root.time} exists or \code{fossil = FALSE}, tips and nodes age is relative from the tip furthest away from the root.
+#' @details When \code{fossil = TRUE}, if the \code{tree} contains a \code{tree$root.time} element (for tree's root age), and that \code{order} is set to \code{"past"}, the output ages are adjusted to be starting from the root.time. Else, if no \code{tree$root.time} exists or \code{fossil = FALSE}, tips and nodes age is relative from the tip furthest away from the root. \emph{THIS FUNCTION DOES NOT ESTIMATE TREE AGES}, it just extracts branch length information and converts it into time units. For basic dating functions in R, check \code{\link[ape]{chronos}}, \code{\link[ape]{chronopl}},  \code{\link[ape]{chronoMPL}} or use more specialised dating software (e.g. MrBayes, BEAST, RAxML, etc.).
 #'
 #' @examples
 #' ## A dated random phylogeny with a root 50 units of time old.
@@ -24,7 +24,7 @@
 
 tree.age <- function(tree, age, order = 'past', fossil = TRUE, digits = 3){
 
-#SANITYZING
+    #SANITYZING
 
     #tree
     check.class(tree, 'phylo', ' must be a phylo object.')

@@ -2,7 +2,7 @@
 % Please edit documentation in R/adonis.dispRity.R
 \name{adonis.dispRity}
 \alias{adonis.dispRity}
-\title{adonis dispRity (from \code{vegan::adonis})}
+\title{adonis dispRity (from \code{vegan::adonis2})}
 \usage{
 adonis.dispRity(
   data,
@@ -18,21 +18,21 @@ adonis.dispRity(
 
 \item{formula}{The model formula (default is \code{matrix ~ group}, see details)}
 
-\item{method}{The distance method to be passed to \code{\link[vegan]{adonis}} and eventually to \code{\link[vegan]{vegdist}} (see details - default \code{method ="euclidean"})}
+\item{method}{The distance method to be passed to \code{\link[vegan]{adonis2}} and eventually to \code{\link[vegan]{vegdist}} (see details - default \code{method ="euclidean"})}
 
-\item{...}{Any optional arguments to be passed to \code{\link[vegan]{adonis}}}
+\item{...}{Any optional arguments to be passed to \code{\link[vegan]{adonis2}}}
 
 \item{warn}{\code{logical}, whether to print internal warnings (\code{TRUE}; default - advised) or not (\code{FALSE}).}
 
 \item{matrix}{\code{numeric}, which matrix to use (default is \code{1}).}
 }
 \description{
-Passing \code{dispRity} objects to the \code{\link[vegan]{adonis}} function from the \code{vegan} package.
+Passing \code{dispRity} objects to the \code{\link[vegan]{adonis2}} function from the \code{vegan} package.
 }
 \details{
 The first element of the formula (the response) must be called \code{matrix} and the predictors must be existing in the subsets of the \code{dispRity} object.
 
-If \code{data$matrix[[1]]} is not a distance matrix, distance is calculated using the \code{\link[stats]{dist}} function. The type of distance can be passed via the standard \code{method} argument that will be recycled by \code{\link[vegan]{adonis}}.
+If \code{data$matrix[[1]]} is not a distance matrix, distance is calculated using the \code{\link[stats]{dist}} function. The type of distance can be passed via the standard \code{method} argument that will be recycled by \code{\link[vegan]{adonis2}}.
 
 If the \code{dispRity} data has custom subsets with a single group, the formula is set to \code{matrix ~ group}.
 
@@ -89,7 +89,7 @@ adonis.dispRity(time_subsets, matrix ~ chrono.subsets)
 
 }
 \seealso{
-\code{\link[vegan]{adonis}}, \code{\link{test.dispRity}}, \code{\link{custom.subsets}}, \code{\link{chrono.subsets}}.
+\code{\link[vegan]{adonis2}}, \code{\link{test.dispRity}}, \code{\link{custom.subsets}}, \code{\link{chrono.subsets}}.
 
 \code{\link{test.dispRity}}, \code{\link{custom.subsets}}, \code{\link{chrono.subsets}}
 }

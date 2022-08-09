@@ -13,8 +13,8 @@
 #          @param parallel Optional, either a \code{logical} argument whether to parallelise calculations (\code{TRUE}; the numbers of cores is automatically selected to n-1) or not (\code{FALSE}) or a single \code{numeric} value of the number of cores to use.
 #'
 #' @return
-#' This function outputs a \code{dispRity} object containing:
-#' \item{matrix}{the multidimensional space (a \code{matrix}).}
+#' This function outputs a \code{dispRity} object containing at least the following:
+#' \item{matrix}{the multidimensional space (a list of \code{matrix}).}
 #' \item{call}{A \code{list} containing the called arguments.}
 #' \item{subsets}{A \code{list} containing matrices pointing to the elements present in each subsets.}
 #' \item{disparity}{A \code{list} containing the disparity in each subsets.}
@@ -41,7 +41,6 @@
 #'      \item if the input is an output from \code{\link{chrono.subsets}}, the series are run in a paired series manner using \code{metric(matrix, matrix2)}. For example for a \code{chrono.subsets} contains 3 subsets m1, m2, m3 and m4, the code loops through: \code{metric(m1, m2)} and \code{metric(m2, m3)} (looping through \code{list(c(1,2), c(2,3), c(3,4))}).
 #' }
 #' In both cases it is also possible to specify the input directly by providing the list to loop through. For example using \code{between.groups = list(c(1,2), c(2,1), c(4,8))} will apply the \code{metric} to the 1st and 2nd subsets, the 2nd and first and the 4th and 8th (in that specific order).
-#' 
 #' 
 #' @examples
 #' ## Load the Beck & Lee 2014 data
@@ -110,6 +109,20 @@
 # verbose = TRUE
 # data <- data_subsets_boot
 
+
+## Mem check
+# library(pryr)
+# data(BeckLee_mat50)
+# customised_subsets <- custom.subsets(BeckLee_mat50, list(group1 = 1:(nrow(BeckLee_mat50)/2),group2 = (nrow(BeckLee_mat50)/2):nrow(BeckLee_mat50)))
+# bootstrapped_data <- boot.matrix(customised_subsets, bootstraps = 100)
+# data <- bootstrapped_data
+# metric <- variances
+# between.groups <- FALSE
+# verbose <- FALSE
+# tree <- NULL
+# start_mem <- mem_used()
+
+
 dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verbose = FALSE, tree = NULL){#, parallel) {
     ## ----------------------
     ##  SANITIZING
@@ -129,6 +142,10 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
             data <- fill.dispRity(make.dispRity(data = check.dispRity.data(data)))
         }
     } else {
+        ## Make sure that data is not a dual class
+        if(length(class(data)) > 1) {
+            stop.call(match_call$data, " must be a raw dispRity object (i.e. not dual class).")
+        }
         ## Making sure matrix exist
         if(is.null(data$matrix[[1]])) {
             stop.call(match_call$data, " must contain a matrix or a list of matrices.")
@@ -146,8 +163,8 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
     }
 
     ## Get the metric list
-    metrics_list <- get.dispRity.metric.handle(metric, match_call, data.dim = dim(data$matrix[[1]]), tree = tree, ...)
-    # metrics_list <- get.dispRity.metric.handle(metric, match_call, data.dim = dim(data$matrix[[1]]), tree = NULL)
+    metrics_list <- get.dispRity.metric.handle(metric, match_call, data = data, tree = tree, ...)
+    # metrics_list <- get.dispRity.metric.handle(metric, match_call, data = data, tree = NULL)
     metric_is_between.groups <- unlist(metrics_list$between.groups)
     metric_has_tree <- unlist(metrics_list$tree)
     metrics_list <- metrics_list$levels
@@ -183,6 +200,11 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
             ## Change the between groups behaviour
             data$call$disparity <- NULL
             data$disparity <- NULL
+        }
+
+        ## Check whether the metric is covar
+        if(any(unlist(lapply(metrics_list, eval.covar)))) {
+            stop.call(msg = "Impossible to apply a metric as.covar() on a dispRity object that already contains disparity results.", call = "")
         }
     }
 
@@ -221,7 +243,7 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
             if(is.null(data$call$subsets)) {
                 stop.call(msg.pre = "The provided \"between.groups\" metric (", match_call$metric, msg = ") cannot be applied to a dispRity object with no subsets. Use chrono.subsets or custom.subsets to create some.")                
             } else {
-                if(data$call$subsets[[1]] == "customised") {
+                if(data$call$subsets[[1]] %in% c("customised", "covar")) {
                     ## Make default pairwise comparisons
                     list_of_pairs <- unlist(apply(combn(1:length(data$subsets), 2), 2, list), recursive = FALSE)
                 } else {
@@ -235,6 +257,16 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
         if(!any(metric_is_between.groups)) {
             stop.call(msg.pre = "The provided metric (", match_call$metric, msg = ") cannot be applied between groups. \"between.groups\" metrics must have at least \"matrix\" and \"matrix2\" as inputs.")
         }
+        ## If between.groups contains characters, convert them in subset numbers
+        is_character <- unlist(lapply(between.groups, function(X) is(X, "character")))
+        if(any(is_character)) {
+            for(i in 1:length(between.groups)) {
+                if(is_character[i]) {
+                    between.groups[[i]] <- match(between.groups[[i]], names(data$subsets))
+                }
+            }
+        }
+
         ## Serial is a list, check if it contains the right information (pairs of things that exist)
         pairs <- unique(unlist(lapply(between.groups, length))) 
         if(length(pairs) > 1 || pairs != 2 || max(unlist(between.groups)) > length(data$subsets)) {
@@ -313,10 +345,34 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
 
     ## Make the lapply loop into between.groups loops
     if(is_between.groups) {
+        ## Name the list of pairs
+        ## Remove ":" for pairs of names (: is reserved for the function)
+        subset_names <- names(data$subsets)
+        if(length(to_correct <- grep(":", subset_names)) > 0) {
+            warning(paste0("The subset name", ifelse(length(to_correct) > 1, "s", ""), ": ", paste(subset_names[to_correct], collapse = ", "), ifelse(length(to_correct) > 1, " were ", " was "), "changed to ", paste(gsub(":", ";", subset_names)[to_correct], collapse = ", "), ". The \":\" character is reserved for between groups comparisons."))
+            subset_names <- paste(gsub(":", ";", subset_names))
+        }
+        names(list_of_pairs) <- unlist(lapply(list_of_pairs, function(pair, names) paste0(names[pair], collapse = ":"), names = subset_names))
+
+
         ## Combine the pairs of elements/bs/rare into a lapply loop containing the data for each pair
         lapply_loop <- lapply(list_of_pairs, combine.pairs, lapply_data = lapply_loop)
     }
 
+    ## Make the lapply loop just the groups ID (if covar)
+    if(any(unlist(lapply(metrics_list, eval.covar)))) {
+        names_in <- names(lapply_loop)
+
+        ## Transform the lapply_loop into a list of covar IDs (e.g for the first group: lapply_loop[[1]]$elements = 1). If it's between group lapply_loop[[1]]$elements = c(1,2).
+        if(!is_between.groups) {
+            lapply_loop <- as.list(match(names(lapply_loop), names(data$covar)))
+        } else {
+            #lapply(as.list(names(lapply_loop)), function(X, data) match(strsplit(X, split = ":")[[1]], names(data$covar)), data = data)
+            lapply_loop <- list_of_pairs
+        }
+        lapply_loop <- lapply(lapply_loop, function(x) return(list(elements = x)))
+        names(lapply_loop) <- names_in
+    }
 
     ## Initialising the cluster
     # if(do_parallel) {
@@ -382,6 +438,8 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
     }
 
     # }
+    ## Free the loop memory
+    rm(lapply_loop)
     if(verbose) message("Done.\n", appendLF = FALSE)
 
     # } else {
@@ -410,17 +468,15 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
 
     ## Rename the disparity groups
     if(is_between.groups) {
-        ## Remove ":" for pairs of names (: is reserved for the function)
-        subset_names <- names(data$subsets)
-        if(length(to_correct <- grep(":", subset_names)) > 0) {
-            warning(paste0("The subset name", ifelse(length(to_correct) > 1, "s", ""), ": ", paste(subset_names[to_correct], collapse = ", "), ifelse(length(to_correct) > 1, " were ", " was "), "changed to ", paste(gsub(":", ";", subset_names)[to_correct], collapse = ", "), ". The \":\" character is reserved for between groups comparisons."))
-            subset_names <- paste(gsub(":", ";", subset_names))
-        }
-        names(disparity) <- unlist(lapply(list_of_pairs, function(pair, names) paste0(names[pair], collapse = ":"), names = subset_names))
+        ## Rename the disparity
+        names(disparity) <- names(list_of_pairs)
     }
 
     ## Update the disparity
     data$disparity <- disparity
+
+    ## Free the disparity memory
+    rm(disparity)
 
     ## Update the call
     data$call$disparity$metrics$name <- c(data$call$disparity$metrics$name, match_call$metric)

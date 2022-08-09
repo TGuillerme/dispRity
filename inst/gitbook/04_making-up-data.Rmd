@@ -139,7 +139,7 @@ This function allows users to simulate multidimensional spaces with a certain nu
 For example, it is possible to design a multidimensional space with a specific distribution on each axis, a correlation between the axes and a specific cumulative variance per axis.
 This can be useful for creating ordinated spaces for null hypothesis, for example if you're using the function `null.test` [@diaz2016global].
 
-This function takes as arguments the number of elements (data points - `elements` argument) and dimensions (`dimensions` argument) to create the space and the distribution functions to be used for each axis.
+This function takes as arguments the number of elements (data points - `elements` argument) and dimensions (`dimensions` argument) to create the space and the distribution functions to be used for each axis.
 The distributions are passed through the `distribution` argument as... modular functions!
 You can either pass a single distribution function for all the axes (for example `distribution = runif` for all the axis being uniform) or a specific distribution function for each specific axis (for example `distribution = c(runif, rnorm, rgamma))` for the first axis being uniform, the second normal and the third gamma).
 You can of course use your very own functions or use the ones implemented in `dispRity` for more complex ones (see below).

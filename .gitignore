@@ -1,6 +1,10 @@
+# security
+.coveralls.yml
+
 #pdf
 *.pdf
 *.Rapp.history
+*.png
 
 *.DS_Store
 
