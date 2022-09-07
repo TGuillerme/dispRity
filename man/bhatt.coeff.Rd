@@ -2,7 +2,7 @@
 % Please edit documentation in R/bhatt.coeff.R
 \name{bhatt.coeff}
 \alias{bhatt.coeff}
-\title{Bhattacharrya Coefficient}
+\title{Bhattacharyya Coefficient}
 \usage{
 bhatt.coeff(x, y, bw = bw.nrd0, ...)
 }

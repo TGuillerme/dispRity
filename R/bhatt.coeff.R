@@ -1,6 +1,6 @@
 #' @name bhatt.coeff 
 #'
-#' @title Bhattacharrya Coefficient
+#' @title Bhattacharyya Coefficient
 #'
 #' @description Calculates the probability of overlap between two distributions.
 #'
