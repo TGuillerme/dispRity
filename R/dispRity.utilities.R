@@ -250,12 +250,13 @@ extract.dispRity <- function(...) {
 
 
 #' @name get.subsets 
-#' @aliases n.subsets size.subsets get.subsets combine.subsets 
+#' @aliases n.subsets names.subsets size.subsets get.subsets combine.subsets 
 #'
 #' @title Extracts or modify subsets from a \code{dispRity} object.
 #' @description Extracting or modify some subsets' data and information from a \code{dispRity} object.
 #' 
 #' @usage n.subsets(data)
+#' @usage name.subsets(data)
 #' @usage size.subsets(data)
 #' @usage get.subsets(data, subsets)
 #' @usage combine.subsets(data, subsets)
@@ -274,6 +275,9 @@ extract.dispRity <- function(...) {
 #' 
 #' ## How many subsets are in disparity?
 #' n.subsets(disparity)
+#'
+#' ## What are the subset names
+#' name.subsets(disparity)
 #'
 #' ## What are the number of elements per subsets?
 #' size.subsets(disparity)
@@ -324,7 +328,6 @@ get.subsets <- function(data, subsets) {
     class(data_out) <- "dispRity"
     return(data_out)
 }
-
 combine.subsets <- function(data, subsets) {
 
     ## Internal cleaning function for only selecting the elements of the list in a subset
@@ -442,6 +445,10 @@ size.subsets <- function(data) {
 n.subsets <- function(data) {
     ## Getting the size of subsets
     return(length(data$subsets))
+}
+name.subsets <- function(data) {
+    ## Getting the subsets names
+    return(names(data$subsets))
 }
 
 
