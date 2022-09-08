@@ -1,9 +1,15 @@
-make.lapply.loop.resample <- function(one_subset, replicates, pop_size) {
-    return(list("elements" = one_subset, replicate(replicates, sample(1:pop_size, length(one_subset), replace = TRUE))))
+make.lapply.loop.resample <- function(one_subset, one_sample_pop, replicates) {
+    return(list("elements" = one_subset, replicate(replicates, sample(one_sample_pop, length(one_subset), replace = TRUE))))
 }
 
-make.lapply.loop.nosample <- function(one_subset, replicates, pop_size) {
-    return(list("elements" = one_subset, replicate(replicates, sample((1:pop_size)[-one_subset], length(one_subset), replace = TRUE))))
+make.lapply.loop.nosample <- function(one_subset, one_sample_pop, replicates) {
+    ## Check if the subset is not the whole population
+    if(all(c(one_subset) %in% one_sample_pop)) {
+        ## If it is, use make.lapply.loop.resample
+        return(make.lapply.loop.resample(one_subset, one_sample_pop, replicates))
+    } else {
+        return(list("elements" = one_subset, replicate(replicates, sample((one_sample_pop)[-one_subset], length(one_subset), replace = TRUE))))
+    }
 }
 
 one.randtest <- function(results, replicates, resample, alternative, get.p.value, match_call) {
@@ -44,4 +50,29 @@ one.randtest <- function(results, replicates, resample, alternative, get.p.value
 
     class(res) <- "randtest"
     return(res)
+}
+
+
+## Get the comparisons to match the subset list
+get.sample.pop <- function(one_rand, data) {
+    if(length(one_rand) == 0) {
+        return(1:nrow(data$matrix[[1]]))
+    } else {
+        return(sort(unique(unlist(lapply(data$subsets[unlist(one_rand)], function(x) return(x$elements))))))
+    }
+}
+
+get.sample.pop.name <- function(one_rand, data) {
+    if(length(one_rand) == 0) {
+        return("the whole space")
+    } else {
+
+        orthograph <- paste0("subset", ifelse(length(one_rand) == 1, " ", "s "))
+
+        if(length(one_rand) <= 2) {
+            return(paste0(orthograph, paste(one_rand, collapse = " and ")))
+        } else {
+            return(paste0(orthograph, paste(c(paste(one_rand[-length(one_rand)], collapse = ", "), one_rand[length(one_rand)]), collapse = " and ")))
+        }
+    }
 }

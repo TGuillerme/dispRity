@@ -3,7 +3,7 @@
 \name{get.subsets}
 \alias{get.subsets}
 \alias{n.subsets}
-\alias{names.subsets}
+\alias{name.subsets}
 \alias{size.subsets}
 \alias{combine.subsets}
 \title{Extracts or modify subsets from a \code{dispRity} object.}

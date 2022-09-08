@@ -67,11 +67,12 @@ print.dispRity <- function(x, all = FALSE, ...) {
                 randtest = {
                     ## Remove the call (messy)
                     remove.call <- function(element) {
-                        if(element$call != "dispRity.randtest") {
+                        if(length(grep("dispRity.randtest", element$call)) == 0) {
                             element$call <- "dispRity::null.test"
                         }
                         return(element)
                     }
+
                     x <- lapply(x, remove.call)
 
                     if(length(x) == 1) {

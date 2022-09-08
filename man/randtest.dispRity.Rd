@@ -15,15 +15,15 @@
 )
 }
 \arguments{
-\item{data}{The \code{matrix} to draw from.}
+\item{data}{The \code{matrix} or a \code{dispRity} object to draw from.}
 
-\item{subsets}{A \code{vector} of elements to test (or a \code{list} of \code{vectors}).}
+\item{subsets}{A \code{vector} of elements to test (or a \code{list} of \code{vectors} - see details).}
 
 \item{metric}{A \code{function} to be the statistic to apply to the subset.}
 
 \item{replicates}{A \code{numeric} value for the number of replicates (\code{default = 100}).}
 
-\item{resample}{\code{logical} whether to resample the full distribution (\code{TRUE}) or the distribution without the subset (\code{FALSE}).}
+\item{resample}{\code{logical} whether to resample the full distribution (\code{TRUE}; default) or the distribution without the subset (\code{FALSE}).}
 
 \item{alter}{The alternative hypothesis. Can be \code{"two-sided"} (default), \code{"greater"} or \code{"lesser"}.}
 
@@ -46,6 +46,8 @@ If the observed difference falls out of the random differences distribution, the
 This algorithm is based on a similar procedure than in \code{link[ade4]{rantest}}.
 
 If \code{data} is a \code{dispRity} object, the \code{subsets}, \code{metric} and \code{replicates} can be left missing and are automatically inherited from the \code{dispRity} if it contains respectively subsets (from \code{\link{chrono.subsets}} or \code{\link{custom.subsets}}) a \code{metric} (from \code{\link{dispRity}}) and bootstrap draws (from \code{boot.matrix}).
+
+If \code{data} is a \code{dispRity} object subsets can be a list of subsets to compare for example \code{list(c("A", "B"), c("B", "A"))} will run two tests comparing respectively sample A to B and B to A. \emph{Note} that it will only compare these two samples and use their combined size as the population size, if you want to compare a subset to all the subsets you can use \code{list(c("A")} or write down the specific subsets to be used.
 }
 \examples{
 ## Simple example
@@ -68,6 +70,17 @@ summary(test_disparity)
 
 ## Plotting the results
 plot(test_disparity)
+
+## Applying this on a dispRity object with specific subset comparisons
+test_disparity2 <- randtest.dispRity(disparity, subsets = list(
+     ## Comparing subset 90 to the whole population (traitspace)
+     c(observed = "90"),
+     ## Comparing subset "70" to "90", "70" and "30"
+     c(observed = "70", random = c("90", "70", "30"))))
+
+## Summarising and plotting the results
+summary(test_disparity2)
+plot(test_disparity2)
 
 }
 \seealso{

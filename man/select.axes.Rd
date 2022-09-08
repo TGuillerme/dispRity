@@ -4,7 +4,7 @@
 \alias{select.axes}
 \title{Selects ordination axes}
 \usage{
-select.axes(data, group, threshold = 0.95, inc.threshold = TRUE)
+\method{select}{axes}(data, group, threshold = 0.95, inc.threshold = TRUE)
 }
 \arguments{
 \item{data}{The trait space to analyse. This can be either a \code{"matrix"}, \code{"prcomp"}, \code{"princomp"} or a \code{"dispRity"} object.}

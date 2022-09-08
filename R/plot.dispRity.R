@@ -149,7 +149,14 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
                     plot_data$data_sub <- data[[model]]
                     ## Add the title (optional)
                     if(is.null(dots$main)) {
-                        plot_data$dots$main <- paste("MC test for subsets ", names(data)[[model]], sep = "")
+                        if(length(grep("compared to", data[[model]]$call)) == 1) {
+                            plot_data$dots$main <- gsub("dispRity.randtest: ", "", gsub("compared to ", "compared to\n", data[[model]]$call))
+
+                        } else {
+                            plot_data$dots$main <- paste("MC test for subsets ", names(data)[[model]], sep = "")
+                        }
+                    } else {
+                        plot_data$dots$main <- dots$main[model]
                     }
                     ## Run the plot
                     plot.randtest(plot_data)

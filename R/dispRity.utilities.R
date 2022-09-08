@@ -250,7 +250,7 @@ extract.dispRity <- function(...) {
 
 
 #' @name get.subsets 
-#' @aliases n.subsets names.subsets size.subsets get.subsets combine.subsets 
+#' @aliases n.subsets name.subsets size.subsets get.subsets combine.subsets 
 #'
 #' @title Extracts or modify subsets from a \code{dispRity} object.
 #' @description Extracting or modify some subsets' data and information from a \code{dispRity} object.

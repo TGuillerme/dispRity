@@ -76,4 +76,12 @@ test_that("randtest.dispRity works", {
     test_sum <- summary(test_list)
     expect_is(test_sum, "matrix")
     expect_equal(dim(test_sum), c(7, 7))
+
+    ## Testing more complex subsets
+    data(disparity)
+    test_disparity2 <- randtest.dispRity(disparity,
+        subsets = list(c(observed = "90"), c(observed = "70", random = c("90", "70", "30"))))
+    expect_is(test_disparity2, c('dispRity', 'randtest'))
+    expect_equal(dim(summary(test_disparity2)), c(2, 7))
+    expect_null(plot(test_disparity2))
 })
