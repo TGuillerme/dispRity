@@ -23,6 +23,18 @@ dispRity 0.2.0 (2016-04-01)
 <!--   * `dtt.dispRity` now works with time-slicing. -->
 
 
+dispRity v1.7.1 (2022-09-08)
+=========================
+
+### NEW FEATURES
+  
+ * *New utility function* `name.subsets` for directly accessing the subsets names of a `dispRity` object (basically doing `names(my_dispRity$subsets)`).
+
+### MINOR IMPROVMENTS
+
+ * `randtest.dispRity` function's `subsets` argument now can take a list of arguments of subsets to compare is `data` is a `dispRity` object. The call message has also been updated to be much more verbose and clear of what has been tested.
+
+
 dispRity v1.7 (2022-08-08) *MacMacGlimm*
 =========================
 
