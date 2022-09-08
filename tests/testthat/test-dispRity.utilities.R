@@ -706,3 +706,11 @@ test_that("tree utilities works", {
     expect_null(remove.tree(disparitree)$tree[[1]])
     expect_null(remove.tree(disparitree2)$tree[[1]])
 })
+
+
+test_that("name.subsets(dispRity)", {
+    data(disparity)
+    expect_equal(name.subsets(disparity), names(disparity$subsets))
+    expect_warning(test <- dispRity(matrix(rnorm(25), 5, 5), metric = mean))
+    expect_null(name.subsets(test)) 
+})
