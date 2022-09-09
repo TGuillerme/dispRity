@@ -33,7 +33,7 @@ Different utility functions to extract aspects of a \code{MCMCglmm} object.
      \item \code{MCMCglmm.levels} returns the different random and residual terms levels of a \code{MCMCglmm} object. This function uses the default option \code{convert = TRUE} to convert the names into something more readable. Toggle to \code{convert = FALSE} for the raw names.
      \item \code{MCMCglmm.traits} returns the column names of the different traits of a \code{MCMCglmm} formula object.
      \item \code{MCMCglmm.sample} returns a vector of sample IDs present in the \code{MCMCglmm} object. If \code{n} is missing, all the samples IDs are returned. Else, a random series of sample IDs are returned (with replacement if n greater than the number of available samples).
-     \item \code{MCMCglmm.covars} returns a list of covariance matrices and intercepts from a \code{MCMCglmm} object (respectively from \code{MCMCglmm$VCV} and \code{MCMCglmm$Sol}). By default, all the covariance matrices and intercepts are returned but you can use either of the arguments \code{sample} to return specific samples (e.g. \code{MCMCglmm.covars(data, sample = c(1, 42))} for returning the first and 42nd samples) or \code{n} to return a specific number of random samples (e.g. \code{MCMCglmm.covars(data, n = 42)} for returning 42 random samples). 
+     \item \code{MCMCglmm.covars} returns a list of covariance matrices and intercepts from a \code{MCMCglmm} object (respectively from \code{MCMCglmm$VCV} and \code{MCMCglmm$Sol}). By default, all the covariance matrices and intercepts are returned but you can use either of the arguments \code{sample} to return specific samples (e.g. \code{MCMCglmm.covars(data, sample = c(1, 42))} for returning the first and 42nd samples) or \code{n} to return a specific number of random samples (e.g. \code{MCMCglmm.covars(data, n = 42)} for returning 42 random samples).
 }
 }
 \examples{
@@ -59,7 +59,6 @@ MCMCglmm.sample(model, n = 5)
 MCMCglmm.covars(model, sample = 42)
 ## Get two random samples from the model
 MCMCglmm.covars(model, n = 2)
-
 }
 \seealso{
 \code{\link{MCMCglmm.subsets}}

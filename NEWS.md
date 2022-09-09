@@ -28,7 +28,13 @@ dispRity v1.7.1 (2022-09-08)
 
 ### NEW FEATURES
   
- * *New utility function* `name.subsets` for directly accessing the subsets names of a `dispRity` object (basically doing `names(my_dispRity$subsets)`).
+ * *New utility function*: `name.subsets` for directly accessing the subsets names of a `dispRity` object (basically doing `names(my_dispRity$subsets)`).
+ <!-- * *New utility function*: `MCMCglmm.variance` for calculating the variance for specific terms in a `"MCMCglmm"` model. 
+  TODO: - [ ] double check if it does what it does
+        - [ ] add to the manual (same as for name.subsets)
+        - [x] add example
+        - [x] add testing
+        - [ ] add to NAMESPACE + update DESCRIPTION-->
 
 ### MINOR IMPROVMENTS
 
