@@ -77,6 +77,7 @@ randtest.dispRity <- function(data, subsets, metric, replicates = 100, resample 
     if(data_class == "dispRity") {
 
         sample_pop <- 1:nrow(data$matrix[[1]])
+        pop_names <- rownames(data)
 
         if(missing(subsets)) {
             ## Take subsets from the dispRity object

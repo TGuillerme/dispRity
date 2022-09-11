@@ -232,7 +232,7 @@ MCMCglmm.variance <- function(MCMCglmm, n, sample, levels, scale = TRUE) {
     check.class(scale, "logical")
 
     ## Extract sum of each VCV matrices
-    VCV_sums <- lapply(MCMCglmm.covars(MCMCglmm, n, sample), lapply, function(x, what) sum(x[[what]]), what = "VCV")
+    VCV_sums <- lapply(MCMCglmm.covars(MCMCglmm, n, sample), lapply, function(x, what) sum(diag(x[[what]])), what = "VCV")
 
     ## Make that into a matrix
     model_variances <- matrix(unlist(VCV_sums), ncol = length(VCV_sums), byrow = FALSE)
