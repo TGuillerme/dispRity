@@ -104,6 +104,16 @@ This function simply counts the number of subsets in a `dispRity` object.
 n.subsets(disparity)
 ```
 
+#### `name.subsets`
+
+This function gets you the names of the subsets in a `dispRity` object as a vector.
+
+
+```{r}
+## What are they called?
+name.subsets(disparity)
+```
+
 #### `size.subsets`
 
 This function tells the number of elements in each subsets of a `dispRity` object.

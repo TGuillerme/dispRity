@@ -1,6 +1,5 @@
 #' @name MCMCglmm.utilities
-#' @aliases MCMCglmm.traits MCMCglmm.levels MCMCglmm.sample MCMCglmm.covars
-#MCMCglmm.variance
+#' @aliases MCMCglmm.traits MCMCglmm.levels MCMCglmm.sample MCMCglmm.covars MCMCglmm.variance
 #' @title MCMCglmm object utility functions
 #'
 #' @description Different utility functions to extract aspects of a \code{MCMCglmm} object.
@@ -9,14 +8,14 @@
 #' @usage MCMCglmm.levels(MCMCglmm, convert)
 #' @usage MCMCglmm.sample(MCMCglmm, n)
 #' @usage MCMCglmm.covars(MCMCglmm, n, sample)
-# @usage MCMCglmm.variance(MCMCglmm, n, sample, levels, scale = TRUE)
+#' @usage MCMCglmm.variance(MCMCglmm, n, sample, levels, scale)
 #'  
 #' @param MCMCglmm A \code{MCMCglmm} object.
 #' @param n        Optional, a number of random samples to extract.
 #' @param sample   Optional, the specific samples to extract (is ignored if \code{n} is present).
 #' @param convert  Logical, whether to return the raw term names names as expressed in the model column names (\code{FALSE}) or to convert it to something more reader friendly (\code{TRUE}; default).
-# @param levels   Optional, a vector \code{"character"} values (matching \code{MCMCglmm.levels(..., convert = TRUE)}) or of \code{"numeric"} values designating which levels to be used to calculate the variance (if left empty, all the levels are used).
-# @param scale    Logical, whether to scale the variance relative to all the levels (\code{TRUE}; default) or not (\code{FALSE})/
+#' @param levels   Optional, a vector \code{"character"} values (matching \code{MCMCglmm.levels(..., convert = TRUE)}) or of \code{"numeric"} values designating which levels to be used to calculate the variance (if left empty, all the levels are used).
+#' @param scale    Logical, whether to scale the variance relative to all the levels (\code{TRUE}; default) or not (\code{FALSE})/
 #'
 #' @details
 #' \itemize{
@@ -24,8 +23,7 @@
 #'      \item \code{MCMCglmm.traits} returns the column names of the different traits of a \code{MCMCglmm} formula object.
 #'      \item \code{MCMCglmm.sample} returns a vector of sample IDs present in the \code{MCMCglmm} object. If \code{n} is missing, all the samples IDs are returned. Else, a random series of sample IDs are returned (with replacement if n greater than the number of available samples).
 #'      \item \code{MCMCglmm.covars} returns a list of covariance matrices and intercepts from a \code{MCMCglmm} object (respectively from \code{MCMCglmm$VCV} and \code{MCMCglmm$Sol}). By default, all the covariance matrices and intercepts are returned but you can use either of the arguments \code{sample} to return specific samples (e.g. \code{MCMCglmm.covars(data, sample = c(1, 42))} for returning the first and 42nd samples) or \code{n} to return a specific number of random samples (e.g. \code{MCMCglmm.covars(data, n = 42)} for returning 42 random samples).
-#      \item \code{MCMCglmm.variance} returns a list of covariance matrices and intercepts from a \code{MCMCglmm} object (respectively from \code{MCMCglmm$VCV} and \code{MCMCglmm$Sol}). By default, all the covariance matrices and intercepts are returned but you can use either of the arguments \code{sample} to return specific samples (e.g. \code{MCMCglmm.covars(data, sample = c(1, 42))} for returning the first and 42nd samples) or \code{n} to return a specific number of random samples (e.g. \code{MCMCglmm.covars(data, n = 42)} for returning 42 random samples). 
-
+#'      \item \code{MCMCglmm.variance} returns a list of covariance matrices and intercepts from a \code{MCMCglmm} object (respectively from \code{MCMCglmm$VCV} and \code{MCMCglmm$Sol}). By default, all the covariance matrices and intercepts are returned but you can use either of the arguments \code{sample} to return specific samples (e.g. \code{MCMCglmm.covars(data, sample = c(1, 42))} for returning the first and 42nd samples) or \code{n} to return a specific number of random samples (e.g. \code{MCMCglmm.covars(data, n = 42)} for returning 42 random samples). 
 #' }
 #' 
 #' @examples

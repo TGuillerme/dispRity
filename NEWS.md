@@ -1,26 +1,5 @@
-<!-- 
-dispRity 0.2.0 (2016-04-01)
-=========================
-
-### NEW FEATURES
-
-  * Blabla
-
-### MINOR IMPROVEMENTS
-
-  * Blabla
-
-### BUG FIXES
-
-  * Blabla
-
-### DEPRECATED AND DEFUNCT
-
-  * Blabla
- -->
-
-<!--   * `dtt.dispRity` now works with any tree (including non-ultrametric ones and fossils only ones). -->
-<!--   * `dtt.dispRity` now works with time-slicing. -->
+<!-- TODO: - [ ] add a entry to the manual for randtest.dispRity
+           - [ ] -->
 
 
 dispRity v1.7.1 (2022-09-08)
@@ -29,16 +8,12 @@ dispRity v1.7.1 (2022-09-08)
 ### NEW FEATURES
   
  * *New utility function*: `name.subsets` for directly accessing the subsets names of a `dispRity` object (basically doing `names(my_dispRity$subsets)`).
- <!-- * *New utility function*: `MCMCglmm.variance` for calculating the variance for specific terms in a `"MCMCglmm"` model. 
-  TODO: - [ ] double check if it does what it does
-        - [ ] add to the manual (same as for name.subsets)
-        - [x] add example
-        - [x] add testing
-        - [ ] add to NAMESPACE + update DESCRIPTION-->
+ * *New utility function*: `MCMCglmm.variance` for calculating the variance for specific terms in a `"MCMCglmm"` model. 
 
 ### MINOR IMPROVMENTS
 
  * `randtest.dispRity` function's `subsets` argument now can take a list of arguments of subsets to compare is `data` is a `dispRity` object. The call message has also been updated to be much more verbose and clear of what has been tested.
+ <!-- * optimised the `model.test` function internal algorithm for speed. -->
 
 
 dispRity v1.7 (2022-08-08) *MacMacGlimm*

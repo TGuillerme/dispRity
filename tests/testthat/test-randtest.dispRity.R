@@ -80,8 +80,9 @@ test_that("randtest.dispRity works", {
     ## Testing more complex subsets
     data(disparity)
     test_disparity2 <- randtest.dispRity(disparity,
-        subsets = list(c(observed = "90"), c(observed = "70", random = c("90", "70", "30"))))
+        subsets = list("test1" = c(observed = "90"), "test2" = c(observed = "70", random = c("90", "70", "30"))))
     expect_is(test_disparity2, c('dispRity', 'randtest'))
     expect_equal(dim(summary(test_disparity2)), c(2, 7))
+    expect_equal(names(test_disparity2), c("test1", "test2"))
     expect_null(plot(test_disparity2))
 })

@@ -212,7 +212,7 @@ plot(ladderize(my_tree_modif), show.tip.label = FALSE,
 
 Since version `1.7`, the `dispRity` package contains several utility functions for manipulating `"MCMCglmm"` (that is, objects returned by the function `MCMCglmm::MCMCglmm`).
 These objects are a modification of the `mcmc` object (from the package `coda`) and can be sometimes cumbersome to manipulate because of the huge amount of data in it.
-You can use the functions `MCMCglmm.traits` for extracting the number of traits, `MCMCglmm.levels` for extracting the level names, `MCMCglmm.sample` for sampling posterior IDs and `MCMCglmm.covars` for extracting variance-covariance matrices.
+You can use the functions `MCMCglmm.traits` for extracting the number of traits, `MCMCglmm.levels` for extracting the level names, `MCMCglmm.sample` for sampling posterior IDs and `MCMCglmm.covars` for extracting variance-covariance matrices. You can also quickly calculate the variance (or relative variance) for each terms in the model using `MCMCglmm.variance` (the variance is calculated as the sum of the diagonal of each variance-covariance matrix for each term).
 
 ```{r}
 ## Loading the charadriiformes data that contains a MCMCglmm object
@@ -232,8 +232,13 @@ MCMCglmm.levels(my_MCMCglmm, convert = FALSE)
 ## Sampling 2 random posteriors samples IDs
 (random_samples <- MCMCglmm.sample(my_MCMCglmm, n = 2))
 
-## Extracting these two random amples
+## Extracting these two random samples
 my_covars <- MCMCglmm.covars(my_MCMCglmm, sample = random_samples)
+
+## Plotting the variance for each term in the model
+boxplot(MCMCglmm.variance(my_MCMCglmm), horizontal = TRUE, las = 1,
+        xlab = "Relative variance",
+        main = "Variance explained by each term")
 ```
 
 See more in the [`$covar` section](#covar) on what to do with these `"MCMCglmm"` objects.

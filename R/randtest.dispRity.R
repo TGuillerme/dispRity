@@ -73,6 +73,7 @@ randtest.dispRity <- function(data, subsets, metric, replicates = 100, resample 
     ## Distribution and subset
     data_class <- check.class(data, c("matrix", "dispRity"))
     inherits_metrics <- inherits_subsets <- FALSE
+    subsets_names <- NULL
 
     if(data_class == "dispRity") {
 
@@ -87,6 +88,11 @@ randtest.dispRity <- function(data, subsets, metric, replicates = 100, resample 
             ## Set the sampling population list
             sample_pop <- replicate(length(subsets), list(sample_pop))
         } else {
+            ## Get the subset names (if available)
+            if(!is.null(names(subsets))) {
+                subsets_names <- names(subsets)
+            }
+
             ## Split the subsets in observed and random
             subsets_obs  <- lapply(subsets, `[`, 1)
             subsets_rand <- lapply(subsets, function(x) unname(x[-1]))
@@ -226,9 +232,16 @@ randtest.dispRity <- function(data, subsets, metric, replicates = 100, resample 
         results <- mapply(function(results, call_summary) {results$call <- call_summary; return(results)}, results, call_summary, SIMPLIFY = FALSE)
 
         ## Add names to the results (if any)
-        if(!is.null(sub_names)) {
-            names(results) <- sub_names
+        if(!is.null(subsets_names)) {
+            ## Input names
+            names(results) <- subsets_names
+        } else {
+            ## Auto naming (if possible)
+            if(!is.null(sub_names)) {
+                names(results) <- sub_names
+            }
         }
+
         class(results) <- c("dispRity", "randtest")
         
         return(results)

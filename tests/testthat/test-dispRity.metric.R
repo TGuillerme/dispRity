@@ -728,11 +728,13 @@ test_that("projections", {
 
     ## Simple 1D test
     matrix <- matrix(c(0,1,2,0,0,0), 3, 2)
-    # plot(matrix)
+    # plot(matrix, pch = 19)
+    # lines(matrix(c(0, 0, colMeans(matrix)), 2,2, byrow = TRUE), lty = 2)
     rownames(matrix) <- LETTERS[1:3]
 
     ## Position default (from 0 to centroid)
     expect_equal(projections(matrix, centre = FALSE, abs = FALSE), c(0, 1, 2))
+    expect_equal(projections(matrix, centre = TRUE, abs = TRUE), c(1,1,3))
     ## Distance default (from 0 to centroid)
     expect_equal(projections(matrix, measure = "distance", centre = FALSE), c(0, 0, 0))
     ## Position from 0 to 1)
@@ -756,6 +758,7 @@ test_that("projections", {
     expect_equal(projections(matrix, point2 = c(0.5, 0), measure = "distance"), c(1, 2, 3))
     ## Position from -1 to 1)
     expect_equal(projections(matrix, point1 = c(-1, 0), point2 = c(1, 0), centre = FALSE, abs = FALSE), c(1, 1.5, 2))  
+
 
     ## 400D matrix (showing off)
     set.seed(1)
