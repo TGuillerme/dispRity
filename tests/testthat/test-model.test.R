@@ -262,7 +262,7 @@ test_that("model.test.wrapper example works", {
     ## Testing with a single model
     test2 <- model.test.wrapper(data = data, model = "BM", fixed.optima = TRUE, time.split = 66, show.p = FALSE, verbose = FALSE, sim = 5)
     expect_is(test2, "matrix")
-    expect_equal(dim(test2), c(1, 5))
+    expect_equal(dim(test2), c(1, 10))
     expect_equal(rownames(test2), "")
     expect_equal(colnames(test2), c("aicc", "delta_aicc", "weight_aicc", "log.lik", "param", "ancestral state", "sigma squared", "median p value", "lower p value",  "upper p value"))
 })

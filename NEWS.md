@@ -1,5 +1,6 @@
 <!-- TODO: - [ ] add a entry to the manual for randtest.dispRity
-           - [ ] -->
+           - [ ] * optimised the `model.test` function internal algorithm for speed.
+-->
 
 
 dispRity v1.7.1 (2022-09-08)
@@ -13,7 +14,6 @@ dispRity v1.7.1 (2022-09-08)
 ### MINOR IMPROVMENTS
 
  * `randtest.dispRity` function's `subsets` argument now can take a list of arguments of subsets to compare is `data` is a `dispRity` object. The call message has also been updated to be much more verbose and clear of what has been tested.
- <!-- * optimised the `model.test` function internal algorithm for speed. -->
 
 
 dispRity v1.7 (2022-08-08) *MacMacGlimm*
