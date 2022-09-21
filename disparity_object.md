@@ -9,11 +9,13 @@ object
 	|       |
 	|       \---[[...]] = class:"matrix" (any additional matrices)
 	|
+	|
 	\---$tree* = class:"multiPhylo" (a list containing the attached tree(s) or NULL)
 	|	|
 	|	\---[[1]] = class:"phylo" (the first tree)
 	|       |
 	|       \---[[...]] = class:"phylo" (any additional trees)	
+	|
 	|
 	\---$call* = class:"list" (details of the methods used)
 	|	|
@@ -60,23 +62,25 @@ object
 	|		|
 	|		\---[[...]] = class:"matrix" (the rarefactions)
 	|
+	|
 	\---$covar = class:"list" (a list of subsets containing covar matrices; is the same length as $subsets)
 	|	|
 	|	\---[[1]] = class:"list" (first item in subsets list)
 	|	|	|
-	|	|	\---$matrices = class:"list" (the list of covar matrices)
+	|	|	\---$VCV = class:"list" (the list of covar matrices)
 	|	|	|	|
 	|	|	|	\[[1]] = class:"matrix" (the first covar matrix)
 	|	|	|	|
 	|	|	|	\[[...]] = class:"matrix" (the subsequent covar matrices)
 	|	|	|
-	|	|	\---$centre = class:"list" (optional, the list of centres for the matrices)
+	|	|	\---$loc = class:"list" (optional, the list of spatial location for the matrices)
 	|	|	 	|
-	|	|	 	\[[1]] = class:"numeric" (the coordinates for the centre of the first matrix)
+	|	|	 	\[[1]] = class:"numeric" (the coordinates for the location of the first matrix)
 	|	|	 	|
-	|	|	 	\[[...]] = class:"numeric" (the coordinates for the centre of the subsequent covar matrices)
+	|	|	 	\[[...]] = class:"numeric" (the coordinates for the location of the subsequent covar matrices)
 	|	|	
 	|	\---[[...]] = class:"list" (the following subsets)
+	|
 	|	
 	\---$disparity
 		|
