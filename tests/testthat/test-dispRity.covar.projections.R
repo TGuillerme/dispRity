@@ -20,7 +20,7 @@ nocov <- FALSE
     error <- capture_error(dispRity.covar.projections(data, type = "groups", base = "haha", n = 3, major.axis = 1, level = 0.95, output = c("position"), verbose = TRUE))
     expect_equal(error[[1]], "Subset haha not found.")
     error <- capture_error(dispRity.covar.projections(data, type = "groups", n = 3, major.axis = 1, level = 0.95, output = c("possssition"), verbose = TRUE))
-    expect_equal(error[[1]], "output must be must be one of the following: position, distance, degree.")
+    expect_equal(error[[1]], "output must be must be one of the following: position, distance, degree, orthogonality.")
 
     ## warnings
     data_warn <- MCMCglmm.subsets(

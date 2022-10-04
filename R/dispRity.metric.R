@@ -79,7 +79,7 @@
 #'  }
 #' By default, \code{point1} is the centre of the space (coordinates \code{0, 0, 0, ...}) and \code{point2} is the centroid of the space (coordinates \code{colMeans(matrix)}). Coordinates for \code{point1} and \code{point2} can be given as a single value to be repeated (e.g. \code{point1 = 1} is translated into \code{point1 = c(1, 1, ...)}) or a specific set of coordinates.
 #' Furthermore, by default, the space is scaled so that the vector (\code{point1}, \code{point2}) becomes the unit vector (distance (\code{point1}, \code{point2}) is set to 1; option \code{scale = TRUE}; default). You can use the unit vector of the space using the option \code{scale = FALSE}.
-#' Other options include the centering of the projections on 0.5 (code{centre = TRUE}; default) ranging the projection onto the vector (\code{point1}, \code{point2}) between -1 and 1 (higher or lower values project beyond the vector); and whether to output the projection values as absolute values (\code{abs = TRUE}; default). These two last options only affect the results from \code{measure = "position"}.
+#' Other options include the centering of the projections on 0.5 (code{centre = TRUE}; default is set to \code{FALSE}) ranging the projection onto the vector (\code{point1}, \code{point2}) between -1 and 1 (higher or lower values project beyond the vector); and whether to output the projection values as absolute values (\code{abs = FALSE}; default is set to \code{FALSE}). These two last options only affect the results from \code{measure = "position"}.
 #'
 #'   \item \code{projections.tree}: calculates the \code{projections} metric but drawing the vectors from a phylogenetic tree. This metric can intake any argument from \code{projections} (see above) but for \code{point1} and \code{point2} that are replaced by the argument \code{type}. \code{type} is a \code{vector} or a \code{list} of two elements that designates which vector to draw and can be any pair of the following options (the first element being the origin of the vector and the second where the vector points to):
 #'      \itemize{
@@ -92,7 +92,7 @@
 #'          \item any numeric values that can be interpreted as \code{point1} and \code{point2} in \code{\link{projections}};
 #'          \item or a user defined function that with the inputs \code{matrix} and \code{tree} and \code{row} (the element's ID, i.e. the row number in \code{matrix}). 
 #'      }
-#' \emph{NOTE:} the elements to calculate the origin and end points of the vector are calculated by default on the provided input \code{matrix} which can be missing data from the tree if used with \code{\link{custom.subsets}} or \code{\link{chrono.subsets}}. You can always provide the full matrix using the option \code{reference.data = my_matrix}.
+#' \emph{NOTE:} the elements to calculate the origin and end points of the vector are calculated by default on the provided input \code{matrix} which can be missing data from the tree if used with \code{\link{custom.subsets}} or \code{\link{chrono.subsets}}. You can always provide the full matrix using the option \code{reference.data = my_matrix}. Additional arguments include any arguments to be passed to \code{\link{projections}} (e.g. \code{centre} or \code{abs}).
 #' 
 #'   \item \code{quantiles}: calculates the quantile range of each axis of the matrix. The quantile can be changed using the \code{quantile} argument (default is \code{quantile = 95}, i.e. calculating the range on each axis that includes 95\% of the data). An optional argument, \code{k.root}, can be set to \code{TRUE} to scale the ranges by using its \eqn{kth} root (where \eqn{k} are the number of dimensions). By default, \code{k.root = FALSE}.
 #'
@@ -109,6 +109,7 @@
 #' The currently implemented between.groups metrics are:
 #' \itemize{
 #'   \item \code{disalignment}: calculates the rejection of a point from \code{matrix} from the major axis of \code{matrix2}. Options are, \code{axis} to choose which major axis to reject from (default is \code{axis = 1}); \code{level} for the ellipse' confidence interval (to calculate the axis) (default is \code{level = 0.95}) and \code{point.to.reject}, a numeric value for designating which point in \code{matrix} to use or a function for calculating it (default is \code{point.to.reject = colMeans} for \code{matrix}'s centroid).
+#Additional arguments include any arguments to be passed to \code{\link{projections}} (e.g. \code{centre} or \code{abs}).
 #'
 #'   \item \code{group.dist}: calculates the distance between two groups (by default, this is the minimum euclidean vector norm distance between groups). Negative distances are considered as 0. This function must intake two matrices (\code{matrix} and \code{matrix2}) and the quantiles to consider. For the minimum distance between two groups, the 100th quantiles are considered (default: \code{probs = c(0,1)}) but this can be changed to any values (e.g. distance between the two groups accounting based on the 95th CI: \code{probs = c(0.025, 0.975)}; distance between centroids: \code{probs = c(0.5)}, etc...). This function is the linear algebra equivalent of the \code{hypervolume::hypervolume_distance} function.
 #' 
@@ -819,7 +820,7 @@ point.dist <- function(matrix, matrix2, point = colMeans, method = "euclidean", 
 
 ## Angle between two vectors
 vector.angle <- function(v1, v2){
-
+    ## Transform a vector into an angle
     return(acos(geometry::dot(v1, v2, d = 1) / (sqrt(sum(v1^2))*sqrt(sum(v2^2)))) *180/pi)
 }
 ## Rotate a matrix along one axis (y)
@@ -856,11 +857,8 @@ orthogonise <- function(angle) {
 
     return(ortho/90)
 }
-
-## Projection of elements on an axis
-projections <- function(matrix, point1 = 0, point2 = colMeans(matrix), measure = "position", scale = TRUE, centre = TRUE, abs = TRUE, ...) {
-    ## IMPORTANT: edits in this function must also be copy/pasted to dispRity.covar.projections_fun.R/projections.fast
-    
+## Calculate the linear algebraic projection of matrix onto the vector (point1, point2)
+linear.algebra.projection <- function(matrix, point1, point2, do_angle, scale) {
     ## Get the point1 and point2
     if(length(point1) != ncol(matrix)) {
         point1 <- rep(point1, ncol(matrix))[1:ncol(matrix)]
@@ -904,11 +902,44 @@ projections <- function(matrix, point1 = 0, point2 = colMeans(matrix), measure =
     base_vector <- space[-c(1:nrow(matrix)), , drop = FALSE]
 
     ## Project the vectors
-    projections <- t(apply(matrix, 1, geometry::dot, y = base_vector[2,], d = 2))
+    projs <- t(apply(matrix, 1, geometry::dot, y = base_vector[2,], d = 2))
+    
     ## Calculate the angles
-    if(measure %in% c("degree", "radian", "orthogonality")) {
+    if(do_angle) {
         angles <- t(t(apply(matrix, 1, vector.angle, base_vector[2,])))
         angles <- ifelse(is.nan(angles), 0, angles)
+    } else {
+        angles <- NULL
+    }
+    return(list("projections" = projs, "angles" = angles, "centred_matrix" = matrix))
+}
+## Correct the position value (centring and absoluting)
+correct.position <- function(values, centre, abs) {
+        if(centre && abs) {
+            return(abs(values - 0.5)/0.5)
+        }
+        if(centre && !abs) {
+            return((values - 0.5)/0.5)
+        }
+        if(!centre && abs) {
+            return(abs(values))
+        }
+        return(values)
+}
+## Correct the distance value (scaling the unit distance to be equal to the unit position)
+get.distance <- function(matrix, projections) {
+    ## Calculating the raw distances
+    return(apply(matrix - projections, 1, function(row) sqrt(sum(row^2))))
+}
+
+## Projection of elements on an axis
+projections <- function(matrix, point1 = 0, point2 = colMeans(matrix), measure = "position", scale = TRUE, centre = FALSE, abs = FALSE, ...) {
+    
+    ## Get the projection (and angles, if asked)
+    proj_results <- linear.algebra.projection(matrix, point1, point2, do_angle = measure %in% c("degree", "radian", "orthogonality"), scale = scale)
+    projections <- proj_results$projections
+    if(measure %in% c("degree", "radian", "orthogonality")) {
+        angles <- proj_results$angles
     }
 
     # "position" #distance on
@@ -923,7 +954,7 @@ projections <- function(matrix, point1 = 0, point2 = colMeans(matrix), measure =
         },
         "distance" = { #distance from
             ## Get the rejection distance
-            apply(matrix - projections, 1, function(row) sqrt(sum(row^2)))
+            get.distance(proj_results$centred_matrix, projections) 
         },
         "degree"  = {
             c(angles)
@@ -937,28 +968,14 @@ projections <- function(matrix, point1 = 0, point2 = colMeans(matrix), measure =
 
     ## If position, apply correction
     if(measure == "position") {
-        if(centre && abs) {
-            values <- abs(values - 0.5)/0.5
-        }
-        if(centre && !abs) {
-            values <- (values - 0.5)/0.5
-        }
-        if(!centre && abs) {
-            values <- abs(values)
-        }
-    }
-    ## If distance, apply correction
-    if(measure == "distance") {
-        if(centre) {
-            values <- values/2
-        }
+        values <- correct.position(values, centre, abs)
     }
 
     return(unname(values))
 }
 
 ## Projections between covar matrices
-projections.between <- function(matrix, matrix2, axis = 1, level = 0.95, measure = "position", scale = TRUE, centre = TRUE, abs = TRUE, ...) {
+projections.between <- function(matrix, matrix2, axis = 1, level = 0.95, measure = "position", scale = TRUE, centre = FALSE, abs = FALSE, ...) {
 
     ## Get the main axes from the VCV matrices
     # source("covar.utilities_fun.R")
@@ -999,7 +1016,7 @@ disalignment <- function(matrix, matrix2, axis = 1, level = 0.95, point.to.rejec
     }
 
     ## Measure the projection
-    return(projections(rejection_point, point1 = base_vector[1,], point2 = base_vector[2,], measure = "distance"))
+    return(projections(rejection_point, point1 = base_vector[1,], point2 = base_vector[2,], measure = "distance", centre = TRUE, abs = TRUE))
 }
 
 ## Select the root coords
@@ -1081,6 +1098,10 @@ projections.tree <- function(matrix, tree, type = c("root","ancestor"), referenc
                 # }
             }
         }
+    }
+    ## Sanitizing (to avoid obscure error message!)
+    if(any(is_null <- unlist(lapply(from_to, is.null)))) {
+        stop(paste0("The following type argument is not recognised in projections.tree: ", paste0(type[is_null], collapse = ", ")))
     }
 
     if(all(invariables)) {

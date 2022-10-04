@@ -33,11 +33,11 @@ dispRity.covar.projections(
 
 \item{level}{the confidence interval to estimate the major axis (default is \code{0.95}; see \code{\link{axis.covar}} for more details)).}
 
-\item{output}{which values to output from the projection. By default, the three values \code{c("position", "distance", "degree")} are used to respectively output the projection, rejection and angle values (see \code{\link{projections}} for more details).}
+\item{output}{which values to output from the projection. By default, the three values \code{c("position", "distance", "degree")} are used to respectively output the projection, rejection and angle values (see \code{\link{projections}} for more details). The argument \code{"orthogonality"} can also be added to this vector.}
 
 \item{inc.base}{logical, when using \code{type = "elements"} with a supplied \code{base} argument, whether to also calculate the projections for the base group (\code{TRUE}) or not (\code{FALSE}; default).}
 
-\item{...}{any optional arguments to pass to \code{\link{projections}} (such as \code{centre} or \code{abs}).}
+\item{...}{any optional arguments to pass to \code{\link{projections}} (such as \code{centre} or \code{abs}). \emph{NOTE that this function uses by default \code{centre = TRUE} and \code{abs = TRUE} which are not the defaults for \code{\link{projections}}}.}
 
 \item{verbose}{logical, whether to be verbose (\code{TRUE}) or not (\code{FALSE}, default).}
 }

@@ -3,17 +3,20 @@
 -->
 
 
-dispRity v1.7.1 (2022-09-08)
+dispRity v1.7.4 (2022-10-04)
 =========================
 
 ### NEW FEATURES
   
  * *New utility function*: `name.subsets` for directly accessing the subsets names of a `dispRity` object (basically doing `names(my_dispRity$subsets)`).
- * *New utility function*: `MCMCglmm.variance` for calculating the variance for specific terms in a `"MCMCglmm"` model. 
-
+ * *New utility function*: `MCMCglmm.variance` for calculating the variance for specific terms in a `"MCMCglmm"` model.
+<!--  * *New option*: `dispRity.covar.projections` now has a `distance.method` option to toggle between two ways to calculate the rejection: `"euclidean"` (default; the distance is the euclidean rejection based on the projection unit vector) or `"CI"` (the distance has it's own unit vector based on the data corresponding to the `level` argument). `"euclidean"` is equal to `"CI"` if the VCV used is a perfect circle.
+ -->
 ### MINOR IMPROVMENTS
 
  * `randtest.dispRity` function's `subsets` argument now can take a list of arguments of subsets to compare is `data` is a `dispRity` object. The call message has also been updated to be much more verbose and clear of what has been tested.
+ * **CHANGE IN DEFAULT ARGUMENTS** for the `projections` function. The defaults are now `scale = TRUE`, `centre = FALSE` (previously `TRUE`) and `abs = FALSE` (previously `TRUE`). The default arguments for `dispRity.covar.projections` remain unchanged though (`scale = TRUE`, `centre = TRUE`, `abs = TRUE`).
+ * optimised internal logic for all the `projections.*` functions for speed.
 
 
 dispRity v1.7 (2022-08-08) *MacMacGlimm*
