@@ -95,7 +95,7 @@ optimise.results <- function(to_remove, fun, remove, args, tuning, verbose = FAL
     }
 
     if(!return.optim) {
-        return(to_remove)
+        return(list(remove = to_remove))
     } else {
         return(list(remove = to_remove, optim = args$parameters$optimise))
     }

@@ -156,7 +156,6 @@ reduce.space <- function(space, type, remove, parameters, tuning, verbose = FALS
     check.class(verbose, "logical")
     check.class(return.optim, "logical")
 
-
     ## Select the reduction type algorithm
     switch(type,
         random = {
@@ -238,32 +237,32 @@ reduce.space <- function(space, type, remove, parameters, tuning, verbose = FALS
     ## List of arguments
     args <- list("space" = space, "parameters" = parameters)
     ## Run the complex removal
-    to_remove <- do.call(fun, args)
+    to_remove <- list(remove = do.call(fun, args))
 
     ## Optimise the function (if necessary)
     if(!missing(remove)) {
 
         ## Get out of the corner case of all being TRUE or FALSE
-        if(all(to_remove) || all(!to_remove)) {
+        if(all(to_remove$remove) || all(!to_remove$remove)) {
             args$parameters$optimise <- runif(1)
-            to_remove <- do.call(fun, args)
+            to_remove <- list(remove = do.call(fun, args))
         }
 
         ## Optimise
-        to_remove <- optimise.results(to_remove, fun = fun, remove = remove, args = args, tuning = tuning, verbose = verbose, space = space, return.optim = return.optim)
+        to_remove <- optimise.results(to_remove$remove, fun = fun, remove = remove, args = args, tuning = tuning, verbose = verbose, space = space, return.optim = return.optim)
 
         ## Try 25 more times if necessary
         counter <- 0
-        while(all(to_remove) || all(!to_remove) && counter != 26) {
+        while(all(to_remove$remove) || all(!to_remove$remove) && counter != 26) {
             args$parameters$optimise <- runif(1)
-            to_remove <- do.call(fun, args)
-            to_remove <- optimise.results(to_remove, fun = fun, remove = remove, args = args, tuning = tuning, verbose = verbose, space = space, return.optim = return.optim)
+            to_remove <- list(remove = do.call(fun, args))
+            to_remove <- optimise.results(to_remove$remove, fun = fun, remove = remove, args = args, tuning = tuning, verbose = verbose, space = space, return.optim = return.optim)
             counter <- counter + 1
         }
     }
 
     if(!return.optim) {
-        return(to_remove)
+        return(to_remove$remove)
     } else {
         return(list(remove = to_remove$remove, optim = to_remove$optim))
     }
