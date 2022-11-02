@@ -1334,6 +1334,9 @@ plot.test.metric <- function(data, specific.args, ...) {
                 if(is.null(leg_args_1$x)) {
                     leg_args_1$x <- "bottomright"
                 }
+                if(is.null(leg_args_1$cex)) {
+                    leg_args_1$cex <- 2/3
+                }
                 if(is.null(leg_args_1$legend)) {
                     leg_args_1$legend <- names(plot_data)
                 }
@@ -1373,6 +1376,9 @@ plot.test.metric <- function(data, specific.args, ...) {
                     leg_args_2 <- legend_args_2
                     if(is.null(leg_args_2$x)) {
                         leg_args_2$x <- "topright"
+                    }
+                    if(is.null(leg_args_2$cex)) {
+                        leg_args_2$cex <- 2/3
                     }
                     if(is.null(leg_args_2$legend)) {
                         leg_args_2$legend <- fit[!na_fit]

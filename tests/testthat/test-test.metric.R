@@ -27,7 +27,7 @@ test_that("test.metric works", {
     test <- test.metric(space, metric = c(prod, ranges), replicates = 1, shifts = c("random", "size"), shift.options = list(tunning = c(max = 1000000)))
     expect_is(test, c("dispRity", "test.metric"))
     expect_equal(names(test), c("call", "results", "models", "saved_steps"))
-    expect_equal(names(test$results), c("random", "size.inner", "size.outer"))
+    expect_equal(names(test$results), c("random", "size.increase", "size.hollowness"))
     expect_is(test$results[[1]], "data.frame")
     expect_null(test$saved_steps)
 
@@ -48,7 +48,7 @@ test_that("test.metric works", {
     ## Summarising basic works
     expect_equal(dim(summary(test)), c(3, 10))
     expect_is(summary(test), "matrix")
-    expect_equal(rownames(summary(test)), c("random", "size.inner", "size.outer"))
+    expect_equal(rownames(summary(test)), c("random", "size.increase", "size.hollowness"))
     expect_equal(colnames(summary(test)), paste0(seq(from = 10, to = 100, by = 10), "%"))
 
     ## Plot works
@@ -63,7 +63,7 @@ test_that("test.metric works", {
                         shifts = c("random", "size", "density", "position"), verbose = FALSE)
     expect_is(test, c("dispRity", "test.metric"))
     expect_equal(names(test), c("call", "results", "models", "saved_steps"))
-    expect_equal(names(test$results), c("random", "size.inner", "size.outer", "density.higher", "density.lower", "position.top", "position.bottom"))
+    expect_equal(names(test$results), c("random", "size.increase", "size.hollowness", "density.higher", "density.lower", "position.top", "position.bottom"))
     expect_is(test$results[[1]], "data.frame")
     expect_is(test$models[[1]], "lm")
 

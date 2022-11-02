@@ -51,7 +51,7 @@ reduce.space.one.type <- function(type, data, steps, shift.options, verbose) {
         names(output[[1]]) <- as.character(steps*100)
         names(output[[2]]) <- rev(as.character(steps*100))
         switch(type,
-            "size"     = {names(output) <- c("size.inner", "size.outer")},
+            "size"     = {names(output) <- c("size.increase", "size.hollowness")},
             "density"  = {names(output) <- c("density.higher", "density.lower")},
             "position" = {names(output) <- c("position.top", "position.bottom")},
             "evenness" = {names(output) <- c("evenness.flattened", "evenness.compacted")},
