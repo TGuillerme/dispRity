@@ -3,7 +3,7 @@
 -->
 
 
-dispRity v1.7.4 (2022-10-04)
+dispRity v1.7.4 (2022-11-02)
 =========================
 
 ### NEW FEATURES
@@ -17,6 +17,14 @@ dispRity v1.7.4 (2022-10-04)
  * `randtest.dispRity` function's `subsets` argument now can take a list of arguments of subsets to compare is `data` is a `dispRity` object. The call message has also been updated to be much more verbose and clear of what has been tested.
  * **CHANGE IN DEFAULT ARGUMENTS** for the `projections` function. The defaults are now `scale = TRUE`, `centre = FALSE` (previously `TRUE`) and `abs = FALSE` (previously `TRUE`). The default arguments for `dispRity.covar.projections` remain unchanged though (`scale = TRUE`, `centre = TRUE`, `abs = TRUE`).
  * optimised internal logic for all the `projections.*` functions for speed.
+ * `test.metric` now also adds the slope coefficient if the option `model` is used.
+ * the default legends/row names when using `plot`/`summary` on `test.metric` results are now more easy to interpret.
+ * `reduce.space` has now 25 less chances to be stuck on a local optimum.
+
+### BUG FIXES
+ 
+ * The correct types of changes are now plotted in legend when plotting the results of `test.metric`.
+
 
 
 dispRity v1.7 (2022-08-08) *MacMacGlimm*
