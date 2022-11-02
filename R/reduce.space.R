@@ -251,6 +251,15 @@ reduce.space <- function(space, type, remove, parameters, tuning, verbose = FALS
 
         ## Optimise
         to_remove <- optimise.results(to_remove, fun = fun, remove = remove, args = args, tuning = tuning, verbose = verbose, space = space, return.optim = return.optim)
+
+        ## Try 25 more times if necessary
+        counter <- 0
+        while(all(to_remove) || all(!to_remove) && counter != 26) {
+            args$parameters$optimise <- runif(1)
+            to_remove <- do.call(fun, args)
+            to_remove <- optimise.results(to_remove, fun = fun, remove = remove, args = args, tuning = tuning, verbose = verbose, space = space, return.optim = return.optim)
+            counter <- counter + 1
+        }
     }
 
     if(!return.optim) {
