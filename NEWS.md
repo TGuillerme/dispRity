@@ -3,7 +3,7 @@
 -->
 
 
-dispRity v1.7.4 (2022-11-02)
+dispRity v1.7.5 (2022-11-29)
 =========================
 
 ### NEW FEATURES
@@ -20,6 +20,7 @@ dispRity v1.7.4 (2022-11-02)
  * `test.metric` now also adds the slope coefficient if the option `model` is used.
  * the default legends/row names when using `plot`/`summary` on `test.metric` results are now more easy to interpret.
  * `reduce.space` has now 25 less chances to be stuck on a local optimum.
+ * straightening of the code in `model.test` (mainly aesthetic for developers).
 
 ### BUG FIXES
  
