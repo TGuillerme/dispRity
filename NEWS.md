@@ -3,7 +3,7 @@
 -->
 
 
-dispRity v1.7.5 (2022-11-29)
+dispRity v1.7.6 (2022-12-08)
 =========================
 
 ### NEW FEATURES
@@ -21,6 +21,8 @@ dispRity v1.7.5 (2022-11-29)
  * the default legends/row names when using `plot`/`summary` on `test.metric` results are now more easy to interpret.
  * `reduce.space` has now 25 less chances to be stuck on a local optimum.
  * straightening of the code in `model.test` (mainly aesthetic for developers).
+ * `match.tip.edges` now also works on nodes and on `"multiPhylo"` objects.
+ * Added an option `use.parsimony` (default is `TRUE`) for the `match.tip.edges` function propagate the matching down the tree (i.e. if two nodes have the same unique ancestor and variable value, the ancestor is consider to have that variable value as well).
 
 ### BUG FIXES
  
