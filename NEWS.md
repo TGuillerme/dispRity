@@ -3,32 +3,28 @@
 -->
 
 
-dispRity v1.7.6 (2022-12-08)
+dispRity v1.7.7 (2022-12-13)
 =========================
 
 ### NEW FEATURES
   
  * *New utility function*: `name.subsets` for directly accessing the subsets names of a `dispRity` object (basically doing `names(my_dispRity$subsets)`).
  * *New utility function*: `MCMCglmm.variance` for calculating the variance for specific terms in a `"MCMCglmm"` model.
-<!--  * *New option*: `dispRity.covar.projections` now has a `distance.method` option to toggle between two ways to calculate the rejection: `"euclidean"` (default; the distance is the euclidean rejection based on the projection unit vector) or `"CI"` (the distance has it's own unit vector based on the data corresponding to the `level` argument). `"euclidean"` is equal to `"CI"` if the VCV used is a perfect circle.
- -->
-### MINOR IMPROVMENTS
 
- * `randtest.dispRity` function's `subsets` argument now can take a list of arguments of subsets to compare is `data` is a `dispRity` object. The call message has also been updated to be much more verbose and clear of what has been tested.
+### MINOR IMPROVEMENTS
+
  * **CHANGE IN DEFAULT ARGUMENTS** for the `projections` function. The defaults are now `scale = TRUE`, `centre = FALSE` (previously `TRUE`) and `abs = FALSE` (previously `TRUE`). The default arguments for `dispRity.covar.projections` remain unchanged though (`scale = TRUE`, `centre = TRUE`, `abs = TRUE`).
+ * `randtest.dispRity` function's `subsets` argument now can take a list of arguments of subsets to compare is `data` is a `dispRity` object. The call message has also been updated to be much more verbose and clear of what has been tested.
  * optimised internal logic for all the `projections.*` functions for speed.
  * `test.metric` now also adds the slope coefficient if the option `model` is used.
  * the default legends/row names when using `plot`/`summary` on `test.metric` results are now more easy to interpret.
- * `reduce.space` has now 25 less chances to be stuck on a local optimum.
- * straightening of the code in `model.test` (mainly aesthetic for developers).
- * `match.tip.edges` now also works on nodes and on `"multiPhylo"` objects.
- * Added an option `use.parsimony` (default is `TRUE`) for the `match.tip.edges` function propagate the matching down the tree (i.e. if two nodes have the same unique ancestor and variable value, the ancestor is consider to have that variable value as well).
+ * `reduce.space` has now 25 times less chances to be stuck on a local optimum.
+ * `match.tip.edges` now also works on nodes and on `"multiPhylo"` objects and has a added an option `use.parsimony` (default is `TRUE`) to propagate the matching down the tree (i.e. if two nodes have the same unique ancestor and variable value, the ancestor is consider to have that variable value as well).
 
 ### BUG FIXES
  
  * The correct types of changes are now plotted in legend when plotting the results of `test.metric`.
-
-
+ * `get.disparity` now correctly concatenates one dimensional results into a `"numeric"` (rather than a `"matrix"`).
 
 dispRity v1.7 (2022-08-08) *MacMacGlimm*
 =========================

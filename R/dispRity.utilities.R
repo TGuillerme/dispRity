@@ -218,6 +218,10 @@ get.disparity <- function(data, subsets, rarefaction, observed = TRUE, concatena
             output <- lapply(data$disparity[subsets], lapply.observed)
         } else {
             output <- lapply(data$disparity[subsets], function(X) X$elements)
+            ## Flatten the output matrix if 1 row
+            if(all(unique(unlist(lapply(output, nrow))) == 1)) {
+                output <- lapply(output, c)
+            }
         }
     } else {
         output <- lapply(as.list(subsets), extract.disparity.values, data, rarefaction, concatenate)

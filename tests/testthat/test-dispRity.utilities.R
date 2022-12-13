@@ -416,7 +416,6 @@ test_that("get.disparity", {
         get.disparity(data, 1, observed = TRUE)
         )
 
-
     test <- get.disparity(data)
     expect_is(
         test
@@ -468,7 +467,6 @@ test_that("get.disparity", {
     expect_equal(
         names(test)
         ,names(data$subsets)[c(1,5)])
-
 
     ## Test whithout disparity but with distribution
     data <- dispRity(BeckLee_mat99, metric = centroids)
@@ -706,7 +704,6 @@ test_that("tree utilities works", {
     expect_null(remove.tree(disparitree)$tree[[1]])
     expect_null(remove.tree(disparitree2)$tree[[1]])
 })
-
 
 test_that("name.subsets(dispRity)", {
     data(disparity)
