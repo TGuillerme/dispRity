@@ -16,14 +16,18 @@ elements.sampler <- function(elements) {
     return(do.call(cbind, lapply(set_samples, function(x) apply(elements[,x, drop = FALSE] , 1, sampler))))
 }
 
+## Null bootstrap replacement
+boot.null <- function(elements, rarefaction, all.elements) {
+    return(sample(all.elements, rarefaction, replace = TRUE))
+}
 
 ## Full bootstrap replacement 
-boot.full <- function(elements, rarefaction) {
+boot.full <- function(elements, rarefaction, all.elements) {
     return(sample(na.omit(elements), rarefaction, replace = TRUE))
 }
 
 ## Proba version
-boot.full.proba <- function(elements, rarefaction) {
+boot.full.proba <- function(elements, rarefaction, all.elements) {
     if(is.na(elements[1,2])) {
         ## Simple sampling
         return(sample(elements[,1], rarefaction, prob = elements[,3], replace = TRUE))
@@ -35,7 +39,7 @@ boot.full.proba <- function(elements, rarefaction) {
 
 ## Single bootstrap: for each bootstrap, select one row and replace it by a 
 ## randomly chosen remaining row (for n rows, only one row can be present twice).
-boot.single <- function(elements, rarefaction, ...) {
+boot.single <- function(elements, rarefaction, all.elements, ...) {
     ## Rarefy the data
     rarefied_sample <- sample(elements, rarefaction, replace = FALSE)
     ## Select the row to remove
@@ -47,7 +51,7 @@ boot.single <- function(elements, rarefaction, ...) {
 }
 
 ## Proba version
-boot.single.proba <- function(elements, rarefaction) {
+boot.single.proba <- function(elements, rarefaction, all.elements) {
     if(is.na(elements[1,2])) {
         ## Simple sampling (rarefy)
         rarefied_sample <- sample(elements[,1], rarefaction, replace = FALSE)
@@ -65,7 +69,7 @@ boot.single.proba <- function(elements, rarefaction) {
 }
 
 ## Performs bootstrap on one subsets and all rarefaction levels
-replicate.bootstraps <- function(rarefaction, bootstraps, subsets, boot.type.fun) {
+replicate.bootstraps <- function(rarefaction, bootstraps, subsets, boot.type.fun, all.elements) {
     verbose_place_holder <- FALSE
     if(nrow(subsets$elements) == 1) {
         if(length(subsets$elements) > 1) {
@@ -77,17 +81,17 @@ replicate.bootstraps <- function(rarefaction, bootstraps, subsets, boot.type.fun
         }
     } else {
         ## Normal bootstrap (sample through the elements matrix)
-        return(replicate(bootstraps, boot.type.fun(subsets$elements, rarefaction)))
+        return(replicate(bootstraps, boot.type.fun(subsets$elements, rarefaction, all.elements)))
     }
 }
 
 ## Performs bootstrap on multiple subsets and all rarefaction levels
-bootstrap.wrapper <- function(subsets, bootstraps, rarefaction, boot.type.fun, verbose) {
+bootstrap.wrapper <- function(subsets, bootstraps, rarefaction, boot.type.fun, verbose, all.elements) {
     if(verbose) {
         ## Making the verbose version of disparity.bootstraps
         body(replicate.bootstraps)[[2]] <- substitute(message(".", appendLF = FALSE))
     }
-    return(lapply(select.rarefaction(subsets, rarefaction), replicate.bootstraps, bootstraps, subsets, boot.type.fun))
+    return(lapply(select.rarefaction(subsets, rarefaction), replicate.bootstraps, bootstraps, subsets, boot.type.fun, all.elements))
 }
 
 ## Rarefaction levels selection

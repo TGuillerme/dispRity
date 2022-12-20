@@ -28,6 +28,7 @@
 #' \itemize{
 #'   \item \code{"full"}: resamples all the rows of the matrix and replaces them with a new random sample of rows (with \code{replace = TRUE}, meaning all the elements can be duplicated in each bootstrap).
 #'   \item \code{"single"}: resamples only one row of the matrix and replaces it with a new randomly sampled row (with \code{replace = FALSE}, meaning that only one element can be duplicated in each bootstrap).
+#'   \item \code{"null"}: resamples all rows of the matrix across subsets. I.e. for each subset of \emph{n} elements, this algorithm resamples \emph{n} elements across \emph{ALL} subsets. If only one subset (or none) is used, this does the same as the \code{"full"} algorithm.
 #' }
 #' 
 #' \code{prob}: This option allows to attribute specific probability to each element to be drawn.
@@ -269,7 +270,7 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
     check.length(boot.type, 1, " must be a single character string")
     
     ## Must be one of these methods
-    check.method(boot.type, c("full", "single"), "boot.type")
+    check.method(boot.type, c("full", "single", "null"), "boot.type")
 
     ## Change boot type to full if single and multiple trees
     if(boot.type == "single" && has_multiple_trees) {
@@ -291,6 +292,13 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
                 boot.type.fun <- boot.single.proba
             } else {
                 boot.type.fun <- boot.single
+            }
+        },
+        "null" = {
+            if(probabilistic_subsets) {
+                boot.type.fun <- boot.null.proba
+            } else {
+                boot.type.fun <- boot.null
             }
         }
     )
@@ -351,7 +359,7 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
                             )
     } else {
         ## Bootstrap the data set 
-        bootstrap_results <- lapply(data$subsets, bootstrap.wrapper, bootstraps, rarefaction, boot.type.fun, verbose)
+        bootstrap_results <- lapply(data$subsets, bootstrap.wrapper, bootstraps, rarefaction, boot.type.fun, verbose, all.elements = 1:dim(data$matrix[[1]])[1])
     }
     if(verbose) message("Done.", appendLF = FALSE)
 

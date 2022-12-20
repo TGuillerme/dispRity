@@ -529,7 +529,7 @@ ellipse.volume <- function(matrix, method, ...) {
             "eigen" = {sqrt(eigen(matrix)$values)},
             ## The eigenvalue is equal to the sum of the variance/covariance within each axis (* nrow(matrix) as used in pco/pcoa)
             "pca"   = {sqrt(abs(apply(var(matrix, na.rm = TRUE), 2, sum)))},
-            ## Calculate the 
+            ## Calculate the axes directly
             "axes"  = {(sapply(1:ncol(matrix), function(dim, VCV) {dist(get.one.axis(VCV, axis = dim, ...))}, VCV = matrix))/2})            
     } else {
         semi_axes <- method[1:ncol_matrix]

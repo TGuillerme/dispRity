@@ -50,6 +50,7 @@ When the input is \code{"min"}, the smallest number of elements is used (or 3 if
 \itemize{
   \item \code{"full"}: resamples all the rows of the matrix and replaces them with a new random sample of rows (with \code{replace = TRUE}, meaning all the elements can be duplicated in each bootstrap).
   \item \code{"single"}: resamples only one row of the matrix and replaces it with a new randomly sampled row (with \code{replace = FALSE}, meaning that only one element can be duplicated in each bootstrap).
+  \item \code{"null"}: resamples all rows of the matrix across subsets. I.e. for each subset of \emph{n} elements, this algorithm resamples \emph{n} elements across \emph{ALL} subsets. If only one subset (or none) is used, this does the same as the \code{"full"} algorithm.
 }
 
 \code{prob}: This option allows to attribute specific probability to each element to be drawn.

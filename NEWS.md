@@ -1,15 +1,12 @@
-<!-- TODO: - [ ] add a entry to the manual for randtest.dispRity
-           - [ ] * optimised the `model.test` function internal algorithm for speed.
--->
-
-
-dispRity v1.7.7 (2022-12-13)
+dispRity v1.7.8 (2022-12-20)
 =========================
 
 ### NEW FEATURES
   
  * *New utility function*: `name.subsets` for directly accessing the subsets names of a `dispRity` object (basically doing `names(my_dispRity$subsets)`).
  * *New utility function*: `MCMCglmm.variance` for calculating the variance for specific terms in a `"MCMCglmm"` model.
+ <!-- * *New* resampling option for `boot.matrix`: `"null"` to resample each subset with any elements (not only elements within that subset). -->
+ <!-- TODO: test + add proba and tree algorithms -->
 
 ### MINOR IMPROVEMENTS
 

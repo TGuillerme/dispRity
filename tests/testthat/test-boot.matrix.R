@@ -563,3 +563,21 @@ test_that("boot.matrix works with multiple matrices, multiple trees and multiple
     expect_equal(dim(test_rare$subsets[[1]][[6]]), c(3, 6))
 
 })
+
+test_that("boot.matrix null works", {
+    ## Data
+    matrix <- matrix(1, 10, 5)
+    rownames(matrix) <- letters[1:10]
+    data <- custom.subsets(matrix, group = list(letters[1:5], letters[6:10]))
+
+    ## Samples only subset
+    res <- boot.matrix(data, boot.type = "full", bootstraps = 500)
+    expect_equal(c(res$subsets[[1]]$elements), 1:5)
+    expect_equal(sort(unique(c(res$subsets[[1]][[2]]))), 1:5)
+
+    ## Samples anything
+    res <- boot.matrix(data, boot.type = "null", bootstraps = 500)
+    expect_equal(c(res$subsets[[1]]$elements), 1:5)
+    expect_equal(sort(unique(c(res$subsets[[1]][[2]]))), 1:10)
+
+})
