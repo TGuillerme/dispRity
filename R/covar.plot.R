@@ -187,15 +187,20 @@ covar.plot <- function(data, n, points = TRUE, major.axes = FALSE, ellipses = FA
     }
 
     ## Get the plot limits
-    lims <- range(data$matrix[[1]], na.rm = TRUE)
+    lims <- c(-0, 0)
+    if(points) {
+        points_lims <- range(data$matrix[[1]], na.rm = TRUE)
+        lims <- range(c(lims, points_lims))
+    }
     if(do_major_axes) {
-        lims <- max(range(c(range(abs(data$matrix[[1]])), abs(unlist(all_axes)))))
-        lims <- c(-lims, lims)
+        axes_lims <- range(unlist(all_axes))
+        lims <- range(c(lims, axes_lims))
     }
     if(do_ellipses) {
-        lims <- max(c(range(abs(data$matrix[[1]])), range(abs(unlist(all_ellipses)))))
-        lims <- c(-lims, lims)
-    }    
+        ellipses_lims <- range(unlist(all_ellipses))
+        lims <- range(c(lims, ellipses_lims))
+    }
+
     plot_args <- get.dots(plot_args, plot_args, "xlim", lims)
     plot_args <- get.dots(plot_args, plot_args, "ylim", lims)
 

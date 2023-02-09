@@ -1,4 +1,4 @@
-dispRity v1.7.8 (2022-12-20)
+dispRity v1.7.9 (2023-02-09)
 =========================
 
 ### NEW FEATURES
@@ -7,6 +7,15 @@ dispRity v1.7.8 (2022-12-20)
  * *New utility function*: `MCMCglmm.variance` for calculating the variance for specific terms in a `"MCMCglmm"` model.
  <!-- * *New* resampling option for `boot.matrix`: `"null"` to resample each subset with any elements (not only elements within that subset). -->
  <!-- TODO: test + add proba and tree algorithms -->
+ <!-- *New metric*: `roundness` to measure how round the elliptical representation of a matrix is. TODO: handle non-VCV input:
+ ## The roundness function
+roundness <- function(matrix) {
+  y <- sort(diag(matrix))
+  y <- y/max(y)
+  x <- seq(from = 0, to = 1, length.out = length(y))
+  sum(diff(x)*zoo::rollmean(y, 2))
+}
+ -->
 
 ### MINOR IMPROVEMENTS
 
@@ -17,6 +26,7 @@ dispRity v1.7.8 (2022-12-20)
  * the default legends/row names when using `plot`/`summary` on `test.metric` results are now more easy to interpret.
  * `reduce.space` has now 25 times less chances to be stuck on a local optimum.
  * `match.tip.edges` now also works on nodes and on `"multiPhylo"` objects and has a added an option `use.parsimony` (default is `TRUE`) to propagate the matching down the tree (i.e. if two nodes have the same unique ancestor and variable value, the ancestor is consider to have that variable value as well).
+ * Improved margins handling in `covar.plot`.
 
 ### BUG FIXES
  
