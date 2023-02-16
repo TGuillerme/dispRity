@@ -25,4 +25,4 @@ r_packages:
 
 
 after_success:
-  - Rscript -e 'library(covr); codecov(token = "5f041826-63f1-47fa-b4a8-9a32633f47fa")'
+  - Rscript -e 'library(covr); codecov(token = "14042dcc-32e4-418a-b5ca-fa368414b775")'
