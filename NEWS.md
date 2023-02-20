@@ -1,4 +1,4 @@
-dispRity v1.7.9 (2023-02-09)
+dispRity v1.7.10 (2023-02-20)
 =========================
 
 ### NEW FEATURES
@@ -32,6 +32,7 @@ roundness <- function(matrix) {
  
  * The correct types of changes are now plotted in legend when plotting the results of `test.metric`.
  * `get.disparity` now correctly concatenates one dimensional results into a `"numeric"` (rather than a `"matrix"`).
+ * `make.metric` now internally handles `covar` object correctly (i.e. as distance matrices).
 
 dispRity v1.7 (2022-08-08) *MacMacGlimm*
 =========================
