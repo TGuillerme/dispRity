@@ -125,4 +125,8 @@ test_that("MCMCglmm.subsets and covar.plot works", {
     test <- MCMCglmm.subsets(data = covar_char_data, posteriors = covar_model_list[[7]], rename.groups = c("clade_1", "clade_2", "clade_3", "phylo", "residual"))
     expect_equal(length(test$covar), 5)
     expect_equal(names(test$covar), c("clade_1", "clade_2", "clade_3", "phylo", "residual"))
+
+    data(charadriiformes)
+    data <- MCMCglmm.subsets(data = charadriiformes$data, posteriors = charadriiformes$posteriors)
+    expect_null(covar.plot(data, points = FALSE, ellipses = mean, apply.to.VCV = TRUE, centres = c(1)))
 })

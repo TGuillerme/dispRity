@@ -41,13 +41,13 @@ dispRity.fast <- function(group, space, metric, ...) {
     if(is.null(names(metric))) {
         return(metric[[1]](do.call(metric[[2]], args)))
     }
-    ## Handle the named arguments
-    args <- c(args, metric[-1])
+    # ## Handle the named arguments
+    # args <- c(args, metric[-1])
 
-    ## Level 1 metric + args
-    if(length(metric[[1]]) == 1) {
-        return(do.call(metric[[1]], args))
-    } 
-    ## Level 2 + 1 metric + args
-    return(metric[[1]][[1]](do.call(metric[[1]][[2]], args)))
+    # ## Level 1 metric + args
+    # if(length(metric[[1]]) == 1) {
+    #     return(do.call(metric[[1]], args))
+    # } 
+    # ## Level 2 + 1 metric + args
+    # return(metric[[1]][[1]](do.call(metric[[1]][[2]], args)))
 }

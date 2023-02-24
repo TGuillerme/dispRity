@@ -2,7 +2,7 @@
 
 #context("dispRity.metric")
 
-nocov <- FALSE
+nocov <- TRUE
 
 test_that("dimension generic", {
     expect_equal(capture_output(dimension.level3.fun()), "No implemented Dimension level 3 functions implemented in dispRity!\nYou can create your own by using: ?make.metric")
