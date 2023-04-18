@@ -1,4 +1,4 @@
-dispRity v1.7.10 (2023-02-24)
+dispRity v1.7.11 (2023-03-18)
 =========================
 
 ### NEW FEATURES
@@ -28,6 +28,7 @@ roundness <- function(matrix) {
  * `match.tip.edges` now also works on nodes and on `"multiPhylo"` objects and has a added an option `use.parsimony` (default is `TRUE`) to propagate the matching down the tree (i.e. if two nodes have the same unique ancestor and variable value, the ancestor is consider to have that variable value as well).
  * Improved margins handling in `covar.plot`.
  * Updated test coverage here and there.
+ * `clean.data` can now also handle a list of `"phylo"` objects as `tree` input (i.e. it does not need to be specifically classed as `"multiPhylo"`).
 
 ### BUG FIXES
  
