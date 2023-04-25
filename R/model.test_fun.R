@@ -509,9 +509,25 @@ rank_env_dtt <- function(x, alternative) {
     s1 <- sims[-c(1),]
     r <- as.vector(x$subsets[-c(1)])
     obs <- as.vector(x$central_tendency)[-c(1)]
+
+    ## Get the curve
     c1 <- list("r" = r, "obs" = obs, "sim_m" = s1)
-    c2 <- spptest::create_curve_set(c1)
-    res <- spptest::rank_envelope(c2, alternative = alternative)
+    c2 <- GET::create_curve_set(c1, verbose = FALSE)
+
+    ## Get the alpha (scales with the size of c2, the bigger c2, the smaller alpha)
+    n_sim <- ncol(c2$funcs)
+    if(n_sim <= 10) {
+        alpha <- 0.05*n_sim
+    } else {
+        if(n_sim <= 100) {
+            alpha <- 1/(0.05*n_sim)/4
+        } else {
+            alpha <- 0.05
+        }
+    }
+
+    ## Run the test
+    res <- GET::rank_envelope(c2, alternative = alternative, alpha = alpha)
     return(res) 
 }
 

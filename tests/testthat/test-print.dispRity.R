@@ -304,8 +304,8 @@ test_that("print.dispRity with model.test data", {
           "    aicc log.lik param ancestral state sigma squared",
           "BM -31.3   17.92     2           3.099         0.002",
           "",
-          "Rank envelope test",
-          " p-value of the test: 0.3636364 (ties method: midrank)",
-          " p-interval         : (0.09090909, 0.6363636)" 
+          "Rank envelope test:",
+          " p-value of the global test: 0.1818182 (ties method: erl)",
+          " p-interval                : (0, 0.6363636)" 
         ))
 })

@@ -109,7 +109,7 @@ model.test.wrapper <- function(data, model, pool.variance = NULL, time.split = N
     summary.models <- summary(models.out)
     n.models <- dim(summary.models)[1]
     outputs <- suppressWarnings(lapply(1:n.models, function(x) model.test.sim(sim, model = models.out, model.rank = x)))
-    p.int <- t(sapply(outputs, function(u) c(u$p[[4]], u$p[[5]])))
+    p.int <- t(sapply(outputs, function(u) return(c(attr(u$p.value, "p"), attr(u$p.value, "p_interval")))))
     results <- cbind(summary.models)
     results <- results[order(results[, 2]), ]
     # MP: allow a single model to be used as input for model.test.wrapper (may be a bit pointless but prevents an error)
@@ -161,7 +161,7 @@ model.test.wrapper <- function(data, model, pool.variance = NULL, time.split = N
             }
 
 	    	if(show.p) {
-                legend("bottomleft", paste0("Rank Env. Test, p = ", round( p.int[one_model, 2], 3), ":", round( p.int[one_model, 3], 3)), cex = cex.p)
+                legend("bottomleft", paste0("Rank Env. Test, p = ", round( p.int[one_model, 1], 3), ":", round( p.int[one_model, 2], 3)), cex = cex.p)
 	    	}
 	    }
         ## Reset default

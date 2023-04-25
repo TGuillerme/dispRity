@@ -1,4 +1,4 @@
-dispRity v1.7.11 (2023-03-18)
+dispRity v1.7.12 (2023-04-25)
 =========================
 
 ### NEW FEATURES
@@ -29,6 +29,8 @@ roundness <- function(matrix) {
  * Improved margins handling in `covar.plot`.
  * Updated test coverage here and there.
  * `clean.data` can now also handle a list of `"phylo"` objects as `tree` input (i.e. it does not need to be specifically classed as `"multiPhylo"`).
+ * Changed dependencies to [`spptest`](https://github.com/myllym/spptest) to [`GET`](https://github.com/myllym/GET).
+
 
 ### BUG FIXES
  

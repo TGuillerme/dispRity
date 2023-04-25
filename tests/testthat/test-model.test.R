@@ -171,7 +171,6 @@ test_that("model.test.sim example works", {
     error <- capture_error(model.test.sim(model.test.sim(sim = 10, model = rnorm(10))))
     expect_equal(error[[1]], "model must be either a model name (character) or a dispRity object from model.test().")
 
-
     set.seed(42)
     models <- list("Trend", "BM", "Stasis", "EB")
     model_test_output <- model.test(data, models, time.split = 66, verbose = FALSE)
@@ -197,7 +196,7 @@ test_that("model.test.sim example works", {
     expect_equal(length(model_test_sim_output), 6)
     expect_equal(lapply(model_test_sim_output, length),
                 list("simulation.data" = 2,
-                     "p.value" = 12,
+                     "p.value" = 5,
                      "call" = 5,
                      "nsim" = 1,
                      "subsets" = 25,
@@ -215,7 +214,7 @@ test_that("model.test.sim example works", {
     expect_equal(length(model_test_sim_output), 6)
     expect_equal(lapply(model_test_sim_output, length),
                 list("simulation.data" = 2,
-                     "p.value" = 12,
+                     "p.value" = 5,
                      "call" = 4,
                      "nsim" = 1,
                      "subsets" = 25,

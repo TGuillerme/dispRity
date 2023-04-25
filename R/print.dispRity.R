@@ -112,7 +112,16 @@ print.dispRity <- function(x, all = FALSE, ...) {
                     cat("\n")
 
                     if(!is.null(x$p.value)) {
-                        print(x$p.value)
+                        cat("Rank envelope test:\n")
+                        cat(" p-value of the global test: ", attr(x$p.value, "p", exact = TRUE), sep="")
+                        if(!is.null(attr(x$p.value, "ties"))) {
+                            cat(" (ties method: ", attr(x$p.value, "ties"), ")\n", sep="")
+                        } else {
+                            cat("\n")
+                        }
+                        if(!is.null(attr(x$p.value, "p_interval"))) {
+                            cat(" p-interval                : (", attr(x$p.value, "p_interval")[1], ", ", attr(x$p.value, "p_interval")[2],")\n", sep="")
+                        }
                     }
 
                     return(invisible())
