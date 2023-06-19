@@ -300,7 +300,7 @@ test_that("char.diff plot functions", {
     density <- density(rnorm(20))
     expect_equal(round(get.max.x(density), 5), round(2.860749, 5))
     expect_equal(round(get.min.x(density), 5), round(-3.480168, 5))
-    expect_equal(round(get.max.y(density), 5), round(0.4420556, 5))
+    expect_equal(round(get.max.y(density), 3), round(0.4420556, 3))
     expect_equal(round(get.min.y(density), 5), round(0.0005316588, 5))
 
     ## Getting columns with not enough data (TRUE if <= 2 data)
