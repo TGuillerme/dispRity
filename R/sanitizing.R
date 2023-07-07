@@ -146,6 +146,7 @@ add.rownames <- function(x) {
     rownames(x) <- seq(1:nrow(x))
     return(x)
 }
+
 ## Checks whether the data is a matrix or a list
 check.dispRity.data <- function(data) {
     match_call <- match.call()
@@ -243,4 +244,14 @@ check.dispRity.tree <- function(tree, data, bind.trees = FALSE) {
     }
 
     return(tree)
+}
+
+## Internal for printing a list of options (a, b or c).
+## The connection argument should be used for translation.
+print.options.list <- function(input, connection = " or ") {
+    if(length(input) == 1) {
+        return(input)
+    } else {
+        return(paste(c(paste(input[-length(input)], collapse = ", "), input[length(input)]), collapse = connection))
+    }
 }
