@@ -23,6 +23,9 @@ check.class <- function(object, class, msg, errorif = FALSE, report) {
         }
     }
 
+    ## Set error message (translate friendly)
+    # error_call <- gettextf("%s must be of class %s.", match_call$object, print.options.list(class[report], connection = " or "))
+
     ## check if object is class.
     if(length_class != 1) {
     ## check if object is class in a cascade (class[1] else class[2] else class[3], etc..)
