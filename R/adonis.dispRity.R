@@ -70,7 +70,6 @@
 #' ## Running the NPMANOVA with each time bin as a predictor
 #' adonis.dispRity(time_subsets, matrix ~ chrono.subsets)
 #' 
-#' @seealso \code{\link{test.dispRity}}, \code{\link{custom.subsets}}, \code{\link{chrono.subsets}}
 #' 
 #' @author Thomas Guillerme
 # @export
