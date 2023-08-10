@@ -4,14 +4,16 @@
 \alias{pgls.dispRity}
 \title{phylolm dispRity (from \code{phylolm::phylolm})}
 \usage{
-pgls.dispRity(data, tree, formula, ..., optim = list())
+pgls.dispRity(data, tree, formula, model = "BM", ..., optim = list())
 }
 \arguments{
 \item{data}{A \code{dispRity} object with a metric of dimension level 2 at least}
 
 \item{tree}{If \code{data} does not contain a \code{tree} component, a \code{"phylo"} object to be used as the tree.}
 
-\item{formula}{Optional, the PGLS formula. If left empty, runs either \code{disparity ~ 1} or \code{disparity ~ subsets} if \code{data} contains subsets.}
+\item{formula}{The PGLS formula. If left empty, runs either \code{disparity ~ 1} or \code{disparity ~ subsets} if \code{data} contains subsets.}
+
+\item{model}{The covariance model (default is \code{"BM"}). For more details (including the models available) see the manual for \code{\link[phylolm]{phylolm}}.}
 
 \item{...}{Any optional arguments to be passed to \code{\link[phylolm]{phylolm}}}
 
