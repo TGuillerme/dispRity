@@ -23,18 +23,26 @@ test_that("sanitizing works", {
     
     ## tree
     wrong_tree <- rtree(50)
-    error <- capture_error(pgls.dispRity(data = wrong_dimensions, tree = "wrong_tree"))
-    expect_equal(error[[1]], "tree must be of class multiPhylo or phylo.")
-    expect_warning(error <- capture_error(pgls.dispRity(data = wrong_dimensions, tree = wrong_tree)))
+    error <- capture_error(pgls.dispRity(data = disparity_base, tree = "wrong_tree"))
+    expect_equal(error[[1]], "tree must be of class phylo or multiPhylo.")
+    expect_warning(error <- capture_error(pgls.dispRity(data = disparity_base, tree = wrong_tree)))
     expect_equal(error[[1]], "The data is not matching the tree labels (you can use ?clean.data to match both data and tree).")
 
     ## formula
     wrong_formula <- dispoority ~ 1
-    error <- capture_error(pgls.dispRity(data = disparity_base, tree = BeckLee_tree, formula = wrong_formula))
+    error <- capture_error(pgls.dispRity(data = disparity_base, tree = nonode_tree, formula = wrong_formula))
     expect_equal(error[[1]], "The response term of the formula must be 'disparity'.")
+    expect_equal(get.formula.data(disparity_base)$formula, disparity ~ 1)
+    expect_equal(get.formula.data(disparity_group)$formula, disparity ~ group)
+    error <- capture_error(get.formula.data(disparity_time))
+    expect_equal(error[[1]], "Some groups have overlapping elements.")
+    disparity_time2 <- dispRity(chrono.subsets(BeckLee_mat50, tree = BeckLee_tree, time = c(140, 66, 0), method = "discrete"), metric = centroids, tree = nonode_tree)
+    warning <- capture_warning(expect_equal(get.formula.data(disparity_time2)$formula, disparity ~ time))
+    expect_equal(warning[[1]], "Data contains time series: the default formula used is disparity ~ time but it does not take time autocorrelation into account.")
 
     ## model
-
+    error <- capture_error(pgls.dispRity(data = disparity_base, tree = nonode_tree, model = "SM"))
+    expect_equal(error[[1]], "model must be one of the following: BM, OUrandomRoot, OUfixedRoot, lambda, kappa, delta, EB, trend.")
 
     ## Testing super simple
     data <- disparity_base
