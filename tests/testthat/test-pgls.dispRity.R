@@ -47,7 +47,6 @@ test_that("sanitizing works", {
     ## Testing super simple
     data <- disparity_base
 
-
     ## Multiple trees example
     set.seed(1)
     trees <- replicate(3, rcoal(10), simplify = FALSE)
