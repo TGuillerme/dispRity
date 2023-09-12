@@ -60,27 +60,60 @@ test_that("sanitizing works", {
     expect_is(test, "phylolm")
     expect_equal(test$call, "dispRity interface of phylolm using: formula = disparity ~ 1 and model = BM")
 
+    ## Create a list of trees and matrices
+    trees_list <- replicate(10, rcoal(30), simplify = FALSE)
+    class(trees_list) <- "multiPhylo"
+    matrices_list <- space.maker(elements = 30, dimensions = 5, distribution = rnorm, elements.names = trees_list[[1]]$tip.label, replicates = 3)
+
+    ## Disparity for one matrix and one tree
+    data <- dispRity(data = matrices_list[[1]], tree = trees_list[[1]], metric = edge.length.tree)
+    test <- pgls.dispRity(data)
+    expect_is(test, "phylolm")
+    expect_equal(test$call, "dispRity interface of phylolm using: formula = disparity ~ 1 and model = BM")
+
+    ## Disparity for one matrix but multiple trees
+    data <- dispRity(data = matrices_list[[1]], tree = trees_list, metric = centroids)
+    test <- pgls.dispRity(data)
+    expect_is(test, "list")
+    expect_equal(length(test), 10)
+    expect_is(test[[1]], "phylolm")
+    expect_equal(test[[1]]$call, "dispRity interface of phylolm using: formula = disparity ~ 1 and model = BM")
+    
+    ## Disparity for multiple matrices but one tree
+    data <- dispRity(data = matrices_list, tree = trees_list[[1]], metric = centroids)
+    # TODO: must get multiple matrices and result in 3 pgls
+    test <- pgls.dispRity(data)
+    expect_is(test, "list")
+    expect_equal(length(test), 3)
+    expect_is(test[[1]], "phylolm")
+    expect_equal(test[[1]]$call, "dispRity interface of phylolm using: formula = disparity ~ 1 and model = BM")
+
+    ## Disparity for multiple matrices and trees
+    data <- dispRity(data = matrices_list, tree = trees_list[1:3], metric = edge.length.tree)
+    # TODO: must get multiple matrices and result in 3 pgls
+    test <- pgls.dispRity(data)
+    expect_is(test, "list")
+    expect_equal(length(test), 3)
+    expect_is(test[[1]], "phylolm")
+    expect_equal(test[[1]]$call, "dispRity interface of phylolm using: formula = disparity ~ 1 and model = BM")
+
+    ## Get error?
+    data <- dispRity(data = matrices_list, tree = trees_list, metric = edge.length.tree)
 
 
 
-    # ## Multiple trees example
-    # set.seed(1)
-    # trees <- replicate(3, rcoal(10), simplify = FALSE)
-    # class(trees) <- "multiPhylo"
-    # disparities <- replicate(3, matrix(rnorm(30), ncol = 3, dimnames = list(paste0("t", 1:10))), simplify = FALSE)
 
-    # ## Multiple matrices example
+    ## Disparity for multiple matrices and trees with groups
+    matrices_groups <- custom.subsets(data = matrices_list, group = list("group1" = trees_list[[1]]$tip.label[ 1:20],
+                                                                         "group2" = trees_list[[1]]$tip.label[21:30]))
+   
+    ## TODO: fix this in dispRity, output should be two matrices of 20*3 and 10*3
+    data <- dispRity(data = matrices_groups,  tree = trees_list[[1]], metric = centroids)
+    expect_equal(dim(get.disparity(data, concatenate = FALSE)[[1]]), c(10,3))
 
-    # ## Multiple trees and matrices
+    ## BUG IS EITHER IN dispRity OR get.disparity
 
-    # ## Checks whether the dispRity object contains a tree or whether a tree can be added
-
-    # ## Check whether the dispRity object is a level 2 metric at least
-
-    # ## Check if formula is interpretable
-
-    # ## Check arguments for phylolm
-
-
+    data <- dispRity(data = matrices_list,  tree = trees_list[[1]], metric = centroids)
+    expect_equal(dim(get.disparity(data, concatenate = FALSE)[[1]]), c(30,3))
 
 })
