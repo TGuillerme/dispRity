@@ -28,7 +28,17 @@ The \code{formula} needs to be expressed by always naming the response variable 
 Optional arguments \code{...} correspond to all the non-ambiguous named arguments from the \code{\link[phylolm]{phylolm}}. Optional arguments for the internal \code{optim} function can be passed as a named list to the \code{optim} argument.
 }
 \examples{
-## PGLS 
+## Simple example
+data(BeckLee_mat50)
+data(BeckLee_tree)
+disparity <- dispRity(BeckLee_mat50, metric = centroids, tree = BeckLee_tree)
+
+## Running a simple PGLS
+model <- pgls.dispRity(disparity)
+summary(model)
+
+## More complex example running a PGLS
+## on multiple trees and using groups as a predictor 
 
 }
 \seealso{

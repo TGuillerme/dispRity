@@ -18,10 +18,20 @@
 #' \code{\link[phylolm]{phylolm}}, \code{\link{test.dispRity}}, \code{\link{custom.subsets}}, \code{\link{chrono.subsets}}.
 #' 
 #' @examples
-#' ## PGLS 
+#' ## Simple example
+#' data(BeckLee_mat50)
+#' data(BeckLee_tree)
+#' disparity <- dispRity(BeckLee_mat50, metric = centroids, tree = BeckLee_tree)
+#'
+#' ## Running a simple PGLS
+#' model <- pgls.dispRity(disparity)
+#' summary(model)
+#'
+#' ## More complex example running a PGLS
+#' ## on multiple trees and using groups as a predictor 
 #' 
-#' @author Thomas Guillerme
 
+#' @author Thomas Guillerme
 pgls.dispRity <- function(data, tree, formula, model = "BM", ..., optim = list()) {
 
     match_call <- match.call()
@@ -42,15 +52,19 @@ pgls.dispRity <- function(data, tree, formula, model = "BM", ..., optim = list()
     }
     ## Get the trees
     trees <- get.tree(data)
+    if(is(trees, "phylo")) {
+        trees <- list(trees)
+    }
 
-    ## Handle the formula and data depending on what is in data
-    formula_data <- get.formula.data(data)
+    ## Get the list of disparities
+    datas <- get.data(data, trees)
 
     ## Check the formula
     if(missing(formula)) {
         ## Select the formula
-        formula <- formula_data$formula
+        formula <- get.formula(data)
     }
+
     ## Check if response is disparity
     if(as.character(formula[[2]]) != "disparity") {
         stop("The response term of the formula must be 'disparity'.", call. = FALSE)
@@ -59,24 +73,22 @@ pgls.dispRity <- function(data, tree, formula, model = "BM", ..., optim = list()
     ## Check model
     check.method(model, all_arguments = eval(formals(phylolm::phylolm)$model), msg = "model")
 
-    # ## Set the phylolm args
-    # phylolm_args <- list(...)
-    # phylolm_args$formula <- 
-    # phylolm_args$model <-
+    ## Set the phylolm optional args
+    phylolm_args <- as.list(c(..., optim))
+    # warning("DEBUG"); phylolm_args <- as.list(c(optim))
+    ## Add the main arguments
+    phylolm_args$formula <- formula
+    phylolm_args$model   <- model
 
-    # ## Handle the multiple matrices
-    # phylolm_args$data <-
-    # ## Handle the multiple trees
-    # phylolm_args$tree <-
+    ## Run all the models
+    models_out <- mapply(one.phylolm, trees, datas, MoreArgs = list(args = phylolm_args), SIMPLIFY = FALSE)
 
-    # ## Run all the PGLS
-    # do.call(phylolm, phylolm_args)
-
-    ## Run PGLS on all the trees
-
-    ## Handle outputs
-
-    return(NULL)
+    ## Handle the output
+    if(length(models_out) == 1) {
+        return(models_out[[1]])
+    } else {
+        return(models_out)
+    }
 }
 
 ## Internals
@@ -90,9 +102,9 @@ check.dimension <- function(one_disparity) {
 }
 
 ## Outputs the formula depending on what's in the object
-get.formula.data <- function(disparity) {
+get.formula <- function(disparity) {
     if(is.null(disparity$call$subsets)) {
-        return(list(formula = disparity ~ 1, group = NULL, time = NULL))
+        return(disparity ~ 1)
     } else {
         ## Grouped data
         ## Get the groups
@@ -101,20 +113,53 @@ get.formula.data <- function(disparity) {
         if(any(table(unlist(group)) != 1)) {
             stop("Some groups have overlapping elements.")
         }
-        ## Make into a named table
-        group_table <- matrix(NA, ncol = 1, nrow = nrow(disparity$matrix[[1]]), dimnames = list(rownames(disparity$matrix[[1]]), "group"))
-        while(length(group) != 0) {
-            group_table[group[[1]],] <- names(group)[[1]]
-            group[[1]] <- NULL
-        }
         ## Return the correct formula
         if(disparity$call$subsets[[1]] == "customised") {
-            return(list(formula = disparity ~ group, group = group_table, time = NULL))
+            return(disparity ~ group)
         } else {
             ## Warning for time auto-correlation
-            warning("Data contains time series: the default formula used is disparity ~ time but it does not take time autocorrelation into account.", call. = FALSE)
-            colnames(group_table) <- "time"
-            return(list(formula = disparity ~ time, group = NULL, time = group_table))
+            stop("It is currently not possible to apply an phylogenetic linear model on dispRity data with time series.")
+            # warning("Data contains time series: the default formula used is disparity ~ time but it does not take time autocorrelation into account.", call. = FALSE)
+            # colnames(group_table) <- "time"
+            # return(list(formula = disparity ~ time, group = NULL, time = group_table))
         }
     }
+}
+
+## Grabs the data to be passed to phylolm
+get.data <- function(data, trees) {
+    ## Extract the disparity
+    disparity <- get.disparity(data)
+    data_out <- data.frame(disparity = unlist(disparity, use.names = FALSE))
+    rownames(data_out) <- unlist(lapply(disparity, names), use.names = FALSE)
+
+    ## Add predictors (if needed)
+    if(!is.null(data$call$subsets)) {
+        if(data$call$subsets[[1]] == "customised") {
+            ## Fill the empty group
+            data_out$group <- NA
+            ## Get the subsets
+            subsets <- lapply(data$subsets, `[[`, "elements")
+            ## Fill the subsets
+            while(length(subsets) != 0) {
+                data_out$group[c(subsets[[1]])] <- names(subsets)[1]
+                subsets[1] <- NULL
+            }
+        }
+    }
+    ## Return the datasets (one per tree)
+    return(replicate(length(trees), data_out, simplify = FALSE))
+}
+
+## Run one phylolm
+one.phylolm <- function(one_tree, one_data, args) {
+    ## Adding the tree and the data
+    args$phy  <- one_tree
+    args$data <- one_data
+
+    ## Run the phylolm
+    run_out <- do.call(phylolm, args)
+    ## Edit the call
+    run_out$call <- paste0(c("dispRity interface of phylolm using: formula = ", args$formula, " and model = ", args$model), collapse = "")
+    return(run_out)
 }
