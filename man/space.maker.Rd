@@ -10,7 +10,9 @@ space.maker(
   distribution,
   arguments = NULL,
   cor.matrix = NULL,
-  scree = NULL
+  scree = NULL,
+  elements.names = NULL,
+  replicates = NULL
 )
 }
 \arguments{
@@ -25,6 +27,10 @@ space.maker(
 \item{cor.matrix}{An optional correlation \code{matrix} of size \code{dimensions * dimensions} (\code{default = NULL}, see details).}
 
 \item{scree}{An optional proportional \code{numeric} vector for approximating the \code{dimensions} variance (\code{default = NULL}, see details).}
+
+\item{elements.names}{Optional, a \code{character} or \code{integer} string for naming the elements in the matrix.}
+
+\item{replicates}{Optional, an \code{integer} to replicate the simulations and generating multiple spaces.}
 }
 \description{
 Creates a multidimensional space with a given number of elements and dimensions
