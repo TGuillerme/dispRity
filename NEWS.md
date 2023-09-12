@@ -32,7 +32,7 @@ roundness <- function(matrix) {
  * Updated test coverage here and there.
  * `clean.data` can now also handle a list of `"phylo"` objects as `tree` input (i.e. it does not need to be specifically classed as `"multiPhylo"`).
  * Changed dependencies to [`spptest`](https://github.com/myllym/spptest) to [`GET`](https://github.com/myllym/GET).
-
+ * `space.maker` can now generate specific row names and be replicated to generate a bunch of spaces (via the new optional arguments `elements.names` and `replicates` respectively).
 
 ### BUG FIXES
  
