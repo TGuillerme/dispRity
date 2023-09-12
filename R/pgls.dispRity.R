@@ -129,9 +129,27 @@ get.formula <- function(disparity) {
 ## Grabs the data to be passed to phylolm
 get.data <- function(data, trees) {
     ## Extract the disparity
-    disparity <- get.disparity(data)
-    data_out <- data.frame(disparity = unlist(disparity, use.names = FALSE))
-    rownames(data_out) <- unlist(lapply(disparity, names), use.names = FALSE)
+    disparity <- get.disparity(data, observed = TRUE, concatenate = FALSE)
+
+    if(dim(disparity[[1]])[2] > 1) {
+        ## Has multiple matrices
+        ## Get all matrices
+        get.one.group <- function(one.group, names) {
+            return(apply(one.group, 2, function(x) data.frame(disparity = unlist(x, use.names = FALSE), row.names = names)))
+        }
+
+        list_of_matrices <- do.call(cbind, lapply(disparity, get.one.group, names = ))
+
+
+
+    } else {
+        data_out <- data.frame(disparity = unlist(disparity, use.names = FALSE))
+        rownames(data_out) <- unlist(lapply(disparity, names), use.names = FALSE)
+        data_out <- list(data_out)
+    }
+
+
+
 
     ## Add predictors (if needed)
     if(!is.null(data$call$subsets)) {
