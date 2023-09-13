@@ -3,7 +3,7 @@
 #' @description Passing \code{dispRity} objects to the \code{\link[phylolm]{phylolm}} function from the \code{phylolm} package. Typically to run some PGLS.
 #'
 #' @param data A \code{dispRity} object with a metric of dimension level 2 at least
-#' @param tree If \code{data} does not contain a \code{tree} component, a \code{"phylo"} object to be used as the tree.
+#' @param tree If \code{data} does not contain a tree component, a \code{"phylo"} or \code{"multiPhylo"} object to be used as the tree. If \code{data} already contains a tree component and the \code{tree} argument is not missing, the provided \code{tree} will replace any contained in \code{data}.
 #' @param formula The PGLS formula. If left empty, runs either \code{disparity ~ 1} or \code{disparity ~ subsets} if \code{data} contains subsets.
 #' @param model The covariance model (default is \code{"BM"}). For more details (including the models available) see the manual for \code{\link[phylolm]{phylolm}}.
 #' @param ... Any optional arguments to be passed to \code{\link[phylolm]{phylolm}}
@@ -46,24 +46,26 @@ pgls.dispRity <- function(data, tree, formula, model = "BM", ..., optim = list()
     }
 
     ## Check tree in data
-    if(is.null(unlist(data$tree))) {
-        ## Check the tree format
-        data <- add.tree(data, tree = tree)
+    if(!missing(tree)) {
+        data <- add.tree(data, tree = tree, replace = TRUE)
+    } else {
+        stop.call("No tree was found in the provided data and none was provided through the tree argument.")
     }
-    ## Get the trees
-    trees <- get.tree(data)
-    if(is(trees, "phylo")) {
-        trees <- list(trees)
-    }
-
-    ## Get the list of disparities
-    datas <- get.data(data, trees)
 
     ## Check the formula
     if(missing(formula)) {
         ## Select the formula
         formula <- get.formula(data)
     }
+
+    ## Get the pgls data
+    datas <- get.pgls.data(data, formula)
+
+
+    # ## Get the list of disparities
+    # datas <- get.data(data, trees)
+
+
 
     ## Check if response is disparity
     if(as.character(formula[[2]]) != "disparity") {
@@ -125,6 +127,25 @@ get.formula <- function(disparity) {
         }
     }
 }
+
+get.pgls.data <- function(data, tree) {
+    ## Extract the trees (as a list)
+    trees <- get.tree(data)
+    if(is(trees, "phylo")) {
+        trees <- list(trees)
+    }
+
+    ## Extract the disparity results (as a list)
+    # disparity <- get.disparity(data, observed = TRUE, concatenate = FALSE)
+
+    # data$disparity
+
+
+    ## Make the disparity data.frames
+
+    ## Match the number of disparity data.frames and the number of trees 
+}
+
 
 ## Grabs the data to be passed to phylolm
 get.data <- function(data, trees) {

@@ -9,7 +9,7 @@ pgls.dispRity(data, tree, formula, model = "BM", ..., optim = list())
 \arguments{
 \item{data}{A \code{dispRity} object with a metric of dimension level 2 at least}
 
-\item{tree}{If \code{data} does not contain a \code{tree} component, a \code{"phylo"} object to be used as the tree.}
+\item{tree}{If \code{data} does not contain a tree component, a \code{"phylo"} or \code{"multiPhylo"} object to be used as the tree. If \code{data} already contains a tree component and the \code{tree} argument is not missing, the provided \code{tree} will replace any contained in \code{data}.}
 
 \item{formula}{The PGLS formula. If left empty, runs either \code{disparity ~ 1} or \code{disparity ~ subsets} if \code{data} contains subsets.}
 
