@@ -404,14 +404,14 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
           c(## Data is bound to a tree
             is_bound,
             ## Data has multiple matrices and the metric needs matrix decomp
-            length(data$matrix) > 1 && matrix_decomposition && is.null(data$call$subsets["trees"]),
+            length(data$matrix) > 1 && matrix_decomposition && (is.null(data$call$subsets["trees"]) || is.na(data$call$subsets["trees"])),
             ## Data has multiple trees and the metric needs a tree
             length(data$tree) > 1 && any(metric_has_tree)
           )
         )) {
 
         ## Make the lapply loops
-        n_trees <- ifelse(is.null(data$call$subsets["trees"]), 1, as.numeric(data$call$subsets["trees"]))
+        n_trees <- ifelse((is.null(data$call$subsets["trees"]) || is.na(data$call$subsets["trees"])), 1, as.numeric(data$call$subsets["trees"]))
         ## Splitting the lapply loop for bound trees 
         lapply_loops <- split.lapply_loop(lapply_loop, n_trees)
 
@@ -424,7 +424,7 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
         disparities <- mapply(mapply.wrapper, lapply_loops, splitted_data, 
                             MoreArgs = list(metrics_list, matrix_decomposition, verbose, metric_has_tree, ...),
                             SIMPLIFY = FALSE)
-        # disparities <- mapply(mapply.wrapper, lapply_loops, matrices_data, MoreArgs = list(metrics_list, matrix_decomposition, verbose, metric_has_tree), SIMPLIFY = FALSE) ; warning("DEBUG dispRity")
+        # disparities <- mapply(mapply.wrapper, lapply_loops, splitted_data, MoreArgs = list(metrics_list, matrix_decomposition, verbose, metric_has_tree), SIMPLIFY = FALSE) ; warning("DEBUG dispRity")
         
         ## Reformat to normal disparity object
         disparity <- unlist(lapply(as.list(1:ifelse(is.null(data$call$subsets["trees"]), n_trees, length(disparities[[1]]))),
@@ -435,6 +435,9 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
         ## Normal disparity lapply
         disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, metric_has_tree, ...)
         #TG: check out the file disparity_internal_logic.md (located on the root of the package) for explanation about the logic in this lapply
+
+        ## If multiple matrices, split the resulting output into columns
+
     }
 
     # }
