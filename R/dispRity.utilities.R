@@ -479,6 +479,7 @@ name.subsets <- function(data) {
 #'
 #' @param data A \code{dispRity} object.
 #' @param tree A \code{phylo} or \code{mutiPhylo} object.
+#' @param replace Logical, whether to replace any existing tree (\code{TRUE}) or add to it (\code{FALSE}; default).
 #' 
 #' @examples
 #' ## Loading a dispRity object
@@ -497,16 +498,30 @@ name.subsets <- function(data) {
 #'
 #' ## Extracting the tree
 #' get.tree(tree_data) # is a "phylo" object
-#' 
+#'
+#' ## Adding the same tree again
+#' tree_data <- add.tree(tree_data, tree = BeckLee_tree)
+#' get.tree(tree_data) # is a "multiPhylo" object (2 trees)
+#'
+#' ## Replacing the two trees by one tree
+#' tree_data <- add.tree(tree_data, tree = BeckLee_tree, replace = TRUE)
+#' get.tree(tree_data) # is a "phylo" object
+#'
 #' @seealso \code{\link{custom.subsets}}, \code{\link{chrono.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
 #'
 #' @author Thomas Guillerme
-add.tree <- function(data, tree) {
+add.tree <- function(data, tree, replace = FALSE) {
     ## Add the tree
     if(is.null(data$tree[[1]])) {
         data$tree <- check.dispRity.tree(tree = tree, data = data)
     } else {
-        data$tree <- check.dispRity.tree(tree = c(get.tree(data$tree), tree), data = data)
+        if(replace) {
+            ## Remove existing trees
+            data <- remove.tree(data)
+            data <- add.tree(data, tree)
+        } else {
+            data$tree <- check.dispRity.tree(tree = c(get.tree(data), tree), data = data)
+        }
     }
     return(data)
 }

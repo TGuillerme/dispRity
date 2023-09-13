@@ -703,6 +703,16 @@ test_that("tree utilities works", {
     expect_is(tree, "multiPhylo")
     expect_null(remove.tree(disparitree)$tree[[1]])
     expect_null(remove.tree(disparitree2)$tree[[1]])
+
+    ## Remove and replace trees
+    disparity <- dispRity(BeckLee_mat99, metric = mean)
+    expect_null(disparity$tree[[1]])
+    disparitree <- add.tree(tree = BeckLee_tree, data = disparity)
+    expect_equal(length(disparitree$tree), 1)
+    disparitree <- add.tree(tree = BeckLee_tree, data = disparitree)
+    expect_equal(length(disparitree$tree), 2)
+    disparitree <- add.tree(tree = BeckLee_tree, data = disparitree, replace = TRUE)
+    expect_equal(length(disparitree$tree), 1)
 })
 
 test_that("name.subsets(dispRity)", {

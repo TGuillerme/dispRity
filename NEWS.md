@@ -1,4 +1,4 @@
-dispRity v1.7.13 (2023-08-01)
+dispRity v1.7.14 (2023-09-13)
 =========================
 
 ### NEW FEATURES
@@ -33,6 +33,7 @@ roundness <- function(matrix) {
  * `clean.data` can now also handle a list of `"phylo"` objects as `tree` input (i.e. it does not need to be specifically classed as `"multiPhylo"`).
  * Changed dependencies to [`spptest`](https://github.com/myllym/spptest) to [`GET`](https://github.com/myllym/GET).
  * `space.maker` can now generate specific row names and be replicated to generate a bunch of spaces (via the new optional arguments `elements.names` and `replicates` respectively).
+ * The `add.tree` utility function now has an optional argument to override any existing trees (`replace = TRUE`) or not (`replace = FALSE`; which remains the default previous behaviour). 
 
 ### BUG FIXES
  

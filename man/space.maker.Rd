@@ -69,6 +69,9 @@ space <- space.maker(10000, 3, rnorm, scree = c(0.6, 0.3, 0.1))
 ## The resulting screeplot
 barplot(apply(space, 2, var))
 
+## Generate 3 2D normal spaces with rownames 
+space.maker(10, 2, rnorm, elements.names = letters[1:10], replicates = 3)
+
 \dontrun{
 require(scatterplot3d)
 ## A cube space
