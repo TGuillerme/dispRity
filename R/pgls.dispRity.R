@@ -49,7 +49,9 @@ pgls.dispRity <- function(data, tree, formula, model = "BM", ..., optim = list()
     if(!missing(tree)) {
         data <- add.tree(data, tree = tree, replace = TRUE)
     } else {
-        stop.call("No tree was found in the provided data and none was provided through the tree argument.")
+        if(is.null(get.tree(data))) {
+            stop("No tree was found in the provided data and none was provided through the tree argument.")
+        }
     }
 
     ## Check the formula
@@ -58,19 +60,13 @@ pgls.dispRity <- function(data, tree, formula, model = "BM", ..., optim = list()
         formula <- get.formula(data)
     }
 
-    ## Get the pgls data
-    datas <- get.pgls.data(data, formula)
-
-
-    # ## Get the list of disparities
-    # datas <- get.data(data, trees)
-
-
-
     ## Check if response is disparity
     if(as.character(formula[[2]]) != "disparity") {
         stop("The response term of the formula must be 'disparity'.", call. = FALSE)
     }
+
+    ## Get the pgls data
+    data_list <- get.pgls.data(data)
 
     ## Check model
     check.method(model, all_arguments = eval(formals(phylolm::phylolm)$model), msg = "model")
@@ -83,12 +79,13 @@ pgls.dispRity <- function(data, tree, formula, model = "BM", ..., optim = list()
     phylolm_args$model   <- model
 
     ## Run all the models
-    models_out <- mapply(one.phylolm, trees, datas, MoreArgs = list(args = phylolm_args), SIMPLIFY = FALSE)
+    models_out <- lapply(data_list, one.phylolm, phylolm_args)
 
     ## Handle the output
     if(length(models_out) == 1) {
         return(models_out[[1]])
     } else {
+        class(models_out) <- "pgls.dispRity"
         return(models_out)
     }
 }
@@ -128,7 +125,8 @@ get.formula <- function(disparity) {
     }
 }
 
-get.pgls.data <- function(data, tree) {
+## Formats the data and trees for phylolm
+get.pgls.data <- function(data) {
     ## Extract the trees (as a list)
     trees <- get.tree(data)
     if(is(trees, "phylo")) {
@@ -136,65 +134,56 @@ get.pgls.data <- function(data, tree) {
     }
 
     ## Extract the disparity results (as a list)
-    # disparity <- get.disparity(data, observed = TRUE, concatenate = FALSE)
-
-    # data$disparity
-
-
-    ## Make the disparity data.frames
-
-    ## Match the number of disparity data.frames and the number of trees 
-}
-
-
-## Grabs the data to be passed to phylolm
-get.data <- function(data, trees) {
-    ## Extract the disparity
     disparity <- get.disparity(data, observed = TRUE, concatenate = FALSE)
 
-    if(dim(disparity[[1]])[2] > 1) {
-        ## Has multiple matrices
-        ## Get all matrices
-        get.one.group <- function(one.group, names) {
-            return(apply(one.group, 2, function(x) data.frame(disparity = unlist(x, use.names = FALSE), row.names = names)))
+    ## Split the data per matrix and per group
+    split_data <- lapply(disparity, function(X) apply(X, 2, function(x) return(x), simplify = FALSE))
+
+    ## Get the rownames for all the data
+    #TG: expecting all the matrices to have the same rownames
+    row_names <- rownames(data$matrix[[1]])[unlist(lapply(data$subsets, function(x) return(x[["elements"]][,1])))]
+
+    ## Split between matrix
+    data_list <- list()
+    while(length(split_data[[1]]) > 0) {
+        ## Get the disparity and group for one matrix
+        dispa <- unlist(lapply(split_data, `[[`, 1))
+        group <- unlist(mapply(rep_len, as.list(names(split_data)), lapply(lapply(split_data, `[[`, 1), length)))
+        ## Populate the data list
+        if(!is.null(group)) {
+            data_list[[length(data_list)+1]] <- data.frame("disparity" = dispa, "group" = group, row.names = row_names)
+        } else {
+            data_list[[length(data_list)+1]] <- data.frame("disparity" = dispa, row.names = row_names)
         }
+        ## Remove from the list
+        split_data <- lapply(split_data, function(x) {x[[1]] <- NULL; return(x)})
+    }
 
-        list_of_matrices <- do.call(cbind, lapply(disparity, get.one.group, names = ))
-
-
-
+    ## Combine both trees and matrices
+    if(length(trees) != length(data_list)) {
+        ## Check if feasible
+        multiple_trees <- (length(trees) > 1)
+        multiple_datas <- (length(data_list) > 1)
+        if(multiple_datas && multiple_trees) {
+            stop(paste0("Data must either same number of matrices (", length(data_list), ") and trees (", length(trees) , ") or just one tree or matrix combined with respectively with multiple matrices or trees."))
+        }
+        ## Combine the data
+        if(multiple_datas) {
+            data_out <- lapply(data_list, function(data, tree) return(list(data = data, phy = trees[[1]])), trees)
+        } else {
+            data_out <- lapply(trees, function(tree, data) return(list(data = data[[1]], phy = tree)), data_list)
+        }
     } else {
-        data_out <- data.frame(disparity = unlist(disparity, use.names = FALSE))
-        rownames(data_out) <- unlist(lapply(disparity, names), use.names = FALSE)
-        data_out <- list(data_out)
+        data_out <- mapply(function(data, tree) return(list(data = data, phy = tree)), data_list, trees, SIMPLIFY = FALSE)
     }
-
-
-
-
-    ## Add predictors (if needed)
-    if(!is.null(data$call$subsets)) {
-        if(data$call$subsets[[1]] == "customised") {
-            ## Fill the empty group
-            data_out$group <- NA
-            ## Get the subsets
-            subsets <- lapply(data$subsets, `[[`, "elements")
-            ## Fill the subsets
-            while(length(subsets) != 0) {
-                data_out$group[c(subsets[[1]])] <- names(subsets)[1]
-                subsets[1] <- NULL
-            }
-        }
-    }
-    ## Return the datasets (one per tree)
-    return(replicate(length(trees), data_out, simplify = FALSE))
+    return(data_out)
 }
 
 ## Run one phylolm
-one.phylolm <- function(one_tree, one_data, args) {
+one.phylolm <- function(one_datas, args) {
     ## Adding the tree and the data
-    args$phy  <- one_tree
-    args$data <- one_data
+    args$phy  <- one_datas$phy
+    args$data <- one_datas$data
 
     ## Run the phylolm
     run_out <- do.call(phylolm, args)

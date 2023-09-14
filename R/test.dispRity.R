@@ -103,11 +103,11 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
         stop.call("", "Disparity has not been calculated yet.\nUse the dispRity() function to do so.\n")
     }
 
-    # ## Overriding for pgls
-    # if(is(test, "function") && as.character(match_call$test) == "pgls.dispRity") {
-    #     ## Attempt to run the pgls
-    #     return(pgls.dispRity(data = data, ...))
-    # }
+    ## Overriding for pgls
+    if(is(test, "function") && as.character(match_call$test)[[1]] == "pgls.dispRity") {
+        ## Attempt to run the pgls
+        return(pgls.dispRity(data = data, ...))
+    }
 
     ## ...and must have more than one subsets
     if(length(data$subsets) == 1){
