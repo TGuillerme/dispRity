@@ -1,4 +1,5 @@
 ## Simple examples
+set.seed(1)
 data(BeckLee_tree)
 data(BeckLee_mat99)
 data(BeckLee_mat50)
@@ -9,6 +10,15 @@ nonode_tree$node.labels <- NULL
 ## Base examples
 disparity_base <- dispRity(BeckLee_mat50, metric = centroids)
 disparity_group <- dispRity(custom.subsets(BeckLee_mat50, group = crown.stem(BeckLee_tree, inc.nodes = FALSE)), tree = nonode_tree, metric = centroids)
+
+## Create a list of trees and matrices
+trees_list <- replicate(4, rcoal(30), simplify = FALSE)
+class(trees_list) <- "multiPhylo"
+matrices_list <- space.maker(elements = 30, dimensions = 5, distribution = rnorm, elements.names = trees_list[[1]]$tip.label, replicates = 3)
+matrices_groups <- custom.subsets(data = matrices_list, group = list("group1" = trees_list[[1]]$tip.label[ 1:20],
+                                                                     "group2" = trees_list[[1]]$tip.label[21:30]))
+matrix_groups <- custom.subsets(data = matrices_list[[1]], group = list("group1" = trees_list[[1]]$tip.label[ 1:20],
+                                                                     "group2" = trees_list[[1]]$tip.label[21:30]))
 
 test_that("sanitizing works", {
     expect_warning(disparity_time <- dispRity(chrono.subsets(BeckLee_mat50, FADLAD = BeckLee_ages, tree = BeckLee_tree, time = 5, method = "discrete"), metric = centroids, tree = nonode_tree))
@@ -72,14 +82,6 @@ test_that("get.data works", {
     expect_equal(colnames(test[[1]][[1]]), c("disparity", "group"))
     expect_equal(rownames(test[[1]][[1]]), rownames(data$matrix[[1]])[unlist(lapply(data$subsets, `[[`, "elements"))])
 
-    ## Create a list of trees and matrices
-    trees_list <- replicate(4, rcoal(30), simplify = FALSE)
-    class(trees_list) <- "multiPhylo"
-    matrices_list <- space.maker(elements = 30, dimensions = 5, distribution = rnorm, elements.names = trees_list[[1]]$tip.label, replicates = 3)
-    matrices_groups <- custom.subsets(data = matrices_list, group = list("group1" = trees_list[[1]]$tip.label[ 1:20],
-                                                                         "group2" = trees_list[[1]]$tip.label[21:30]))
-    matrix_groups <- custom.subsets(data = matrices_list[[1]], group = list("group1" = trees_list[[1]]$tip.label[ 1:20],
-                                                                         "group2" = trees_list[[1]]$tip.label[21:30]))
     ## Test with multiple matrices
     data <- dispRity(data = matrices_list,  tree = trees_list[[1]], metric = centroids)
     test <- get.pgls.data(data)
@@ -177,7 +179,7 @@ test_that("pgls works", {
     ## Disparity for one matrix but multiple trees
     data <- dispRity(data = matrices_list[[1]], tree = trees_list, metric = centroids)
     test <- pgls.dispRity(data)
-    expect_is(test, "pgls.dispRity")
+    expect_is(test, c("dispRity", "pgls.dispRity"))
     expect_equal(length(test), 10)
     expect_is(test[[1]], "phylolm")
     expect_equal(test[[1]]$call, "dispRity interface of phylolm using: formula = disparity ~ 1 and model = BM")
@@ -204,6 +206,56 @@ test_that("options parsed correctly", {
 test_that("associated S3s work", {
 
     ## print
+    ## normal test
+    set.seed(1)
+    data <- dispRity(data = matrices_list, tree = trees_list[1:3], metric = centroids)
+    test <- pgls.dispRity(data)
+    text <- capture.output(test)
+    expect_equal(text, c(
+        "phylolm test (pgls) applied to 3 disparity estimates"               ,
+        "using the formula: disparity ~ 1 and the model: BM"                 ,
+        ""                                                                   ,
+        "         median       sd"                                           ,
+        "AIC    103.6818 30.51387"                                           ,
+        "logLik -49.8409 15.25694"                                           ,
+        ""                                                                   ,
+        "Parameters estimate(s) using ML:"                                   ,
+        "         median       sd"                                           ,
+        "sigma2 13.92685 8.516613"                                           ,
+        ""                                                                   ,
+        "Coefficients:"                                                      ,
+        "              median        sd"                                     ,
+        "(Intercept) 2.109776 0.1719198"                                     ,
+        ""                                                                   ,
+        "You can access individual models by using their index (e.g. x[[1]])",
+        "or summarise and plot all models using summary(x) or plot(x)." )
+    )
+    
+    ## grouped test
+    set.seed(1)
+    data <- dispRity(data = matrices_groups, tree = trees_list[1:3], metric = centroids)
+    test <- pgls.dispRity(data)
+    text <- capture.output(test)
+    expect_equal(text, c(
+        "phylolm test (pgls) applied to 3 disparity estimates"               ,
+        "using the formula: disparity ~ group and the model: BM"             ,
+        ""                                                                   ,
+        "         median       sd"                                           ,
+        "AIC    102.3646 29.07677"                                           ,
+        "logLik -48.1823 14.53838"                                           ,
+        ""                                                                   ,
+        "Parameters estimate(s) using ML:"                                   ,
+        "       median       sd"                                             ,
+        "sigma2 12.469 7.370084"                                             ,
+        ""                                                                   ,
+        "Coefficients:"                                                      ,
+        "                 median        sd"                                  ,
+        "(Intercept)  2.03348693 0.3301852"                                  ,
+        "groupgroup2 -0.04111237 0.4920793"                                  ,
+        ""                                                                   ,
+        "You can access individual models by using their index (e.g. x[[1]])",
+        "or summarise and plot all models using summary(x) or plot(x).")
+    )
 
     ## summary
 

@@ -85,7 +85,7 @@ pgls.dispRity <- function(data, tree, formula, model = "BM", ..., optim = list()
     if(length(models_out) == 1) {
         return(models_out[[1]])
     } else {
-        class(models_out) <- "pgls.dispRity"
+        class(models_out) <- c("dispRity", "pgls.dispRity")
         return(models_out)
     }
 }

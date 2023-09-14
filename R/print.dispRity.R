@@ -203,6 +203,40 @@ print.dispRity <- function(x, all = FALSE, ...) {
                     class(x) <- "list"
                     print(x)
                     return(invisible())
+                },
+                pgls.dispRity = {
+                    ## Print the general info
+                    cat(paste0("phylolm test (pgls) applied to ", length(x), " disparity estimates\n"))
+                    cat(paste0("using the formula: ", Reduce(paste, deparse(x[[1]]$formula))," and the model: ", x[[1]]$model,"\n\n"))
+
+                    ## Print diagnosis
+                    aic_loglik <- matrix(c(median(unlist(lapply(x, `[[`, "aic"))),
+                                           sd(unlist(lapply(x, `[[`, "aic"))),
+                                           median(unlist(lapply(x, `[[`, "logLik"))),
+                                           sd(unlist(lapply(x, `[[`, "logLik")))),
+                                           ncol = 2, byrow = TRUE, dimnames = list(c("AIC", "logLik"),c("median", "sd")))
+                    print(aic_loglik)
+                    
+                    cat("\nParameters estimate(s) using ML:\n")
+                    sigma2 <- matrix(c(median(unlist(lapply(x, `[[`, "sigma2"))), sd(unlist(lapply(x, `[[`, "sigma2")))),
+                                     ncol = 2, dimnames = list(c("sigma2"),c("median", "sd")))
+                    print(sigma2)
+                    
+                    cat("\nCoefficients:\n")
+                    coeffs <- unlist(lapply(x, `[[`, "coefficients"))
+                    ## Split by the length of x
+                    coeffs_matrix <- matrix(coeffs, ncol = length(coeffs)/length(x), byrow = TRUE)
+
+                    ## Get the central tendencies matrix
+                    coeffs_print_med <- apply(coeffs_matrix, 2, median)
+                    coeffs_print_sd <- apply(coeffs_matrix, 2, sd)
+                    coeffs_mat <- cbind(coeffs_print_med, coeffs_print_sd)
+                    rownames(coeffs_mat) <- unique(names(coeffs))
+                    colnames(coeffs_mat) <- c("median", "sd")
+                    print(coeffs_mat)
+
+                    cat(paste0("\nYou can access individual models by using their index (e.g. x[[1]])\nor summarise and plot all models using summary(x) or plot(x)."))
+                    return(invisible())
                 }
             )
         }
