@@ -732,7 +732,7 @@ sort.dispRity <- function(x, decreasing = FALSE, sort, ...) {
 
 
 
-#' @title Getting the time subsets from at and after an extinction event
+#' @title Getting the time subsets before and after an extinction event
 #'
 #' @description Getting the reference (pre-extinction) and the comparison (post-extinction) time subsets
 #'
