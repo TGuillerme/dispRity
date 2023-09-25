@@ -2,7 +2,7 @@
 % Please edit documentation in R/dispRity.utilities.R
 \name{extinction.subsets}
 \alias{extinction.subsets}
-\title{Getting the time subsets from at and after an extinction event}
+\title{Getting the time subsets before and after an extinction event}
 \usage{
 extinction.subsets(data, extinction, lag = 1, names = FALSE, as.list = FALSE)
 }
