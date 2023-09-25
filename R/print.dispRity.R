@@ -256,18 +256,6 @@ print.dispRity <- function(x, digits = max(3, getOption("digits") - 3), alll = F
 #   print(x$coefficients)
 # }
 
-
-
-
-
-
-
-
-
-
-
-
-
                     ## Print diagnosis
                     aic_loglik <- matrix(c(median(unlist(lapply(x, `[[`, "aic"))),
                                            sd(unlist(lapply(x, `[[`, "aic"))),
