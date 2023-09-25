@@ -43,7 +43,7 @@
 # data <- dispRity(data_subsets_boot, metric = c(variances))
 
  
-print.dispRity <- function(x, all = FALSE, ...) {
+print.dispRity <- function(x, digits = max(3, getOption("digits") - 3), alll = FALSE, ...) {
 
     match_call <- match.call()
     x_name <- match_call$x
@@ -205,9 +205,68 @@ print.dispRity <- function(x, all = FALSE, ...) {
                     return(invisible())
                 },
                 pgls.dispRity = {
+
+                    ## Modified from phylolm::print.phylolm
                     ## Print the general info
                     cat(paste0("phylolm test (pgls) applied to ", length(x), " disparity estimates\n"))
                     cat(paste0("using the formula: ", Reduce(paste, deparse(x[[1]]$formula))," and the model: ", x[[1]]$model,"\n\n"))
+
+#                     ## Print fit
+#                     print(cbind(pool.pgls.param(x, "AIC"), pool.pgls.param(x, "logLik")), digits = digits)
+
+#                     ## Print param
+#                     cat("\nParameter estimate(s) using ML:\n")
+#                     if (!is.null(x[[1]]$optpar)) {
+#                         opt_param <- pool.pgls.param(x, "optpar")
+#                         if (x[[1]]$model %in% c("OUrandomRoot","OUfixedRoot")) {
+#                             rownames(opt_param) <- "alpha"
+#                             print(opt_param) # OR cat
+#                         }
+#                         if (x[[1]]$model %in% c("lambda","kappa","delta")) {
+#                             cat(x$model,":",x$optpar)
+#                         }
+#                         if (x[11]]$model=="EB") {
+#                             rownames(opt_param) <- "rate"
+#                             print(opt_param)
+#                         }
+#                     cat("\n")
+#                     }
+
+#                     cat("sigma2:",x$sigma2,"\n")
+#                     if (x$sigma2_error > 0) cat("sigma2_error:",x$sigma2_error,"\n")
+#                     cat("\nCoefficients:\n")
+#                     print(x$coefficients)
+
+
+# print.phylolm <- function(x, digits = max(3, getOption("digits") - 3), ...){
+
+#   aiclogLik = c(x$aic,x$logLik)
+#   names(aiclogLik) = c("AIC","logLik")
+#   print(aiclogLik, digits = digits)
+#   cat("\nParameter estimate(s) using ML:\n")
+#   if (!is.null(x$optpar)) {
+#     if (x$model %in% c("OUrandomRoot","OUfixedRoot")) cat("alpha:",x$optpar)
+#     if (x$model %in% c("lambda","kappa","delta")) cat(x$model,":",x$optpar)
+#     if (x$model=="EB") cat("rate:",x$optpar)
+#     cat("\n")
+#   }
+#   cat("sigma2:",x$sigma2,"\n")
+#   if (x$sigma2_error > 0) cat("sigma2_error:",x$sigma2_error,"\n")
+#   cat("\nCoefficients:\n")
+#   print(x$coefficients)
+# }
+
+
+
+
+
+
+
+
+
+
+
+
 
                     ## Print diagnosis
                     aic_loglik <- matrix(c(median(unlist(lapply(x, `[[`, "aic"))),

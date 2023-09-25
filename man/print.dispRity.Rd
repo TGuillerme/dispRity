@@ -4,14 +4,14 @@
 \alias{print.dispRity}
 \title{Prints a \code{dispRity} object.}
 \usage{
-\method{print}{dispRity}(x, all = FALSE, ...)
+\method{print}{dispRity}(x, digits = max(3, getOption("digits") - 3), alll = FALSE, ...)
 }
 \arguments{
 \item{x}{A \code{dispRity} object.}
 
-\item{all}{\code{logical}; whether to display the entire object (\code{TRUE}) or just summarise its contents (\code{FALSE} - default).}
-
 \item{...}{further arguments to be passed to \code{print} or to \code{print.dispRity}.}
+
+\item{all}{\code{logical}; whether to display the entire object (\code{TRUE}) or just summarise its contents (\code{FALSE} - default).}
 }
 \description{
 Summarises the content of a \code{dispRity} object.
