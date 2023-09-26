@@ -156,11 +156,10 @@ test_that("clean.data works with nodes", {
 
     ## Error! no node match
     error <- capture_error(clean.data(data, tree2, inc.nodes = TRUE))
-    expect_equal(error[[1]], "Node bob not found in the data (nodes cannot be trimmed automatically).")
+    expect_equal(error[[1]], "Node bob not found in the data. Nodes cannot be trimmed automatically. You can try using the following to remove them\n  my_tree$node.labels <- NULL")
 
     ## Error in the 2nd tree
     error <- capture_error(clean.data(data, tree12, inc.nodes = TRUE))
-    expect_equal(error[[1]], "Node bob from tree 2 not found in the data. (nodes cannot be trimmed automatically).")
-
+    expect_equal(error[[1]], "Node bob from tree 2 not found in the data. Nodes cannot be trimmed automatically. You can try using the following to remove them\n  my_tree$node.labels <- NULL")
 })
 

@@ -6,7 +6,7 @@
 \alias{remove.tree}
 \title{Add, get or remove tree}
 \usage{
-add.tree(data, tree)
+add.tree(data, tree, replace = FALSE)
 
 get.tree(data)
 
@@ -16,6 +16,8 @@ remove.tree(data)
 \item{data}{A \code{dispRity} object.}
 
 \item{tree}{A \code{phylo} or \code{mutiPhylo} object.}
+
+\item{replace}{Logical, whether to replace any existing tree (\code{TRUE}) or add to it (\code{FALSE}; default).}
 }
 \description{
 Adding, extracting or removing the tree component from a \code{dispRity} object
@@ -36,6 +38,14 @@ get.tree(tree_data) # is null
 tree_data <- add.tree(tree_data, tree = BeckLee_tree)
 
 ## Extracting the tree
+get.tree(tree_data) # is a "phylo" object
+
+## Adding the same tree again
+tree_data <- add.tree(tree_data, tree = BeckLee_tree)
+get.tree(tree_data) # is a "multiPhylo" object (2 trees)
+
+## Replacing the two trees by one tree
+tree_data <- add.tree(tree_data, tree = BeckLee_tree, replace = TRUE)
 get.tree(tree_data) # is a "phylo" object
 
 }

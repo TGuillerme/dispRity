@@ -114,7 +114,6 @@ test_that("correlation works", {
     expect_warning(space_cor <- space.maker(1000, 20, rnorm, cor.matrix = cor.matrix))
 })
 
-
 test_that("scree works", {
     ## One space
     set.seed(1)
@@ -137,7 +136,6 @@ test_that("scree works", {
         round(apply(space_scre, 2, var), digit = 1)
         , c(0.7, 0.0, 0.0))
 })
-
 
 test_that("random.circle works", {
 
@@ -165,5 +163,17 @@ test_that("random.circle works", {
 
     test <- space.maker(elements = 10, dimensions = 4, distribution = c(random.circle, runif, runif), arguments = list(list(distribution = runif, inner = 0.5, outer = 1), list(min = 0, max = 1), list(min = 0, max = 1)))
     expect_equal(dim(test), c(10, 4))
+})
 
+## Testing element names
+test_that("element.names works", {
+    test <- space.maker(10, 1, rnorm, elements.names = LETTERS[11:20])
+    expect_equal(rownames(test), LETTERS[11:20])
+})
+
+## Testing replicates
+test_that("replicates works", {
+    test <- space.maker(10, 2, rnorm, replicates = 3)
+    expect_equal(length(test), 3)
+    expect_equal(unique(lapply(test, dim)), list(c(10, 2)))
 })

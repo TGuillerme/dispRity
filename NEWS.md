@@ -1,10 +1,12 @@
-dispRity v1.7.12 (2023-04-25)
+dispRity v1.7.14 (2023-09-13)
 =========================
 
 ### NEW FEATURES
   
  * *New utility function*: `name.subsets` for directly accessing the subsets names of a `dispRity` object (basically doing `names(my_dispRity$subsets)`).
  * *New utility function*: `MCMCglmm.variance` for calculating the variance for specific terms in a `"MCMCglmm"` model.
+ * *New* statistical test: `pgls.dispRity` to run PGLS test on a `dispRity` object with a level-2 metric and a tree (using excellent [`phylolm`](https://cran.r-project.org/web/packages/phylolm/phylolm.pdf) algorithm). The new test comes with its own S3 print, summary and plot functions if the input `dispRity` data contains multiple trees or multiple matrices (running and handling the output of multiple `phylolm`).
+
  <!-- * *New* resampling option for `boot.matrix`: `"null"` to resample each subset with any elements (not only elements within that subset). -->
  <!-- TODO: test + add proba and tree algorithms -->
  <!-- *New metric*: `roundness` to measure how round the elliptical representation of a matrix is. TODO: handle non-VCV input:
@@ -30,13 +32,15 @@ roundness <- function(matrix) {
  * Updated test coverage here and there.
  * `clean.data` can now also handle a list of `"phylo"` objects as `tree` input (i.e. it does not need to be specifically classed as `"multiPhylo"`).
  * Changed dependencies to [`spptest`](https://github.com/myllym/spptest) to [`GET`](https://github.com/myllym/GET).
-
+ * `space.maker` can now generate specific row names and be replicated to generate a bunch of spaces (via the new optional arguments `elements.names` and `replicates` respectively).
+ * The `add.tree` utility function now has an optional argument to override any existing trees (`replace = TRUE`) or not (`replace = FALSE`; which remains the default previous behaviour). 
 
 ### BUG FIXES
  
  * The correct types of changes are now plotted in legend when plotting the results of `test.metric`.
  * `get.disparity` now correctly concatenates one dimensional results into a `"numeric"` (rather than a `"matrix"`).
  * `make.metric` now internally handles `covar` object correctly (i.e. as distance matrices).
+ * Calculating disparity for multiple matrices and customised subsets now works as expected for all metric levels.
 
 dispRity v1.7 (2022-08-08) *MacMacGlimm*
 =========================

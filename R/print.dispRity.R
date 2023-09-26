@@ -203,6 +203,50 @@ print.dispRity <- function(x, all = FALSE, ...) {
                     class(x) <- "list"
                     print(x)
                     return(invisible())
+                },
+                pgls.dispRity = {
+
+                    ## Modified from phylolm::print.phylolm
+                    ## Print the general info
+                    cat(paste0("phylolm test (pgls) applied to ", length(x), " disparity estimates\n"))
+                    cat(paste0("using the formula: ", Reduce(paste, deparse(x[[1]]$formula))," and the model: ", x[[1]]$model,"\n\n"))
+
+                    ## Print fit
+                    print(rbind(pool.pgls.param(x, "aic"), pool.pgls.param(x, "logLik")), ...)
+
+                    ## Print param
+                    cat("\nParameter estimate(s) using ML:\n")
+                    if(!is.null(x[[1]]$optpar)) {
+                        opt_param <- pool.pgls.param(x, "optpar")
+                        if (x[[1]]$model %in% c("OUrandomRoot","OUfixedRoot")) {
+                            rownames(opt_param) <- "alpha"
+                            print(opt_param, ...)
+                        }
+                        if (x[[1]]$model %in% c("lambda","kappa","delta")) {
+                            cat(x[[1]]$model,":")
+                            print(opt_param, ...)
+                        }
+                        if (x[[1]]$model=="EB") {
+                            rownames(opt_param) <- "rate"
+                            print(opt_param, ...)
+                        }
+                    cat("\n")
+                    }
+
+                    ## Variance
+                    print(pool.pgls.param(x, "sigma2"), ...)
+                    if(x[[1]]$sigma2_error > 0) {
+                        print(pool.pgls.param(x, "sigma2_error"), ...)
+                    }
+                    
+                    ## Print the coefficients
+                    cat("\nCoefficients:\n")
+                    pool_coef <- pool.pgls.param(x, "coefficients")
+                    # rownames(pool_coef) <- names(x[[1]]$coefficients)
+                    print(pool_coef, ...)
+
+                    cat(paste0("\nYou can access individual models by using their index (e.g. x[[1]])\nor summarise and plot all models using summary(x) or plot(x)."))
+                    return(invisible())
                 }
             )
         }
