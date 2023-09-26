@@ -255,8 +255,8 @@ test_that("associated S3s work", {
         ""                                                                                   ,
         "R-squared:     0\tAdjusted R-squared:     0 ")
     )
-
-
+    ## Plotting!
+    expect_null(plot(test, xlab = "hahah", col = "blue"))
 
     ## grouped test
     set.seed(1)
@@ -309,45 +309,7 @@ test_that("associated S3s work", {
         ""                                                                                       ,
         "R-squared: 0.003123\tAdjusted R-squared: -0.03248 ")
     )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    # ## summary
-    # set.seed(1)
-    # data <- dispRity(data = matrices_list, tree = trees_list[1:3], metric = centroids)
-    # test <- pgls.dispRity(data)
-    # out <- summary(test)
-
-    ## Get modified version from phylolm straight: https://github.com/lamho86/phylolm/blob/master/R/phylolm.R#L490
-
-
-
-
-
-    ## plot
+    expect_null(plot(test))
 })
 
 

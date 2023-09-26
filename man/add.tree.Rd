@@ -6,7 +6,7 @@
 \alias{remove.tree}
 \title{Add, get or remove tree}
 \usage{
-add.tree(data, tree)
+add.tree(data, tree, replace = FALSE)
 
 get.tree(data)
 

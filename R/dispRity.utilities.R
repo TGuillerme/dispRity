@@ -471,7 +471,7 @@ name.subsets <- function(data) {
 #' 
 #' @title Add, get or remove tree
 #'
-#' @usage add.tree(data, tree)
+#' @usage add.tree(data, tree, replace = FALSE)
 #' @usage get.tree(data)
 #' @usage remove.tree(data)
 #' 

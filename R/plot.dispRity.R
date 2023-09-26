@@ -233,7 +233,31 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
 
             ## Exit subclass plots
             return(invisible())
-        }  
+        }
+
+        ## pgls.dispRity plots
+        if(is(data, c("dispRity")) && is(data, c("pgls.dispRity"))) {
+            
+            ## Get all the y values
+            all_y <- unlist(lapply(data, `[[`, "y"))
+            ## Get all the fitted values
+            all_fitted <- unlist(lapply(data, fitted))
+
+            ## Default labels
+            plot_args <- list(...)
+            if(is.null(plot_args$xlab)) {
+                plot_args$xlab <- "Observed values"
+            }
+            if(is.null(plot_args$ylab)) {
+                plot_args$ylab <- "Fitted value"
+            }
+            plot_args$x <- all_y
+            plot_args$y <- all_fitted
+
+            ## Plot
+            do.call(plot, plot_args)
+            return(invisible())
+        }
     }
 
     ## ----
