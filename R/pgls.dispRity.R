@@ -191,3 +191,69 @@ one.phylolm <- function(one_datas, args) {
     run_out$call <- paste0(c("dispRity interface of phylolm using: formula = ", args$formula, " and model = ", args$model), collapse = "")
     return(run_out)
 }
+
+
+## Pooling output data together for plot and summary
+pool.pgls.param <- function(x, param, fun = c(median = median, sd = sd)) {
+    ## Extract the parameters
+    param_values <- lapply(x, `[[`, param)
+    ## Make them into a table
+    param_values <- do.call(rbind, param_values)
+    ## Get param names
+    if(is.null(colnames(param_values))) {
+        param_names <- param
+    } else {
+        param_names <- colnames(param_values)
+    }
+    ## Output
+    return(matrix(c(apply(param_values, 2, fun[[1]]), apply(param_values, 2, fun[[2]])), ncol = length(fun), dimnames = list(c(param_names), names(fun))))
+}
+
+# pool.pgls.dispRity <- function(results) {
+#     ## Pool everything!
+#     pooled_list <- list()
+#     to_pool <- names(results[[1]])
+#     while(length(to_pool) > 0) {
+#         ## Raw pool
+#         pooled <- lapply(results, `[[`, to_pool[1])
+#         ## Smarter pool
+#         if(length(unique(unlist(pooled))) == 1) {
+#             ## Is the same (probs parameter)
+#             pooled_list[[to_pool[1]]] <- unique(unlist(pooled))
+#         } else {
+#             if(is.null(unlist(pooled))) {
+#                 ## Is null (only pool one)
+#                 pooled_list[to_pool[1]] <- list(NULL)
+#             } else {
+#                 if(all(unlist(lapply(pooled, function(x) !is.null(names(x)))))) {
+#                     ## Named vector
+#                     pooled_list[[to_pool[1]]] <- unlist(lapply(results, `[[`, to_pool[1]))
+#                 } else {
+#                     pooled_list[[to_pool[1]]] <- lapply(results, `[[`, to_pool[1])
+#                 }
+#             }
+#         } 
+#         to_pool <- to_pool[-1]
+#     }
+
+#     ## Sort sigma2, logLik, aic and mean.tip.height
+#     pooled_list[["sigma2"]] <- median(unlist(pooled_list[["sigma2"]]))
+#     pooled_list[["logLik"]] <- median(unlist(pooled_list[["logLik"]]))
+#     pooled_list[["aic"]] <- median(unlist(pooled_list[["aic"]]))
+#     pooled_list[["mean.tip.height"]] <- mean(unlist(pooled_list[["mean.tip.height"]]))
+
+#     ## Sort coeffients and vcov
+#     # pooled_list[["coefficients"]]
+#     # pooled_list[["vcov"]]
+
+#     ## Adjust the call
+#     pooled_list$call <- c(pooled_list$call,
+#                           "AIC, logLik and sigma2 values are pooled medians.",
+#                           "AOV is based on the median coefficients estimates.")
+
+#     ## Restate class
+#     class(pooled_list) <- "phylolm"
+#     return(pooled_list)
+# }
+
+

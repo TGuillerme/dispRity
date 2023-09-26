@@ -216,10 +216,10 @@ test_that("associated S3s work", {
         "using the formula: disparity ~ 1 and the model: BM"                 ,
         ""                                                                   ,
         "         median       sd"                                           ,
-        "AIC    103.6818 30.51387"                                           ,
+        "aic    103.6818 30.51387"                                           ,
         "logLik -49.8409 15.25694"                                           ,
         ""                                                                   ,
-        "Parameters estimate(s) using ML:"                                   ,
+        "Parameter estimate(s) using ML:"                                    ,
         "         median       sd"                                           ,
         "sigma2 13.92685 8.516613"                                           ,
         ""                                                                   ,
@@ -241,10 +241,10 @@ test_that("associated S3s work", {
         "using the formula: disparity ~ group and the model: BM"             ,
         ""                                                                   ,
         "         median       sd"                                           ,
-        "AIC    102.3646 29.07677"                                           ,
+        "aic    102.3646 29.07677"                                           ,
         "logLik -48.1823 14.53838"                                           ,
         ""                                                                   ,
-        "Parameters estimate(s) using ML:"                                   ,
+        "Parameter estimate(s) using ML:"                                    ,
         "       median       sd"                                             ,
         "sigma2 12.469 7.370084"                                             ,
         ""                                                                   ,
@@ -254,10 +254,22 @@ test_that("associated S3s work", {
         "groupgroup2 -0.04111237 0.4920793"                                  ,
         ""                                                                   ,
         "You can access individual models by using their index (e.g. x[[1]])",
-        "or summarise and plot all models using summary(x) or plot(x).")
+        "or summarise and plot all models using summary(x) or plot(x)."  )
     )
 
-    ## summary
+    # ## summary
+    # set.seed(1)
+    # data <- dispRity(data = matrices_list, tree = trees_list[1:3], metric = centroids)
+    # test <- pgls.dispRity(data)
+    # out <- summary(test)
+
+    ## Get modified version from phylolm straight: https://github.com/lamho86/phylolm/blob/master/R/phylolm.R#L490
+
+
+
+
 
     ## plot
 })
+
+
