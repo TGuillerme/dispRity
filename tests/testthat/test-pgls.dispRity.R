@@ -230,7 +230,34 @@ test_that("associated S3s work", {
         "You can access individual models by using their index (e.g. x[[1]])",
         "or summarise and plot all models using summary(x) or plot(x)." )
     )
-    
+    ## Summary works too
+    text <- capture.output(summary(test))
+    expect_equal(text, c(
+        ""                                                                                   ,
+        "Call:"                                                                              ,
+        "[1] \"dispRity interface of phylolm using: formula = disparity ~ 1 and model = BM\"",
+        "[2] \"The statistics are calculated based on the median estimates of 3 models.\"   ",
+        ""                                                                                   ,
+        "   AIC logLik "                                                                     ,
+        "103.68 -49.84 "                                                                     ,
+        ""                                                                                   ,
+        "Raw residuals:"                                                                     ,
+        "     Min       1Q   Median       3Q      Max "                                      ,
+        "-0.97989 -0.41799 -0.06967  0.36557  1.11200 "                                      ,
+        ""                                                                                   ,
+        "Mean tip height: 2.282328"                                                          ,
+        "Parameter estimate(s) using ML:"                                                    ,
+        "sigma2: 13.92685 "                                                                  ,
+        ""                                                                                   ,
+        "Coefficients:"                                                                      ,
+        "            Estimate StdErr t.value p.value"                                        ,
+        "(Intercept)   2.1098 2.6163  0.8064  0.4266"                                        ,
+        ""                                                                                   ,
+        "R-squared:     0\tAdjusted R-squared:     0 ")
+    )
+
+
+
     ## grouped test
     set.seed(1)
     data <- dispRity(data = matrices_groups, tree = trees_list[1:3], metric = centroids)
@@ -256,6 +283,57 @@ test_that("associated S3s work", {
         "You can access individual models by using their index (e.g. x[[1]])",
         "or summarise and plot all models using summary(x) or plot(x)."  )
     )
+    ## Summary works too
+    text <- capture.output(summary(test))
+    expect_equal(text, c(
+        ""                                                                                       ,
+        "Call:"                                                                                  ,
+        "[1] \"dispRity interface of phylolm using: formula = disparity ~ group and model = BM\"",
+        "[2] \"The statistics are calculated based on the median estimates of 3 models.\"       ",
+        ""                                                                                       ,
+        "   AIC logLik "                                                                         ,
+        "102.36 -48.18 "                                                                         ,
+        ""                                                                                       ,
+        "Raw residuals:"                                                                         ,
+        "     Min       1Q   Median       3Q      Max "                                          ,
+        "-1.09212 -0.26948 -0.05383  0.40231  0.76508 "                                          ,
+        ""                                                                                       ,
+        "Mean tip height: 2.282328"                                                              ,
+        "Parameter estimate(s) using ML:"                                                        ,
+        "sigma2: 12.469 "                                                                        ,
+        ""                                                                                       ,
+        "Coefficients:"                                                                          ,
+        "             Estimate    StdErr t.value p.value"                                        ,
+        "(Intercept)  2.033487  2.591239  0.7848  0.4392"                                        ,
+        "groupgroup2 -0.041112  0.369139 -0.1114  0.9121"                                        ,
+        ""                                                                                       ,
+        "R-squared: 0.003123\tAdjusted R-squared: -0.03248 ")
+    )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     # ## summary
     # set.seed(1)

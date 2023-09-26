@@ -192,7 +192,6 @@ one.phylolm <- function(one_datas, args) {
     return(run_out)
 }
 
-
 ## Pooling output data together for plot and summary
 pool.pgls.param <- function(x, param, fun = c(median = median, sd = sd)) {
     ## Extract the parameters
@@ -209,51 +208,44 @@ pool.pgls.param <- function(x, param, fun = c(median = median, sd = sd)) {
     return(matrix(c(apply(param_values, 2, fun[[1]]), apply(param_values, 2, fun[[2]])), ncol = length(fun), dimnames = list(c(param_names), names(fun))))
 }
 
-# pool.pgls.dispRity <- function(results) {
-#     ## Pool everything!
-#     pooled_list <- list()
-#     to_pool <- names(results[[1]])
-#     while(length(to_pool) > 0) {
-#         ## Raw pool
-#         pooled <- lapply(results, `[[`, to_pool[1])
-#         ## Smarter pool
-#         if(length(unique(unlist(pooled))) == 1) {
-#             ## Is the same (probs parameter)
-#             pooled_list[[to_pool[1]]] <- unique(unlist(pooled))
-#         } else {
-#             if(is.null(unlist(pooled))) {
-#                 ## Is null (only pool one)
-#                 pooled_list[to_pool[1]] <- list(NULL)
-#             } else {
-#                 if(all(unlist(lapply(pooled, function(x) !is.null(names(x)))))) {
-#                     ## Named vector
-#                     pooled_list[[to_pool[1]]] <- unlist(lapply(results, `[[`, to_pool[1]))
-#                 } else {
-#                     pooled_list[[to_pool[1]]] <- lapply(results, `[[`, to_pool[1])
-#                 }
-#             }
-#         } 
-#         to_pool <- to_pool[-1]
-#     }
+## Converting a list of phylolm to summary phylolm (median)
+convert.to.summary.phylolm <- function(data) {
+    ## Get the standard error and the t statistic
+    se <- sqrt(apply(do.call(rbind, lapply(data, function(x) return(diag(x$vcov)))), 2, median))
+    med_coefs <- pool.pgls.param(data, "coefficients")[,1]
+    tval <- med_coefs/se
 
-#     ## Sort sigma2, logLik, aic and mean.tip.height
-#     pooled_list[["sigma2"]] <- median(unlist(pooled_list[["sigma2"]]))
-#     pooled_list[["logLik"]] <- median(unlist(pooled_list[["logLik"]]))
-#     pooled_list[["aic"]] <- median(unlist(pooled_list[["aic"]]))
-#     pooled_list[["mean.tip.height"]] <- mean(unlist(pooled_list[["mean.tip.height"]]))
+    ## Get the results table
+    if(data[[1]]$boot == 0) {
+        results_table <- cbind(Estimate = med_coefs, StdErr = se, t.value = tval,
+                               p.value = 2*pt(-abs(tval), df=data[[1]]$n - data[[1]]$d))
+    } else {
+        ## Bootstrapped results
+        lower_bootCI <- apply(do.call(rbind, lapply(data, function(x, dim) return(x$bootconfint95[1, 1:dim]), dim = data[[1]]$d)), 2, median)
+        upper_bootCI <- apply(do.call(rbind, lapply(data, function(x, dim) return(x$bootconfint95[2, 1:dim]), dim = data[[1]]$d)), 2, median)
+        results_table <- cbind(Estimate = med_coefs, StdErr = se, t.value = tval,
+                               lowerbootCI = lower_bootCI, upperbootCI = upper_bootCI,
+                               p.value = 2*pt(-abs(tval), df=data[[1]]$n - data[[1]]$d))
+    }
 
-#     ## Sort coeffients and vcov
-#     # pooled_list[["coefficients"]]
-#     # pooled_list[["vcov"]]
+    ## Combine the results into a phylolm object
+    sum_phylolm <- list(call = c(data[[1]]$call, paste0("The statistics are calculated based on the median estimates of ", length(data), " models.")),
+                        coefficients = results_table,
+                        residuals = pool.pgls.param(data, "residuals")[,1],
+                        sigma2 = pool.pgls.param(data, "sigma2")[,1],
+                        optpar = if(is.null(data[[1]]$optpar)) {data[[1]]$optpar} else {pool.pgls.param(data, "optpar")[,1]},
+                        sigma2_error = if(is.null(data[[1]]$sigma2_error)) {data[[1]]$sigma2_error} else {pool.pgls.param(data, "sigma2_error")[,1]},
+                        logLik = pool.pgls.param(data, "logLik")[,1],
+                        df = data[[1]]$p,
+                        aic = pool.pgls.param(data, "aic")[,1],
+                        model = data[[1]]$model,
+                        mean.tip.height = pool.pgls.param(data, "mean.tip.height", fun = c(mean = mean, sd = sd))[,1],
+                        bootNrep = ifelse(data[[1]]$boot>0, data[[1]]$boot - data[[1]]$bootnumFailed, 0),
 
-#     ## Adjust the call
-#     pooled_list$call <- c(pooled_list$call,
-#                           "AIC, logLik and sigma2 values are pooled medians.",
-#                           "AOV is based on the median coefficients estimates.")
-
-#     ## Restate class
-#     class(pooled_list) <- "phylolm"
-#     return(pooled_list)
-# }
+                        r.squared = pool.pgls.param(data, "r.squared")[,1],
+                        adj.r.squared = pool.pgls.param(data, "adj.r.squared")[,1])
 
 
+    class(sum_phylolm) <- "summary.phylolm"
+    return(sum_phylolm)
+}
