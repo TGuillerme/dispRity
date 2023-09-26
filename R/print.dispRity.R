@@ -43,7 +43,7 @@
 # data <- dispRity(data_subsets_boot, metric = c(variances))
 
  
-print.dispRity <- function(x, digits = max(3, getOption("digits") - 3), alll = FALSE, ...) {
+print.dispRity <- function(x, all = FALSE, ...) {
 
     match_call <- match.call()
     x_name <- match_call$x
@@ -203,88 +203,88 @@ print.dispRity <- function(x, digits = max(3, getOption("digits") - 3), alll = F
                     class(x) <- "list"
                     print(x)
                     return(invisible())
-                },
-                pgls.dispRity = {
+                }#,
+                # pgls.dispRity = {
 
-                    ## Modified from phylolm::print.phylolm
-                    ## Print the general info
-                    cat(paste0("phylolm test (pgls) applied to ", length(x), " disparity estimates\n"))
-                    cat(paste0("using the formula: ", Reduce(paste, deparse(x[[1]]$formula))," and the model: ", x[[1]]$model,"\n\n"))
+                #     ## Modified from phylolm::print.phylolm
+                #     ## Print the general info
+                #     cat(paste0("phylolm test (pgls) applied to ", length(x), " disparity estimates\n"))
+                #     cat(paste0("using the formula: ", Reduce(paste, deparse(x[[1]]$formula))," and the model: ", x[[1]]$model,"\n\n"))
 
-#                     ## Print fit
-#                     print(cbind(pool.pgls.param(x, "AIC"), pool.pgls.param(x, "logLik")), digits = digits)
+                #     # ## Print fit
+                #     # print(cbind(pool.pgls.param(x, "AIC"), pool.pgls.param(x, "logLik")), digits = digits)
 
-#                     ## Print param
-#                     cat("\nParameter estimate(s) using ML:\n")
-#                     if (!is.null(x[[1]]$optpar)) {
-#                         opt_param <- pool.pgls.param(x, "optpar")
-#                         if (x[[1]]$model %in% c("OUrandomRoot","OUfixedRoot")) {
-#                             rownames(opt_param) <- "alpha"
-#                             print(opt_param) # OR cat
-#                         }
-#                         if (x[[1]]$model %in% c("lambda","kappa","delta")) {
-#                             cat(x$model,":",x$optpar)
-#                         }
-#                         if (x[11]]$model=="EB") {
-#                             rownames(opt_param) <- "rate"
-#                             print(opt_param)
-#                         }
-#                     cat("\n")
-#                     }
+                #     # ## Print param
+                #     # cat("\nParameter estimate(s) using ML:\n")
+                #     # if (!is.null(x[[1]]$optpar)) {
+                #     #     opt_param <- pool.pgls.param(x, "optpar")
+                #     #     if (x[[1]]$model %in% c("OUrandomRoot","OUfixedRoot")) {
+                #     #         rownames(opt_param) <- "alpha"
+                #     #         print(opt_param) # OR cat
+                #     #     }
+                #     #     if (x[[1]]$model %in% c("lambda","kappa","delta")) {
+                #     #         cat(x$model,":",x$optpar)
+                #     #     }
+                #     #     if (x[11]]$model=="EB") {
+                #     #         rownames(opt_param) <- "rate"
+                #     #         print(opt_param)
+                #     #     }
+                #     # cat("\n")
+                #     # }
 
-#                     cat("sigma2:",x$sigma2,"\n")
-#                     if (x$sigma2_error > 0) cat("sigma2_error:",x$sigma2_error,"\n")
-#                     cat("\nCoefficients:\n")
-#                     print(x$coefficients)
+                #     # cat("sigma2:",x$sigma2,"\n")
+                #     # if (x$sigma2_error > 0) cat("sigma2_error:",x$sigma2_error,"\n")
+                #     # cat("\nCoefficients:\n")
+                #     # print(x$coefficients)
 
 
-# print.phylolm <- function(x, digits = max(3, getOption("digits") - 3), ...){
+                #     # print.phylolm <- function(x, digits = max(3, getOption("digits") - 3), ...){
 
-#   aiclogLik = c(x$aic,x$logLik)
-#   names(aiclogLik) = c("AIC","logLik")
-#   print(aiclogLik, digits = digits)
-#   cat("\nParameter estimate(s) using ML:\n")
-#   if (!is.null(x$optpar)) {
-#     if (x$model %in% c("OUrandomRoot","OUfixedRoot")) cat("alpha:",x$optpar)
-#     if (x$model %in% c("lambda","kappa","delta")) cat(x$model,":",x$optpar)
-#     if (x$model=="EB") cat("rate:",x$optpar)
-#     cat("\n")
-#   }
-#   cat("sigma2:",x$sigma2,"\n")
-#   if (x$sigma2_error > 0) cat("sigma2_error:",x$sigma2_error,"\n")
-#   cat("\nCoefficients:\n")
-#   print(x$coefficients)
-# }
+                #     #   aiclogLik = c(x$aic,x$logLik)
+                #     #   names(aiclogLik) = c("AIC","logLik")
+                #     #   print(aiclogLik, digits = digits)
+                #     #   cat("\nParameter estimate(s) using ML:\n")
+                #     #   if (!is.null(x$optpar)) {
+                #     #     if (x$model %in% c("OUrandomRoot","OUfixedRoot")) cat("alpha:",x$optpar)
+                #     #     if (x$model %in% c("lambda","kappa","delta")) cat(x$model,":",x$optpar)
+                #     #     if (x$model=="EB") cat("rate:",x$optpar)
+                #     #     cat("\n")
+                #     #   }
+                #     #   cat("sigma2:",x$sigma2,"\n")
+                #     #   if (x$sigma2_error > 0) cat("sigma2_error:",x$sigma2_error,"\n")
+                #     #   cat("\nCoefficients:\n")
+                #     #   print(x$coefficients)
+                #     # }
 
-                    ## Print diagnosis
-                    aic_loglik <- matrix(c(median(unlist(lapply(x, `[[`, "aic"))),
-                                           sd(unlist(lapply(x, `[[`, "aic"))),
-                                           median(unlist(lapply(x, `[[`, "logLik"))),
-                                           sd(unlist(lapply(x, `[[`, "logLik")))),
-                                           ncol = 2, byrow = TRUE, dimnames = list(c("AIC", "logLik"),c("median", "sd")))
-                    print(aic_loglik)
+                #     ## Print diagnosis
+                #     aic_loglik <- matrix(c(median(unlist(lapply(x, `[[`, "aic"))),
+                #                            sd(unlist(lapply(x, `[[`, "aic"))),
+                #                            median(unlist(lapply(x, `[[`, "logLik"))),
+                #                            sd(unlist(lapply(x, `[[`, "logLik")))),
+                #                            ncol = 2, byrow = TRUE, dimnames = list(c("AIC", "logLik"),c("median", "sd")))
+                #     print(aic_loglik)
                     
-                    cat("\nParameters estimate(s) using ML:\n")
-                    sigma2 <- matrix(c(median(unlist(lapply(x, `[[`, "sigma2"))), sd(unlist(lapply(x, `[[`, "sigma2")))),
-                                     ncol = 2, dimnames = list(c("sigma2"),c("median", "sd")))
-                    print(sigma2)
+                #     cat("\nParameters estimate(s) using ML:\n")
+                #     sigma2 <- matrix(c(median(unlist(lapply(x, `[[`, "sigma2"))), sd(unlist(lapply(x, `[[`, "sigma2")))),
+                #                      ncol = 2, dimnames = list(c("sigma2"),c("median", "sd")))
+                #     print(sigma2)
                     
-                    cat("\nCoefficients:\n")
-                    coeffs <- unlist(lapply(x, `[[`, "coefficients"))
-                    ## Split by the length of x
-                    coeffs_matrix <- matrix(coeffs, ncol = length(coeffs)/length(x), byrow = TRUE)
+                #     cat("\nCoefficients:\n")
+                #     coeffs <- unlist(lapply(x, `[[`, "coefficients"))
+                #     ## Split by the length of x
+                #     coeffs_matrix <- matrix(coeffs, ncol = length(coeffs)/length(x), byrow = TRUE)
 
-                    ## Get the central tendencies matrix
-                    coeffs_print_med <- apply(coeffs_matrix, 2, median)
-                    coeffs_print_sd <- apply(coeffs_matrix, 2, sd)
-                    coeffs_mat <- cbind(coeffs_print_med, coeffs_print_sd)
-                    rownames(coeffs_mat) <- unique(names(coeffs))
-                    colnames(coeffs_mat) <- c("median", "sd")
-                    print(coeffs_mat)
+                #     ## Get the central tendencies matrix
+                #     coeffs_print_med <- apply(coeffs_matrix, 2, median)
+                #     coeffs_print_sd <- apply(coeffs_matrix, 2, sd)
+                #     coeffs_mat <- cbind(coeffs_print_med, coeffs_print_sd)
+                #     rownames(coeffs_mat) <- unique(names(coeffs))
+                #     colnames(coeffs_mat) <- c("median", "sd")
+                #     print(coeffs_mat)
 
-                    cat(paste0("\nYou can access individual models by using their index (e.g. x[[1]])\nor summarise and plot all models using summary(x) or plot(x)."))
-                    return(invisible())
-                }
+                #     cat(paste0("\nYou can access individual models by using their index (e.g. x[[1]])\nor summarise and plot all models using summary(x) or plot(x)."))
+                #     return(invisible())
+                # }
             )
         }
 
