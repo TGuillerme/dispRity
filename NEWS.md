@@ -35,6 +35,7 @@ roundness <- function(matrix) {
  * `space.maker` can now generate specific row names and be replicated to generate a bunch of spaces (via the new optional arguments `elements.names` and `replicates` respectively).
  * The `add.tree` utility function now has an optional argument to override any existing trees (`replace = TRUE`) or not (`replace = FALSE`; which remains the default previous behaviour). 
  * `print.dispRity` now recognises and highlights simulated data from the [`treats`](https://github.com/tguillerme/treats) package.
+ * Improved `NA` management for `S3` functions.
 
 ### BUG FIXES
  

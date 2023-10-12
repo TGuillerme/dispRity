@@ -9,7 +9,7 @@ get.summary <- function(disparity_subsets_rare, cent.tend, quantiles, ...) {
     output <- list()
 
     ## Summarising NA
-    if(is.na(disparity_subsets_rare[[1]])) {
+    if(all(is.na(disparity_subsets_rare))) {
         if(!missing(cent.tend)) {
             output$cent.tend <- NA
         }
