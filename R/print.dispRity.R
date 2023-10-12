@@ -348,6 +348,15 @@ print.dispRity <- function(x, all = FALSE, ...) {
             if(x$call$disparity$metrics$between.groups) {
                 cat(" between groups")
             }
+
+            ## Print info from dispRitreats
+            if(!is.null(x$call$dispRitreats)) {
+                ## PLACEHOLDER FOR dispRitreats INFO
+                if(x$call$dispRitreats) {
+                    cat(".\nDisparity was calculated from treats simulated data")
+                }
+            }
+
             cat(".\n")
         }
     }

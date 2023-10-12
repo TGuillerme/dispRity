@@ -1,4 +1,4 @@
-dispRity v1.7.14 (2023-09-26)
+dispRity v1.7.15 (2023-10-12)
 =========================
 
 ### NEW FEATURES
@@ -34,6 +34,7 @@ roundness <- function(matrix) {
  * Changed dependencies to [`spptest`](https://github.com/myllym/spptest) to [`GET`](https://github.com/myllym/GET).
  * `space.maker` can now generate specific row names and be replicated to generate a bunch of spaces (via the new optional arguments `elements.names` and `replicates` respectively).
  * The `add.tree` utility function now has an optional argument to override any existing trees (`replace = TRUE`) or not (`replace = FALSE`; which remains the default previous behaviour). 
+ * `print.dispRity` now recognises and highlights simulated data from the [`treats`](https://github.com/tguillerme/treats) package.
 
 ### BUG FIXES
  

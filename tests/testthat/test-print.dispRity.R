@@ -309,3 +309,13 @@ test_that("print.dispRity with model.test data", {
           " p-interval                : (0, 0.6363636)" 
         ))
 })
+
+test_that("dispRitreats verbose", {
+    ## Testing the placeholder trigger
+    data(disparity)
+    output <- capture_output(print(disparity))
+    expect_equal(output, " ---- dispRity object ---- \n7 continuous (acctran) time subsets for 99 elements in one matrix with 97 dimensions with 1 phylogenetic tree\n     90, 80, 70, 60, 50 ...\nData was bootstrapped 100 times (method:\"full\") and rarefied to 20, 15, 10, 5 elements.\nDisparity was calculated as: c(median, centroids).")
+    disparity$call$dispRitreats <- TRUE
+    output <- capture_output(print(disparity))
+    expect_equal(output, " ---- dispRity object ---- \n7 continuous (acctran) time subsets for 99 elements in one matrix with 97 dimensions with 1 phylogenetic tree\n     90, 80, 70, 60, 50 ...\nData was bootstrapped 100 times (method:\"full\") and rarefied to 20, 15, 10, 5 elements.\nDisparity was calculated as: c(median, centroids).\nDisparity was calculated from treats simulated data.")    
+})
