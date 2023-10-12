@@ -26,7 +26,7 @@ get.plot.params <- function(data, data_params, cent.tend, quantiles, rarefaction
             summarised_data <- summary.dispRity(data, quantiles = quantiles, cent.tend = cent.tend, digits = 5, na.rm = TRUE)
         # }
     } else {
-        summarised_data <- summary.dispRity(data, quantiles = quantiles, cent.tend = cent.tend, digits = 5)
+        summarised_data <- summary.dispRity(data, quantiles = quantiles, cent.tend = cent.tend, digits = 5, na.rm = TRUE)
         ## Making a fake obs column
         colnames(summarised_data)[3] <- "obs"
     }
