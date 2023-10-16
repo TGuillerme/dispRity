@@ -254,7 +254,7 @@ extract.dispRity <- function(...) {
 
 
 #' @name get.subsets 
-#' @aliases n.subsets name.subsets size.subsets get.subsets combine.subsets 
+#' @aliases n.subsets name.subsets size.subsets get.subsets combine.subsets
 #'
 #' @title Extracts or modify subsets from a \code{dispRity} object.
 #' @description Extracting or modify some subsets' data and information from a \code{dispRity} object.
@@ -467,19 +467,23 @@ name.subsets <- function(data) {
 
 
 #' @name add.tree
-#' @aliases add.tree get.tree remove.tree
+#' @aliases add.tree remove.tree get.tree
 #' 
-#' @title Add, get or remove tree
+#' @title Add, remove or get trees (or subtrees)
 #'
 #' @usage add.tree(data, tree, replace = FALSE)
-#' @usage get.tree(data)
+#' @usage get.tree(data, subsets = FALSE, to.root = TRUE)
 #' @usage remove.tree(data)
 #' 
-#' @description Adding, extracting or removing the tree component from a \code{dispRity} object
+#' @description Adding, extracting or removing the tree component from a \code{dispRity} object.
+#'
+#' @details \code{get.tree} allows to extract the trees specific to each subsets.
 #'
 #' @param data A \code{dispRity} object.
 #' @param tree A \code{phylo} or \code{mutiPhylo} object.
 #' @param replace Logical, whether to replace any existing tree (\code{TRUE}) or add to it (\code{FALSE}; default).
+#' @param subsets Either a logical whether to extract the tree for each subset (\code{TRUE}) or not (\code{FALSE}; default) or specific subset names or numbers.
+#' @param to.root Logical, whether to return the subset tree including the root of the tree (\code{TRUE}; default) or only containing the elements in the subset (and their most recent common ancestor; \code{FALSE}). If \code{data} contains time bins (from \code{\link{chrono.subsets}} with \code{method = "discrete"}), and \code{to.root = FALSE} it returns the subtrees containing only what's in the bin.
 #' 
 #' @examples
 #' ## Loading a dispRity object
@@ -525,13 +529,17 @@ add.tree <- function(data, tree, replace = FALSE) {
     }
     return(data)
 }
-get.tree <- function(data) {
+get.tree <- function(data, subsets = FALSE, to.root = TRUE) {
     ## Return the tree
     tree <- data$tree
-    if(length(tree) == 1) {
-        return(tree[[1]])
+    if(!subsets) {
+        if(length(tree) == 1) {
+            return(tree[[1]])
+        } else {
+            return(tree)
+        }
     } else {
-        return(tree)
+    ## Subsets placeholder       
     }
 }
 remove.tree <- function(data) {
@@ -539,8 +547,6 @@ remove.tree <- function(data) {
     data$tree <- list(NULL)
     return(data)
 }
-
-
 
 
 

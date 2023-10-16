@@ -721,3 +721,160 @@ test_that("name.subsets(dispRity)", {
     expect_warning(test <- dispRity(matrix(rnorm(25), 5, 5), metric = mean))
     expect_null(name.subsets(test)) 
 })
+
+test_that("subsets.tree", {
+
+
+# subsets.tree <- function(data, subsets, to.root = TRUE) {
+#     ## If data has no subsets, just return tree
+#     check.class(data, "dispRity")
+#     if(is.null(data$subsets)) {
+#         ## Just get the tree(s)
+#         return(get.tree(data))
+#     }
+
+#     ## Get just the subsets
+#     if(!missing(subsets)) {
+#         data <- get.subsets(data)
+#     }
+
+#     ## Check to.root
+#     check.class(to.root, "logical")
+
+#     ##
+
+
+# }
+
+
+
+
+
+    ## No subsets, just return the tree(s)
+
+    ## Basic subsets, return the tree per subsets
+
+    ## Basic subsets + multiphylo
+    
+    ## Subsets with BS and multiphylo
+
+    ## Time bin subsets
+
+    set.seed(1)
+    simple_tree <- rtree(5)
+    simple_tree$edge.length <- rep(1, Nedge(simple_tree))
+    simple_tree$root.time <- 4
+    simple_tree$node.label <- letters[1:4]
+    plot(simple_tree, show.tip.label = FALSE); axisPhylo()
+    nodelabels()
+    edgelabels()
+    tiplabels()
+    abline(v = c(0, 1, 2, 3, 3.5), col = "grey", lty = 2)
+
+    tree <- simple_tree
+
+## Detect the edges containing the requested elements
+detect.edges <- function(tree, elements, to.root) {
+    ## Detect which edges to keep
+    selected_edges <- match(elements, tree$edge[, 2])
+    ## Has an NA (grabbed the root)
+    if(any(to_drop <- is.na(selected_edges))) {
+        ## Drop the root
+        selected_edges <- selected_edges[!to_drop]
+        ## Manually set the root
+        root <- Ntip(tree) + 1
+    } else {
+        if(to.root) {
+            ## Manually set the root
+            root <- Ntip(tree) + 1
+        } else {
+            ## Get the local root
+            root <- getMRCA(tree, elements)
+        }
+    }
+
+    ## Get the nodes to test if all edges connect
+    test_nodes <- tree$edge[selected_edges, 1]
+    ## Remove the root
+    if(root %in% test_nodes) {
+        test_nodes <- test_nodes[-c(which(test_nodes == root))] 
+    }
+    ## Check each node
+    while(length(test_nodes) != 0) {
+        if(test_nodes[1] %in% tree$edge[selected_edges, 2]) {
+            ## Node is OK
+            test_nodes <- test_nodes[-1]
+        } else {
+            ## Node is not connected
+            selected_edges <- c(selected_edges, which(tree$edge[,2] == test_nodes[1]))
+            ## Get the nodes to test if all edges connect
+            test_nodes <- tree$edge[selected_edges, 1]
+            ## Remove the root
+            if(root %in% test_nodes) {
+                test_nodes <- test_nodes[-c(which(test_nodes == root))] 
+            }
+        }
+    }
+    return(selected_edges)
+}
+
+    expect_equal(sort(detect.edges(tree, c(5, 3, 2, 8), to.root = FALSE)), sort(c(6, 5, 4, 3, 8)))
+    expect_equal(sort(detect.edges(tree, c(5, 3, 2, 8), to.root = TRUE)), sort(c(6, 5, 4, 3, 8, 2)))
+    expect_equal(sort(detect.edges(tree, c(9, 6, 1), to.root = FALSE)), sort(c(5,3,2,1)))
+    expect_equal(sort(detect.edges(tree, c(9, 6, 1), to.root = TRUE)), sort(c(5,3,2,1)))
+
+get.new.tree <- function(tree, elements, to.root) {
+
+    ## Detect which edges to keep
+    new_edges <- detect.edges(tree, elements, to.root)
+    new_tree <- list(edge        = tree$edge[new_edges, ],
+                     edge.length = tree$edge.length[new_edges])
+
+    ## Update tip.label
+    new_tree$tip.label <- c(tree$tip.label,tree$node.label)[new_tree$edge[,2][!(new_tree$edge[,2] %in% new_tree$edge[,1])]]
+    new_tree$node.label <- tree$node.label[unique(new_tree$edge[,1])-Ntip(tree)]
+
+    # Detect who is a new tip (i.e. an element present in edge[,1])
+    ## Update Nnodes
+    new_tree$Nnode <- length(unique(new_tree$edge[,1]))
+
+    ## Convert the edge numbers
+    new_tree$edge <- matrix(match(c(new_tree$edge), rev(unique(c(new_tree$edge)))), ncol = 2, byrow = FALSE)
+
+    ## Update root.time
+    if(to.root) {
+        new_tree$root.time <- tree$root.time
+    } else {
+        ages <- tree.age(tree)
+        warning("DEBUG: Not necessary the first node label!")
+        new_tree$root.time <- ages$ages[which(ages$elements == tree$node.label[1])]
+    }
+
+    class(new_tree) <- "phylo"
+    return(new_tree)
+}
+    
+    #plot(get.new.tree(tree, c(5, 3, 2, 8), to.root = FALSE))
+
+    # matrix_dumb <- matrix(1, ncol = 1, nrow = 9, dimnames = list(c(simple_tree$tip.label, simple_tree$node.label))) # TODO: debug: doesn't work below if only one dimension
+
+    # data <- matrix_dumb
+    # tree <- simple_tree
+    # method = "discrete"
+    # time = c(0, 1, 2, 3, 3.5)
+
+    # data_bins <- chrono.subsets(matrix_dumb, tree = simple_tree, method = "discrete", time = time, inc.nodes = TRUE)
+    # ## BUG when using a matrix with just one column! (empty subsets)
+
+    # test <- dispRity(times, metric = edge.length.tree, to.root = FALSE)
+    # summary(test)
+
+    # matrix <- times$matrix[[1]][times$subsets[[3]]$elements,, drop = FALSE]
+    # matrix <- times$matrix[[1]][times$subsets[[4]]$elements,, drop = FALSE]
+
+    # expect_equal(unique(c(summary(test)$obs)), 2)
+    ## This should output the amount of branch length contained in each bin correctly
+
+
+    ## Time bin subsets + multiPhylo
+})
