@@ -834,7 +834,6 @@ get.new.tree <- function(tree, elements, to.root) {
     new_tree$tip.label <- c(tree$tip.label,tree$node.label)[new_tree$edge[,2][!(new_tree$edge[,2] %in% new_tree$edge[,1])]]
     new_tree$node.label <- tree$node.label[unique(new_tree$edge[,1])-Ntip(tree)]
 
-    # Detect who is a new tip (i.e. an element present in edge[,1])
     ## Update Nnodes
     new_tree$Nnode <- length(unique(new_tree$edge[,1]))
 
@@ -846,15 +845,36 @@ get.new.tree <- function(tree, elements, to.root) {
         new_tree$root.time <- tree$root.time
     } else {
         ages <- tree.age(tree)
-        warning("DEBUG: Not necessary the first node label!")
+        ## Not necessary the first node label?
         new_tree$root.time <- ages$ages[which(ages$elements == tree$node.label[1])]
     }
 
     class(new_tree) <- "phylo"
     return(new_tree)
 }
-    
-    #plot(get.new.tree(tree, c(5, 3, 2, 8), to.root = FALSE))
+
+    test <- get.new.tree(tree, c(5, 3, 2, 8), to.root = TRUE)
+    expect_is(test, "phylo")
+    expect_equal(test$edge[c(5,1,4,3,6,2), ], matrix(c(4,7,7,3,7,5,5,1,5,6,6,2), ncol = 2, byrow = 2))
+
+    ## BUG WITH NO ROOT
+    # test <- get.new.tree(tree, c(5, 3, 2, 8), to.root = FALSE)
+    # expect_is(test, "phylo")
+    # expect_equal(test$edge[c(5,1,4,3,6,2), ], matrix(c(4,7,7,3,7,5,5,1,5,6,6,2), ncol = 2, byrow = 2))
+    # expect_null(plot(test))
+
+    # test <- get.new.tree(tree, c(9, 6, 1), to.root = FALSE)
+    # expect_is(test, "phylo")
+    # expect_equal(test$edge[c(5,1,4,3,6,2), ], matrix(c(4,7,7,3,7,5,5,1,5,6,6,2), ncol = 2, byrow = 2))
+    # expect_null(plot(test))
+
+    # test <- get.new.tree(tree, c(9, 6, 1), to.root = TRUE)
+    # expect_is(test, "phylo")
+    # expect_equal(test$edge[c(5,1,4,3,6,2), ], matrix(c(4,7,7,3,7,5,5,1,5,6,6,2), ncol = 2, byrow = 2))
+    # expect_null(plot(test))
+
+
+
 
     # matrix_dumb <- matrix(1, ncol = 1, nrow = 9, dimnames = list(c(simple_tree$tip.label, simple_tree$node.label))) # TODO: debug: doesn't work below if only one dimension
 
