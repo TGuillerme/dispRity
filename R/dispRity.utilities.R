@@ -530,16 +530,45 @@ add.tree <- function(data, tree, replace = FALSE) {
     return(data)
 }
 get.tree <- function(data, subsets = FALSE, to.root = TRUE) {
-    ## Return the tree
-    tree <- data$tree
-    if(!subsets) {
+    
+    ## Check for tree
+    match_call <- match.call()
+    if(is.null(data$tree)) {
+        stop.call(match_call$data, " does not contain any tree(s).")
+    }
+    
+    ## Returns just the tree
+    if((is(subsets, "logical") && !subsets) || is.null(data$subsets)) {
+
+        ## Get the tree
+        tree <- data$tree
+
+        ## Return the tree
         if(length(tree) == 1) {
             return(tree[[1]])
         } else {
             return(tree)
         }
+
     } else {
-    ## Subsets placeholder       
+
+        ## Extract subset trees
+        if((is(subsets, "logical") && subsets)) {
+            ## Get all subsets
+            subsets <- name.subsets(data)
+        }
+
+        ## Check the subsets names
+        check.subsets(subsets, data)
+
+        ## Check to root
+        check.class(to.root, "logical")
+
+        ## Get the trees for each subset
+        trees_list <- lapply(data$subsets[subsets], lapply, get.tree.subset, data, to.root)
+            
+        ## return the trees
+        return(trees_list)
     }
 }
 remove.tree <- function(data) {
