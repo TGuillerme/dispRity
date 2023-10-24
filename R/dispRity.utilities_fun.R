@@ -180,7 +180,7 @@ detect.edges <- function(tree, elements, to.root) {
 }
 
 ## Get the tree containing requested elements
-get.new.tree <- function(elements, tree, to.root) {
+get.new.tree <- function(elements, tree, to.root, slice) {
 
     ## Detect which edges to keep
     new_edges <- unique(detect.edges(tree, elements, to.root))
@@ -243,22 +243,32 @@ get.new.tree <- function(elements, tree, to.root) {
     return(new_tree)
 }
 
-## Return a subseted tree
-get.tree.subset <- function(one_subset, data, to.root) {
-
-    ## One input tree
-    if(length(data$tree) == 1) {
-        output <- apply(one_subset, 2, function(x, tree, to.root) get.new.tree(elements = x, tree = tree, to.root = to.root), tree = data$tree[[1]], to.root = to.root)
-        if(is(output, "list")) {
-            class(output) <- "multiPhylo"
-            return(output)
+## Toggle an output to phylo or multiphylo
+toggle.multiphylo.list <- function(x) {
+    if(is(x, "list")) {
+        ## Check if the elements are phylo
+        elements_class <- unlist(lapply(x, class))
+        if(length(elements_class) == 1 && elements_class == "phylo") {
+            return(x[[1]])
         } else {
-            return(output)
+            if(length(all_elems <- unique(elements_class)) == 1) {
+                if(all_elems == "phylo") {
+                    x <- "multiPhylo"
+                    return(x)
+                }
+            }
         }
-    } else {
-        ## Multiple trees
-        stop("TODO")
     }
+    return(x)
 }
 
+## Return a subseted tree
+get.one.tree.subset <- function(one_subset, data, to.root, slice.type) {
+    ## Normal behaviour
+    output <- lapply(one_subset, function(x, tree, to.root) apply(x, 2, function(x, tree, to.root) get.new.tree(elements = x, tree = tree, to.root = to.root), tree = tree, to.root = to.root), tree = data$tree[[1]], to.root = to.root)
+    ## Change the output objects
+    output <- lapply(output, toggle.multiphylo.list)
+
+    return(output)
+}
 

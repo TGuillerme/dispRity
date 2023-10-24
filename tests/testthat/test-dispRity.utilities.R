@@ -722,7 +722,7 @@ test_that("name.subsets(dispRity)", {
     expect_null(name.subsets(test)) 
 })
 
-test_that("add.tree with subsets", {
+test_that("get.tree with subsets", {
 
     ## Testing detect edges and get new tree
     set.seed(1)
@@ -812,20 +812,20 @@ test_that("add.tree with subsets", {
     tiplabels(cex = 0.8)
     tiplabels(big_tree$tip.label, adj = -2, col = "blue", cex = 0.8)
 
-    # test <- get.new.tree(tree = tree, elements = c(6, 32, 28, 15, 35), to.root = FALSE)
-    # expect_is(test, "phylo")
-    # expect_equal(Ntip(test), 4)
-    # expect_equal(Nnode(test), 10)
-    # expect_equal(test$tip.label, c("t6", "l", "o", "t12"))
-    # expect_equal(test$node.label, c("a", "b", "c", "d"))
+    test <- get.new.tree(tree = big_tree, elements = c(6, 32, 28, 15, 35), to.root = FALSE)
+    expect_is(test, "phylo")
+    expect_equal(Ntip(test), 4)
+    expect_equal(Nnode(test), 10)
+    expect_equal(test$tip.label, c("t6", "l", "o", "t12"))
+    expect_equal(test$node.label, c("b", "c", "d", "e", "f", "h", "i", "j", "m", "n"))
 
-    # set.seed(1) ; elements <- sample(1:39, 10)
-    # test <- get.new.tree(tree = tree, elements = elements, to.root = FALSE)
-    # expect_is(test, "phylo")
-    # expect_equal(Ntip(test), 5)
-    # expect_equal(Nnode(test), 16)
-    # expect_equal(test$tip.label, c("t16", "t7", "t15", "t5", "t17"))
-    # expect_equal(test$node.label, c("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "l", "m", "n", "o", "p", "q"))
+    set.seed(1) ; elements <- sample(1:39, 10)
+    test <- get.new.tree(tree = big_tree, elements = elements, to.root = FALSE)
+    expect_is(test, "phylo")
+    expect_equal(Ntip(test), 5)
+    expect_equal(Nnode(test), 16)
+    expect_equal(test$tip.label, c("t16", "t7", "t15", "t5", "t17"))
+    expect_equal(test$node.label, c("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "l", "m", "n", "o", "p", "q"))
 
     ## Basic subsets, return the tree per subsets
     set.seed(1)
@@ -853,10 +853,10 @@ test_that("add.tree with subsets", {
     test <- get.tree(data, subsets = TRUE)
     expect_is(test, "list")
     expect_equal(length(test), 4)
-    expect_equal(test$clade1$elements[[1]]$tip.label, c("t7", "t2", "t3"))
-    expect_equal(test$clade2$elements[[1]]$tip.label, c("c", "f", "t4"))
-    expect_equal(test$clade3$elements[[1]]$tip.label, c("t7", "t10"))
-    expect_equal(test$clade4$elements[[1]]$tip.label, simple_tree$tip.label)
+    expect_equal(test$clade1$elements$tip.label, c("t7", "t2", "t3"))
+    expect_equal(test$clade2$elements$tip.label, c("c", "f", "t4"))
+    expect_equal(test$clade3$elements$tip.label, c("t7", "t10"))
+    expect_equal(test$clade4$elements$tip.label, simple_tree$tip.label)
 
     ## Get subsets
     test <- get.tree(data, subsets = c(1,2))
@@ -869,56 +869,83 @@ test_that("add.tree with subsets", {
     test <- get.tree(data, subsets = TRUE)
     expect_is(test, "list")
     expect_equal(length(test), 4)
-    expect_equal(test$clade1$elements[[1]]$tip.label, c("t7", "t2", "t3"))
-    expect_equal(test$clade2$elements[[1]]$tip.label, c("c", "f", "t4"))
-    expect_equal(test$clade3$elements[[1]]$tip.label, c("t7", "t10"))
-    expect_equal(test$clade4$elements[[1]]$tip.label, simple_tree$tip.label)
+    expect_equal(test$clade1$elements$tip.label, c("t7", "t2", "t3"))
+    expect_equal(test$clade2$elements$tip.label, c("c", "f", "t4"))
+    expect_equal(test$clade3$elements$tip.label, c("t7", "t10"))
+    expect_equal(test$clade4$elements$tip.label, simple_tree$tip.label)
 
-#     ## Time bin subsets
-#     set.seed(1)
-#     simple_tree <- rtree(5)
-#     simple_tree$edge.length <- rep(1, Nedge(simple_tree))
-#     simple_tree$root.time <- 4
-#     simple_tree$node.label <- letters[1:4]
-#     plot(simple_tree, show.tip.label = FALSE); axisPhylo()
-#     nodelabels()
-#     nodelabels(simple_tree$node.label, adj = -1, col = "blue")
-#     edgelabels()
-#     tiplabels()
-#     tiplabels(simple_tree$tip.label, adj = -1, col = "blue")
-#     abline(v = c(0, 1, 2, 3, 3.5), col = "grey", lty = 2)
-#     tree <- simple_tree
+    ## Time bin subsets
+    set.seed(1)
+    simple_tree <- rtree(5)
+    simple_tree$edge.length <- rep(1, Nedge(simple_tree))
+    simple_tree$root.time <- 4
+    simple_tree$node.label <- letters[1:4]
+    plot(simple_tree, show.tip.label = FALSE); axisPhylo()
+    nodelabels()
+    nodelabels(simple_tree$node.label, adj = -1, col = "blue")
+    edgelabels()
+    tiplabels()
+    tiplabels(simple_tree$tip.label, adj = -1, col = "blue")
+    abline(v = c(0, 1, 2, 3, 3.5), col = "grey", lty = 2)
+    tree <- simple_tree
+    matrix_dumb <- matrix(1, ncol = 1, nrow = 9, dimnames = list(c(simple_tree$tip.label, simple_tree$node.label)))
+    data <- matrix_dumb
+    tree <- simple_tree
+    method = "discrete"
+    time = c(0.5, 1, 2, 3, 3.5)
+    data_bins <- chrono.subsets(matrix_dumb, tree = simple_tree, method = "discrete", time = time, inc.nodes = TRUE)
 
-#     matrix_dumb <- matrix(1, ncol = 1, nrow = 9, dimnames = list(c(simple_tree$tip.label, simple_tree$node.label))) # TODO: debug: doesn't work below if only one dimension
 
-#     data <- matrix_dumb
-#     tree <- simple_tree
-#     method = "discrete"
-#     time = c(0, 1, 2, 3, 3.5)
 
-#     data_bins <- chrono.subsets(matrix_dumb, tree = simple_tree, method = "discrete", time = time, inc.nodes = TRUE)
-#     ## BUG when using a matrix with just one column! (empty subsets)
+chrono.subset.tree <- function(subset_n, data, to.root) {
+
+    slice.type <- data$call$subsets[[1]]
+    age <- as.numeric(strsplit(names(data$subsets[subset_n]), split = " - ")[[1]])
+
+    ## Time bin/slice behaviour
+    if(slice.type %in% c("discrete", "continuous")) {
+        if(to.root) {
+
+            slice.tree(data$tree[[1]], age = age[2], model = "acctran")
+
+            ## Maybe test this one?
+            # paleotree::timeSliceTree
+
+            slice.tree(tree, age, model, FAD, LAD)
+
+            ## cut the trees to the upper bound
+            return(output)
+        } else {
+            if(!to.root && slice.type == "discrete") {
+                ## cut the trees to the upper and lower bounds
+                return(output)
+
+
+
+
+            }
+        }
+    }
+
+    ## Out
+    return(output)
+
+}
+
+
+# #     ## BUG when using a matrix with just one column! (empty subsets)
 
 #     trees <- get.tree(data_bins, subsets = TRUE)
 
-#     dev.new()
-#     par(mfrow = c(2,2))
-#     plot(trees[[1]]$elements[[1]]) ; axisPhylo()
-#     plot(trees[[2]]$elements[[1]]) ; axisPhylo()
-#     plot(trees[[3]]$elements[[1]]) ; axisPhylo()
-#     plot(trees[[4]]$elements[[1]]) ; axisPhylo()
+# #     dev.new()
+# #     par(mfrow = c(2,2))
+# #     plot(trees[[1]]$elements[[1]]) ; axisPhylo()
+# #     plot(trees[[2]]$elements[[1]]) ; axisPhylo()
+# #     plot(trees[[3]]$elements[[1]]) ; axisPhylo()
+# #     plot(trees[[4]]$elements[[1]]) ; axisPhylo()
 
 # tree <- trees[[1]]$elements[[1]]
 # bin <- names(trees)[[1]]
-
-# match.branch.length.to.bins <- function(tree, bin) {
-#     ## Convert the bin name into boundaries
-#     if(is(bin, "character")) {
-#         bin <- as.numeric(strsplit(bin, split = " - ")[[1]])
-#     }
-#     tree.age(tree)
-#     slide.nodes()
-# }
 
 
 

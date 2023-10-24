@@ -564,8 +564,11 @@ get.tree <- function(data, subsets = FALSE, to.root = TRUE) {
         ## Check to root
         check.class(to.root, "logical")
 
+        ## Check whether to use slicing
+        slice.type <- data$call$subsets[[1]]
+
         ## Get the trees for each subset
-        trees_list <- lapply(data$subsets[subsets], lapply, get.tree.subset, data, to.root)
+        trees_list <- lapply(data$subsets[subsets], get.one.tree.subset, data, to.root, slice.type)
             
         ## return the trees
         return(trees_list)
