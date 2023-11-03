@@ -18,6 +18,8 @@ object
 	|
 	|
 	\---$call* = class:"list" (details of the methods used)
+	|   |
+	|   \---$dispRity.multi = class:"logical"
 	|	|
 	|	\---$subsets = class:"character"
 	|	|
