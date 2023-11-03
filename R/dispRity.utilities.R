@@ -43,13 +43,13 @@ make.dispRity <- function(data, tree, call, subsets) {
             list = {dispRity_object$matrix <- data})
     }
 
-    ## Add the tree
+    ## Add the call
     if(!missing(call)) {
         check.class(call, "list")
         dispRity_object$call <- call
     }
 
-    ## Add the call
+    ## Add the tree
     if(!missing(tree)) {
         class_tree <- check.class(tree, c("multiPhylo", "phylo"))
         if(class_tree == "multiPhylo") {
