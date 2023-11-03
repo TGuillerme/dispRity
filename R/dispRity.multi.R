@@ -1,5 +1,29 @@
 # Internal function for applying a function to multiple data and trees
-# If data$call$dispRity.multi = TRUE (sorted by check.dispRity.tree) then apply the disparity function as a lapply
+# If data$call$dispRity.multi = TRUE (sorted by check.dispRity.tree && check.dispRity.data) then apply the disparity function as a lapply
+
+## Do change in:
+# dispRity/R/dispRity.utilities.R
+#         data$tree <- check.dispRity.tree(tree, data = data)
+#         data$tree <- check.dispRity.tree(tree = tree, data = data)
+#             data$tree <- check.dispRity.tree(tree = c(get.tree(data), tree), data = data)
+# dispRity/R/test.metric.R
+#         data <- check.dispRity.data(data)
+# dispRity/R/dispRity.R
+#             data <- fill.dispRity(make.dispRity(data = check.dispRity.data(data), tree = tree))
+#             data <- fill.dispRity(make.dispRity(data = check.dispRity.data(data)))
+# dispRity/R/dispRity.utilities.R
+#         data$matrix <- check.dispRity.data(data$matrix)
+# dispRity/R/custom.subsets.R
+#     data <- check.dispRity.data(data)
+# dispRity/R/boot.matrix.R
+#         data <- check.dispRity.data(data)
+# dispRity/R/chrono.subsets.R
+#     data <- check.dispRity.data(data)
+
+
+
+
+
 
 # e.g.
 
