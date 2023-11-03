@@ -1,15 +1,31 @@
-dispRity v1.7.15 (2023-10-12)
+dispRity v1.7.16 (2023-11-3) *dispRity.multi*
 =========================
 
-### NEW FEATURES
-  
- * *New utility function*: `name.subsets` for directly accessing the subsets names of a `dispRity` object (basically doing `names(my_dispRity$subsets)`).
- * *New utility function*: `MCMCglmm.variance` for calculating the variance for specific terms in a `"MCMCglmm"` model.
- * *New* statistical test: `pgls.dispRity` to run PGLS test on a `dispRity` object with a level-2 metric and a tree (using excellent [`phylolm`](https://cran.r-project.org/web/packages/phylolm/phylolm.pdf) algorithm). The new test comes with its own S3 print, summary and plot functions if the input `dispRity` data contains multiple trees or multiple matrices (running and handling the output of multiple `phylolm`).
- * *New* options to `get.tree` utility function to get the trees in each subsets (thanks to Jack Hadfield for this suggestion).
+<!-- TODO: route to 1.8 (and that's it for this one)-->
+<!--
+ - [ ] add roundness metric
+    - [ ] test
+    - [ ] doc
+    - [ ] example
+    - [ ] manual
+ - [ ] add `get.tree` working for subsets
+    - [x] test
+    - [ ] doc
+    - [ ] example
+    - [ ] manual
+ - [ ] add `get.tree` for slices (Jack's suggestion)
+    - [ ] test
+    - [ ] doc
+    - [ ] example
+    - [ ] manual
+ - [ ] make `dispRity` and al. `dispRitreatable` (Mario's suggestion)
+    - [ ] test
+    - [ ] doc
+    - [ ] example
+    - [ ] manual
+    - 
 
- <!-- * *New* resampling option for `boot.matrix`: `"null"` to resample each subset with any elements (not only elements within that subset). -->
- <!-- TODO: test + add proba and tree algorithms -->
+ -->
  <!-- *New metric*: `roundness` to measure how round the elliptical representation of a matrix is. TODO: handle non-VCV input:
  ## The roundness function
 roundness <- function(matrix) {
@@ -19,6 +35,15 @@ roundness <- function(matrix) {
   sum(diff(x)*zoo::rollmean(y, 2))
 }
  -->
+
+
+### NEW FEATURES
+
+ * Added the _dispRity.multi_ internal architecture now allowing users to work with different matrices **and** different trees as inputs for `custom.subsets`, `chrono.subsets`, `boot.matrix` and `dispRity`. This change is not affecting the user level appart from now allowing to bypass some error messages (thanks to Mario Corio for that obvious suggestion).
+ * *New utility function*: `name.subsets` for directly accessing the subsets names of a `dispRity` object (basically doing `names(my_dispRity$subsets)`).
+ * *New utility function*: `MCMCglmm.variance` for calculating the variance for specific terms in a `"MCMCglmm"` model.
+ * *New* statistical test: `pgls.dispRity` to run PGLS test on a `dispRity` object with a level-2 metric and a tree (using excellent [`phylolm`](https://cran.r-project.org/web/packages/phylolm/phylolm.pdf) algorithm). The new test comes with its own S3 print, summary and plot functions if the input `dispRity` data contains multiple trees or multiple matrices (running and handling the output of multiple `phylolm`).
+ * *New* options to `get.tree` utility function to get the trees in each subsets (thanks to Jack Hadfield for this suggestion).
 
 ### MINOR IMPROVEMENTS
 
