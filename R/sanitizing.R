@@ -146,9 +146,13 @@ add.rownames <- function(x) {
     rownames(x) <- seq(1:nrow(x))
     return(x)
 }
+
 ## Checks whether the data is a matrix or a list
-check.dispRity.data <- function(data) {
-    match_call <- match.call()
+check.data <- function(data, match_call) {
+
+    ## Multi toggle
+    is_multi <- FALSE
+    
     ## Check class
     data_class <- check.class(data, c("matrix", "data.frame", "list"))
 
@@ -169,9 +173,8 @@ check.dispRity.data <- function(data) {
         if(!all(all_classes %in% c("matrix", "array"))) {
             stop.call(match_call$data, is_error)
         } 
-        ## Check the dimensions
-        all_dim <- unique(unlist(lapply(data, dim)))
-        if(!(length(all_dim) %in% c(1,2))) {
+        ## Check the columns
+        if(length(unique(unlist(lapply(data, ncol)))) > 1) {
             stop.call(match_call$data, is_error)
         }
         ## Check the rownames
@@ -179,15 +182,18 @@ check.dispRity.data <- function(data) {
             ## If no rownames, add them
             data <- lapply(data, add.rownames)
             warning(row_warning)
+        } 
+        ## Find the rows that are not in common between matrices
+        rows <- unique(unlist(lapply(data, rownames)))
+        unmatch <- unlist(lapply(data, function(x, rows) return(rows[!rows %in% rownames(x)]), rows = rows))
+        if(length(unmatch) > 0) {
+            ## Warning rows
+            warning(paste0("The following elements are not present in all matrices: ", paste0(unmatch, collapse = ", "), ". The matrices will be treated as separate trait-spaces."))
+            ## Toggle multi
+            is_multi <- TRUE
         } else {
-            ## Check the rownames
-            check_rows <- unique(unlist(lapply(data, rownames)))
-            if(length(check_rows) != all_dim[1]) {
-                stop.call(match_call$data, is_error)
-            }
-            ## Sort the rownames softly (i.e. in the order of the first matrix)
+            ## Reorder the rows to match the first matrix
             data <- lapply(data, function(x, order) x[order, , drop = FALSE], order = rownames(data[[1]]))
-            # data <- lapply(data, function(x) x[order(rownames(x)), exact = TRUE, drop = FALSE])
         }
     } else {
         ## Eventually add rownames
@@ -197,12 +203,14 @@ check.dispRity.data <- function(data) {
         }
         data <- list(data)
     }
-    return(data)
+    return(list(data = data, multi = is_multi))
 }
-
 ## Checks whether the tree is in the correct format
-check.dispRity.tree <- function(tree, data, bind.trees = FALSE) {
+check.tree <- function(tree, data, bind.trees = FALSE, match_call) {
     
+    ## multi toggle
+    is_multi <- FALSE
+
     ## Check class
     tree_class <- check.class(tree, c("phylo", "multiPhylo"))
     ## Convert into a list (not multiPhylo if it's a single tree)
@@ -229,12 +237,26 @@ check.dispRity.tree <- function(tree, data, bind.trees = FALSE) {
         ## Match the data and the trees?
         pass.fun <- function(cleaned) return(!all(is.na(cleaned$dropped_tips), is.na(cleaned$dropped_rows)))
         if(!bind.trees) {
-            cleanings <- lapply(data$matrix, clean.data, tree, inc.nodes = inc.nodes)
+            if(length(tree) != length(data$matrix)) {
+                ## Toggle multi
+                is_multi <- TRUE
+                dropped <- check.multi.tree(tree, data, inc.nodes)
+                if(length(dropped) > 0) {
+                    ## Warning
+                    warning(paste0("The following elements are not present in all trees: ", paste0(dropped, collapse = ", "), ". Some analyses downstream might not work because of this (you can use ?clean.data to match both data and tree if needed)."))
+                }
+                ## Done for here
+                return(list(tree = tree, multi = is_multi))
+            } else {
+                ## Normal cleaning check
+                cleanings <- lapply(data$matrix, clean.data, tree, inc.nodes = inc.nodes)
+            }
         } else {
             if(length(tree) != length(data$matrix)) {
                 stop("The number of matrices and trees must be the same to bind them.", call. = FALSE)
             }
-            cleanings <- mapply(clean.data, data$matrix, tree, MoreArgs = c(inc.nodes = inc.nodes), SIMPLIFY = FALSE)
+            ## Clean
+            cleanings <- mapply(clean.data, data$matrix, tree, MoreArgs = list(inc.nodes = inc.nodes), SIMPLIFY = FALSE)
         }
         if(any(not_pass <- unlist(lapply(cleanings, pass.fun)))) {
             ## Stop!
@@ -242,5 +264,80 @@ check.dispRity.tree <- function(tree, data, bind.trees = FALSE) {
         }
     }
 
-    return(tree)
+    return(list(tree = tree, multi = is_multi))
+}
+## Check the match between multiple trees and data
+check.multi.tree <- function(tree, data, inc.nodes) {
+    ## Get all the labels from the matrices and make a dummy one
+    all_elements <- unique(unlist(lapply(data$matrix, rownames)))
+    dummy_data <- matrix(1, nrow = length(all_elements), dimnames = list(all_elements))
+    ## Make a dummy matrix with these
+    cleanings <- lapply(tree, function(tree, data, inc.nodes) clean.data(data, tree, inc.nodes), data = dummy_data, inc.nodes = inc.nodes)
+    dropped <- unique(unlist(lapply(cleanings, function(x) return(c(x$dropped_rows, x$dropped_tips)))))
+    if(any(is.na(dropped))) {
+        dropped <- dropped[-which(is.na(dropped))]
+    }
+    return(dropped)
+}
+
+## Wrapper function for checking the data
+check.dispRity.data <- function(data = NULL, tree = NULL, bind.trees = FALSE, returns = c("data", "tree", "multi")) {
+
+    match_call <- match.call()
+    is_multi <- FALSE
+
+    ## Checking the data
+    if(!is.null(data) && !is(data, "dispRity")) {
+        data <- check.data(data, match_call)
+        is_multi <- any(is_multi, data$call$multi)
+        data <- data$data
+    }
+
+    ## Checking the tree
+    if(!is.null(tree)) {
+        tree <- check.tree(tree, data, bind.trees, match_call)
+        is_multi <- any(is_multi, tree$multi)
+        tree <- tree$tree
+    }
+
+    ## Checking multi
+    # if(!is.null(data) && !is.null(tree)) {
+
+    #     check.labels <- function(tree, data) {
+    #         return(all(rownames(data) %in% c(tree$tip.label, tree$node.label)))
+    #     }
+
+    #     # - case 1: same number of trees and matrices but different labels in all
+    #     length(data) == length(tree)
+    #     test <- all(check.labels, tree, data, SIMPLIFY = FALSE)))
+
+    #     # - case 2: one matrix (with all labels) but multiple trees with different labels
+    #     length(data) == 1 && length(tree) > 1
+    #     all(unlist(lapply(tree, check.labels, data[[1]])))
+        
+    #     # - case 3: multiple matrices (with all labels) but multiple trees
+    #     length(data) > 1 && length(tree) > 1 && all(sort(unique(unlist(lapply(data, rownames)))) == rownames(data[[1]]))
+    #     all(unlist(lapply(tree, check.labels, data[[1]])))
+    #     #TODO: replicate the number of matrices per tree
+    #     out_expected <- length(data)*length(tree)
+    # }
+
+    ## Sort the output
+    output <- list()
+    if("data" %in% returns) {
+        output$data <- data
+    }
+    if("tree" %in% returns) {
+        output$tree <- tree
+    }
+    if("multi" %in% returns) {
+        output$multi <- is_multi
+    }
+
+    ## Output
+    if(length(returns) == 1) {
+        return(output[[1]])
+    } else {
+        return(output)
+    }
 }
