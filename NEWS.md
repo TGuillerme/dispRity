@@ -23,7 +23,11 @@ dispRity v1.7.16 (2023-11-3) *dispRity.multi*
     - [ ] doc
     - [ ] example
     - [ ] manual
-    - 
+ - [ ] Developers vignette
+    - [ ] update code lines numbers Packaging/dispRity.length.R
+    - [ ] clean repo root
+    - [ ] remove disparity_object.md
+    - [ ] remove disparity_internal_logic.md
 
  -->
  <!-- *New metric*: `roundness` to measure how round the elliptical representation of a matrix is. TODO: handle non-VCV input:
@@ -44,6 +48,7 @@ roundness <- function(matrix) {
  * *New utility function*: `MCMCglmm.variance` for calculating the variance for specific terms in a `"MCMCglmm"` model.
  * *New* statistical test: `pgls.dispRity` to run PGLS test on a `dispRity` object with a level-2 metric and a tree (using excellent [`phylolm`](https://cran.r-project.org/web/packages/phylolm/phylolm.pdf) algorithm). The new test comes with its own S3 print, summary and plot functions if the input `dispRity` data contains multiple trees or multiple matrices (running and handling the output of multiple `phylolm`).
  * *New* options to `get.tree` utility function to get the trees in each subsets (thanks to Jack Hadfield for this suggestion).
+ * *New vignette* compiling resources for developers to help people (and future me) to edit the package. 
 
 ### MINOR IMPROVEMENTS
 
