@@ -162,6 +162,36 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
         }
     }
 
+    # dispRity.multi
+    if(!is.null(data$call$dispRity.multi) && data$call$dispRity.multi) {
+        ## Split the data
+        split_data <- dispRity.multi.split(data)
+
+        ## Change the call in dispRity (if verbose)
+        if(verbose) {
+            ## Changing the dispRity function name (verbose line edited out)
+            dispRity.call <- dispRity
+
+            ## Find the verbose lines
+            start_verbose <- which(as.character(body(dispRity.call)) == "if (verbose) message(\"Calculating disparity\", appendLF = FALSE)")
+            end_verbose <- which(as.character(body(dispRity.call)) == "if (verbose) message(\"Done.\\n\", appendLF = FALSE)")
+
+            ## Comment out both lines
+            body(dispRity.call)[[start_verbose]] <- body(dispRity.call)[[end_verbose]] <- substitute(empty_line <- NULL)
+        } else {
+            ## Changing the dispRity function name (no edits)
+            dispRity.call <- dispRity
+        }
+
+        ## Run the apply
+        if(verbose) message("Calculating multiple disparities", appendLF = FALSE)
+        output <- dispRity.multi.apply(data, fun = dispRity.call, metric = metric, dimensions = dimensions, between.groups = between.groups, verbose = verbose, ...)
+        if(verbose) message("Done.\n", appendLF = FALSE)
+
+        ## Return the merged results
+        return(dispRity.multi.merge(data, output))
+    }
+
     ## Get the metric list
     metrics_list <- get.dispRity.metric.handle(metric, match_call, data = data, tree = tree, ...)
     # metrics_list <- get.dispRity.metric.handle(metric, match_call, data = data, tree = NULL)
