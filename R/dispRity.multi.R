@@ -1,32 +1,6 @@
 # Internal function for applying a function to multiple data and trees
 # If data$call$dispRity.multi = TRUE (sorted by check.dispRity.tree && check.dispRity.data) then apply the disparity function as a lapply
 
-## Do change in:
-# dispRity/R/dispRity.utilities.R
-#         data$tree <- check.dispRity.tree(tree, data = data)
-#         data$tree <- check.dispRity.tree(tree = tree, data = data)
-#         data$tree <- check.dispRity.tree(tree = c(get.tree(data), tree), data = data)
-# dispRity/R/test.metric.R
-#         data <- check.dispRity.data(data)
-# dispRity/R/dispRity.R
-#             data <- fill.dispRity(make.dispRity(data = check.dispRity.data(data), tree = tree))
-#             data <- fill.dispRity(make.dispRity(data = check.dispRity.data(data)))
-# dispRity/R/dispRity.utilities.R
-#         data$matrix <- check.dispRity.data(data$matrix)
-# dispRity/R/custom.subsets.R
-#     data <- check.dispRity.data(data)
-# dispRity/R/boot.matrix.R
-#         data <- check.dispRity.data(data)
-# dispRity/R/chrono.subsets.R
-#     data <- check.dispRity.data(data)
-
-## Change check.dispRity.data and check.dispRity.tree to just:
-# check.dispRity.data(data, tree, returns) # with tree being optional
-# returns = c("data", "tree", "multi") #all three work
-
-
-
-
 
 
 
@@ -53,12 +27,61 @@
 
 ## Splits the data into pairs of matrix + tree
 dispRity.multi.split <- function(data) {
-    if(length(data$matrix) == length(data$tree)) {
+    
+    ## Check if tree is needed
+    has_tree <- !is.null(data$tree)
+
+    ## List holder    
+    multi.list <- list()
+
+    if(has_tree && length(data$matrix) == length(data$tree)) {
         ## Make pairs
+        while(length(data$matrix) != 0) {
+            multi.list[[length(multi.list)+1]] <- data
+            multi.list[[length(multi.list)]]$matrix <- multi.list[[length(multi.list)]]$matrix[1]
+            multi.list[[length(multi.list)]]$tree   <- multi.list[[length(multi.list)]]$tree[1]
+            data$matrix <- data$matrix[-1]
+            data$tree <- data$tree[-1]     
+        }
     } else {
         ## Make multiples
+        n_matrices <- length(data$matrix)
+        n_trees <- length(data$tree)
+
+        if(has_tree) {
+            ## Detect if any of the matrices or trees are unique
+            if(length(unique <- which(c(n_matrices, n_trees) == 1)) > 0) {
+                ## Find the variable
+                not_unique <- which(!(c("matrix", "tree") %in% switch(as.character(unique), "1" = "matrix", "2" = "tree")))
+                ## Make the list
+                while(length(data[[not_unique]]) != 0) {
+                    multi.list[[length(multi.list)+1]] <- data
+                    multi.list[[length(multi.list)]][[not_unique]] <- multi.list[[length(multi.list)]][[not_unique]][1]
+                    data[[not_unique]] <- data[[not_unique]][-1] 
+                }
+            } else {
+                ## Multiply the list
+                n_out <- expand.grid(1:n_matrices, 1:n_trees)
+                ## Make the list
+                while(nrow(n_out) > 0) {
+                    multi.list[[length(multi.list)+1]] <- data
+                    multi.list[[length(multi.list)]]$matrix <- data$matrix[n_out[1,1]]
+                    multi.list[[length(multi.list)]]$tree   <- data$tree[n_out[1,2]]
+                    n_out <- n_out[-1, ]  
+                }
+            }
+        } else {
+            ## Just change the matrices (data has no tree)
+            not_unique <- which(names(data) == "matrix")
+            ## Make the list
+            while(length(data[[not_unique]]) != 0) {
+                multi.list[[length(multi.list)+1]] <- data
+                multi.list[[length(multi.list)]][[not_unique]] <- multi.list[[length(multi.list)]][[not_unique]][1]
+                data[[not_unique]] <- data[[not_unique]][-1] 
+            }
+        }
     }
-    return(NULL)
+    return(multi.list)
 }
 
 ## Apply the function to any pair of matrix + tree
@@ -67,6 +90,6 @@ dispRity.multi.apply <- function(data, fun, ...) {
 }
 
 ## Merge the apply results into one classic dispRity object
-dispRity.multi.split <- function(data) {
+dispRity.multi.merge <- function(data) {
     return(NULL)
 }
