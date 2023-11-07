@@ -5,7 +5,7 @@
 # dispRity/R/dispRity.utilities.R
 #         data$tree <- check.dispRity.tree(tree, data = data)
 #         data$tree <- check.dispRity.tree(tree = tree, data = data)
-#             data$tree <- check.dispRity.tree(tree = c(get.tree(data), tree), data = data)
+#         data$tree <- check.dispRity.tree(tree = c(get.tree(data), tree), data = data)
 # dispRity/R/test.metric.R
 #         data <- check.dispRity.data(data)
 # dispRity/R/dispRity.R
@@ -19,6 +19,11 @@
 #         data <- check.dispRity.data(data)
 # dispRity/R/chrono.subsets.R
 #     data <- check.dispRity.data(data)
+
+## Change check.dispRity.data and check.dispRity.tree to just:
+# check.dispRity.data(data, tree, returns) # with tree being optional
+# returns = c("data", "tree", "multi") #all three work
+
 
 
 

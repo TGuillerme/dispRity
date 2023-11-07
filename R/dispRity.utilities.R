@@ -75,7 +75,7 @@ fill.dispRity <- function(data, tree) {
 
     ## Data have a matrix
     if(!is.null(data)) {
-        data$matrix <- check.dispRity.data(data$matrix)
+        data$matrix <- check.dispRity.data(data$matrix, returns = "data")
 
         ## Dimensions
         if(length(data$call$dimensions) == 0) {
@@ -94,7 +94,7 @@ fill.dispRity <- function(data, tree) {
 
     if(!missing(tree)) {
         ## Add the trees
-        data$tree <- check.dispRity.tree(tree, data = data)
+        data$tree <- check.dispRity.data(tree = tree, data = data, returns = "tree")
     }
     return(data)
 }
@@ -517,14 +517,14 @@ name.subsets <- function(data) {
 add.tree <- function(data, tree, replace = FALSE) {
     ## Add the tree
     if(is.null(data$tree[[1]])) {
-        data$tree <- check.dispRity.tree(tree = tree, data = data)
+        data$tree <- check.dispRity.data(data = data, tree = tree, returns = "tree")
     } else {
         if(replace) {
             ## Remove existing trees
             data <- remove.tree(data)
             data <- add.tree(data, tree)
         } else {
-            data$tree <- check.dispRity.tree(tree = c(get.tree(data), tree), data = data)
+            data$tree <- check.dispRity.data(tree = c(get.tree(data), tree), data = data, returns = "tree")
         }
     }
     return(data)

@@ -582,7 +582,6 @@ test_that("chrono.subsets works with multiPhylo", {
     expect_is(test$tree, "multiPhylo")
     expect_equal(test$tree[[1]]$edge.length, tree[[1]]$edge.length)
     expect_equal(test$tree[[2]]$edge.length, tree[[2]]$edge.length)
-
 })
 
 test_that("chrono.subsets works with multiple matrices", {
@@ -618,10 +617,18 @@ test_that("chrono.subsets works with multiple matrices", {
     rownames(matrices_wrong1[[2]])[1] <- "t2000" 
     rownames(matrices_wrong2[[3]])[11] <- "root" 
 
-    error <- capture_error(chrono.subsets(matrices_wrong1, tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5))
-    expect_equal(error[[1]], "data must be matrix or a list of matrices with the same dimensions and unique row names.")
-    error <- capture_error(chrono.subsets(matrices_wrong2, tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5))
-    expect_equal(error[[1]], "data must be matrix or a list of matrices with the same dimensions and unique row names.")
+
+    ## Now warnings for multi dispRity
+    # error <- capture_error(chrono.subsets(matrices_wrong1, tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5))
+    # expect_equal(error[[1]], "data must be matrix or a list of matrices with the same dimensions and unique row names.")
+    warn <- capture_warning(chrono.subsets(matrices_wrong1, tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5))
+    expect_equal(warn[[1]], "The following elements are not present in all matrices: t2000, t1, t2000. The matrices will be treated as separate trait-spaces.")
+
+    # error <- capture_error(chrono.subsets(matrices_wrong2, tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5))
+    # expect_equal(error[[1]], "data must be matrix or a list of matrices with the same dimensions and unique row names.")
+    warn <- capture_warning(chrono.subsets(chrono.subsets(matrices_wrong2, tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5)))
+    expect_equal(warn[[1]], "The following elements are not present in all matrices: root, root, n1. The matrices will be treated as separate trait-spaces.")
+
 
     ## Test working fine
     test <- chrono.subsets(matrices, tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5)
@@ -640,7 +647,6 @@ test_that("chrono.subsets works with multiple matrices", {
     expect_equal(test$tree[[1]]$edge.length, trees[[1]]$edge.length)
     expect_equal(test$tree[[2]]$edge.length, trees[[2]]$edge.length)
     expect_equal(test$tree[[3]]$edge.length, trees[[3]]$edge.length)
-
 })
 
 test_that("fast internal functions work", {

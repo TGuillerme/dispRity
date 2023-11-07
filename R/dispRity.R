@@ -137,9 +137,9 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
     if(!is(data, "dispRity")) {
         ## Adding the tree
         if(!is.null(tree)) {
-            data <- fill.dispRity(make.dispRity(data = check.dispRity.data(data), tree = tree))
+            data <- fill.dispRity(make.dispRity(data = check.dispRity.data(data, returns = "data"), tree = tree))
         } else {
-            data <- fill.dispRity(make.dispRity(data = check.dispRity.data(data)))
+            data <- fill.dispRity(make.dispRity(data = check.dispRity.data(data, returns = "data")))
         }
     } else {
         ## Make sure that data is not a dual class
@@ -153,7 +153,7 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
         ## Adding tree (if possible)
         if(!is.null(tree)) {
             data <- remove.tree(data)
-            data <- add.tree(data, tree = check.dispRity.tree(tree, data = data))
+            data <- add.tree(data, tree = check.dispRity.data(data = data, tree = tree, returns = "tree"))
         }
 
         ## Make sure dimensions exist in the call

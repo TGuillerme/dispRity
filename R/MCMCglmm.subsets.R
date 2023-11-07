@@ -122,7 +122,7 @@ MCMCglmm.subsets <- function(data, posteriors, group, tree, rename.groups, set.l
     }
 
     ## Create a dispRity style object
-    output <- dispRity::make.dispRity(data = cleaned_data, call = list("subsets" = "covar", "dimensions" = dimensions), subsets = subsets)
+    output <- make.dispRity(data = cleaned_data, call = list("subsets" = "covar", "dimensions" = dimensions), subsets = subsets)
     ## Add the covar element
     output$covar <- covar_matrices
     ## Update the call (bootstrap part)

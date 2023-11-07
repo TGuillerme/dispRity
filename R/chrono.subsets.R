@@ -103,7 +103,7 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
     ## ----------------------
     ## DATA
     ## data must be a matrix or a list
-    data <- check.dispRity.data(data)
+    data <- check.dispRity.data(data, returns = "data")
 
     ## Check whether it is a distance matrix
     if(check.dist.matrix(data[[1]], just.check = TRUE)) {

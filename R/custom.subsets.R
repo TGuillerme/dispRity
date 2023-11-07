@@ -60,7 +60,7 @@ custom.subsets <- function(data, group, tree) {
     ## ----------------------
     ## DATA
     ## data must be a matrix
-    data <- check.dispRity.data(data)
+    data <- check.dispRity.data(data, returns = "data")
 
     ## Check whether it is a distance matrix
     if(check.dist.matrix(data[[1]], just.check = TRUE)) {

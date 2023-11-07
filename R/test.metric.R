@@ -104,7 +104,7 @@ test.metric <- function(data, metric, ..., shifts, shift.options, model, replica
     metric_name <- NULL
     if(!is(data, "dispRity")) {
         options(warn = -1)
-        data <- check.dispRity.data(data)
+        data <- check.dispRity.data(data, returns = "data")
         options(warn = 0)
     } else {
         ## See if the metric needs to be recycled
