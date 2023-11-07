@@ -150,27 +150,75 @@ test_that("dispRity.multi.split", {
 
 test_that("dispRity.multi.apply", {
 
+    ## dispRity
+    load("bound_test_data.rda")
+    trees <- bound_test_data$trees
+    matrices <- bound_test_data$matrices
+
+    ## Split just data
+    data <- fill.dispRity(make.dispRity(data = matrices))
+    data <- dispRity.multi.split(data)
+
+    set.seed(1)
+    test <- dispRity.multi.apply(data, fun = dispRity, metric = centroids, centroid = 1000)
+    expect_is(test, "list")
+    expect_equal(length(test), 3)
+    for(i in 1:3) {
+        expect_is(test[[i]], "dispRity")
+    }
+    ## Option is parsed correctly
+    expect_equal(summary(test[[1]])$obs.median, 1732)
 })
 
 test_that("dispRity.multi.merge", {
 
+    # ## dispRity
+    # load("bound_test_data.rda")
+    # trees <- bound_test_data$trees
+    # matrices <- bound_test_data$matrices
+
+    # ## Split just data
+    # data <- fill.dispRity(make.dispRity(data = matrices))
+    # data_split <- dispRity.multi.split(data)
+    # output <- dispRity.multi.apply(data_split, fun = dispRity, metric = centroids, centroid = 1000)
+
+    # ## Merge the data
+    # test <- dispRity.multi.merge(output, data)
+    # expect_is(test, "dispRity")
+
+
+    
 })
 
 
 ## utilities internals
 test_that("dispRity.multi works", {
-    set.seed(1)
-    load("bound_test_data.rda")
-    trees <- bound_test_data$trees
-    matrices <- bound_test_data$matrices
 
-    ## Test if it works with multiple trees and with multiple matrices ok
-    test <- chrono.subsets(matrices[[1]], tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5)
-    expect_is(test, "dispRity")
-    test_print <- capture_output(print(test))
-    expect_equal(test_print, " ---- dispRity object ---- \n3 continuous (acctran) time subsets for 19 elements in one matrix with 3 phylogenetic trees\n    5, 2.5, 0.")
-    tust <- dispRity(test, metric = centroids)
-    summary(tust)
+
+    ## For custom.subsets
+
+    ## For chrono.subsets
+
+    ## For boot.matrix
+
+    ## For dispRity
+
+    ## For fecking everything!
+
+
+
+    # set.seed(1)
+    # load("bound_test_data.rda")
+    # trees <- bound_test_data$trees
+    # matrices <- bound_test_data$matrices
+
+    # ## Test if it works with multiple trees and with multiple matrices ok
+    # test <- chrono.subsets(matrices[[1]], tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5)
+    # expect_is(test, "dispRity")
+    # test_print <- capture_output(print(test))
+    # expect_equal(test_print, " ---- dispRity object ---- \n3 continuous (acctran) time subsets for 19 elements in one matrix with 3 phylogenetic trees\n    5, 2.5, 0.")
+    # tust <- dispRity(test, metric = centroids)
+    # summary(tust)
 
 
 

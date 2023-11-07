@@ -86,10 +86,34 @@ dispRity.multi.split <- function(data) {
 
 ## Apply the function to any pair of matrix + tree
 dispRity.multi.apply <- function(data, fun, ...) {
-    return(NULL)
+    return(lapply(data, fun, ...))
 }
 
-## Merge the apply results into one classic dispRity object
-dispRity.multi.merge <- function(data) {
-    return(NULL)
-}
+# ## Merge the apply results into one classic dispRity object
+# dispRity.multi.merge <- function(output, data_in, match_call, called_fun, ...) {
+
+#     ## Merge the data
+#     data <- data_in
+
+#     ## Merge the disparity
+
+#     ## Update the call
+
+#     return(NULL)
+# }
+
+
+
+# ## Merging disparity results
+# merge.disparity <- function(all_disparity) {
+#     merge.subset.pair <- function(subset1, subset2) {
+#         return(mapply(FUN = function(x,y)return(matrix(c(x, y), nrow = dim(x)[1])), x = subset1, y = subset2, SIMPLIFY = FALSE))
+#     }
+#     while(length(all_disparity) != 1) {
+#         ## Merge all subsets
+#         all_disparity[[1]] <- mapply(merge.subset.pair, all_disparity[[1]], all_disparity[[2]], SIMPLIFY = FALSE)
+#         ## Removed merged set
+#         all_disparity[[2]] <- NULL
+#     }
+#     return(unlist(all_disparity, recursive = FALSE))
+# }
