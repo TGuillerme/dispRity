@@ -170,41 +170,37 @@ test_that("dispRity.multi.apply", {
     expect_equal(summary(test[[1]])$obs.median, 1732)
 })
 
-test_that("dispRity.multi.merge", {
-
-    # ## dispRity
-    # load("bound_test_data.rda")
-    # trees <- bound_test_data$trees
-    # matrices <- bound_test_data$matrices
-
-    # ## Split just data
-    # data <- fill.dispRity(make.dispRity(data = matrices))
-    # data_split <- dispRity.multi.split(data)
-    # output <- dispRity.multi.apply(data_split, fun = dispRity, metric = centroids, centroid = 1000)
-
-    # ## Merge the data
-    # test <- dispRity.multi.merge(output, data)
-    # expect_is(test, "dispRity")
-
-
-    
-})
-
-
 ## utilities internals
 test_that("dispRity.multi works", {
 
+    load("bound_test_data.rda")
+    trees <- bound_test_data$trees
+    matrices <- bound_test_data$matrices
 
     ## For custom.subsets
+    ## Just matrices
+    ## Matrices and trees
+
 
     ## For chrono.subsets
+    ## Matrices and trees
 
     ## For boot.matrix
+    ## Just matrices
+    ## Matrices and trees
+
+
 
     ## For dispRity
+    ## Just matrices
+    ## Matrices and trees
+    ## Custom subsets
+    ## Chrono subsets
+    ## Boot matrices
 
     ## For fecking everything!
-
+    test1 <- dispRity(boot.matrix(custom.subsets(data)), metric = centroids)
+    test2 <- dispRity(boot.matrix(chrono.subsets(data)), metric = centroids)
 
 
     # set.seed(1)
