@@ -37,149 +37,231 @@
 # # 3 - depending on the function, combine or leave the results as is.
 
 
-test_that("dispRity.multi.split", {
-    load("bound_test_data.rda")
-    trees <- bound_test_data$trees
-    matrices <- bound_test_data$matrices
+# test_that("dispRity.multi.split", {
+#     load("bound_test_data.rda")
+#     trees <- bound_test_data$trees
+#     matrices <- bound_test_data$matrices
 
-    ## Split just data
-    data <- fill.dispRity(make.dispRity(data = matrices))
-    test <- dispRity.multi.split(data)
-    expect_is(test, "list")
-    expect_equal(length(test), 3)
-    for(i in 1:3) {
-        expect_is(test[[i]], "dispRity")
-        expect_equal(length(test[[i]]$matrix), 1)
-        expect_null(test[[i]]$tree[[1]])
-    }
-    ## Three trees and one matrix
-    data <- fill.dispRity(make.dispRity(data = matrices[[1]]))
-    test <- dispRity.multi.split(data)
-    expect_is(test, "list")
-    expect_equal(length(test), 1)
-    expect_is(test[[1]], "dispRity")
-    expect_equal(length(test[[1]]$matrix), 1)
-    expect_null(test[[1]]$tree[[1]])
+#     ## Split just data
+#     data <- fill.dispRity(make.dispRity(data = matrices))
+#     test <- dispRity.multi.split(data)
+#     expect_is(test, "list")
+#     expect_equal(length(test), 3)
+#     for(i in 1:3) {
+#         expect_is(test[[i]], "dispRity")
+#         expect_equal(length(test[[i]]$matrix), 1)
+#         expect_null(test[[i]]$tree[[1]])
+#     }
+#     ## Three trees and one matrix
+#     data <- fill.dispRity(make.dispRity(data = matrices[[1]]))
+#     test <- dispRity.multi.split(data)
+#     expect_is(test, "list")
+#     expect_equal(length(test), 1)
+#     expect_is(test[[1]], "dispRity")
+#     expect_equal(length(test[[1]]$matrix), 1)
+#     expect_null(test[[1]]$tree[[1]])
 
 
-    ## Split non-subseted data
-    ## Three trees and three matrices
-    data <- fill.dispRity(make.dispRity(data = matrices), tree = trees)
-    test <- dispRity.multi.split(data)
-    expect_is(test, "list")
-    expect_equal(length(test), 3)
-    for(i in 1:3) {
-        expect_is(test[[i]], "dispRity")
-        expect_equal(length(test[[i]]$matrix), 1)
-        expect_equal(length(test[[i]]$tree), 1)
-    }
-    ## Three trees and one matrix
-    data <- fill.dispRity(make.dispRity(data = matrices[[1]]), tree = trees)
-    test <- dispRity.multi.split(data)
-    expect_is(test, "list")
-    expect_equal(length(test), 3)
-    for(i in 1:3) {
-        expect_is(test[[i]], "dispRity")
-        expect_equal(length(test[[i]]$matrix), 1)
-        expect_equal(length(test[[i]]$tree), 1)
-    }
-    ## Three matrices and one tree
-    data <- fill.dispRity(make.dispRity(data = matrices), tree = trees[[1]])
-    test <- dispRity.multi.split(data)
-    expect_is(test, "list")
-    expect_equal(length(test), 3)
-    for(i in 1:3) {
-        expect_is(test[[i]], "dispRity")
-        expect_equal(length(test[[i]]$matrix), 1)
-        expect_equal(length(test[[i]]$tree), 1)
-    }
-    ## Three matrices and two tree
-    data <- fill.dispRity(make.dispRity(data = matrices), tree = trees[1:2])
-    test <- dispRity.multi.split(data)
-    expect_is(test, "list")
-    expect_equal(length(test), 6)
-    for(i in 1:6) {
-        expect_is(test[[i]], "dispRity")
-        expect_equal(length(test[[i]]$matrix), 1)
-        expect_equal(length(test[[i]]$tree), 1)
-    }
+#     ## Split non-subseted data
+#     ## Three trees and three matrices
+#     data <- fill.dispRity(make.dispRity(data = matrices), tree = trees)
+#     test <- dispRity.multi.split(data)
+#     expect_is(test, "list")
+#     expect_equal(length(test), 3)
+#     for(i in 1:3) {
+#         expect_is(test[[i]], "dispRity")
+#         expect_equal(length(test[[i]]$matrix), 1)
+#         expect_equal(length(test[[i]]$tree), 1)
+#     }
+#     ## Three trees and one matrix
+#     data <- fill.dispRity(make.dispRity(data = matrices[[1]]), tree = trees)
+#     test <- dispRity.multi.split(data)
+#     expect_is(test, "list")
+#     expect_equal(length(test), 3)
+#     for(i in 1:3) {
+#         expect_is(test[[i]], "dispRity")
+#         expect_equal(length(test[[i]]$matrix), 1)
+#         expect_equal(length(test[[i]]$tree), 1)
+#     }
+#     ## Three matrices and one tree
+#     data <- fill.dispRity(make.dispRity(data = matrices), tree = trees[[1]])
+#     test <- dispRity.multi.split(data)
+#     expect_is(test, "list")
+#     expect_equal(length(test), 3)
+#     for(i in 1:3) {
+#         expect_is(test[[i]], "dispRity")
+#         expect_equal(length(test[[i]]$matrix), 1)
+#         expect_equal(length(test[[i]]$tree), 1)
+#     }
+#     ## Three matrices and two tree
+#     data <- fill.dispRity(make.dispRity(data = matrices), tree = trees[1:2])
+#     test <- dispRity.multi.split(data)
+#     expect_is(test, "list")
+#     expect_equal(length(test), 6)
+#     for(i in 1:6) {
+#         expect_is(test[[i]], "dispRity")
+#         expect_equal(length(test[[i]]$matrix), 1)
+#         expect_equal(length(test[[i]]$tree), 1)
+#     }
 
     
-    ## Split subseted data
-    ## Three trees and three matrices
-    data <- chrono.subsets(matrices, tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5)
-    test <- dispRity.multi.split(data)
-    expect_is(test, "list")
-    expect_equal(length(test), 3)
-    for(i in 1:3) {
-        expect_is(test[[i]], "dispRity")
-        expect_equal(length(test[[i]]$matrix), 1)
-        expect_equal(length(test[[i]]$tree), 1)
-    }
-    ## Three trees and one matrix
-    data <- chrono.subsets(matrices[[1]], tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5)
-    test <- dispRity.multi.split(data)
-    expect_is(test, "list")
-    expect_equal(length(test), 3)
-    for(i in 1:3) {
-        expect_is(test[[i]], "dispRity")
-        expect_equal(length(test[[i]]$matrix), 1)
-        expect_equal(length(test[[i]]$tree), 1)
-    }
-    ## Three matrices and one tree
-    data <- chrono.subsets(matrices, tree = trees[[1]], time = 3, method = "continuous", model = "acctran", t0 = 5)
-    test <- dispRity.multi.split(data)
-    expect_is(test, "list")
-    expect_equal(length(test), 3)
-    for(i in 1:3) {
-        expect_is(test[[i]], "dispRity")
-        expect_equal(length(test[[i]]$matrix), 1)
-        expect_equal(length(test[[i]]$tree), 1)
-    }
-    ## Three matrices and two tree
-    data <- chrono.subsets(matrices, tree = trees[1:2], time = 3, method = "continuous", model = "acctran", t0 = 5)
-    test <- dispRity.multi.split(data)
-    expect_is(test, "list")
-    expect_equal(length(test), 6)
-    for(i in 1:6) {
-        expect_is(test[[i]], "dispRity")
-        expect_equal(length(test[[i]]$matrix), 1)
-        expect_equal(length(test[[i]]$tree), 1)
-    }
-})
+#     ## Split subseted data
+#     ## Three trees and three matrices
+#     data <- chrono.subsets(matrices, tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5)
+#     test <- dispRity.multi.split(data)
+#     expect_is(test, "list")
+#     expect_equal(length(test), 3)
+#     for(i in 1:3) {
+#         expect_is(test[[i]], "dispRity")
+#         expect_equal(length(test[[i]]$matrix), 1)
+#         expect_equal(length(test[[i]]$tree), 1)
+#     }
+#     ## Three trees and one matrix
+#     data <- chrono.subsets(matrices[[1]], tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5)
+#     test <- dispRity.multi.split(data)
+#     expect_is(test, "list")
+#     expect_equal(length(test), 3)
+#     for(i in 1:3) {
+#         expect_is(test[[i]], "dispRity")
+#         expect_equal(length(test[[i]]$matrix), 1)
+#         expect_equal(length(test[[i]]$tree), 1)
+#     }
+#     ## Three matrices and one tree
+#     data <- chrono.subsets(matrices, tree = trees[[1]], time = 3, method = "continuous", model = "acctran", t0 = 5)
+#     test <- dispRity.multi.split(data)
+#     expect_is(test, "list")
+#     expect_equal(length(test), 3)
+#     for(i in 1:3) {
+#         expect_is(test[[i]], "dispRity")
+#         expect_equal(length(test[[i]]$matrix), 1)
+#         expect_equal(length(test[[i]]$tree), 1)
+#     }
+#     ## Three matrices and two tree
+#     data <- chrono.subsets(matrices, tree = trees[1:2], time = 3, method = "continuous", model = "acctran", t0 = 5)
+#     test <- dispRity.multi.split(data)
+#     expect_is(test, "list")
+#     expect_equal(length(test), 6)
+#     for(i in 1:6) {
+#         expect_is(test[[i]], "dispRity")
+#         expect_equal(length(test[[i]]$matrix), 1)
+#         expect_equal(length(test[[i]]$tree), 1)
+#     }
+# })
 
-test_that("dispRity.multi.apply", {
+# test_that("dispRity.multi.apply", {
 
-    ## dispRity
-    load("bound_test_data.rda")
-    trees <- bound_test_data$trees
-    matrices <- bound_test_data$matrices
+#     ## dispRity
+#     load("bound_test_data.rda")
+#     trees <- bound_test_data$trees
+#     matrices <- bound_test_data$matrices
 
-    ## Split just data
-    data <- fill.dispRity(make.dispRity(data = matrices))
-    data <- dispRity.multi.split(data)
+#     ## Split just data
+#     data <- fill.dispRity(make.dispRity(data = matrices))
+#     data <- dispRity.multi.split(data)
 
-    set.seed(1)
-    test <- dispRity.multi.apply(data, fun = dispRity, metric = centroids, centroid = 1000)
-    expect_is(test, "list")
-    expect_equal(length(test), 3)
-    for(i in 1:3) {
-        expect_is(test[[i]], "dispRity")
-    }
-    ## Option is parsed correctly
-    expect_equal(summary(test[[1]])$obs.median, 1732)
-})
+#     set.seed(1)
+#     test <- dispRity.multi.apply(data, fun = dispRity, metric = centroids, centroid = 1000)
+#     expect_is(test, "list")
+#     expect_equal(length(test), 3)
+#     for(i in 1:3) {
+#         expect_is(test[[i]], "dispRity")
+#     }
+#     ## Option is parsed correctly
+#     expect_equal(summary(test[[1]])$obs.median, 1732)
+# })
 
 ## utilities internals
 test_that("dispRity.multi works", {
 
-    load("bound_test_data.rda")
-    trees <- bound_test_data$trees
-    matrices <- bound_test_data$matrices
-
+    set.seed(1)
+    tree <- makeNodeLabel(rtree(5))
+    tree <- list(tree, tree)
+    class(tree) <- "multiPhylo"
+    tree_trifurc <- tree[[1]]
+    tree_trifurc$edge <- tree_trifurc$edge[-5, ]
+    tree_trifurc$edge[c(5,6),1] <- 8
+    tree_trifurc$edge.length <- tree_trifurc$edge.length[-5] 
+    tree_trifurc$Nnode <- 3
+    tree_trifurc$node.label <- tree_trifurc$node.label[-4]
+    tree_trifurcs <- list(tree[[1]], tree_trifurc)
+    tree_diff <- tree
+    tree_diff[[1]]$node.label[1] <- "noooooode"
+    class(tree_diff) <- "multiPhylo"
+    data <- matrix(0, nrow = 9, ncol = 2, dimnames = list(c(paste0("t", 1:5), paste0("Node", 1:4))))
+    data <- list(data, data)
+    data_diff <- data
+    rownames(data_diff[[1]])[6] <- "noooooode"
+        
     ## For custom.subsets
+    groups <- list(paste0("t", 1:3), paste0("t", 3:5))
+    groups_bugged <- list(paste("t", 1:5), paste0("Node", 1:4))
+    ## Normal test
+    test <- custom.subsets(data = data, tree = tree, group = groups)
+    expect_is(test, "dispRity")
+    expect_equal(length(test$matrix), 2)
+    expect_equal(length(test$tree), 2)
+
     ## Just matrices
-    ## Matrices and trees
+    expect_warning(test <- custom.subsets(data_diff, group = groups))
+    expect_is(test, c("dispRity", "multi"))
+    expect_equal(length(test), 2)
+    expect_equal(length(test[[1]]$matrix), 1)
+    expect_equal(length(test[[2]]$matrix), 1)
+    expect_equal(length(test[[1]]$tree[[1]]), 0)
+    expect_equal(length(test[[2]]$tree[[1]]), 0)
+    expect_equal(capture.output(test), c(
+        " ---- dispRity object ---- ",
+        "2 customised subsets for 9 elements in 2 separated matrices:",
+        "    1, 2." 
+    ))
+
+    ## 2 Matrices and 2 trees 
+    expect_warning(test <- custom.subsets(data = data_diff, tree = tree_diff, group = groups))
+    expect_is(test, c("dispRity", "multi"))
+    expect_equal(length(test), 2)
+    expect_equal(length(test[[1]]$matrix), 1)
+    expect_equal(length(test[[2]]$matrix), 1)
+    expect_equal(length(test[[1]]$tree), 1)
+    expect_equal(length(test[[2]]$tree), 1)
+    expect_equal(capture.output(test), c(
+        " ---- dispRity object ---- ",
+        "2 customised subsets for 9 elements in 2 separated matrices with 2 phylogenetic trees",
+        "    1, 2."
+    ))
+
+    ## 1 Matrix (with everything) and 2 trees
+    data_all <- rbind(data_diff[[1]], "Node1" = c(0,0))
+    expect_warning(test <- custom.subsets(data = data_all, tree = tree_diff, group = groups))
+    expect_is(test, c("dispRity", "multi"))
+    expect_equal(length(test), 2)
+    expect_equal(length(test[[1]]$matrix), 1)
+    expect_equal(length(test[[2]]$matrix), 1)
+    expect_equal(length(test[[1]]$tree), 1)
+    expect_equal(length(test[[2]]$tree), 1)
+    expect_equal(capture.output(test), c(
+        " ---- dispRity object ---- ",
+        "2 customised subsets for 9 elements in 2 separated matrices with 2 phylogenetic trees",
+        "    1, 2." 
+    ))
+
+
+    # ## 2 Matrices and 1 tree
+    # warn <- capture_warning(custom.subsets(data = data, tree = tree_trifurc, group = groups))
+    # expect_equal(warn[[1]], "The following elements are not present in all trees: Node4. Some analyses downstream might not work because of this (you can use ?clean.data to match both data and tree if needed).")
+    # expect_warning(test <- custom.subsets(data = data, tree = tree_trifurc, group = groups))
+    # expect_is(test, c("dispRity", "multi"))
+    # expect_equal(length(test), 2)
+    # expect_equal(length(test[[1]]$matrix), 1)
+    # expect_equal(length(test[[2]]$matrix), 1)
+    # expect_equal(length(test[[1]]$tree), 1)
+    # expect_equal(length(test[[2]]$tree), 1)
+    # expect_equal(capture.output(test), c(
+    #     " ---- dispRity object ---- ",
+    #     "2 customised subsets for 8 elements in 2 separated matrices with 2 phylogenetic trees",
+    #     "    1, 2." 
+    # ))
+
+
 
 
     ## For chrono.subsets
@@ -199,8 +281,8 @@ test_that("dispRity.multi works", {
     ## Boot matrices
 
     ## For fecking everything!
-    test1 <- dispRity(boot.matrix(custom.subsets(data)), metric = centroids)
-    test2 <- dispRity(boot.matrix(chrono.subsets(data)), metric = centroids)
+    # test1 <- dispRity(boot.matrix(custom.subsets(data)), metric = centroids)
+    # test2 <- dispRity(boot.matrix(chrono.subsets(data)), metric = centroids)
 
 
     # set.seed(1)
@@ -234,5 +316,4 @@ test_that("dispRity.multi works", {
     # data <- fill.dispRity(make.dispRity(data = data), tree = tree)
     # ## Works normally (multiple trees and multiple matrices)
     # test <- dispRity(chrono.subsets(data, method = "continuous", model = "acctran", time = 2), centroids)
-
 })

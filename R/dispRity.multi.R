@@ -40,6 +40,10 @@ dispRity.multi.split <- function(data) {
             multi.list[[length(multi.list)+1]] <- data
             multi.list[[length(multi.list)]]$matrix <- multi.list[[length(multi.list)]]$matrix[1]
             multi.list[[length(multi.list)]]$tree   <- multi.list[[length(multi.list)]]$tree[1]
+            if(!is.null(data$disparity)) {
+                multi.list[[length(multi.list)]]$disparity <- lapply(data$disparity, function(x) return(x[1, ]))
+                data$disparity <- lapply(data$disparity, function(x) return(x[-1, ]))
+            }
             data$matrix <- data$matrix[-1]
             data$tree <- data$tree[-1]     
         }
@@ -57,6 +61,10 @@ dispRity.multi.split <- function(data) {
                 while(length(data[[not_unique]]) != 0) {
                     multi.list[[length(multi.list)+1]] <- data
                     multi.list[[length(multi.list)]][[not_unique]] <- multi.list[[length(multi.list)]][[not_unique]][1]
+                    if(!is.null(data$disparity)) {
+                        multi.list[[length(multi.list)]]$disparity <- lapply(data$disparity, function(x) return(x[1, ]))
+                        data$disparity <- lapply(data$disparity, function(x) return(x[-1, ]))
+                    }
                     data[[not_unique]] <- data[[not_unique]][-1] 
                 }
             } else {
@@ -67,6 +75,10 @@ dispRity.multi.split <- function(data) {
                     multi.list[[length(multi.list)+1]] <- data
                     multi.list[[length(multi.list)]]$matrix <- data$matrix[n_out[1,1]]
                     multi.list[[length(multi.list)]]$tree   <- data$tree[n_out[1,2]]
+                    if(!is.null(data$disparity)) {
+                        multi.list[[length(multi.list)]]$disparity <- lapply(data$disparity, function(x) return(x[1, ]))
+                        data$disparity <- lapply(data$disparity, function(x) return(x[-1, ]))
+                    }
                     n_out <- n_out[-1, ]  
                 }
             }
@@ -77,31 +89,79 @@ dispRity.multi.split <- function(data) {
             while(length(data[[not_unique]]) != 0) {
                 multi.list[[length(multi.list)+1]] <- data
                 multi.list[[length(multi.list)]][[not_unique]] <- multi.list[[length(multi.list)]][[not_unique]][1]
+                if(!is.null(data$disparity)) {
+                    multi.list[[length(multi.list)]]$disparity <- lapply(data$disparity, function(x) return(x[1, ]))
+                    data$disparity <- lapply(data$disparity, function(x) return(x[-1, ]))
+                }
                 data[[not_unique]] <- data[[not_unique]][-1] 
             }
         }
     }
-    return(multi.list)
+
+    if(has_tree) {
+        ## Clean the data (should be checked prior normally)
+        return(lapply(multi.list, lapply.clean.data))
+    } else {
+        return(multi.list)
+    }
+}
+## Clean data for dispRity.multi.split
+lapply.clean.data <- function(x) {
+    ## Clean the data
+    cleaned <- clean.data(x$matrix[[1]], x$tree[[1]], inc.nodes = !is.null(x$tree[[1]]$node.label))
+    tree_out <- list(cleaned$tree)
+    class(tree_out) <- "multiPhylo"
+    return(list(matrix = list(cleaned$data), tree = list(tree_out), multi = x$multi))
 }
 
 ## Apply the function to any pair of matrix + tree
-dispRity.multi.apply <- function(data, fun, ...) {
-    return(lapply(data, fun, ...))
+dispRity.multi.apply <- function(data, fun, tree = NULL, ...) {
+
+    ## Detect the type:
+    type <- ifelse(any(c(is.null(tree), (length(tree) == 1))), "lapply", "mapply")
+
+    ## Applying the fun
+    out <- switch(type,
+                  "lapply" = lapply(data, fun, tree, ...),
+                  "mapply" = mapply(fun, data, tree, MoreArgs = list(...), SIMPLIFY = FALSE))
+    ## New class
+    class(out) <- c("dispRity", "multi")
+    return(out)
 }
 
 ## Merge the apply results into one classic dispRity object
-dispRity.multi.merge <- function(output, data, match_call, called_fun, ...) {
+dispRity.multi.merge <- function(data, output, match_call, ...) {
 
     ## Combine the disparity results
     all_disparity <- lapply(output, `[[`, "disparity")
-    data$disparity <- merge.disparity(all_disparity)
+    data$disparity <- dispRity.multi.merge.disparity(all_disparity)
 
     ## Update the call
+    data$call <- output[[1]]$call$disparity
+    ## Update the metric call name
+    data$call$disparity$metrics$name <- match_call$metric
+    ## Make it dispRity multi
+    data$call$dispRity.multi <- TRUE
     return(data)
 }
 
+## Merges data from a split (not output)
+dispRity.multi.merge.data <- function(data) {
+    data_out <- data[[1]]
+    data_out$matrix <- unlist(lapply(data, `[[`, "matrix"), recursive = FALSE)
+    if(!is.null(data_out$tree[[1]])) {
+        trees <- lapply(data, `[[`, "tree")
+        class(trees) <- "multiPhylo"
+        data_out$tree <- trees
+    }
+    ## Make it dispRity multi
+    data_out$call$dispRity.multi <- TRUE
+    return(data_out)
+}
+
+
 ## Merging disparity results
-merge.disparity <- function(all_disparity) {
+dispRity.multi.merge.disparity <- function(all_disparity) {
     merge.subset.pair <- function(subset1, subset2) {
         return(mapply(FUN = function(x,y)return(matrix(c(x, y), nrow = dim(x)[1])), x = subset1, y = subset2, SIMPLIFY = FALSE))
     }
