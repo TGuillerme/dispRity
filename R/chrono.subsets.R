@@ -4,7 +4,7 @@
 #' @description Splits the data into a chronological (time) subsets list.
 #'
 #' @param data A \code{matrix} or a \code{list} of matrices.
-#' @param tree A \code{phylo} or a \code{multiPhylo} object matching the data and with a \code{root.time} element. This argument can be left missing if \code{method = "discrete"} and all elements are present in the optional \code{FADLAD} argument.
+#' @param tree \code{NULL} (default) or an optional \code{phylo} or \code{multiPhylo} object matching the data and with a \code{root.time} element. This argument can be left missing if \code{method = "discrete"} and all elements are present in the optional \code{FADLAD} argument.
 #' @param method The time subsampling method: either \code{"discrete"} (or \code{"d"}) or \code{"continuous"} (or \code{"c"}).
 #' @param time Either a single \code{integer} for the number of discrete or continuous samples or a \code{vector} containing the age of each sample.
 #' @param model One of the following models: \code{"acctran"}, \code{"deltran"}, \code{"random"}, \code{"proximity"}, \code{"equal.split"} or \code{"gradual.split"}. Is ignored if \code{method = "discrete"}.
@@ -95,16 +95,42 @@
 # t0 = 5
 # bind.data = TRUE
 
-chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, FADLAD, verbose = FALSE, t0 = FALSE, bind.data = FALSE) {    
+chrono.subsets <- function(data, tree = NULL, method, time, model, inc.nodes = FALSE, FADLAD, verbose = FALSE, t0 = FALSE, bind.data = FALSE) {
     match_call <- match.call()
 
     ## ----------------------
     ##  SANITIZING
     ## ----------------------
     ## DATA
-    ## data must be a matrix or a list
     data <- check.dispRity.data(data, returns = "data")
 
+    # if(!is.null(tree)) {
+    #     data <- check.dispRity.data(data, tree, returns = c("data", "tree", "multi"))
+    # } else {
+    #     data <- check.dispRity.data(data, returns = c("data", "multi"))
+    # }
+
+    ## If is multi lapply the stuff
+    # if(((!is.null(data$call$dispRity.multi) && data$call$dispRity.multi) || data$multi)) {
+    #     ## Split the data
+    #     split_data <- dispRity.multi.split(data)
+    #     ## Get only the matrices and/or the trees
+    #     matrices <- unlist(lapply(split_data, `[[`, "matrix"), recursive = FALSE)
+    #     ## Get the trees
+    #     if(!is.null(split_data[[1]]$tree)) {
+    #         trees <- unlist(lapply(split_data, `[[`, "tree"), recursive = FALSE)
+    #     } else {
+    #         trees <- NULL
+    #     }
+    #     ## Apply the custom.subsets
+    #     return(dispRity.multi.apply(matrices, fun = chrono.subsets, tree = trees, method = method, time = time, model = model, inc.nodes = FALSE, FADLAD = FADLAD, verbose = FALSE, t0 = FALSE, bind.data = FALSE))
+    # } else {
+    #     if(!is.null(tree)) {
+    #         tree <- data$tree
+    #     }
+    #     data <- data$matrix
+    # }
+    
     ## Check whether it is a distance matrix
     if(check.dist.matrix(data[[1]], just.check = TRUE)) {
         warning("chrono.subsets is applied on what seems to be a distance matrix.\nThe resulting matrices won't be distance matrices anymore!", call. = FALSE)
@@ -115,7 +141,7 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
 
     ## TREE (1)
     ## tree must be a phylo object
-    if(!missing(tree)) {
+    if(!is.null(tree)) {
         tree_class <- check.class(tree, c("phylo", "multiPhylo"))
         is_multiPhylo <- ifelse(tree_class == "multiPhylo", TRUE, FALSE)
         ## Make the tree into a single multiPhylo object
@@ -200,7 +226,7 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
     if(method == "c") method <- "continuous"
 
     ## If the tree is missing, the method can intake a star tree (i.e. no phylogeny)
-    if(missing(tree)) {
+    if(is.null(tree)) {
         if(missing(FADLAD)) {
             stop.call("", "If no phylogeny is provided, all elements must be present in the FADLAD argument.")
         }
