@@ -29,6 +29,8 @@ dispRity v1.7.16 (2023-11-3) *dispRity.multi*
     - [ ] remove disparity_object.md
     - [ ] remove disparity_internal_logic.md
 
+   - [ ] add text about boot.type = "null" 
+
  -->
  <!-- *New metric*: `roundness` to measure how round the elliptical representation of a matrix is. TODO: handle non-VCV input:
  ## The roundness function
@@ -52,8 +54,7 @@ roundness <- function(matrix) {
 
 ### MINOR IMPROVEMENTS
 
- * **CHANGE IN DEFAULT ARGUMENTS** for the `custom.subsets` and `chrono.subsets` functions: the `tree` argument is now `NULL` by default (instead of missing).
- * **CHANGE IN DEFAULT ARGUMENTS** for the `chrono.subsets` functions: the `FADLAD` argument is now `NULL` by default (instead of missing).
+ * **CHANGE IN DEFAULT ARGUMENTS** for the `custom.subsets`, `chrono.subsets` and `boot.matrix` functions: the `tree`, `FADLAD`, `prob` and `dimensions` arguments is now `NULL` by default (instead of missing).
  * **CHANGE IN DEFAULT ARGUMENTS** for the `projections` function. The defaults are now `scale = TRUE`, `centre = FALSE` (previously `TRUE`) and `abs = FALSE` (previously `TRUE`). The default arguments for `dispRity.covar.projections` remain unchanged though (`scale = TRUE`, `centre = TRUE`, `abs = TRUE`).
  * `randtest.dispRity` function's `subsets` argument now can take a list of arguments of subsets to compare is `data` is a `dispRity` object. The call message has also been updated to be much more verbose and clear of what has been tested.
  * optimised internal logic for all the `projections.*` functions for speed.

@@ -178,19 +178,15 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
         }
 
         ## Change the call in dispRity (if verbose)
+        dispRity.call <- dispRity
         if(verbose) {
             ## Changing the dispRity function name (verbose line edited out)
-            dispRity.call <- dispRity
-
             ## Find the verbose lines
             start_verbose <- which(as.character(body(dispRity.call)) == "if (verbose) message(\"Calculating disparity\", appendLF = FALSE)")
             end_verbose <- which(as.character(body(dispRity.call)) == "if (verbose) message(\"Done.\\n\", appendLF = FALSE)")
 
             ## Comment out both lines
             body(dispRity.call)[[start_verbose]] <- body(dispRity.call)[[end_verbose]] <- substitute(empty_line <- NULL)
-        } else {
-            ## Changing the dispRity function name (no edits)
-            dispRity.call <- dispRity
         }
 
         ## Run the apply

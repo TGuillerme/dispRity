@@ -8,10 +8,10 @@ boot.matrix(
   data,
   bootstraps = 100,
   rarefaction = FALSE,
-  dimensions,
+  dimensions = NULL,
   verbose = FALSE,
   boot.type = "full",
-  prob
+  prob = NULL
 )
 }
 \arguments{

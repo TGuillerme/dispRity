@@ -29,7 +29,7 @@
 dispRity.multi.split <- function(data) {
     
     ## Check if tree is needed
-    has_tree <- !is.null(data$tree)
+    has_tree <- !is.null(data$tree[[1]])
 
     ## List holder    
     multi.list <- list()
@@ -119,6 +119,7 @@ dispRity.multi.apply <- function(matrices, fun, trees = NULL, ...) {
 
     ## Handle extra args
     dots <- list(...)
+    match_call <- match.call()
 
     ## Detect the type:
     type <- ifelse(any(c(is.null(trees), (length(trees) == 1))), "lapply", "mapply")
@@ -140,11 +141,17 @@ dispRity.multi.apply <- function(matrices, fun, trees = NULL, ...) {
         chrono_args <- lapply(chrono_args, function(x, args) c(x, args), args = dots)
     }
 
+    ## Toggle to bootstraps (no tree argument)
+    if(is.null(trees) && match_call$fun == "boot.matrix.call") {
+        type <- "boot"
+    }
+
     ## Applying the fun
     out <- switch(type,
                   "lapply"  = lapply(matrices, fun, trees, ...),
                   "mapply"  = mapply(fun, matrices, trees, MoreArgs = list(...), SIMPLIFY = FALSE),
-                  "do.call" = do.call(fun, chrono_args))
+                  "do.call" = do.call(fun, chrono_args),
+                  "boot"    = lapply(matrices, fun, ...))
     ## New class
     class(out) <- c("dispRity", "multi")
     return(out)
@@ -182,7 +189,9 @@ dispRity.multi.merge.data <- function(data) {
     data_out$call$dispRity.multi <- TRUE
     
     ## Merge subset names
-    names(data_out$subsets) <- apply(do.call(cbind, lapply(data, name.subsets)), 1, function(row) paste0(unique(row), collapse = "/"))
+    if(!is.null(names(data_out$subsets))) {
+        names(data_out$subsets) <- apply(do.call(cbind, lapply(data, name.subsets)), 1, function(row) paste0(unique(row), collapse = "/"))
+    }
 
     return(data_out)
 }

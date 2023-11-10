@@ -110,6 +110,9 @@ chrono.subsets <- function(data, tree = NULL, method, time, model, inc.nodes = F
         data <- check.dispRity.data(data, returns = c("matrix", "multi"))
     }
 
+    ## VERBOSE
+    check.class(verbose, "logical")
+
     # If is multi lapply the stuff
     if(((!is.null(data$call$dispRity.multi) && data$call$dispRity.multi) || data$multi)) {
         ## Split the data
@@ -128,8 +131,29 @@ chrono.subsets <- function(data, tree = NULL, method, time, model, inc.nodes = F
         ## Toggle bind data (each is now a pair of matrix + tree)
         bind.data <- FALSE
 
+        ## Toggle verbose (if required)
+        chrono.subsets.call <- chrono.subsets
+        if(verbose) {
+            ## Changing the chrono.subsets function name (verbose line edited out)
+            ## Find the verbose lines
+            start_verbose <- which(as.character(body(chrono.subsets.call)) == "if (method == \"discrete\") {\n    chrono.subsets.fun <- chrono.subsets.discrete\n    if (verbose) \n        message(\"Creating \", length(time) - 1, \" time bins through time:\", appendLF = FALSE)\n} else {\n    chrono.subsets.fun <- chrono.subsets.continuous\n    if (verbose) \n        message(\"Creating \", length(time), \" time samples through \", ifelse(length(tree) > 1, paste0(length(tree), \" trees:\"), \"one tree:\"), appendLF = FALSE)\n}")
+            end_verbose <- which(as.character(body(chrono.subsets.call)) == "if (verbose) message(\"Done.\\n\", appendLF = FALSE)")
+
+            ## Blank out the lines
+            body(chrono.subsets.call)[[start_verbose]][[3]][[3]] <- body(chrono.subsets.call)[[start_verbose]][[4]][[3]] <- body(chrono.subsets.call)[[end_verbose]] <- substitute(empty_line <- NULL)
+        }
+
         ## Apply the custom.subsets
-        return(dispRity.multi.apply(matrices, fun = chrono.subsets, tree = trees, method = method, time = time, model = model, inc.nodes = inc.nodes, FADLAD = FADLAD, verbose = verbose, t0 = t0, bind.data = bind.data))
+        if(method == "discrete") {
+            if(verbose) message("Creating ", length(time)-1, " time bins through time:", appendLF = FALSE)
+        } else {
+            if(verbose) message("Creating ", length(time), " time samples through ", length(matrices), " trees and matrices:", appendLF = FALSE)
+        }
+
+        output <- dispRity.multi.apply(matrices, fun = chrono.subsets.call, tree = trees, method = method, time = time, model = model, inc.nodes = inc.nodes, FADLAD = FADLAD, verbose = verbose, t0 = t0, bind.data = bind.data)
+
+        if(verbose) message("Done.\n", appendLF = FALSE)
+        return(output)
 
     } else {
         if(!is.null(tree)) {
@@ -424,10 +448,6 @@ chrono.subsets <- function(data, tree = NULL, method, time, model, inc.nodes = F
             stop(paste0("Impossible to bind the data to the trees since the number of matrices (", length(data), ") is not equal to the number of trees (", length(tree), ")."))
         }
     }
-
-
-    ## VERBOSE
-    check.class(verbose, "logical")
 
     ## -------------------------------
     ##  GENRATING THE TIME subsets
