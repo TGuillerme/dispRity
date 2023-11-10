@@ -171,7 +171,7 @@
 # })
 
 ## utilities internals
-test_that("dispRity.multi works", {
+test_that("dispRity.multi works for custom.subsets", {
 
     set.seed(1)
     tree <- makeNodeLabel(rtree(5))
@@ -193,6 +193,7 @@ test_that("dispRity.multi works", {
     rownames(data_diff[[1]])[6] <- "noooooode"
         
     ## For custom.subsets
+
     groups <- list(paste0("t", 1:3), paste0("t", 3:5))
     groups_bugged <- list(paste("t", 1:5), paste0("Node", 1:4))
     ## Normal test
@@ -243,28 +244,42 @@ test_that("dispRity.multi works", {
         "2 customised subsets for 9 elements in 2 separated matrices with 2 phylogenetic trees",
         "    1, 2." 
     ))
+})
 
 
-    # ## 2 Matrices and 1 tree
-    # warn <- capture_warning(custom.subsets(data = data, tree = tree_trifurc, group = groups))
-    # expect_equal(warn[[1]], "The following elements are not present in all trees: Node4. Some analyses downstream might not work because of this (you can use ?clean.data to match both data and tree if needed).")
-    # expect_warning(test <- custom.subsets(data = data, tree = tree_trifurc, group = groups))
-    # expect_is(test, c("dispRity", "multi"))
-    # expect_equal(length(test), 2)
-    # expect_equal(length(test[[1]]$matrix), 1)
-    # expect_equal(length(test[[2]]$matrix), 1)
-    # expect_equal(length(test[[1]]$tree), 1)
-    # expect_equal(length(test[[2]]$tree), 1)
-    # expect_equal(capture.output(test), c(
-    #     " ---- dispRity object ---- ",
-    #     "2 customised subsets for 8 elements in 2 separated matrices with 2 phylogenetic trees",
-    #     "    1, 2." 
-    # ))
+test_that("dispRity.multi works for chrono.subsets", {
+        ## Two matrices and two trees
+    tree <- rmtree(2, 10)
+    tree[[1]] <- makeNodeLabel(tree[[1]])
+    tree[[2]] <- makeNodeLabel(tree[[2]], prefix = "shnode")
+    tree[[1]]$root.time <- max(tree.age(tree[[1]])$ages)
+    tree[[2]]$root.time <- max(tree.age(tree[[2]])$ages)
+
+    data <- list(matrix(0, nrow = Ntip(tree[[1]]) + Nnode(tree[[1]]), dimnames = list(c(tree[[1]]$tip.label, tree[[1]]$node.label))),
+                 matrix(0, nrow = Ntip(tree[[2]]) + Nnode(tree[[2]]), dimnames = list(c(tree[[2]]$tip.label, tree[[2]]$node.label))))
+
+    ## Test working fine
+    warn <- capture_warning(chrono.subsets(data = data, tree = tree, time = 3, method = "continuous", model = "acctran"))
+    expect_equal(warn[[1]], "The following elements are not present in all matrices: shnode1, shnode2, shnode3, shnode4, shnode5, shnode6, shnode7, shnode8, shnode9, Node1, Node2, Node3, Node4, Node5, Node6, Node7, Node8, Node9. The matrices will be treated as separate trait-spaces.")
+    expect_warning(test <- chrono.subsets(data = data, tree = tree, time = 3, method = "continuous", model = "acctran"))
+    expect_is(test, c("dispRity", "multi"))
+    expect_equal(length(test), 2)
+    expect_equal(length(test[[1]]$matrix), 1)
+    expect_equal(length(test[[2]]$matrix), 1)
+    expect_equal(length(test[[1]]$tree), 1)
+    expect_equal(length(test[[2]]$tree), 1)
+    expect_equal(capture.output(test), c(
+        " ---- dispRity object ---- ",
+        "3 continuous (acctran) time subsets for 19 elements in 2 separated matrices with 2 phylogenetic trees",
+        "    3.3/2.79, 1.65/1.39, 0." 
+    ))
+})
 
 
 
 
-    ## For chrono.subsets
+
+
     ## Matrices and trees
 
     ## For boot.matrix
@@ -316,4 +331,3 @@ test_that("dispRity.multi works", {
     # data <- fill.dispRity(make.dispRity(data = data), tree = tree)
     # ## Works normally (multiple trees and multiple matrices)
     # test <- dispRity(chrono.subsets(data, method = "continuous", model = "acctran", time = 2), centroids)
-})

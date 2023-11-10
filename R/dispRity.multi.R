@@ -115,15 +115,36 @@ lapply.clean.data <- function(x) {
 }
 
 ## Apply the function to any pair of matrix + tree
-dispRity.multi.apply <- function(data, fun, tree = NULL, ...) {
+dispRity.multi.apply <- function(matrices, fun, trees = NULL, ...) {
+
+    ## Handle extra args
+    dots <- list(...)
 
     ## Detect the type:
-    type <- ifelse(any(c(is.null(tree), (length(tree) == 1))), "lapply", "mapply")
+    type <- ifelse(any(c(is.null(trees), (length(trees) == 1))), "lapply", "mapply")
+
+    ## Making argument list for chrono.subsets if FADLAD is provided as a list
+    if(!is.null(dots$FADLAD) && is(dots$FADLAD, "list")) {
+        ## Use a do.call
+        type <- "do.call"
+
+        ## Get the list of arguments
+        chrono_args <- mapply(function(x, y) list(data = x, tree = y), matrices, trees, SIMPLIFY = FALSE)
+
+        ## Adding the FADLADs
+        chrono_args <- mapply(function(x, y) list(data = x$data, tree = x$tree, "FADLAD" = y), chrono_args, dots$FADLAD, SIMPLIFY = FALSE)
+
+        ## Removing FADLADs
+        dots$FADLAD <- NULL
+        ## Adding all the other arguments
+        chrono_args <- lapply(chrono_args, function(x, args) c(x, args), args = dots)
+    }
 
     ## Applying the fun
     out <- switch(type,
-                  "lapply" = lapply(data, fun, tree, ...),
-                  "mapply" = mapply(fun, data, tree, MoreArgs = list(...), SIMPLIFY = FALSE))
+                  "lapply"  = lapply(matrices, fun, trees, ...),
+                  "mapply"  = mapply(fun, matrices, trees, MoreArgs = list(...), SIMPLIFY = FALSE),
+                  "do.call" = do.call(fun, chrono_args))
     ## New class
     class(out) <- c("dispRity", "multi")
     return(out)
@@ -132,16 +153,19 @@ dispRity.multi.apply <- function(data, fun, tree = NULL, ...) {
 ## Merge the apply results into one classic dispRity object
 dispRity.multi.merge <- function(data, output, match_call, ...) {
 
+    ## Combine the data
+    data_out <- dispRity.multi.merge.data(data)
+
     ## Combine the disparity results
     all_disparity <- lapply(output, `[[`, "disparity")
-    data$disparity <- dispRity.multi.merge.disparity(all_disparity)
+    data_out$disparity <- dispRity.multi.merge.disparity(all_disparity)
 
     ## Update the call
-    data$call <- output[[1]]$call$disparity
+    data_out$call <- output[[1]]$call$disparity
     ## Update the metric call name
-    data$call$disparity$metrics$name <- match_call$metric
+    data_out$call$disparity$metrics$name <- match_call$metric
     ## Make it dispRity multi
-    data$call$dispRity.multi <- TRUE
+    data_out$call$dispRity.multi <- TRUE
     return(data)
 }
 
@@ -156,9 +180,12 @@ dispRity.multi.merge.data <- function(data) {
     }
     ## Make it dispRity multi
     data_out$call$dispRity.multi <- TRUE
+    
+    ## Merge subset names
+    names(data_out$subsets) <- apply(do.call(cbind, lapply(data, name.subsets)), 1, function(row) paste0(unique(row), collapse = "/"))
+
     return(data_out)
 }
-
 
 ## Merging disparity results
 dispRity.multi.merge.disparity <- function(all_disparity) {

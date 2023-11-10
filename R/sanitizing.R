@@ -261,7 +261,9 @@ check.tree <- function(tree, data, bind.trees = FALSE, match_call) {
                 return(list(tree = tree, multi = is_multi))
             } else {
                 ## Normal cleaning check
+                options(warn = -1)
                 cleanings <- lapply(data$matrix, clean.data, tree, inc.nodes = inc.nodes)
+                options(warn = 0)
             }
         } else {
             if(length(tree) != length(data$matrix)) {

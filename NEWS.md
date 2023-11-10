@@ -53,6 +53,7 @@ roundness <- function(matrix) {
 ### MINOR IMPROVEMENTS
 
  * **CHANGE IN DEFAULT ARGUMENTS** for the `custom.subsets` and `chrono.subsets` functions: the `tree` argument is now `NULL` by default (instead of missing).
+ * **CHANGE IN DEFAULT ARGUMENTS** for the `chrono.subsets` functions: the `FADLAD` argument is now `NULL` by default (instead of missing).
  * **CHANGE IN DEFAULT ARGUMENTS** for the `projections` function. The defaults are now `scale = TRUE`, `centre = FALSE` (previously `TRUE`) and `abs = FALSE` (previously `TRUE`). The default arguments for `dispRity.covar.projections` remain unchanged though (`scale = TRUE`, `centre = TRUE`, `abs = TRUE`).
  * `randtest.dispRity` function's `subsets` argument now can take a list of arguments of subsets to compare is `data` is a `dispRity` object. The call message has also been updated to be much more verbose and clear of what has been tested.
  * optimised internal logic for all the `projections.*` functions for speed.

@@ -13,7 +13,7 @@ chrono.subsets(
   time,
   model,
   inc.nodes = FALSE,
-  FADLAD,
+  FADLAD = NULL,
   verbose = FALSE,
   t0 = FALSE,
   bind.data = FALSE
@@ -32,7 +32,7 @@ chrono.subsets(
 
 \item{inc.nodes}{A \code{logical} value indicating whether nodes should be included in the time subsets. Is ignored if \code{method = "continuous"}.}
 
-\item{FADLAD}{An optional \code{data.frame} containing the first and last occurrence data.}
+\item{FADLAD}{\code{NULL} (default) or an optional \code{data.frame} or \code{list} of \code{data.frame}s containing the first and last occurrence data.}
 
 \item{verbose}{A \code{logical} value indicating whether to be verbose or not. Is ignored if \code{method = "discrete"}.}
 
