@@ -61,9 +61,9 @@ custom.subsets <- function(data, group, tree = NULL) {
     ## DATA
     ## data must be a matrix
     if(!is.null(tree)) {
-        data <- check.dispRity.data(data, tree, returns = c("data", "tree", "multi"))
+        data <- check.dispRity.data(data, tree, returns = c("matrix", "tree", "multi"))
     } else {
-        data <- check.dispRity.data(data, returns = c("data", "multi"))
+        data <- check.dispRity.data(data, returns = c("matrix", "multi"))
     }
 
     ## If is multi lapply the stuff

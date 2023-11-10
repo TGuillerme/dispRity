@@ -75,7 +75,7 @@ fill.dispRity <- function(data, tree) {
 
     ## Data have a matrix
     if(!is.null(data)) {
-        data$matrix <- check.dispRity.data(data$matrix, returns = "data")
+        data$matrix <- check.dispRity.data(data$matrix, returns = "matrix")
 
         ## Dimensions
         if(length(data$call$dimensions) == 0) {

@@ -137,9 +137,9 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
     if(!is(data, "dispRity")) {
         ## Adding the tree
         if(!is.null(tree)) {
-            data <- fill.dispRity(make.dispRity(data = check.dispRity.data(data, returns = "data"), tree = tree))
+            data <- fill.dispRity(make.dispRity(data = check.dispRity.data(data, returns = "matrix"), tree = tree))
         } else {
-            data <- fill.dispRity(make.dispRity(data = check.dispRity.data(data, returns = "data")))
+            data <- fill.dispRity(make.dispRity(data = check.dispRity.data(data, returns = "matrix")))
         }
     } else {
         ## Make sure that data is not a dual class
@@ -164,8 +164,18 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
 
     # dispRity.multi
     if(!is.null(data$call$dispRity.multi) && data$call$dispRity.multi) {
-        ## Split the data
-        split_data <- dispRity.multi.split(data)
+
+        ## Check if data needs splitting (if not *.subsets or boot.matrix)
+        do_split <- !(is(data, "dispRity") && is(data, "multi"))
+
+        if(do_split) {
+            ## Split the data
+            split_data <- dispRity.multi.split(data)
+            data$call$dispRity.multi <- TRUE
+        } else {
+            ## Get the first element in data as a template
+            data <- dispRity.multi.merge.data(data)
+        }
 
         ## Change the call in dispRity (if verbose)
         if(verbose) {
@@ -189,7 +199,7 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
         if(verbose) message("Done.\n", appendLF = FALSE)
 
         ## Return the merged results
-        return(dispRity.multi.merge(data, output))
+        return(dispRity.multi.merge(data, output, match_call))
     }
 
     ## Get the metric list

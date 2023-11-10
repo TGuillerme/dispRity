@@ -102,7 +102,7 @@ chrono.subsets <- function(data, tree = NULL, method, time, model, inc.nodes = F
     ##  SANITIZING
     ## ----------------------
     ## DATA
-    data <- check.dispRity.data(data, returns = "data")
+    data <- check.dispRity.data(data, returns = "matrix")
 
     # if(!is.null(tree)) {
     #     data <- check.dispRity.data(data, tree, returns = c("data", "tree", "multi"))

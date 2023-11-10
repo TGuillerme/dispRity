@@ -97,7 +97,7 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
     ## If class is dispRity, data is serial
     if(!is(data, "dispRity")) {
         ## Data must be a matrix
-        data <- check.dispRity.data(data, returns = "data")
+        data <- check.dispRity.data(data, returns = "matrix")
 
         ## Check whether it is a distance matrix
         if(check.dist.matrix(data[[1]], just.check = TRUE)) {
@@ -134,6 +134,36 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
             }
         }
     }
+
+
+    ## If is multi lapply the stuff
+    if(!is.null(data$call$dispRity.multi) && data$call$dispRity.multi) {
+        ## Split the data
+        split_data <- dispRity.multi.split(data)
+
+        ## Change the verbose call
+        # if(verbose) {
+        #     ## Changing the dispRity function name (verbose line edited out)
+        #     dispRity.call <- dispRity
+
+        #     ## Find the verbose lines
+        #     start_verbose <- which(as.character(body(dispRity.call)) == "if (verbose) message(\"Calculating disparity\", appendLF = FALSE)")
+        #     end_verbose <- which(as.character(body(dispRity.call)) == "if (verbose) message(\"Done.\\n\", appendLF = FALSE)")
+
+        #     ## Comment out both lines
+        #     body(dispRity.call)[[start_verbose]] <- body(dispRity.call)[[end_verbose]] <- substitute(empty_line <- NULL)
+        # } else {
+        #     ## Changing the dispRity function name (no edits)
+            boot.matrix.call <- boot.matrix
+        # }
+
+        ## Apply the custom.subsets
+        return(dispRity.multi.apply(data, fun = boot.matrix.call, bootstraps = bootstraps, rarefaction = rarefaction, dimensions = dimensions, verbose = verbose, boot.type = boot.type, prob = prob))
+    }
+
+
+
+
 
     ## Data must contain a first "bootstrap" (empty list)
     if(length(data$subsets) == 0) {

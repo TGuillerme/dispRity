@@ -293,7 +293,7 @@ check.multi.tree <- function(tree, data, inc.nodes) {
 }
 
 ## Wrapper function for checking the data
-check.dispRity.data <- function(data = NULL, tree = NULL, bind.trees = FALSE, returns = c("data", "tree", "multi")) {
+check.dispRity.data <- function(data = NULL, tree = NULL, bind.trees = FALSE, returns = c("matrix", "tree", "multi")) {
 
     match_call <- match.call()
     is_multi <- FALSE
@@ -313,7 +313,7 @@ check.dispRity.data <- function(data = NULL, tree = NULL, bind.trees = FALSE, re
 
     ## Sort the output
     output <- list()
-    if("data" %in% returns) {
+    if("matrix" %in% returns) {
         output$matrix <- data$matrix
     }
     if("tree" %in% returns) {
