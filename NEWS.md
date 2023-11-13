@@ -70,6 +70,7 @@ roundness <- function(matrix) {
  * The `add.tree` utility function now has an optional argument to override any existing trees (`replace = TRUE`) or not (`replace = FALSE`; which remains the default previous behaviour). 
  * `print.dispRity` now recognises and highlights simulated data from the [`treats`](https://github.com/tguillerme/treats) package.
  * Improved `NA` management for `S3` functions.
+ * Improved automatic centering and scaling for `covar.plot` making the figures more aesthetic.
 
 ### BUG FIXES
  
