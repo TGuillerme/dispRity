@@ -307,58 +307,114 @@ test_that("dispRity.multi works for boot.matrix", {
     expect_equal(paste0(write, collapse = ""), "Bootstrapping..Done.")
 })
 
+# test_that("dispRity.multi works for dispRity", {
+#     ## Two matrices
+#     tree <- rmtree(2, 10)
+#     tree[[1]] <- makeNodeLabel(tree[[1]])
+#     tree[[2]] <- makeNodeLabel(tree[[2]], prefix = "shnode")
+#     tree[[1]]$root.time <- max(tree.age(tree[[1]])$ages)
+#     tree[[2]]$root.time <- max(tree.age(tree[[2]])$ages)
+#     data <- list(matrix(0, nrow = Ntip(tree[[1]]) + Nnode(tree[[1]]), dimnames = list(c(tree[[1]]$tip.label, tree[[1]]$node.label))),
+#                  matrix(0, nrow = Ntip(tree[[2]]) + Nnode(tree[[2]]), dimnames = list(c(tree[[2]]$tip.label, tree[[2]]$node.label))))
+
+#     ## Test working fine
+#     expect_warning(test <- dispRity(data, metric = mean, tree = tree))
+#     expect_is(test, c("dispRity", "multi"))
+#     expect_equal(names(test), c("matrix", "tree", "call", "subsets", "disparity"))
+#     expect_equal(capture.output(test), c(
+#         " ---- dispRity object ---- ",
+#         "19 elements in 2 separated matrices with 1 dimensions with 2 phylogenetic trees", #TODO: add "separated" handeling in print
+#         "Disparity was calculated as: mean." 
+#     ))
+#     expect_null(plot(test))
+#     expect_equal(summary(test)$obs.median, 0)
+
+#     ## Verbose
+#     text <- capture_messages(expect_warning(test <- dispRity(data, metric = mean, tree = tree, verbose = TRUE)))
+#     expect_equal(paste0(text, collapse = ""), "Calculating disparity..Done.\n")
+
+#     ## Recycling custom.subsets
+#     set.seed(1)
+#     tree <- makeNodeLabel(rtree(5))
+#     tree <- list(tree, tree)
+#     class(tree) <- "multiPhylo"
+#     tree_trifurc <- tree[[1]]
+#     tree_trifurc$edge <- tree_trifurc$edge[-5, ]
+#     tree_trifurc$edge[c(5,6),1] <- 8
+#     tree_trifurc$edge.length <- tree_trifurc$edge.length[-5] 
+#     tree_trifurc$Nnode <- 3
+#     tree_trifurc$node.label <- tree_trifurc$node.label[-4]
+#     tree_trifurcs <- list(tree[[1]], tree_trifurc)
+#     tree_diff <- tree
+#     tree_diff[[1]]$node.label[1] <- "noooooode"
+#     class(tree_diff) <- "multiPhylo"
+#     data <- matrix(0, nrow = 9, ncol = 2, dimnames = list(c(paste0("t", 1:5), paste0("Node", 1:4))))
+#     data <- list(data, data)
+#     data_diff <- data
+#     rownames(data_diff[[1]])[6] <- "noooooode"
+#     ## 1 Matrix (with everything) and 2 trees
+#     data_all <- rbind(data_diff[[1]], "Node1" = c(0,0))
+#     groups <- list(paste0("t", 1:3), paste0("t", 3:5))
+#     expect_warning(custom_subsets <- custom.subsets(data = data_all, tree = tree_diff, group = groups))
+    
+#     test <- dispRity(custom_subsets, metric = centroids)
+#     expect_is(test, c("dispRity", "multi"))
+#     expect_equal(names(test), c("matrix", "tree", "call", "subsets", "disparity"))
+#     expect_equal(capture.output(test), c(
+#         " ---- dispRity object ---- ",
+#         "19 elements in 2 separated matrices with 1 dimensions with 2 phylogenetic trees", #TODO: add "separated" handeling in print
+#         "Disparity was calculated as: mean." 
+#     ))
+#     expect_null(plot(test))
+#     expect_equal(summary(test)$obs.median, 0)
 
 
+#     ## Recycling chrono.subsets
+#     ## Two matrices and two trees
+#     set.seed(1)
+#     tree <- rmtree(2, 10)
+#     tree[[1]] <- makeNodeLabel(tree[[1]])
+#     tree[[2]] <- makeNodeLabel(tree[[2]], prefix = "shnode")
+#     tree[[1]]$root.time <- max(tree.age(tree[[1]])$ages)
+#     tree[[2]]$root.time <- max(tree.age(tree[[2]])$ages)
+
+#     data <- list(matrix(0, nrow = Ntip(tree[[1]]) + Nnode(tree[[1]]), dimnames = list(c(tree[[1]]$tip.label, tree[[1]]$node.label))),
+#                  matrix(0, nrow = Ntip(tree[[2]]) + Nnode(tree[[2]]), dimnames = list(c(tree[[2]]$tip.label, tree[[2]]$node.label))))
+
+#     ## Test working fine
+#     expect_warning(chrono_subsets <- chrono.subsets(data = data, tree = tree, time = 3, method = "continuous", model = "acctran"))
+#     test <- dispRity(chrono_subsets, metric = centroids)
+#     expect_is(test, c("dispRity", "multi"))
+#     expect_equal(names(test), c("matrix", "tree", "call", "subsets", "disparity"))
+#     expect_equal(capture.output(test), c(
+#         " ---- dispRity object ---- ",
+#         "19 elements in 2 separated matrices with 1 dimensions with 2 phylogenetic trees", #TODO: add "separated" handeling in print
+#         "Disparity was calculated as: mean." 
+#     ))
+#     expect_null(plot(test))
+#     expect_equal(summary(test)$obs.median, 0)
 
 
-    ## Matrices and trees
+#     ## Recycling boot.matrix
+#     ## Two matrices
+#     tree <- rmtree(2, 10)
+#     tree[[1]] <- makeNodeLabel(tree[[1]])
+#     tree[[2]] <- makeNodeLabel(tree[[2]], prefix = "shnode")
+#     tree[[1]]$root.time <- max(tree.age(tree[[1]])$ages)
+#     tree[[2]]$root.time <- max(tree.age(tree[[2]])$ages)
+#     data <- list(matrix(0, nrow = Ntip(tree[[1]]) + Nnode(tree[[1]]), dimnames = list(c(tree[[1]]$tip.label, tree[[1]]$node.label))),
+#                  matrix(0, nrow = Ntip(tree[[2]]) + Nnode(tree[[2]]), dimnames = list(c(tree[[2]]$tip.label, tree[[2]]$node.label))))
 
-    ## For boot.matrix
-    ## Just matrices
-    ## Matrices and trees
-
-
-
-    ## For dispRity
-    ## Just matrices
-    ## Matrices and trees
-    ## Custom subsets
-    ## Chrono subsets
-    ## Boot matrices
-
-    ## For fecking everything!
-    # test1 <- dispRity(boot.matrix(custom.subsets(data)), metric = centroids)
-    # test2 <- dispRity(boot.matrix(chrono.subsets(data)), metric = centroids)
-
-
-    # set.seed(1)
-    # load("bound_test_data.rda")
-    # trees <- bound_test_data$trees
-    # matrices <- bound_test_data$matrices
-
-    # ## Test if it works with multiple trees and with multiple matrices ok
-    # test <- chrono.subsets(matrices[[1]], tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5)
-    # expect_is(test, "dispRity")
-    # test_print <- capture_output(print(test))
-    # expect_equal(test_print, " ---- dispRity object ---- \n3 continuous (acctran) time subsets for 19 elements in one matrix with 3 phylogenetic trees\n    5, 2.5, 0.")
-    # tust <- dispRity(test, metric = centroids)
-    # summary(tust)
-
-
-
-    # ## 5 trees and matrices
-    # tree <- rmtree(5, 5)
-    # tree <- lapply(tree, makeNodeLabel)
-    # class(tree) <- "multiPhylo"
-    # data <- matrix(1, nrow = 9, ncol = 1, dimnames = list(c(tree[[1]]$tip.label, tree[[1]]$node.label)))
-    # data <- replicate(5, data, simplify = FALSE)
-
-    # ## Modifying one tree and one matrix
-    # # tree[[1]]$node.label[1] <- rownames(data[[1]])[6] <- "nooooode"
-
-    # ## Matrix with all nodes
-    # # data_all <- matrix(1, nrow = 10, ncol = 1, dimnames = list(c(tree[[1]]$tip.label, tree[[1]]$node.label, "nooooode")))
-
-    # data <- fill.dispRity(make.dispRity(data = data), tree = tree)
-    # ## Works normally (multiple trees and multiple matrices)
-    # test <- dispRity(chrono.subsets(data, method = "continuous", model = "acctran", time = 2), centroids)
+#     ## Test working fine
+#     expect_warning(boot_matrix <- boot.matrix(data, bootstraps = 7))
+#     test <- dispRity(boot_matrix, metric = centroids)
+#     expect_is(test, c("dispRity", "multi"))
+#     expect_equal(names(test), c("matrix", "tree", "call", "subsets", "disparity"))
+#     expect_equal(capture.output(test), c(
+#         " ---- dispRity object ---- ",
+#         "19 elements in 2 separated matrices with 1 dimensions with 2 phylogenetic trees", #TODO: add "separated" handeling in print
+#         "Disparity was calculated as: mean." 
+#     ))
+#     expect_null(plot(test))
+#     expect_equal(summary(test)$obs.median, 0)
+# })

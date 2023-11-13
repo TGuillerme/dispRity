@@ -142,13 +142,15 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
             data <- fill.dispRity(make.dispRity(data = check.dispRity.data(data, returns = "matrix")))
         }
     } else {
-        ## Make sure that data is not a dual class
-        if(length(class(data)) > 1) {
-            stop.call(match_call$data, " must be a raw dispRity object (i.e. not dual class).")
-        }
-        ## Making sure matrix exist
-        if(is.null(data$matrix[[1]])) {
-            stop.call(match_call$data, " must contain a matrix or a list of matrices.")
+        if(!is(data, "multi")) {
+            ## Make sure that data is not a dual class
+            if(length(class(data)) > 1) {
+                stop.call(match_call$data, " must be a raw dispRity object (i.e. not dual class).")
+            }
+            ## Making sure matrix exist
+            if(is.null(data$matrix[[1]])) {
+                stop.call(match_call$data, " must contain a matrix or a list of matrices.")
+            }
         }
         ## Adding tree (if possible)
         if(!is.null(tree)) {
@@ -160,6 +162,7 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
         if(is.null(data$call$dimensions)) {
             data$call$dimensions <- 1:ncol(data$matrix[[1]])
         }
+
     }
 
     # dispRity.multi
@@ -180,7 +183,7 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
         ## Change the call in dispRity (if verbose)
         dispRity.call <- dispRity
         if(verbose) {
-            ## Changing the dispRity function name (verbose line edited out)
+            ## Changing the dispRit yfunction name (verbose line edited out)
             ## Find the verbose lines
             start_verbose <- which(as.character(body(dispRity.call)) == "if (verbose) message(\"Calculating disparity\", appendLF = FALSE)")
             end_verbose <- which(as.character(body(dispRity.call)) == "if (verbose) message(\"Done.\\n\", appendLF = FALSE)")
