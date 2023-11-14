@@ -7,7 +7,7 @@
 remove.zero.brlen(tree, slide, verbose = FALSE)
 }
 \arguments{
-\item{tree}{A \code{"phylo"} object with edge lengths}
+\item{tree}{A \code{"phylo"} or \code{"multiPhylo"} object with edge lengths}
 
 \item{slide}{An optional sliding \code{numeric} values. If left empty, 1\% of the shortest branch length is used.}
 
@@ -17,11 +17,11 @@ remove.zero.brlen(tree, slide, verbose = FALSE)
 A \code{"phylo"} object with a postorder edge table and no zero branch lengths.
 }
 \description{
-Remove zero branch lengths on trees by sliding nodes randomly in a postorder traversal based on \code{\link{slide.nodes}}.
+Remove zero or negative branch lengths on trees by sliding nodes randomly in a postorder traversal based on \code{\link{slide.nodes}}.
 }
 \details{
 The sliding value will be used to slide the nodes up and down to remove zero branch lengths by minimising the amount of branch changes.
-The algorithm slides the nodes up and down (when possible) on each node in a recursive way while there is still zero branch lengths.
+The algorithm slides the nodes up and down (when possible) on each node in a recursive way while there is still zero or negative branch lengths.
 If two recursions produce the same series of zero branches (e.g. by sliding node A towards node B equally so that the distance A:B becomes 0), the sliding value is divided by two until the next slide.
 }
 \examples{
@@ -44,6 +44,17 @@ par(mfrow = c(3,1))
 plot(tree, main = "zero branch length")
 plot(tree_no_zero, main = "no zero branch length")
 plot(tree_exaggerated, main = "exaggerated slidding")
+
+## Removing negative branch lengths
+## Generating a tree with negative branch length
+set.seed(3)
+tree_negative <- chronoMPL(rtree(10))
+## Removing the negative branch length (and make it non-zero)
+tree_positive <- remove.zero.brlen(tree_negative)
+## Plot the differences
+par(mfrow = c(2, 1))
+plot(tree_negative, main = "Negative branch lengths")
+plot(tree_positive, main = "Positive branch lengths")
 
 }
 \seealso{

@@ -71,6 +71,7 @@ roundness <- function(matrix) {
  * `print.dispRity` now recognises and highlights simulated data from the [`treats`](https://github.com/tguillerme/treats) package.
  * Improved `NA` management for `S3` functions.
  * Improved automatic centering and scaling for `covar.plot` making the figures more aesthetic.
+ * `remove.zero.brlen` now also removes negative branch lengths and works on `"multiPhylo"` objects (thanks to Thomas Johnson for this suggestion).
 
 ### BUG FIXES
  
