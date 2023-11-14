@@ -145,7 +145,7 @@ dispRity.multi.apply <- function(matrices, fun, trees = NULL, ...) {
     if(is.null(trees) && match_call$fun == "boot.matrix.call") {
         type <- "boot"
     }
-
+    
     ## Applying the fun
     out <- switch(type,
                   "lapply"  = lapply(matrices, fun, trees, ...),
@@ -173,7 +173,7 @@ dispRity.multi.merge <- function(data, output, match_call, ...) {
     data_out$call$disparity$metrics$name <- match_call$metric
     ## Make it dispRity multi
     data_out$call$dispRity.multi <- TRUE
-    return(data)
+    return(data_out)
 }
 
 ## Merges data from a split (not output)

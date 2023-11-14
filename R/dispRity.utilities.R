@@ -6,12 +6,13 @@
 #' @description Creating an empty \code{dispRity} object from a matrix
 #'
 #' @usage make.dispRity(data, tree, call, subsets)
-#' @usage fill.dispRity(data, tree)
+#' @usage fill.dispRity(data, tree, check)
 #' 
 #' @param data A \code{matrix}.
 #' @param tree Optional, a \code{phylo} or \code{multiPhylo} object.
 #' @param call Optional, a \code{list} to be a \code{dispRity} call.
 #' @param subsets Optional, a \code{list} to be a \code{dispRity} subsets list.
+#' @param check Logical, whether to check the data (\code{TRUE}; default, highly advised) or not (\code{FALSE}).
 #' 
 #' @examples
 #' ## An empty dispRity object
@@ -71,11 +72,13 @@ make.dispRity <- function(data, tree, call, subsets) {
 
     return(dispRity_object)
 }
-fill.dispRity <- function(data, tree) {
+fill.dispRity <- function(data, tree, check = TRUE) {
 
     ## Data have a matrix
     if(!is.null(data)) {
-        data$matrix <- check.dispRity.data(data$matrix, returns = "matrix")
+        if(check) {
+            data$matrix <- check.dispRity.data(data$matrix, returns = "matrix")
+        }
 
         ## Dimensions
         if(length(data$call$dimensions) == 0) {
@@ -94,7 +97,11 @@ fill.dispRity <- function(data, tree) {
 
     if(!missing(tree)) {
         ## Add the trees
-        data$tree <- check.dispRity.data(tree = tree, data = data, returns = "tree")
+        if(check) {
+            data$tree <- check.dispRity.data(tree = tree, data = data, returns = "tree")
+        } else {
+            data$tree <- tree
+        }
     }
     return(data)
 }

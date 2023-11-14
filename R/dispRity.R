@@ -123,7 +123,7 @@
 # start_mem <- mem_used()
 
 
-dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verbose = FALSE, tree = NULL){#, parallel) {
+dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALSE, verbose = FALSE, tree = NULL){#, parallel) {
     ## ----------------------
     ##  SANITIZING
     ## ----------------------
@@ -134,12 +134,20 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
     # warning("DEBUG") ; return(match_call)
 
     ## Check data input
+    is_multi <- FALSE
     if(!is(data, "dispRity")) {
         ## Adding the tree
         if(!is.null(tree)) {
-            data <- fill.dispRity(make.dispRity(data = check.dispRity.data(data, returns = "matrix"), tree = tree))
+            data_check <- check.dispRity.data(data, tree, returns = c("matrix", "tree", "multi"))
+            is_multi <- data_check$multi
+            data <- fill.dispRity(make.dispRity(data = data_check$matrix, tree = data_check$tree), check = FALSE)
         } else {
-            data <- fill.dispRity(make.dispRity(data = check.dispRity.data(data, returns = "matrix")))
+            data_check <- check.dispRity.data(data, returns = c("matrix", "multi"))
+            is_multi <- data_check$multi
+            data <- fill.dispRity(make.dispRity(data = data_check$matrix), check = FALSE)
+        }
+        if(is_multi) {
+            data$call$dispRity.multi <- is_multi
         }
     } else {
         if(!is(data, "multi")) {
@@ -162,7 +170,6 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
         if(is.null(data$call$dimensions)) {
             data$call$dimensions <- 1:ncol(data$matrix[[1]])
         }
-
     }
 
     # dispRity.multi
@@ -179,6 +186,15 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
             ## Get the first element in data as a template
             data <- dispRity.multi.merge.data(data)
         }
+        
+        ## Get only the matrices and/or the trees
+        matrices <- unlist(lapply(split_data, `[[`, "matrix"), recursive = FALSE)
+        ## Get the trees
+        if(!is.null(split_data[[1]]$tree)) {
+            trees <- unlist(lapply(split_data, `[[`, "tree"), recursive = FALSE)
+        } else {
+            trees <- NULL
+        }
 
         ## Change the call in dispRity (if verbose)
         dispRity.call <- dispRity
@@ -191,10 +207,17 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
             ## Comment out both lines
             body(dispRity.call)[[start_verbose]] <- body(dispRity.call)[[end_verbose]] <- substitute(empty_line <- NULL)
         }
+        dispRity.int.call <- function(data, tree, metric, dimensions, between.groups, verbose, ...) {
+            return(dispRity.call(data = data, metric = metric, dimensions = dimensions, ..., between.groups = between.groups, verbose = verbose, tree = tree))
+        }
 
         ## Run the apply
         if(verbose) message("Calculating multiple disparities", appendLF = FALSE)
-        output <- dispRity.multi.apply(data, fun = dispRity.call, metric = metric, dimensions = dimensions, between.groups = between.groups, verbose = verbose, ...)
+
+        output <- dispRity.multi.apply(matrices, fun = dispRity.int.call, metric = metric, tree = trees, dimensions = dimensions, between.groups = between.groups, verbose = verbose, ...)
+        # output <- dispRity.multi.apply(matrices, fun = dispRity.int.call, metric = metric, trees = trees, dimensions = dimensions, between.groups = between.groups, verbose = verbose) ; warning("DEBUG")
+        # test <- dispRity.int.call(matrices[[1]], trees[[1]], metric = metric, dimensions = dimensions, between.groups = between.groups, verbose = verbose) ; warning("DEBUG")   
+
         if(verbose) message("Done.\n", appendLF = FALSE)
 
         ## Return the merged results
@@ -251,7 +274,7 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
     has_probabilities <- ifelse(length(grep("\\.split", data$call$subsets)) == 0, FALSE, TRUE)
 
     ## Dimensions
-    if(!missing(dimensions)) {
+    if(!is.null(dimensions)) {
         ## Else must be a single numeric value (proportional)
         check.class(dimensions, c("numeric", "integer"), " must be a proportional threshold value.")
         if(length(dimensions) == 1) {

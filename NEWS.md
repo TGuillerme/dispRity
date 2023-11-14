@@ -54,7 +54,7 @@ roundness <- function(matrix) {
 
 ### MINOR IMPROVEMENTS
 
- * **CHANGE IN DEFAULT ARGUMENTS** for the `custom.subsets`, `chrono.subsets` and `boot.matrix` functions: the `tree`, `FADLAD`, `prob` and `dimensions` arguments is now `NULL` by default (instead of missing).
+ * **CHANGE IN DEFAULT ARGUMENTS** for the `custom.subsets`, `chrono.subsets`, `boot.matrix` and `dispRity` functions: the `tree`, `FADLAD`, `prob` and `dimensions` arguments is now `NULL` by default (instead of missing).
  * **CHANGE IN DEFAULT ARGUMENTS** for the `projections` function. The defaults are now `scale = TRUE`, `centre = FALSE` (previously `TRUE`) and `abs = FALSE` (previously `TRUE`). The default arguments for `dispRity.covar.projections` remain unchanged though (`scale = TRUE`, `centre = TRUE`, `abs = TRUE`).
  * `randtest.dispRity` function's `subsets` argument now can take a list of arguments of subsets to compare is `data` is a `dispRity` object. The call message has also been updated to be much more verbose and clear of what has been tested.
  * optimised internal logic for all the `projections.*` functions for speed.
@@ -72,6 +72,7 @@ roundness <- function(matrix) {
  * Improved `NA` management for `S3` functions.
  * Improved automatic centering and scaling for `covar.plot` making the figures more aesthetic.
  * `remove.zero.brlen` now also removes negative branch lengths and works on `"multiPhylo"` objects (thanks to Thomas Johnson for this suggestion).
+ * `fill.dispRity` has now an extra argument `check` to toggle the data checking on and off (more for developers).
 
 ### BUG FIXES
  
