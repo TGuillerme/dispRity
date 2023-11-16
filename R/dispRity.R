@@ -160,20 +160,26 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
                 stop.call(match_call$data, " must contain a matrix or a list of matrices.")
             }
         }
+       
         ## Adding tree (if possible)
         if(!is.null(tree)) {
             data <- remove.tree(data)
             data <- add.tree(data, tree = check.dispRity.data(data = data, tree = tree, returns = "tree"))
         }
 
-        ## Make sure dimensions exist in the call
-        if(is.null(data$call$dimensions)) {
-            data$call$dimensions <- 1:ncol(data$matrix[[1]])
+        ## Togggle multi?
+        if(is(data, "dispRity") && is(data, "multi")) {
+            is_multi <- TRUE
+        } else {
+            ## Fill in dimensionality
+            if(is.null(data$call$dimensions)) {
+                data$call$dimensions <- 1:ncol(data$matrix[[1]])
+            }
         }
     }
 
-    # dispRity.multi
-    if(!is.null(data$call$dispRity.multi) && data$call$dispRity.multi) {
+    ## dispRity.multi
+    if(is_multi) {
 
         ## Check if data needs splitting (if not *.subsets or boot.matrix)
         do_split <- !(is(data, "dispRity") && is(data, "multi"))
@@ -182,17 +188,20 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
             ## Split the data
             split_data <- dispRity.multi.split(data)
             data$call$dispRity.multi <- TRUE
+            ## Get only the matrices and/or the trees
+            matrices <- unlist(lapply(split_data, `[[`, "matrix"), recursive = FALSE)
+            ## Get the trees
+            if(!is.null(split_data[[1]]$tree)) {
+                trees <- unlist(lapply(split_data, `[[`, "tree"), recursive = FALSE)
+            } else {
+                trees <- NULL
+            }
         } else {
             ## Get the first element in data as a template
+            split_data <- data
             data <- dispRity.multi.merge.data(data)
-        }
-        
-        ## Get only the matrices and/or the trees
-        matrices <- unlist(lapply(split_data, `[[`, "matrix"), recursive = FALSE)
-        ## Get the trees
-        if(!is.null(split_data[[1]]$tree)) {
-            trees <- unlist(lapply(split_data, `[[`, "tree"), recursive = FALSE)
-        } else {
+            ## Get the correct elements
+            matrices <- split_data[which(unlist(lapply(split_data, class)) == "dispRity")]
             trees <- NULL
         }
 
@@ -207,6 +216,7 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
             ## Comment out both lines
             body(dispRity.call)[[start_verbose]] <- body(dispRity.call)[[end_verbose]] <- substitute(empty_line <- NULL)
         }
+        ## Set up the function to call
         dispRity.int.call <- function(data, tree, metric, dimensions, between.groups, verbose, ...) {
             return(dispRity.call(data = data, metric = metric, dimensions = dimensions, ..., between.groups = between.groups, verbose = verbose, tree = tree))
         }

@@ -168,7 +168,7 @@ dispRity.multi.merge <- function(data, output, match_call, ...) {
     data_out$disparity <- dispRity.multi.merge.disparity(all_disparity)
 
     ## Update the call
-    data_out$call <- output[[1]]$call$disparity
+    data_out$call$disparity <- output[[1]]$call$disparity
     ## Update the metric call name
     data_out$call$disparity$metrics$name <- match_call$metric
     ## Make it dispRity multi
@@ -178,20 +178,26 @@ dispRity.multi.merge <- function(data, output, match_call, ...) {
 
 ## Merges data from a split (not output)
 dispRity.multi.merge.data <- function(data) {
-    data_out <- data[[1]]
-    data_out$matrix <- unlist(lapply(data, `[[`, "matrix"), recursive = FALSE)
-    if(!is.null(data_out$tree[[1]])) {
-        trees <- lapply(data, `[[`, "tree")
-        class(trees) <- "multiPhylo"
-        data_out$tree <- trees
+
+    ## Check if data is already dispRity formated
+    if(is(data, "dispRity") && is(data, "multi")) {
+        data_out <- data[[1]]
+        data_out$matrix <- unlist(lapply(data, `[[`, "matrix"), recursive = FALSE)
+        if(!is.null(data_out$tree[[1]])) {
+            trees <- lapply(data, `[[`, "tree")
+            class(trees) <- "multiPhylo"
+            data_out$tree <- trees
+        }        
+        ## Merge subset names
+        if(!is.null(names(data_out$subsets))) {
+            names(data_out$subsets) <- apply(do.call(cbind, lapply(data, name.subsets)), 1, function(row) paste0(unique(row), collapse = "/"))
+        }
+    } else {
+        data_out <- data
     }
+
     ## Make it dispRity multi
     data_out$call$dispRity.multi <- TRUE
-    
-    ## Merge subset names
-    if(!is.null(names(data_out$subsets))) {
-        names(data_out$subsets) <- apply(do.call(cbind, lapply(data, name.subsets)), 1, function(row) paste0(unique(row), collapse = "/"))
-    }
 
     return(data_out)
 }

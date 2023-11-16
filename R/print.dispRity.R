@@ -308,7 +308,6 @@ print.dispRity <- function(x, all = FALSE, ...) {
                     cat(":\n")
                 }
 
-
                 if(length(subsets) > 5) {
                     cat("    ",paste(subsets[1:5], collapse=", "),"...\n")
                 } else {
@@ -321,10 +320,9 @@ print.dispRity <- function(x, all = FALSE, ...) {
             if(!is.null(x$call$subsets) && ("covar" %in% x$call$subsets)) {
                 cat(paste0("One covar matrix (", names(x$subsets), ") with "))
             }
-
             cat(paste(nrow(x$matrix[[1]]), "elements"))
             if(length(x$matrix) > 1) {
-                cat(paste0(" in ", length(x$matrix), " matrices"), sep = "")
+                cat(paste0(" in ", length(x$matrix), ifelse((!is.null(x$call$dispRity.multi) && x$call$dispRity.multi), " separated", ""), " matrices"), sep = "")
             } else {
                 cat(paste0(" in one matrix"), sep = "")
             }
