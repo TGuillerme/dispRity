@@ -56,7 +56,7 @@
 ##TODO: allow tree to be a multiPhylo object + a sample element that randomly samples a tree everytime and runs ACE on all trees?
 multi.ace <- function(matrix, tree, models, use.poly = FALSE, use.uncertain = FALSE, use.inapp = FALSE, threshold = TRUE, verbose, parallel = FALSE, special.tokens) {
 
-    ## SANITIZING
+    ## SANITIZING
 
     ## Special tokens
     #check.class(special.tokens, "list")
@@ -105,7 +105,7 @@ multi.ace <- function(matrix, tree, models, use.poly = FALSE, use.uncertain = FA
         matrix <- do.call(rbind, matrix)
     }
 
-    ## Get the characters
+    ## Get the characters
     characters <- unlist(apply(matrix, 2, list), recursive = FALSE)
 
     #check.class(models, c("character"))
@@ -122,9 +122,9 @@ multi.ace <- function(matrix, tree, models, use.poly = FALSE, use.uncertain = FA
         }
     }
 
-    ## Convert the potential missing data
+    ## Convert the potential missing data
     if(verbose) cat("Preparing the data:")
-    ## Convert inapplicables
+    ## Convert inapplicables
     if(!use.inapp) {
         characters <- convert.tokens(characters, token = special.tokens$inapplicable,
                                                  replace = special.tokens$missing)
@@ -159,7 +159,7 @@ multi.ace <- function(matrix, tree, models, use.poly = FALSE, use.uncertain = FA
     characters_states <- lapply(characters_states, get.only.states, special.tokens)
     if(verbose) cat(".")
 
-    # Find invariant characters
+    ## Find invariant characters
     invariants <- which(lengths(characters_states) < 2)
     if(length(invariants) > 0) {
         ## Remove the characters
@@ -186,7 +186,7 @@ multi.ace <- function(matrix, tree, models, use.poly = FALSE, use.uncertain = FA
       }
     } else {
       do_parallel <- TRUE
-      ## Get the number of cores
+      ## Get the number of cores
       cores <- parallel
     }
     if(verbose) cat(".")
@@ -198,7 +198,7 @@ multi.ace <- function(matrix, tree, models, use.poly = FALSE, use.uncertain = FA
                 table <- rep(0, length(character_states))
                 ## Find the number of tokens
                 taxon_tokens <- strsplit(taxon, split = paste0("[", special.tokens$polymorphism, special.tokens$uncertainty, "]"))[[1]]
-                ## Fill the table
+                ## Fill the table
                 table[character_states %in% taxon_tokens] <- 1/length(taxon_tokens)
                 return(table)
             } else {
@@ -210,7 +210,7 @@ multi.ace <- function(matrix, tree, models, use.poly = FALSE, use.uncertain = FA
     characters_tables <- mapply(convert.char.table, characters, characters_states, MoreArgs = list(special.tokens))
     if(verbose) cat(".")
 
-    ## Set up the characters arguments
+    ## Set up the characters arguments
     make.args <- function(character, character_states, model) {
         return(list(list(character = character,
                          character_states = character_states,
@@ -245,7 +245,7 @@ multi.ace <- function(matrix, tree, models, use.poly = FALSE, use.uncertain = FA
         ancestral_estimations <- lapply(args_list, function(args) do.call(castor.ace, args))
         if(verbose) cat(" Done.\n")
 
-        ##TODO: Improve model
+        ##TODO: Improve model
 
         ## Select the threshold type function
         switch(threshold.type,
@@ -261,7 +261,7 @@ multi.ace <- function(matrix, tree, models, use.poly = FALSE, use.uncertain = FA
         
         ## Translating the likelihood table into a vector of characters
         translate.likelihood <- function(character, threshold, select.states, special.tokens) {
-            ## Translate the likelihood table
+            ## Translate the likelihood table
             threshold.fun <- function(taxon, threshold, select.states, special.tokens) {
                 return(paste(select.states(taxon, threshold), collapse = special.tokens$uncertainty))
             }
@@ -278,7 +278,7 @@ multi.ace <- function(matrix, tree, models, use.poly = FALSE, use.uncertain = FA
         ## Estimate the ancestral states
         ancestral_states <- lapply(ancestral_estimations, translate.likelihood, threshold, select.states, special.tokens)
 
-        ## Add invariants characters back in place
+        ## Add invariants characters back in place
         if(length(invariants) > 0) {
             ## Replicate the invariant characters
             invariant_ancestral <- lapply(invariant_characters_states, function(x, n) rep(x, n), args_list[[1]]$tree$Nnode)

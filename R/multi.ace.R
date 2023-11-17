@@ -12,7 +12,7 @@
 #' @param brlen.multiplier optional, a vector of branch length modifiers (e.g. to convert time branch length in changes branch length) or a list of vectors (the same length as \code{tree}).
 #' @param verbose \code{logical}, whether to be verbose (\code{TRUE}) or not (\code{FALSE} - default).
 #' @param parallel \code{logical}, whether to use parallel algorithm (\code{TRUE}) or not (\code{FALSE} - default).
-#' @param output optional, see Return section below.
+#' @param output optional, see Value section below.
 #' @param castor.options optional, a named list of options to be passed to function called by \code{\link[castor]{asr_mk_model}}.
 #' @param estimation.details optional, whether to also return the details for each estimation as returned by \code{\link[castor]{asr_mk_model}}. This argument can be left \code{NULL} (default) or be any combination of the elements returned by \code{\link[castor]{asr_mk_model}} (e.g. \code{c("loglikelihood", "transition_matrix")}).
 #' 

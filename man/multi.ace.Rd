@@ -38,7 +38,7 @@ multi.ace(
 
 \item{parallel}{\code{logical}, whether to use parallel algorithm (\code{TRUE}) or not (\code{FALSE} - default).}
 
-\item{output}{optional, see Return section below.}
+\item{output}{optional, see Value section below.}
 
 \item{castor.options}{optional, a named list of options to be passed to function called by \code{\link[castor]{asr_mk_model}}.}
 
