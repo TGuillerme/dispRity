@@ -3,37 +3,26 @@ dispRity v1.7.16 (2023-11-17) *dispRity.multi*
 
 <!-- TODO: route to 1.8 (and that's it for this one)-->
 <!--
- - [ ] add roundness metric
-    - [ ] test
-    - [ ] doc
-    - [ ] example
-    - [ ] manual
+ - [x] add roundness metric
+    - [x] test
+    - [x] doc
+    - [x] example
+    - [x] manual
  - [ ] add `get.tree` working for subsets
     - [x] test
     - [ ] doc
     - [ ] example
     - [ ] manual
- - [ ] make `dispRity` and al. `dispRitreatable` (Mario's suggestion)
+ - [x] make `dispRity` and al. `dispRitreatable` (Mario's suggestion)
     - [x] test
-    - [ ] doc
-    - [ ] example
-    - [ ] manual
+    - [x] doc
+    - [x] example
+    - [x] manual
  - [ ] Developers vignette
     - [ ] update code lines numbers Packaging/dispRity.length.R
     - [x] clean repo root
     - [x] remove disparity_object.md
     - [x] remove disparity_internal_logic.md
- - [ ] add text about boot.type = "null" 
-
- -->
- <!-- *New metric*: `roundness` to measure how round the elliptical representation of a matrix is. TODO: handle non-VCV input:
- ## The roundness function
-roundness <- function(matrix) {
-  y <- sort(diag(matrix))
-  y <- y/max(y)
-  x <- seq(from = 0, to = 1, length.out = length(y))
-  sum(diff(x)*zoo::rollmean(y, 2))
-}
  -->
 
 
@@ -45,6 +34,7 @@ roundness <- function(matrix) {
  * *New* statistical test: `pgls.dispRity` to run PGLS test on a `dispRity` object with a level-2 metric and a tree (using excellent [`phylolm`](https://cran.r-project.org/web/packages/phylolm/phylolm.pdf) algorithm). The new test comes with its own S3 print, summary and plot functions if the input `dispRity` data contains multiple trees or multiple matrices (running and handling the output of multiple `phylolm`).
  * *New* options to `get.tree` utility function to get the trees in each subsets (thanks to Jack Hadfield for this suggestion).
  * *New vignette* compiling resources for developers to help people (and future me) to edit the package. 
+ * *New metric*: `roundness` to measure the roundness of a variance-covariance matrix. 
 
 ### MINOR IMPROVEMENTS
 
@@ -67,6 +57,7 @@ roundness <- function(matrix) {
  * Improved automatic centering and scaling for `covar.plot` making the figures more aesthetic.
  * `remove.zero.brlen` now also removes negative branch lengths and works on `"multiPhylo"` objects (thanks to Thomas Johnson for this suggestion).
  * `fill.dispRity` has now an extra argument `check` to toggle the data checking on and off (more for developers).
+ * `multi.ace` is now described in details in the manual.
 
 ### BUG FIXES
  

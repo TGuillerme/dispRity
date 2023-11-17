@@ -7,7 +7,7 @@ nocov <- TRUE
 test_that("dimension generic", {
     expect_equal(capture_output(dimension.level3.fun()), "No implemented Dimension level 3 functions implemented in dispRity!\nYou can create your own by using: ?make.metric")
     expect_equal(capture_output(dimension.level2.fun()), "Dimension level 2 functions implemented in dispRity:\n?ancestral.dist\n?angles\n?centroids\n?deviations\n?displacements\n?edge.length.tree\n?neighbours\n?pairwise.dist\n?point.dist\n?projections\n?projections.tree\n?ranges\n?radius\n?variances\n?span.tree.length")
-    expect_equal(capture_output(dimension.level1.fun()), "Dimension level 1 functions implemented in dispRity:\n?convhull.surface\n?convhull.volume\n?diagonal\n?ellipse.volume\n?func.div\n?func.eve\n?group.dist\n?mode.val\n?n.ball.volume")
+    expect_equal(capture_output(dimension.level1.fun()), "Dimension level 1 functions implemented in dispRity:\n?convhull.surface\n?convhull.volume\n?diagonal\n?ellipse.volume\n?func.div\n?func.eve\n?group.dist\n?mode.val\n?n.ball.volume\n?roundness")
     expect_equal(capture_output(between.groups.fun()), "Between groups functions implemented in dispRity:\n?disalignment # level 1\n?group.dist # level 1\n?point.dist # level 2\n?projections.between # level 2")
 })
 
@@ -350,7 +350,7 @@ test_that("ancestral.dist", {
     test <- dispRity(matrix, metric = ancestral.dist, tree = tree)
     expect_equal(c(test$disparity[[1]][[1]]), unname(ancestral.dist(matrix, tree)))
 
-    ## Works with time slices!
+    ## Works with time slices!
     data(BeckLee_mat99)
     data(BeckLee_tree)
     data <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", model = "acctran", time = 5)
@@ -951,4 +951,13 @@ if(!nocov) {
     #expect_equal_round(unname(unlist(disparity)), c(2.8460391, 1.5703472, 1.2262642, 0.3840770, 0.2397510, 0.7011024), 2)
     expect_equal_round(unname(unlist(lapply(disparity, median))), c(0.06060223, 0.02611046, 0.06848407), 5)
 }
+})
+
+test_that("roudness works", {
+    set.seed(1)
+    dummy_matrix <- matrix(rnorm(50), 5, 10)
+    test <- roundness(dummy_matrix, vcv = TRUE)
+    expect_equal_round(test, 0.1776007)
+    test <- roundness(var(dummy_matrix), vcv = FALSE)
+    expect_equal_round(test, 0.1776007)
 })

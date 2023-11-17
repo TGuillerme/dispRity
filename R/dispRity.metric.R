@@ -1,5 +1,5 @@
 #' @name dispRity.metric
-#' @aliases dimension.level3.fun dimension.level2.fun dimension.level1.fun between.groups.fun variances ranges centroids mode.val ellipse.volume edge.length.tree convhull.surface convhull.volume diagonal ancestral.dist pairwise.dist span.tree.length n.ball.volume radius neighbours displacements quantiles func.eve func.div angles deviations group.dist point.dist projections projections.tree projections.between disalignment
+#' @aliases dimension.level3.fun dimension.level2.fun dimension.level1.fun between.groups.fun variances ranges centroids mode.val ellipse.volume edge.length.tree convhull.surface convhull.volume diagonal ancestral.dist pairwise.dist span.tree.length n.ball.volume radius neighbours displacements quantiles func.eve func.div angles deviations group.dist point.dist projections projections.tree projections.between disalignment roundness
 #' @title Disparity metrics
 #'
 #' @description Different implemented disparity metrics.
@@ -46,6 +46,8 @@
 #'   \item \code{mode.val}: calculates the modal value of a vector.
 #'
 #'   \item \code{n.ball.volume}: calculate the volume of the minimum n-ball (if \code{sphere = TRUE}) or of the ellipsoid (if \code{sphere = FALSE}).
+#'
+#'   \item \code{roundness}: calculate the roundness of an elliptical representation of a variance-covariance matrix as the integral of the ranked distribution of the major axes. A value of 1 indicates a sphere, a value between 1 and 0.5 indicates a more pancake like representation and a value between 0.5 and 0 a more cigar like representation. You can force the variance-covariance calculation by using the option \code{vcv = TRUE} (default) that will calculate the variance-covariance matrix if the input is not one.
 #' 
 #' }
 #' 
@@ -338,6 +340,14 @@
 #' ## ranges of each column in the matrix corrected using the kth root
 #' ranges(dummy_matrix, k.root = TRUE)
 #'
+#' ## roundness
+#' ## calculating the variance-covariance of the dummy_matrix
+#' vcv <- var(dummy_matrix)
+#' ## calculating the roundness of it
+#' roundness(vcv)
+#' ## calculating the roundness of the dummy matrix by calculating the vcv
+#' roundness(dummy_matrix, vcv = TRUE)
+#'
 #' ## span.tree.length
 #' ## Minimum spanning tree length (default)
 #' span.tree.length(dummy_matrix)
@@ -393,6 +403,7 @@ dimension.level1.fun <- function(matrix, ...) {
     cat("\n?group.dist")
     cat("\n?mode.val")
     cat("\n?n.ball.volume")
+    cat("\n?roundness")
 }
 
 between.groups.fun <- function(matrix, matrix2, ...) {
@@ -1111,5 +1122,26 @@ projections.tree <- function(matrix, tree, type = c("root","ancestor"), referenc
         ## Apply the to and from to each row
         return(sapply(1:nrow(matrix), sapply.projections, matrix = matrix, tree = tree, from = from_to[[1]], to = from_to[[2]], reference.data, ...))
     }
+}
+
+
+## The roundness function
+roundness <- function(matrix, vcv = TRUE) {
+    ## Check the vcv
+    if(vcv) {
+        ## Check the dimensions and the triangles
+        if(length(unique(dim(matrix))) == 1 && all(matrix[upper.tri(matrix)] == matrix[rev(lower.tri(matrix))], na.rm = TRUE)) {
+            vcv <- matrix
+        } else {
+            vcv <- var(matrix)
+        }
+    }   
+
+    ## Sort and scale the eigen values
+    y <- sort(diag(matrix))
+    y <- y/max(y)
+    x <- seq(from = 0, to = 1, length.out = length(y))
+    ## Measure the integral
+    return(sum(diff(x)*zoo::rollmean(y, 2)))
 }
 

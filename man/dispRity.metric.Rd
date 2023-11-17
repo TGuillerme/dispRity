@@ -33,6 +33,7 @@
 \alias{projections.tree}
 \alias{projections.between}
 \alias{disalignment}
+\alias{roundness}
 \title{Disparity metrics}
 \usage{
 dimension.level3.fun(matrix, ...)
@@ -83,6 +84,8 @@ The currently implemented dimension-level 1 metrics are:
   \item \code{mode.val}: calculates the modal value of a vector.
 
   \item \code{n.ball.volume}: calculate the volume of the minimum n-ball (if \code{sphere = TRUE}) or of the ellipsoid (if \code{sphere = FALSE}).
+
+  \item \code{roundness}: calculate the roundness of an elliptical representation of a variance-covariance matrix as the integral of the ranked distribution of the major axes. A value of 1 indicates a sphere, a value between 1 and 0.5 indicates a more pancake like representation and a value between 0.5 and 0 a more cigar like representation. You can force the variance-covariance calculation by using the option \code{vcv = TRUE} (default) that will calculate the variance-covariance matrix if the input is not one.
 
 }
 
@@ -360,6 +363,14 @@ radius(dummy_matrix)
 ranges(dummy_matrix)
 ## ranges of each column in the matrix corrected using the kth root
 ranges(dummy_matrix, k.root = TRUE)
+
+## roundness
+## calculating the variance-covariance of the dummy_matrix
+vcv <- var(dummy_matrix)
+## calculating the roundness of it
+roundness(vcv)
+## calculating the roundness of the dummy matrix by calculating the vcv
+roundness(dummy_matrix, vcv = TRUE)
 
 ## span.tree.length
 ## Minimum spanning tree length (default)
