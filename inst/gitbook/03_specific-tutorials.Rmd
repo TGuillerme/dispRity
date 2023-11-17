@@ -2174,6 +2174,9 @@ Note here that the results are again rather different: with the bound data, the 
 With the unbound data, the slices are done across the three trees and applied to the three matrices (resulting in 9 observations).
 As we've seen before, this is incorrect in this case since the trees don't have the same topology (so the nodes selected by a slice through the second tree are not equivalent to the nodes in the first matrix) but it can be useful if the topology is fixed to integrate both uncertainty in branch length (slicing through different trees) and uncertainty from, say, ancestral states estimations (applying the slices on different matrices).
 
+Note that since the version `1.8` the trees and the matrices don't have to match allowing to run disparity analyses with variable matrices and trees.
+This can be useful when running ancestral states estimations from a tree distribution where not all trees have the same topology.
+
 
 ## Disparity with trees: *dispRitree!* {#dispRitree}
 
@@ -2224,8 +2227,6 @@ plot(sum_edge_length)
 ```
 
 Of course this can be done with multiple trees and be combined with an approach using multiple matrices (see [here](#multi.input))!
-
-
 
 
 ## Disparity of variance-covariance matrices (covar) {#covar}

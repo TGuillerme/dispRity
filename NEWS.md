@@ -1,4 +1,4 @@
-dispRity v1.7.16 (2023-11-3) *dispRity.multi*
+dispRity v1.7.16 (2023-11-17) *dispRity.multi*
 =========================
 
 <!-- TODO: route to 1.8 (and that's it for this one)-->
@@ -13,23 +13,17 @@ dispRity v1.7.16 (2023-11-3) *dispRity.multi*
     - [ ] doc
     - [ ] example
     - [ ] manual
- - [ ] add `get.tree` for slices (Jack's suggestion)
-    - [ ] test
-    - [ ] doc
-    - [ ] example
-    - [ ] manual
  - [ ] make `dispRity` and al. `dispRitreatable` (Mario's suggestion)
-    - [ ] test
+    - [x] test
     - [ ] doc
     - [ ] example
     - [ ] manual
  - [ ] Developers vignette
     - [ ] update code lines numbers Packaging/dispRity.length.R
-    - [ ] clean repo root
-    - [ ] remove disparity_object.md
-    - [ ] remove disparity_internal_logic.md
-
-   - [ ] add text about boot.type = "null" 
+    - [x] clean repo root
+    - [x] remove disparity_object.md
+    - [x] remove disparity_internal_logic.md
+ - [ ] add text about boot.type = "null" 
 
  -->
  <!-- *New metric*: `roundness` to measure how round the elliptical representation of a matrix is. TODO: handle non-VCV input:
