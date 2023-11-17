@@ -399,7 +399,7 @@ test_that("multi.ace works", {
                             special.behaviours = list(weirdtoken = function(x,y) return(c(1,2))),
                             brlen.multiplier = rnorm(10),
                             verbose = TRUE,
-                            parallel = TRUE,
+                            parallel = 2,
                             output = "matrix",
                             estimation.details = c("loglikelihood", "transition_matrix")))
     expect_equal(length(test),2)

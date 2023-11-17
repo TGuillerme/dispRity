@@ -7,7 +7,7 @@
 \usage{
 make.dispRity(data, tree, call, subsets)
 
-fill.dispRity(data, tree)
+fill.dispRity(data, tree, check)
 }
 \arguments{
 \item{data}{A \code{matrix}.}
@@ -17,6 +17,8 @@ fill.dispRity(data, tree)
 \item{call}{Optional, a \code{list} to be a \code{dispRity} call.}
 
 \item{subsets}{Optional, a \code{list} to be a \code{dispRity} subsets list.}
+
+\item{check}{Logical, whether to check the data (\code{TRUE}; default, highly advised) or not (\code{FALSE}).}
 }
 \description{
 Creating an empty \code{dispRity} object from a matrix

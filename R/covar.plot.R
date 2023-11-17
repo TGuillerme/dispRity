@@ -187,22 +187,43 @@ covar.plot <- function(data, n, points = TRUE, major.axes = FALSE, ellipses = FA
     }
 
     ## Get the plot limits
-    lims <- c(-0, 0)
+    ylims <- xlims <- c(-0, 0)
     if(points) {
-        points_lims <- range(data$matrix[[1]], na.rm = TRUE)
-        lims <- range(c(lims, points_lims))
+        point_xlims <- range(c(data$matrix[[1]][, dimensions[1]]), na.rm = TRUE)
+        point_ylims <- range(c(data$matrix[[1]][, dimensions[2]]), na.rm = TRUE)
+        xlims <- range(c(xlims, point_xlims))
+        ylims <- range(c(ylims, point_ylims))
     }
     if(do_major_axes) {
-        axes_lims <- range(unlist(all_axes))
-        lims <- range(c(lims, axes_lims))
+        axes_xlims <- range(unlist(lapply(all_axes, lapply, function(x, dim) return(x[, dim]), dim = dimensions[1])))
+        axes_ylims <- range(unlist(lapply(all_axes, lapply, function(x, dim) return(x[, dim]), dim = dimensions[2])))
+        xlims <- range(c(xlims, axes_xlims))
+        ylims <- range(c(ylims, axes_ylims))
     }
     if(do_ellipses) {
-        ellipses_lims <- range(unlist(all_ellipses))
-        lims <- range(c(lims, ellipses_lims))
+        ellipses_xlims <- range(unlist(lapply(all_ellipses, lapply, function(x, dim) return(x[, dim]), dim = dimensions[1])))
+        ellipses_ylims <- range(unlist(lapply(all_ellipses, lapply, function(x, dim) return(x[, dim]), dim = dimensions[2])))
+        xlims <- range(c(xlims, ellipses_xlims))
+        ylims <- range(c(ylims, ellipses_ylims))
     }
 
-    plot_args <- get.dots(plot_args, plot_args, "xlim", lims)
-    plot_args <- get.dots(plot_args, plot_args, "ylim", lims)
+    ## Get the x centre of the plot
+    centre_x <- mean(xlims)
+    ## Get the y centre of the plit
+    centre_y <- mean(ylims)
+
+    ## Center the limits on the range
+    if(diff(xlims) > diff(ylims)) {
+        ## Large range is x, scale and centre the ylims on it
+        ylims <- c(centre_y - diff(xlims)/2, centre_y + diff(xlims)/2)
+    }
+    if(diff(ylims) < diff(xlims)) {
+        ## Large range is y, scale and centre the xlims on it
+        xlims <- c(centre_x - diff(ylims)/2, centre_x + diff(ylims)/2)
+    }
+
+    plot_args <- get.dots(plot_args, plot_args, "xlim", xlims)
+    plot_args <- get.dots(plot_args, plot_args, "ylim", ylims)
 
     ## Setting the x/y labels
     percentage <- apply(data$matrix[[1]], 2, var)

@@ -1,15 +1,31 @@
-dispRity v1.7.15 (2023-10-12)
+dispRity v1.7.16 (2023-11-17) *dispRity.multi*
 =========================
 
-### NEW FEATURES
-  
- * *New utility function*: `name.subsets` for directly accessing the subsets names of a `dispRity` object (basically doing `names(my_dispRity$subsets)`).
- * *New utility function*: `MCMCglmm.variance` for calculating the variance for specific terms in a `"MCMCglmm"` model.
- * *New* statistical test: `pgls.dispRity` to run PGLS test on a `dispRity` object with a level-2 metric and a tree (using excellent [`phylolm`](https://cran.r-project.org/web/packages/phylolm/phylolm.pdf) algorithm). The new test comes with its own S3 print, summary and plot functions if the input `dispRity` data contains multiple trees or multiple matrices (running and handling the output of multiple `phylolm`).
- * *New* options to `get.tree` utility function to get the trees in each subsets (thanks to Jack Hadfield for this suggestion).
+<!-- TODO: route to 1.8 (and that's it for this one)-->
+<!--
+ - [ ] add roundness metric
+    - [ ] test
+    - [ ] doc
+    - [ ] example
+    - [ ] manual
+ - [ ] add `get.tree` working for subsets
+    - [x] test
+    - [ ] doc
+    - [ ] example
+    - [ ] manual
+ - [ ] make `dispRity` and al. `dispRitreatable` (Mario's suggestion)
+    - [x] test
+    - [ ] doc
+    - [ ] example
+    - [ ] manual
+ - [ ] Developers vignette
+    - [ ] update code lines numbers Packaging/dispRity.length.R
+    - [x] clean repo root
+    - [x] remove disparity_object.md
+    - [x] remove disparity_internal_logic.md
+ - [ ] add text about boot.type = "null" 
 
- <!-- * *New* resampling option for `boot.matrix`: `"null"` to resample each subset with any elements (not only elements within that subset). -->
- <!-- TODO: test + add proba and tree algorithms -->
+ -->
  <!-- *New metric*: `roundness` to measure how round the elliptical representation of a matrix is. TODO: handle non-VCV input:
  ## The roundness function
 roundness <- function(matrix) {
@@ -20,8 +36,19 @@ roundness <- function(matrix) {
 }
  -->
 
+
+### NEW FEATURES
+
+ * Added the _dispRity.multi_ internal architecture now allowing users to work with different matrices **and** different trees as inputs for `custom.subsets`, `chrono.subsets`, `boot.matrix` and `dispRity`. This change is not affecting the user level appart from now allowing to bypass some error messages (thanks to Mario Corio for that obvious suggestion).
+ * *New utility function*: `name.subsets` for directly accessing the subsets names of a `dispRity` object (basically doing `names(my_dispRity$subsets)`).
+ * *New utility function*: `MCMCglmm.variance` for calculating the variance for specific terms in a `"MCMCglmm"` model.
+ * *New* statistical test: `pgls.dispRity` to run PGLS test on a `dispRity` object with a level-2 metric and a tree (using excellent [`phylolm`](https://cran.r-project.org/web/packages/phylolm/phylolm.pdf) algorithm). The new test comes with its own S3 print, summary and plot functions if the input `dispRity` data contains multiple trees or multiple matrices (running and handling the output of multiple `phylolm`).
+ * *New* options to `get.tree` utility function to get the trees in each subsets (thanks to Jack Hadfield for this suggestion).
+ * *New vignette* compiling resources for developers to help people (and future me) to edit the package. 
+
 ### MINOR IMPROVEMENTS
 
+ * **CHANGE IN DEFAULT ARGUMENTS** for the `custom.subsets`, `chrono.subsets`, `boot.matrix` and `dispRity` functions: the `tree`, `FADLAD`, `prob` and `dimensions` arguments is now `NULL` by default (instead of missing).
  * **CHANGE IN DEFAULT ARGUMENTS** for the `projections` function. The defaults are now `scale = TRUE`, `centre = FALSE` (previously `TRUE`) and `abs = FALSE` (previously `TRUE`). The default arguments for `dispRity.covar.projections` remain unchanged though (`scale = TRUE`, `centre = TRUE`, `abs = TRUE`).
  * `randtest.dispRity` function's `subsets` argument now can take a list of arguments of subsets to compare is `data` is a `dispRity` object. The call message has also been updated to be much more verbose and clear of what has been tested.
  * optimised internal logic for all the `projections.*` functions for speed.
@@ -37,6 +64,9 @@ roundness <- function(matrix) {
  * The `add.tree` utility function now has an optional argument to override any existing trees (`replace = TRUE`) or not (`replace = FALSE`; which remains the default previous behaviour). 
  * `print.dispRity` now recognises and highlights simulated data from the [`treats`](https://github.com/tguillerme/treats) package.
  * Improved `NA` management for `S3` functions.
+ * Improved automatic centering and scaling for `covar.plot` making the figures more aesthetic.
+ * `remove.zero.brlen` now also removes negative branch lengths and works on `"multiPhylo"` objects (thanks to Thomas Johnson for this suggestion).
+ * `fill.dispRity` has now an extra argument `check` to toggle the data checking on and off (more for developers).
 
 ### BUG FIXES
  

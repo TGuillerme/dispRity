@@ -7,7 +7,7 @@
 dispRity(
   data,
   metric,
-  dimensions,
+  dimensions = NULL,
   ...,
   between.groups = FALSE,
   verbose = FALSE,

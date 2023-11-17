@@ -6,12 +6,13 @@
 #' @description Creating an empty \code{dispRity} object from a matrix
 #'
 #' @usage make.dispRity(data, tree, call, subsets)
-#' @usage fill.dispRity(data, tree)
+#' @usage fill.dispRity(data, tree, check)
 #' 
 #' @param data A \code{matrix}.
 #' @param tree Optional, a \code{phylo} or \code{multiPhylo} object.
 #' @param call Optional, a \code{list} to be a \code{dispRity} call.
 #' @param subsets Optional, a \code{list} to be a \code{dispRity} subsets list.
+#' @param check Logical, whether to check the data (\code{TRUE}; default, highly advised) or not (\code{FALSE}).
 #' 
 #' @examples
 #' ## An empty dispRity object
@@ -43,13 +44,13 @@ make.dispRity <- function(data, tree, call, subsets) {
             list = {dispRity_object$matrix <- data})
     }
 
-    ## Add the tree
+    ## Add the call
     if(!missing(call)) {
         check.class(call, "list")
         dispRity_object$call <- call
     }
 
-    ## Add the call
+    ## Add the tree
     if(!missing(tree)) {
         class_tree <- check.class(tree, c("multiPhylo", "phylo"))
         if(class_tree == "multiPhylo") {
@@ -71,11 +72,13 @@ make.dispRity <- function(data, tree, call, subsets) {
 
     return(dispRity_object)
 }
-fill.dispRity <- function(data, tree) {
+fill.dispRity <- function(data, tree, check = TRUE) {
 
     ## Data have a matrix
     if(!is.null(data)) {
-        data$matrix <- check.dispRity.data(data$matrix)
+        if(check) {
+            data$matrix <- check.dispRity.data(data$matrix, returns = "matrix")
+        }
 
         ## Dimensions
         if(length(data$call$dimensions) == 0) {
@@ -94,7 +97,11 @@ fill.dispRity <- function(data, tree) {
 
     if(!missing(tree)) {
         ## Add the trees
-        data$tree <- check.dispRity.tree(tree, data = data)
+        if(check) {
+            data$tree <- check.dispRity.data(tree = tree, data = data, returns = "tree")
+        } else {
+            data$tree <- tree
+        }
     }
     return(data)
 }
@@ -517,14 +524,14 @@ name.subsets <- function(data) {
 add.tree <- function(data, tree, replace = FALSE) {
     ## Add the tree
     if(is.null(data$tree[[1]])) {
-        data$tree <- check.dispRity.tree(tree = tree, data = data)
+        data$tree <- check.dispRity.data(data = data, tree = tree, returns = "tree")
     } else {
         if(replace) {
             ## Remove existing trees
             data <- remove.tree(data)
             data <- add.tree(data, tree)
         } else {
-            data$tree <- check.dispRity.tree(tree = c(get.tree(data), tree), data = data)
+            data$tree <- check.dispRity.data(tree = c(get.tree(data), tree), data = data, returns = "tree")
         }
     }
     return(data)

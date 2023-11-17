@@ -87,17 +87,21 @@
 # bootstraps <- 3
 # rarefaction <- TRUE
 
-boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions, verbose = FALSE, boot.type = "full", prob) {
+boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions = NULL, verbose = FALSE, boot.type = "full", prob = NULL) {
 
     match_call <- match.call()
     ## ----------------------
     ## Cleaning and checking
     ## ----------------------
+    is_multi <- FALSE
+
     ## DATA
     ## If class is dispRity, data is serial
     if(!is(data, "dispRity")) {
         ## Data must be a matrix
-        data <- check.dispRity.data(data)
+        data <- check.dispRity.data(data, returns = c("matrix", "multi"))
+        is_multi <- any(is_multi, data$multi)
+        data <- data$matrix
 
         ## Check whether it is a distance matrix
         if(check.dist.matrix(data[[1]], just.check = TRUE)) {
@@ -107,7 +111,6 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
         ## Creating the dispRity object
         data <- make.dispRity(data = data)
     } else {
-
         ## Must not already been bootstrapped
         if(!is.null(data$call$bootstrap)) {
             stop.call(msg.pre = "", match_call$data, msg = " was already bootstrapped.")
@@ -135,6 +138,32 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
         }
     }
 
+    check.class(verbose, "logical")
+
+    ## If is multi lapply the stuff
+    if((!is.null(data$call$dispRity.multi) && data$call$dispRity.multi) || is_multi) {
+        ## Split the data
+        split_data <- dispRity.multi.split(data)
+
+        ## Change the verbose call
+        boot.matrix.call <- boot.matrix
+        if(verbose) {
+            ## Find the verbose lines
+            start_verbose <- which(as.character(body(boot.matrix.call)) == "if (verbose) message(\"Bootstrapping\", appendLF = FALSE)")
+            end_verbose <- which(as.character(body(boot.matrix.call)) == "if (verbose) message(\"Done.\", appendLF = FALSE)")
+            ## Comment out both lines
+            body(boot.matrix.call)[[start_verbose]] <- body(boot.matrix.call)[[end_verbose]] <- substitute(empty_line <- NULL)
+        }
+
+        if(verbose) message("Bootstrapping", appendLF = FALSE)
+
+        ## Apply the custom.subsets
+        output <- dispRity.multi.apply(split_data, fun = boot.matrix.call, bootstraps = bootstraps, rarefaction = rarefaction, dimensions = dimensions, verbose = verbose, boot.type = boot.type, prob = prob)
+
+        if(verbose) message("Done.", appendLF = FALSE)
+        return(output)
+    }
+
     ## Data must contain a first "bootstrap" (empty list)
     if(length(data$subsets) == 0) {
         data <- fill.dispRity(data)
@@ -158,7 +187,7 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
         }
     }
 
-    if(!missing(prob)) {
+    if(!is.null(prob)) {
         if(probabilistic_subsets || has_multiple_trees) {
             stop.call(match_call$data, paste0(" was generated using a gradual time-slicing or using multiple trees (", data$call$subsets[2], ").\nThe prob option is not yet implemented for this case."))
         } else {
@@ -261,9 +290,6 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
         }
     }
 
-    ## VERBOSE
-    check.class(verbose, "logical")
-
     ## BOOT.TYPE
     check.class(boot.type, "character")
     boot.type <- tolower(boot.type)
@@ -309,7 +335,7 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
 
     ## RM.LAST.AXIS
     ## If TRUE, set automatic threshold at 0.95
-    if(!missing(dimensions)) {
+    if(!is.null(dimensions)) {
         ## Else must be a single numeric value (proportional)
         check.class(dimensions, c("numeric", "integer"), " must be a proportional threshold value.")
         if(length(dimensions == 1)) {

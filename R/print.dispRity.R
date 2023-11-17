@@ -247,6 +247,10 @@ print.dispRity <- function(x, all = FALSE, ...) {
 
                     cat(paste0("\nYou can access individual models by using their index (e.g. x[[1]])\nor summarise and plot all models using summary(x) or plot(x)."))
                     return(invisible())
+                },
+                multi = {
+                    print.dispRity(dispRity.multi.merge.data(x), ...)
+                    return(invisible())
                 }
             )
         }
@@ -289,17 +293,21 @@ print.dispRity <- function(x, all = FALSE, ...) {
                     "covar"      = cat(paste(length(subsets), method[1], "subsets for", nrow(x$matrix[[1]]), "elements"))
                     )
 
+                ## Print the number of matrices
                 if(length(x$matrix) > 1) {
-                    cat(paste0(" in ", length(x$matrix), " matrices"), sep = "")
+                    cat(paste0(" in ", length(x$matrix), ifelse((!is.null(x$call$dispRity.multi) && x$call$dispRity.multi), " separated", ""), " matrices"), sep = "")
                 } else {
                     cat(paste0(" in one matrix"), sep = "")
                 }
                 if(length(x$call$dimensions) != 0) cat(paste(" with", length(x$call$dimensions), "dimensions"), sep = "")
+                
+                ## Print the number of trees
                 if(!is.null(x$tree[[1]])) {
                     cat(" with ") ; print(x$tree)
                 } else {
                     cat(":\n")
                 }
+
                 if(length(subsets) > 5) {
                     cat("    ",paste(subsets[1:5], collapse=", "),"...\n")
                 } else {
@@ -312,10 +320,9 @@ print.dispRity <- function(x, all = FALSE, ...) {
             if(!is.null(x$call$subsets) && ("covar" %in% x$call$subsets)) {
                 cat(paste0("One covar matrix (", names(x$subsets), ") with "))
             }
-
             cat(paste(nrow(x$matrix[[1]]), "elements"))
             if(length(x$matrix) > 1) {
-                cat(paste0(" in ", length(x$matrix), " matrices"), sep = "")
+                cat(paste0(" in ", length(x$matrix), ifelse((!is.null(x$call$dispRity.multi) && x$call$dispRity.multi), " separated", ""), " matrices"), sep = "")
             } else {
                 cat(paste0(" in one matrix"), sep = "")
             }
