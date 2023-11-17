@@ -1129,7 +1129,7 @@ This function allows to test whether a metric picks different changes in dispari
 Basically this is a type of biased data rarefaction (or non-biased for `"random"`) to see how the metric reacts to specific changes in trait space.
 
 ```{r}
-# Creating a 2D uniform space
+## Creating a 2D uniform space
 example_space <- space.maker(300, 2, runif)
 
 ## Testing the product of ranges metric on the example space

@@ -17,7 +17,7 @@ Here are some resources that can help you (and future me!) with editing this eve
 ## The data
 data <- read.csv(text =
 "version, date, total, R_code, R_comments, manual_html, C
-1.8, 2023/05, 44816, 18805, 10041, 11498, 404
+1.8, 2023/11, 46811, 20276, 10494, 12063, 404
 1.7, 2022/05, 41192, 18306, 9889, 10180, 404
 1.6, 2021/04, 27565, 15984, 8196, 9642, 280
 1.5, 2020/09, 26311, 14945, 7639, 9435, 280

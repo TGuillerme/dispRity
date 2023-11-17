@@ -8,7 +8,7 @@ documentclass: book
 bibliography: [../References.bib, ../packages.bib]
 link-citations: yes
 github-repo: TGuillerme/dispRity
-description: "dispRity R package vignette"
+description: "dispRity R package manual"
 ---
 
 

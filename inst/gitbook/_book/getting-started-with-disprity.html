@@ -5,25 +5,25 @@
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>3 Getting started with dispRity | Morphometric geometric demo: a between group analysis</title>
-  <meta name="description" content="dispRity R package vignette" />
-  <meta name="generator" content="bookdown 0.27 and GitBook 2.6.7" />
+  <meta name="description" content="dispRity R package manual" />
+  <meta name="generator" content="bookdown 0.36 and GitBook 2.6.7" />
 
   <meta property="og:title" content="3 Getting started with dispRity | Morphometric geometric demo: a between group analysis" />
   <meta property="og:type" content="book" />
   
-  <meta property="og:description" content="dispRity R package vignette" />
+  <meta property="og:description" content="dispRity R package manual" />
   <meta name="github-repo" content="TGuillerme/dispRity" />
 
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:title" content="3 Getting started with dispRity | Morphometric geometric demo: a between group analysis" />
   
-  <meta name="twitter:description" content="dispRity R package vignette" />
+  <meta name="twitter:description" content="dispRity R package manual" />
   
 
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie)" />
 
 
-<meta name="date" content="2022-08-09" />
+<meta name="date" content="2023-11-17" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -53,6 +53,28 @@
 <link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
 <link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
 <script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script src="libs/htmlwidgets-1.6.2/htmlwidgets.js"></script>
+<script src="libs/rglWebGL-binding-1.2.1/rglWebGL.js"></script>
+<link href="libs/rglwidgetClass-1.2.1/rgl.css" rel="stylesheet" />
+<script src="libs/rglwidgetClass-1.2.1/rglClass.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/utils.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/buffer.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/subscenes.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/shaders.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/shadersrc.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/textures.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/projection.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/mouse.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/init.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/pieces.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/draw.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/controls.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/selection.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/rglTimer.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/pretty.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/axes.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/animation.src.js"></script>
+<script src="libs/CanvasMatrix4-1.2.1/CanvasMatrix.src.js"></script>
 
 
 <style type="text/css">
@@ -119,6 +141,10 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
 </head>
@@ -250,6 +276,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="6.10" data-path="other-functionalities.html"><a href="other-functionalities.html#slice.tree"><i class="fa fa-check"></i><b>6.10</b> <code>slice.tree</code></a></li>
 <li class="chapter" data-level="6.11" data-path="other-functionalities.html"><a href="other-functionalities.html#slide.nodes-and-remove.zero.brlen"><i class="fa fa-check"></i><b>6.11</b> <code>slide.nodes</code> and <code>remove.zero.brlen</code></a></li>
 <li class="chapter" data-level="6.12" data-path="other-functionalities.html"><a href="other-functionalities.html#tree.age"><i class="fa fa-check"></i><b>6.12</b> <code>tree.age</code></a></li>
+<li class="chapter" data-level="6.13" data-path="other-functionalities.html"><a href="other-functionalities.html#multi.ace"><i class="fa fa-check"></i><b>6.13</b> <code>multi.ace</code></a>
+<ul>
+<li class="chapter" data-level="6.13.1" data-path="other-functionalities.html"><a href="other-functionalities.html#using-different-character-tokens-in-different-situations"><i class="fa fa-check"></i><b>6.13.1</b> Using different character tokens in different situations</a></li>
+<li class="chapter" data-level="6.13.2" data-path="other-functionalities.html"><a href="other-functionalities.html#feeding-the-results-to-char.diff-to-get-distance-matrices"><i class="fa fa-check"></i><b>6.13.2</b> Feeding the results to <code>char.diff</code> to get distance matrices</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="7" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html"><i class="fa fa-check"></i><b>7</b> The guts of the <code>dispRity</code> package</a>
 <ul>
@@ -266,16 +297,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="7.3.4" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#disparity"><i class="fa fa-check"></i><b>7.3.4</b> <code>$disparity</code></a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="8" data-path="ecology-demo.html"><a href="ecology-demo.html"><i class="fa fa-check"></i><b>8</b> Ecology demo</a>
+<li class="chapter" data-level="8" data-path="disprity-ecology-demo.html"><a href="disprity-ecology-demo.html"><i class="fa fa-check"></i><b>8</b> dispRity ecology demo</a>
 <ul>
-<li class="chapter" data-level="8.1" data-path="ecology-demo.html"><a href="ecology-demo.html#data"><i class="fa fa-check"></i><b>8.1</b> Data</a></li>
-<li class="chapter" data-level="8.2" data-path="ecology-demo.html"><a href="ecology-demo.html#classic-analysis"><i class="fa fa-check"></i><b>8.2</b> Classic analysis</a></li>
-<li class="chapter" data-level="8.3" data-path="ecology-demo.html"><a href="ecology-demo.html#a-multidimensional-approach-with-disprity"><i class="fa fa-check"></i><b>8.3</b> A multidimensional approach with <code>dispRity</code></a>
+<li class="chapter" data-level="8.1" data-path="disprity-ecology-demo.html"><a href="disprity-ecology-demo.html#data"><i class="fa fa-check"></i><b>8.1</b> Data</a></li>
+<li class="chapter" data-level="8.2" data-path="disprity-ecology-demo.html"><a href="disprity-ecology-demo.html#classic-analysis"><i class="fa fa-check"></i><b>8.2</b> Classic analysis</a></li>
+<li class="chapter" data-level="8.3" data-path="disprity-ecology-demo.html"><a href="disprity-ecology-demo.html#a-multidimensional-approach-with-disprity"><i class="fa fa-check"></i><b>8.3</b> A multidimensional approach with <code>dispRity</code></a>
 <ul>
-<li class="chapter" data-level="8.3.1" data-path="ecology-demo.html"><a href="ecology-demo.html#bootstrapping-the-data"><i class="fa fa-check"></i><b>8.3.1</b> Bootstrapping the data</a></li>
-<li class="chapter" data-level="8.3.2" data-path="ecology-demo.html"><a href="ecology-demo.html#calculating-disparity"><i class="fa fa-check"></i><b>8.3.2</b> Calculating disparity</a></li>
-<li class="chapter" data-level="8.3.3" data-path="ecology-demo.html"><a href="ecology-demo.html#summarising-the-results-plot"><i class="fa fa-check"></i><b>8.3.3</b> Summarising the results (plot)</a></li>
-<li class="chapter" data-level="8.3.4" data-path="ecology-demo.html"><a href="ecology-demo.html#testing-hypothesis"><i class="fa fa-check"></i><b>8.3.4</b> Testing hypothesis</a></li>
+<li class="chapter" data-level="8.3.1" data-path="disprity-ecology-demo.html"><a href="disprity-ecology-demo.html#bootstrapping-the-data"><i class="fa fa-check"></i><b>8.3.1</b> Bootstrapping the data</a></li>
+<li class="chapter" data-level="8.3.2" data-path="disprity-ecology-demo.html"><a href="disprity-ecology-demo.html#calculating-disparity"><i class="fa fa-check"></i><b>8.3.2</b> Calculating disparity</a></li>
+<li class="chapter" data-level="8.3.3" data-path="disprity-ecology-demo.html"><a href="disprity-ecology-demo.html#summarising-the-results-plot"><i class="fa fa-check"></i><b>8.3.3</b> Summarising the results (plot)</a></li>
+<li class="chapter" data-level="8.3.4" data-path="disprity-ecology-demo.html"><a href="disprity-ecology-demo.html#testing-hypothesis"><i class="fa fa-check"></i><b>8.3.4</b> Testing hypothesis</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="9" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html"><i class="fa fa-check"></i><b>9</b> Palaeobiology demo: disparity-through-time and within groups</a>
@@ -305,6 +336,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="10.3" data-path="morphometric-geometric-demo-a-between-group-analysis.html"><a href="morphometric-geometric-demo-a-between-group-analysis.html#analyse-the-results"><i class="fa fa-check"></i><b>10.3</b> Analyse the results</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+<li class="chapter" data-level="11" data-path="references-1.html"><a href="references-1.html"><i class="fa fa-check"></i><b>11</b> References</a></li>
 <li class="divider"></li>
 <li><a href="https://github.com/TGuillerme/dispRity/" target="blank">Project GitHub page</a></li>
 
@@ -386,10 +418,10 @@ For this, simply input a matrix in the <code>Claddis</code> format to the functi
 <span id="cb9-3"><a href="getting-started-with-disprity.html#cb9-3" aria-hidden="true"></a><span class="co">## Ordinating the example data from Claddis</span></span>
 <span id="cb9-4"><a href="getting-started-with-disprity.html#cb9-4" aria-hidden="true"></a><span class="kw">Claddis.ordination</span>(michaux_<span class="dv">1989</span>)</span></code></pre></div>
 <pre><code>##                      [,1]          [,2]       [,3]
-## Ancilla     -5.237743e-17 -4.154578e-01  0.2534942
-## Turrancilla -5.106645e-01  7.175378e-16 -0.2534942
-## Ancillista   5.106645e-01  5.544611e-16 -0.2534942
-## Amalda       1.603581e-16  4.154578e-01  0.2534942</code></pre>
+## Ancilla      0.000000e+00  4.154578e-01  0.2534942
+## Turrancilla -5.106645e-01 -1.304614e-16 -0.2534942
+## Ancillista   5.106645e-01 -1.630768e-17 -0.2534942
+## Amalda       1.603581e-16 -4.154578e-01  0.2534942</code></pre>
 <p>Note that several options are available, namely which type of distance should be computed.
 See more info in the function manual (<code>?Claddis.ordination</code>).
 Alternatively, it is of course also possible to manual calculate the ordination matrix using the functions <code>Claddis::calculate_morphological_distances</code> and <code>stats::cmdscale</code>.</p>
@@ -615,7 +647,7 @@ For example, you could ask if there is a difference in disparity between two gro
 </div>
 </div>
 </div>
-<h3>References<a href="references.html#references" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<h3> References<a href="references-1.html#references-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <div id="refs" class="references hanging-indent">
 <div id="ref-beckancient2014">
 <p>Beck, Robin M, and Michael S Lee. 2014. “Ancient Dates or Accelerated Rates? Morphological Clocks and the Antiquity of Placental Mammals.” <em>Proceedings of the Royal Society B: Biological Sciences</em> 281 (20141278): 1–10. <a href="https://doi.org/10.1098/rspb.2014.1278">https://doi.org/10.1098/rspb.2014.1278</a>.</p>
@@ -687,7 +719,7 @@ gitbook.start({
     var script = document.createElement("script");
     script.type = "text/javascript";
     var src = "true";
-    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:")
       if (/^https?:/.test(src))
         src = src.replace(/^https?:/, '');

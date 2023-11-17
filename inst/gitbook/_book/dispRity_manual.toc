@@ -1,0 +1,151 @@
+\contentsline {chapter}{\numberline {1}\texttt {dispRity}}{5}{chapter.1}%
+\contentsline {section}{\numberline {1.1}What is \texttt {dispRity}?}{5}{section.1.1}%
+\contentsline {subsection}{\numberline {1.1.1}Modular?}{5}{subsection.1.1.1}%
+\contentsline {section}{\numberline {1.2}Installing and running the package}{6}{section.1.2}%
+\contentsline {section}{\numberline {1.3}Which version do I choose?}{6}{section.1.3}%
+\contentsline {section}{\numberline {1.4}\texttt {dispRity} is always changing, how do I know it's not broken?}{7}{section.1.4}%
+\contentsline {section}{\numberline {1.5}Help}{8}{section.1.5}%
+\contentsline {section}{\numberline {1.6}Citations}{8}{section.1.6}%
+\contentsline {subsection}{\numberline {1.6.1}Why is it important to cite us?}{8}{subsection.1.6.1}%
+\contentsline {chapter}{\numberline {2}Glossary}{11}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Glossary equivalences in palaeobiology and ecology}{12}{section.2.1}%
+\contentsline {chapter}{\numberline {3}Getting started with \texttt {dispRity}}{13}{chapter.3}%
+\contentsline {section}{\numberline {3.1}What sort of data does \texttt {dispRity} work with?}{13}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Ordinated matrices}{13}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}Ordination matrices from \texttt {geomorph}}{13}{subsection.3.2.1}%
+\contentsline {subsection}{\numberline {3.2.2}Ordination matrices from \texttt {Claddis}}{14}{subsection.3.2.2}%
+\contentsline {subsection}{\numberline {3.2.3}Other kinds of ordination matrices}{15}{subsection.3.2.3}%
+\contentsline {section}{\numberline {3.3}Performing a simple dispRity analysis}{16}{section.3.3}%
+\contentsline {subsection}{\numberline {3.3.1}Example data}{17}{subsection.3.3.1}%
+\contentsline {subsection}{\numberline {3.3.2}Disparity through time}{18}{subsection.3.3.2}%
+\contentsline {subsection}{\numberline {3.3.3}Disparity among groups}{20}{subsection.3.3.3}%
+\contentsline {chapter}{\numberline {4}Details of specific functions}{23}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Time slicing}{23}{section.4.1}%
+\contentsline {subsection}{\numberline {4.1.1}Time-binning}{24}{subsection.4.1.1}%
+\contentsline {subsection}{\numberline {4.1.2}Time-slicing}{25}{subsection.4.1.2}%
+\contentsline {section}{\numberline {4.2}Customised subsets}{26}{section.4.2}%
+\contentsline {section}{\numberline {4.3}Bootstraps and rarefactions}{27}{section.4.3}%
+\contentsline {section}{\numberline {4.4}Disparity metrics}{30}{section.4.4}%
+\contentsline {subsection}{\numberline {4.4.1}The function dimension-levels}{30}{subsection.4.4.1}%
+\contentsline {subsubsection}{\numberline {4.4.1.1}Dimension-level 1 functions}{31}{subsubsection.4.4.1.1}%
+\contentsline {subsubsection}{\numberline {4.4.1.2}Dimension-level 2 functions}{31}{subsubsection.4.4.1.2}%
+\contentsline {subsubsection}{\numberline {4.4.1.3}Dimension-level 3 functions}{32}{subsubsection.4.4.1.3}%
+\contentsline {subsection}{\numberline {4.4.2}Between groups metrics}{32}{subsection.4.4.2}%
+\contentsline {subsection}{\numberline {4.4.3}\texttt {make.metric}}{34}{subsection.4.4.3}%
+\contentsline {subsection}{\numberline {4.4.4}Metrics in the \texttt {dispRity} function}{35}{subsection.4.4.4}%
+\contentsline {subsection}{\numberline {4.4.5}Metrics implemented in \texttt {dispRity}}{37}{subsection.4.4.5}%
+\contentsline {subsection}{\numberline {4.4.6}Equations and implementations}{38}{subsection.4.4.6}%
+\contentsline {subsection}{\numberline {4.4.7}Using the different disparity metrics}{40}{subsection.4.4.7}%
+\contentsline {subsubsection}{\numberline {4.4.7.1}Volumes and surface metrics}{40}{subsubsection.4.4.7.1}%
+\contentsline {subsubsection}{\numberline {4.4.7.2}Ranges, variances, quantiles, radius, pairwise distance, neighbours, modal value and diagonal}{41}{subsubsection.4.4.7.2}%
+\contentsline {subsubsection}{\numberline {4.4.7.3}Centroids, displacements and ancestral distances metrics}{44}{subsubsection.4.4.7.3}%
+\contentsline {subsubsection}{\numberline {4.4.7.4}Minimal spanning tree length}{46}{subsubsection.4.4.7.4}%
+\contentsline {subsubsection}{\numberline {4.4.7.5}Functional divergence and evenness}{46}{subsubsection.4.4.7.5}%
+\contentsline {subsubsection}{\numberline {4.4.7.6}Orientation: angles and deviations}{47}{subsubsection.4.4.7.6}%
+\contentsline {subsubsection}{\numberline {4.4.7.7}Projections and phylo projections: elaboration and exploration}{48}{subsubsection.4.4.7.7}%
+\contentsline {subsubsection}{\numberline {4.4.7.8}Roundness}{50}{subsubsection.4.4.7.8}%
+\contentsline {subsubsection}{\numberline {4.4.7.9}Between group metrics}{51}{subsubsection.4.4.7.9}%
+\contentsline {paragraph}{\numberline {4.4.7.9.1}\texttt {group.dist}}{51}{paragraph.4.4.7.9.1}%
+\contentsline {paragraph}{\numberline {4.4.7.9.2}\texttt {point.dist}}{52}{paragraph.4.4.7.9.2}%
+\contentsline {paragraph}{\numberline {4.4.7.9.3}\texttt {projections.between} and \texttt {disalignment}}{53}{paragraph.4.4.7.9.3}%
+\contentsline {subsection}{\numberline {4.4.8}Which disparity metric to choose?}{54}{subsection.4.4.8}%
+\contentsline {subsubsection}{\numberline {4.4.8.1}\texttt {test.metric}}{55}{subsubsection.4.4.8.1}%
+\contentsline {section}{\numberline {4.5}Summarising dispRity data (plots)}{56}{section.4.5}%
+\contentsline {subsection}{\numberline {4.5.1}Summarising \texttt {dispRity} data}{56}{subsection.4.5.1}%
+\contentsline {subsection}{\numberline {4.5.2}Plotting \texttt {dispRity} data}{58}{subsection.4.5.2}%
+\contentsline {subsection}{\numberline {4.5.3}\texttt {type\ =\ preview}}{61}{subsection.4.5.3}%
+\contentsline {subsection}{\numberline {4.5.4}Graphical options with \texttt {...}}{63}{subsection.4.5.4}%
+\contentsline {section}{\numberline {4.6}Testing disparity hypotheses}{64}{section.4.6}%
+\contentsline {subsection}{\numberline {4.6.1}NPMANOVA in \texttt {dispRity}}{66}{subsection.4.6.1}%
+\contentsline {subsection}{\numberline {4.6.2}\texttt {geiger::dtt} model fitting in \texttt {dispRity}}{69}{subsection.4.6.2}%
+\contentsline {subsection}{\numberline {4.6.3}null morphospace testing with \texttt {null.test}}{70}{subsection.4.6.3}%
+\contentsline {section}{\numberline {4.7}Fitting modes of evolution to disparity data}{71}{section.4.7}%
+\contentsline {subsection}{\numberline {4.7.1}Simple modes of disparity change through time}{71}{subsection.4.7.1}%
+\contentsline {subsubsection}{\numberline {4.7.1.1}\texttt {model.test}}{71}{subsubsection.4.7.1.1}%
+\contentsline {subsection}{\numberline {4.7.2}Plot and run simulation tests in a single step}{75}{subsection.4.7.2}%
+\contentsline {subsubsection}{\numberline {4.7.2.1}\texttt {model.test.wrapper}}{75}{subsubsection.4.7.2.1}%
+\contentsline {subsection}{\numberline {4.7.3}Multiple modes of evolution (time shifts)}{78}{subsection.4.7.3}%
+\contentsline {subsection}{\numberline {4.7.4}\texttt {model.test.sim}}{80}{subsection.4.7.4}%
+\contentsline {subsubsection}{\numberline {4.7.4.1}Simulating tested models}{81}{subsubsection.4.7.4.1}%
+\contentsline {section}{\numberline {4.8}Disparity as a distribution}{84}{section.4.8}%
+\contentsline {section}{\numberline {4.9}Disparity from other matrices}{86}{section.4.9}%
+\contentsline {section}{\numberline {4.10}Disparity from multiple matrices (and multiple trees!)}{89}{section.4.10}%
+\contentsline {section}{\numberline {4.11}Disparity with trees: \emph {dispRitree!}}{92}{section.4.11}%
+\contentsline {section}{\numberline {4.12}Disparity of variance-covariance matrices (covar)}{94}{section.4.12}%
+\contentsline {subsection}{\numberline {4.12.1}Creating a \texttt {dispRity} object with a \texttt {\$covar} component}{95}{subsection.4.12.1}%
+\contentsline {subsection}{\numberline {4.12.2}Visualising covar objects}{96}{subsection.4.12.2}%
+\contentsline {subsection}{\numberline {4.12.3}Disparity analyses with a \texttt {\$covar} component}{96}{subsection.4.12.3}%
+\contentsline {chapter}{\numberline {5}Making stuff up!}{99}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Simulating discrete morphological data}{99}{section.5.1}%
+\contentsline {subsection}{\numberline {5.1.1}A more detailed description}{100}{subsection.5.1.1}%
+\contentsline {subsubsection}{\numberline {5.1.1.1}Available evolutionary models}{101}{subsubsection.5.1.1.1}%
+\contentsline {subsubsection}{\numberline {5.1.1.2}Checking the results}{101}{subsubsection.5.1.1.2}%
+\contentsline {subsubsection}{\numberline {5.1.1.3}Adding inapplicable characters}{102}{subsubsection.5.1.1.3}%
+\contentsline {subsection}{\numberline {5.1.2}Parameters for a realistic(ish) matrix}{103}{subsection.5.1.2}%
+\contentsline {section}{\numberline {5.2}Simulating multidimensional spaces}{103}{section.5.2}%
+\contentsline {subsection}{\numberline {5.2.1}Personalised dimensions distributions}{105}{subsection.5.2.1}%
+\contentsline {subsection}{\numberline {5.2.2}Visualising the space}{106}{subsection.5.2.2}%
+\contentsline {subsection}{\numberline {5.2.3}Generating realistic spaces}{107}{subsection.5.2.3}%
+\contentsline {chapter}{\numberline {6}Other functionalities}{111}{chapter.6}%
+\contentsline {section}{\numberline {6.1}\texttt {char.diff}}{111}{section.6.1}%
+\contentsline {section}{\numberline {6.2}\texttt {clean.data}}{115}{section.6.2}%
+\contentsline {section}{\numberline {6.3}\texttt {crown.stem}}{116}{section.6.3}%
+\contentsline {section}{\numberline {6.4}\texttt {get.bin.ages}}{116}{section.6.4}%
+\contentsline {section}{\numberline {6.5}\texttt {match.tip.edge}}{117}{section.6.5}%
+\contentsline {section}{\numberline {6.6}\texttt {MCMCglmm} utilities}{118}{section.6.6}%
+\contentsline {section}{\numberline {6.7}\texttt {pair.plot}}{120}{section.6.7}%
+\contentsline {section}{\numberline {6.8}\texttt {reduce.matrix}}{121}{section.6.8}%
+\contentsline {section}{\numberline {6.9}\texttt {select.axes}}{122}{section.6.9}%
+\contentsline {section}{\numberline {6.10}\texttt {slice.tree}}{125}{section.6.10}%
+\contentsline {section}{\numberline {6.11}\texttt {slide.nodes} and \texttt {remove.zero.brlen}}{126}{section.6.11}%
+\contentsline {section}{\numberline {6.12}\texttt {tree.age}}{128}{section.6.12}%
+\contentsline {section}{\numberline {6.13}\texttt {multi.ace}}{130}{section.6.13}%
+\contentsline {subsection}{\numberline {6.13.1}Using different character tokens in different situations}{130}{subsection.6.13.1}%
+\contentsline {subsection}{\numberline {6.13.2}Feeding the results to \texttt {char.diff} to get distance matrices}{134}{subsection.6.13.2}%
+\contentsline {chapter}{\numberline {7}The guts of the \texttt {dispRity} package}{137}{chapter.7}%
+\contentsline {section}{\numberline {7.1}Manipulating \texttt {dispRity} objects}{137}{section.7.1}%
+\contentsline {section}{\numberline {7.2}\texttt {dispRity} utilities}{138}{section.7.2}%
+\contentsline {subsection}{\numberline {7.2.1}\texttt {dispRity} object utilities }{138}{subsection.7.2.1}%
+\contentsline {subsubsection}{\numberline {7.2.1.1}\texttt {make.dispRity}}{138}{subsubsection.7.2.1.1}%
+\contentsline {subsubsection}{\numberline {7.2.1.2}\texttt {fill.dispRity}}{138}{subsubsection.7.2.1.2}%
+\contentsline {subsubsection}{\numberline {7.2.1.3}\texttt {get.matrix}}{139}{subsubsection.7.2.1.3}%
+\contentsline {subsubsection}{\numberline {7.2.1.4}\texttt {n.subsets}}{139}{subsubsection.7.2.1.4}%
+\contentsline {subsubsection}{\numberline {7.2.1.5}\texttt {name.subsets}}{139}{subsubsection.7.2.1.5}%
+\contentsline {subsubsection}{\numberline {7.2.1.6}\texttt {size.subsets}}{140}{subsubsection.7.2.1.6}%
+\contentsline {subsubsection}{\numberline {7.2.1.7}\texttt {get.subsets}}{140}{subsubsection.7.2.1.7}%
+\contentsline {subsubsection}{\numberline {7.2.1.8}\texttt {combine.subsets}}{140}{subsubsection.7.2.1.8}%
+\contentsline {subsubsection}{\numberline {7.2.1.9}\texttt {get.disparity}}{140}{subsubsection.7.2.1.9}%
+\contentsline {subsubsection}{\numberline {7.2.1.10}\texttt {rescale.dispRity}}{141}{subsubsection.7.2.1.10}%
+\contentsline {subsubsection}{\numberline {7.2.1.11}\texttt {sort.dispRity}}{141}{subsubsection.7.2.1.11}%
+\contentsline {subsubsection}{\numberline {7.2.1.12}\texttt {get.tree} \texttt {add.tree} and \texttt {remove.tree}}{141}{subsubsection.7.2.1.12}%
+\contentsline {section}{\numberline {7.3}The \texttt {dispRity} object content}{141}{section.7.3}%
+\contentsline {subsection}{\numberline {7.3.1}\texttt {\$matrix}}{142}{subsection.7.3.1}%
+\contentsline {subsection}{\numberline {7.3.2}\texttt {\$call}}{142}{subsection.7.3.2}%
+\contentsline {subsection}{\numberline {7.3.3}\texttt {\$subsets}}{143}{subsection.7.3.3}%
+\contentsline {subsection}{\numberline {7.3.4}\texttt {\$disparity}}{144}{subsection.7.3.4}%
+\contentsline {chapter}{\numberline {8}dispRity ecology demo}{145}{chapter.8}%
+\contentsline {section}{\numberline {8.1}Data}{145}{section.8.1}%
+\contentsline {section}{\numberline {8.2}Classic analysis}{146}{section.8.2}%
+\contentsline {section}{\numberline {8.3}A multidimensional approach with \texttt {dispRity}}{147}{section.8.3}%
+\contentsline {subsection}{\numberline {8.3.1}Bootstrapping the data}{147}{subsection.8.3.1}%
+\contentsline {subsection}{\numberline {8.3.2}Calculating disparity}{148}{subsection.8.3.2}%
+\contentsline {subsection}{\numberline {8.3.3}Summarising the results (plot)}{148}{subsection.8.3.3}%
+\contentsline {subsection}{\numberline {8.3.4}Testing hypothesis}{149}{subsection.8.3.4}%
+\contentsline {subsubsection}{\numberline {8.3.4.1}Setting up a multidimensional null-hypothesis}{150}{subsubsection.8.3.4.1}%
+\contentsline {chapter}{\numberline {9}Palaeobiology demo: disparity-through-time and within groups}{153}{chapter.9}%
+\contentsline {section}{\numberline {9.1}Before starting}{153}{section.9.1}%
+\contentsline {subsection}{\numberline {9.1.1}The morphospace}{153}{subsection.9.1.1}%
+\contentsline {subsection}{\numberline {9.1.2}Setting up your own data}{155}{subsection.9.1.2}%
+\contentsline {section}{\numberline {9.2}A disparity-through-time analysis}{157}{section.9.2}%
+\contentsline {subsection}{\numberline {9.2.1}Splitting the morphospace through time}{157}{subsection.9.2.1}%
+\contentsline {subsection}{\numberline {9.2.2}Bootstrapping the data}{159}{subsection.9.2.2}%
+\contentsline {subsection}{\numberline {9.2.3}Calculating disparity}{159}{subsection.9.2.3}%
+\contentsline {subsection}{\numberline {9.2.4}Plotting the results}{161}{subsection.9.2.4}%
+\contentsline {subsection}{\numberline {9.2.5}Testing differences}{161}{subsection.9.2.5}%
+\contentsline {section}{\numberline {9.3}Some more advanced stuff}{163}{section.9.3}%
+\contentsline {chapter}{\numberline {10}Morphometric geometric demo: a between group analysis}{165}{chapter.10}%
+\contentsline {section}{\numberline {10.1}Before starting}{165}{section.10.1}%
+\contentsline {subsection}{\numberline {10.1.1}The morphospace}{166}{subsection.10.1.1}%
+\contentsline {section}{\numberline {10.2}Calculating disparity}{167}{section.10.2}%
+\contentsline {section}{\numberline {10.3}Analyse the results}{168}{section.10.3}%
+\contentsline {chapter}{\numberline {11}References}{171}{chapter.11}%
