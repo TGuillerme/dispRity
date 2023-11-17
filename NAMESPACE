@@ -21,6 +21,7 @@ importFrom("vegan", "adonis", "vegdist")
 importFrom("scales", "rescale")
 importFrom("GET", "create_curve_set", "rank_envelope")
 importFrom("parallel", "parLapply", "detectCores", "makeCluster", "clusterExport", "stopCluster")
+importFrom("zoo", "rollmean")
 # importFrom("geomorph", "gpagen")
 # importFrom("RCurl", "getURL", "url.exists")
 
