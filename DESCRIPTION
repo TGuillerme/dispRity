@@ -29,6 +29,7 @@ Imports:
 	utils,
 	vegan,
 	scales,
+	zoo,
 License: GPL-3 | file LICENSE
 Suggests:
 	MCMCglmm,
