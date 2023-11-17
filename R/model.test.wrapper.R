@@ -87,7 +87,6 @@ model.test.wrapper <- function(data, model, pool.variance = NULL, time.split = N
         sim <- abs(sim)
     }
     ## The rest of model.test arguments are tested by the model.test functions
-
     check.class(plot.sim, "logical")
     if(!missing(col.sim)) {check.class(col.sim, "character")}
     check.class(col.obs, "character")
