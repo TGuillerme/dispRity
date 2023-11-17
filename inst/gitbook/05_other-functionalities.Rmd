@@ -18,7 +18,7 @@ The `dispRity` package also contains several other functions that are not specif
 However, we decided to make these functions also available at a user level since they can be handy for certain specific operations!
 You'll find a brief description of each of them (alphabetically) here:
 
-## `char.diff`
+## `char.diff` {#char.diff}
 
 This is yet another function for calculating distance matrices.
 There are many functions for calculating pairwise distance matrices in `R` (`stats::dist`, `vegan::vegdist`, `cluster::daisy` or `Claddis::calculate_morphological_distances`) but this one is the `dispRity` one.
@@ -489,7 +489,6 @@ plot(tree_no_zero, main = "without zero edges!")
 plot(tree_exaggerated, main = "with longer edges")
 ```
 
-
 ## `tree.age`
 
 This function allows to quickly calculate the ages of each tips and nodes present in a tree.
@@ -514,3 +513,149 @@ Usually tree age is calculated from the present to the past (e.g. in million yea
 ## The ages in terms of tip/node height
 tree.age(tree, order = "present")
 ```
+
+## `multi.ace`
+
+This function allows to run the `ape::ace` function (ancestral characters estimations) on multiple trees.
+In it's most basic structure (e.g. using all default arguments) this function is using a mix of `ape::ace` and `castor::asr_mk_model` depending on the data and the situation and is generally faster than both functions when applied to a list of trees.
+However, this function provides also some more complex and modular functionalities, especially appropriate when using discrete morphological character data.
+
+### Using different character tokens in different situations
+
+This data can be often coded in non-standard way with different character tokens having different meanings.
+For example, in some datasets the token `-` can mean "the trait is inapplicable" but this can be also coded by the more conventional `NA` or can mean "this trait is missing" (often coded `?`).
+This makes the meaning of specific tokens idiosyncratic to different matrices.
+For example we can have the following discrete morphological matrix with all the data encoded:
+
+```{r}
+set.seed(42)
+## A random tree with 10 tips
+tree <- rcoal(10)
+## Setting up the parameters
+my_rates = c(rgamma, rate = 10, shape = 5)
+
+## Generating a bunch of trees
+multiple_trees <- rmtree(5, 10)
+
+## A random Mk matrix (10*50)
+matrix_simple <- sim.morpho(tree, characters = 50, model = "ER", rates = my_rates,
+                            invariant = FALSE)
+matrix_simple[1:10, 1:10]
+```
+
+But of course, as mentioned above, in practice, such matrices have more nuance and can including missing characters, ambiguous characters, multi-state characters, inapplicable characters, etc...
+All these coded and defined by different authors using different tokens (or symbols).
+Let's give it a go and transform this simple data to something more messy:
+
+
+```{r}
+## Modify the matrix to contain missing and special data
+matrix_complex <- matrix_simple
+## Adding 50 random "-" tokens
+matrix_complex[sample(1:length(matrix_complex), 50)] <- "-"
+## Adding 50 random "?" tokens
+matrix_complex[sample(1:length(matrix_complex), 50)] <- "?"
+## Adding 50 random "0%2" tokens
+matrix_complex[sample(1:length(matrix_complex), 50)] <- "0%2"
+matrix_complex[1:10,1:10]
+```
+
+In `multi.ace` you can specify what all these tokens actually mean and how the code should interpret them.
+For example, `-` often means inapplicable data (i.e. the specimen does not have the coded feature, for example, the colour of the tail of a tailless bird); or `?` that often means missing data (i.e. it is unknown if the specimen has a tail or not since only the head was available).
+And more than the differences in meaning between these characters, different people treat these characters differently even if they have the same meaning for the token.
+For example, one might want to treat `-` as meaning "we don't know" (which will be treated by the algorithm as "any possible trait value") or "we know, and it's no possible" (which will be treated by the algorithm as `NA`).
+Because of this situation, `multi.ace` allows combining any special case marked with a special token to a special behaviour.
+For example we might want to create a special case called `"missing"` (i.e. the data is missing) that we want to denote using the token `"?"` and we can specify the algorithm to treat this `"missing"` cases (`"?"`) as treating the character token value as "any possible values".
+This behaviour can be hard coded by providing a function with the name of the behaviour.
+For example:
+
+```{r}
+## The specific token for the missing cases (note the "\\" for protecting the value)
+special.tokens <- c("missing" = "\\?")
+
+## The behaviour for the missing cases (?)
+special.behaviour <- list(missing <- function(x, y) return(y))
+## Where x is the input value (here "?") and y is all the possible normal values for the character
+```
+
+This example shows a very common case (and is actually used by default, more on that below) but this architecture allows for very modular combination of tokens and behaviours.
+For example, in our code above we introduced the token `"%"` which is very odd (to my knowledge) and might mean something very specific in our case.
+Say we want to call this case `"weirdtoken"` and mean that whenever this token is encountered in a character, it should be interpreted by the algorithm as the values 1 and 2, no matter what:
+
+```{r}
+## Set a list of extra special tokens
+my_spec_tokens <- c("weirdtoken" = "\\%")
+
+## Weird tokens are considered as state 0 and 3
+my_spec_behaviours <- list()
+my_spec_behaviours$weirdtoken <- function(x,y) return(c(1,2))
+```
+
+If you don't need/don't have any of this specific tokens, don't worry, most special but common tokens are handled by default as such:
+
+```{r}
+## The token for missing values:
+default_tokens <- c("missing"      = "\\?",
+## The token for inapplicable values:                    
+                    "inapplicable" = "\\-",
+## The token for polymorphisms:
+                    "polymorphism" = "\\&",
+## The token for uncertainties:
+                    "uncertanity"  = "\\/")
+```
+
+With the following associated default behaviours
+
+```{r}
+## Treating missing data as all data values
+default_behaviour <- list(missing      <- function(x,y) y,
+## Treating inapplicable data as all data values (like missing)    
+                          inapplicable <- function(x, y) y,
+## Treating polymorphisms as all values present:
+                          polymorphism <- function(x,y) strsplit(x, split = "\\&")[[1]],
+## Treating uncertainties as all values present (like polymorphisms):
+                          uncertanity  <- function(x,y) strsplit(x, split = "\\&")[[1]])
+```
+
+We can then use these token description along with our complex matrix and our list of trees to run the ancestral states estimations as follows:
+
+```{r}
+## Running ancestral states
+ancestral_states <- multi.ace(matrix_complex, multiple_trees,
+                              special.tokens = my_spec_tokens,
+                              special.behaviours = my_spec_behaviours,
+                              verbose = TRUE)
+
+## This outputs a list of ancestral parts of the matrices for each tree
+## For example, here's the first one:
+ancestral_states[[1]][1:9, 1:10]
+```
+
+Note that there are many different options that are not covered here.
+For example, you can use different models for each character via the `models` argument, you can specify how to handle uncertainties via the `threshold` argument, use a branch length modifier (`brlen.multiplier`), specify the type of output, etc...
+
+### Feeding the results to `char.diff` to get distance matrices
+
+Finally, after running your ancestral states estimations, it is not uncommon to then use these resulting data to calculate the distances between taxa and then ordinate the results to measure disparity.
+You can do that using the `char.diff` function [described above](#char.diff) but instead of measuring the distances between characters (columns) you can measure the distances between species (rows).
+You might notice that this function uses the same modular token and behaviour descriptions.
+That makes sense because they're using the same core C functions implemented in dispRity that greatly speed up distance calculations.
+
+```{r}
+## Running ancestral states
+## and outputing a list of combined matrices (tips and nodes)
+ancestral_states <- multi.ace(matrix_complex, multiple_trees,
+                              special.tokens = my_spec_tokens,
+                              special.behaviours = my_spec_behaviours,
+                              output = "combined.matrix",
+                              verbose = TRUE)
+```
+
+We can then feed these matrices directly to `char.diff`, say for calculating the "MORD" distance:
+
+```{r}
+## Measuring the distances between rows using the MORD distance
+distances <- lapply(ancestral_states, char.diff, method = "mord", by.col = FALSE)
+```
+
+And we now have a list of distances matrices with ancestral states estimated!
