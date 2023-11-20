@@ -26,6 +26,7 @@
 # done
 
 ## Create the temporary CRAN folder
+rm -R cran_tmp/
 mkdir cran_tmp
 mkdir cran_tmp/dispRity
 TMPPATH="cran_tmp/dispRity"
@@ -69,7 +70,7 @@ rm src/*.rds
 version_number=$(grep "Version:" DESCRIPTION | sed 's/Version: //g')
 
 ## CHANGE THE WARNING zzz.R
-sed 's/# //g' R/zzz.R | sed 's/GitHub release./This is the CRAN released version of the package ('"$version_number"').\\nFor news, vignettes and future releases, visit\\nhttps:\/\/github.com\/TGuillerme\/dispRity\\nTo cite the package use\\ncitation("dispRity")/g' > ${TMPPATH}/R/zzz.R
+# sed 's/# //g' R/zzz.R | sed 's/GitHub release./This is the CRAN released version of the package ('"$version_number"').\\nFor news, vignettes and future releases, visit\\nhttps:\/\/github.com\/TGuillerme\/dispRity\\nTo cite the package use\\ncitation("dispRity")/g' > ${TMPPATH}/R/zzz.R
 
 # ## Add ssptest.support and remove dependencies 
 # cp ~/Packaging/CRAN/Support/ssptest.support.R ${TMPPATH}/R/
