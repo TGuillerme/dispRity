@@ -322,7 +322,8 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions 
         },
         "null" = {
             if(probabilistic_subsets) {
-                boot.type.fun <- boot.null.proba
+                boot.type.fun <- boot.null #TODO: needs to be boot.null.proba
+                warning("Bootstrap with the null algorithm not implemented for probabilities. Please remind the maintainer to eventually do it!")
             } else {
                 boot.type.fun <- boot.null
             }

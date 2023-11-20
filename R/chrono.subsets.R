@@ -123,9 +123,9 @@ chrono.subsets <- function(data, tree = NULL, method, time, model, inc.nodes = F
         
         ## Get the trees
         if(!is.null(split_data[[1]]$tree)) {
-            trees <- unlist(lapply(split_data, `[[`, "tree"), recursive = FALSE)
+            tree <- unlist(lapply(split_data, `[[`, "tree"), recursive = FALSE)
         } else {
-            trees <- NULL
+            tree <- NULL
         }
 
         ## Toggle bind data (each is now a pair of matrix + tree)
@@ -150,7 +150,7 @@ chrono.subsets <- function(data, tree = NULL, method, time, model, inc.nodes = F
             if(verbose) message("Creating ", length(time), " time samples through ", length(matrices), " trees and matrices:", appendLF = FALSE)
         }
 
-        output <- dispRity.multi.apply(matrices, fun = chrono.subsets.call, tree = trees, method = method, time = time, model = model, inc.nodes = inc.nodes, FADLAD = FADLAD, verbose = verbose, t0 = t0, bind.data = bind.data)
+        output <- dispRity.multi.apply(matrices, fun = chrono.subsets.call, tree = tree, method = method, time = time, model = model, inc.nodes = inc.nodes, FADLAD = FADLAD, verbose = verbose, t0 = t0, bind.data = bind.data)
 
         if(verbose) message("Done.\n", appendLF = FALSE)
         return(output)

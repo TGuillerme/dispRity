@@ -188,7 +188,7 @@ space.maker <- function(elements, dimensions, distribution, arguments = NULL, co
     ## element names
     if(!is.null(elements.names)) {
         check.class(elements.names, c("character", "integer", "numeric"))
-        check.length(elements.names, elements, ms = " must be the same as the number of elements", errorif = FALSE)
+        check.length(elements.names, elements, msg = " must be the same as the number of elements", errorif = FALSE)
     }
 
     ## replicates

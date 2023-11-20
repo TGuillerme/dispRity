@@ -192,9 +192,9 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
             matrices <- unlist(lapply(split_data, `[[`, "matrix"), recursive = FALSE)
             ## Get the trees
             if(!is.null(split_data[[1]]$tree)) {
-                trees <- unlist(lapply(split_data, `[[`, "tree"), recursive = FALSE)
+                tree <- unlist(lapply(split_data, `[[`, "tree"), recursive = FALSE)
             } else {
-                trees <- NULL
+                tree <- NULL
             }
         } else {
             ## Get the first element in data as a template
@@ -202,7 +202,7 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
             data <- dispRity.multi.merge.data(data)
             ## Get the correct elements
             matrices <- split_data[which(unlist(lapply(split_data, class)) == "dispRity")]
-            trees <- NULL
+            tree <- NULL
         }
 
         ## Change the call in dispRity (if verbose)
@@ -224,7 +224,7 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
         ## Run the apply
         if(verbose) message("Calculating multiple disparities", appendLF = FALSE)
 
-        output <- dispRity.multi.apply(matrices, fun = dispRity.int.call, metric = metric, tree = trees, dimensions = dimensions, between.groups = between.groups, verbose = verbose, ...)
+        output <- dispRity.multi.apply(matrices, fun = dispRity.int.call, metric = metric, tree = tree, dimensions = dimensions, between.groups = between.groups, verbose = verbose, ...)
         # output <- dispRity.multi.apply(matrices, fun = dispRity.int.call, metric = metric, trees = trees, dimensions = dimensions, between.groups = between.groups, verbose = verbose) ; warning("DEBUG")
         # test <- dispRity.int.call(matrices[[1]], trees[[1]], metric = metric, dimensions = dimensions, between.groups = between.groups, verbose = verbose) ; warning("DEBUG")   
 

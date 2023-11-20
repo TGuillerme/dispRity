@@ -3,26 +3,11 @@ dispRity v1.7.16 (2023-11-17) *dispRity.multi*
 
 <!-- TODO: route to 1.8 (and that's it for this one)-->
 <!--
- - [x] add roundness metric
-    - [x] test
-    - [x] doc
-    - [x] example
-    - [x] manual
  - [ ] add `get.tree` working for subsets
     - [x] test
     - [ ] doc
     - [ ] example
     - [ ] manual
- - [x] make `dispRity` and al. `dispRitreatable` (Mario's suggestion)
-    - [x] test
-    - [x] doc
-    - [x] example
-    - [x] manual
- - [ ] Developers vignette
-    - [ ] update code lines numbers Packaging/dispRity.length.R
-    - [x] clean repo root
-    - [x] remove disparity_object.md
-    - [x] remove disparity_internal_logic.md
  -->
 
 
@@ -31,7 +16,7 @@ dispRity v1.7.16 (2023-11-17) *dispRity.multi*
  * Added the _dispRity.multi_ internal architecture now allowing users to work with different matrices **and** different trees as inputs for `custom.subsets`, `chrono.subsets`, `boot.matrix` and `dispRity`. This change is not affecting the user level appart from now allowing to bypass some error messages (thanks to Mario Corio for that obvious suggestion).
  * *New utility function*: `name.subsets` for directly accessing the subsets names of a `dispRity` object (basically doing `names(my_dispRity$subsets)`).
  * *New utility function*: `MCMCglmm.variance` for calculating the variance for specific terms in a `"MCMCglmm"` model.
- * *New* statistical test: `pgls.dispRity` to run PGLS test on a `dispRity` object with a level-2 metric and a tree (using excellent [`phylolm`](https://cran.r-project.org/web/packages/phylolm/phylolm.pdf) algorithm). The new test comes with its own S3 print, summary and plot functions if the input `dispRity` data contains multiple trees or multiple matrices (running and handling the output of multiple `phylolm`).
+ * *New* statistical test: `pgls.dispRity` to run PGLS test on a `dispRity` object with a level-2 metric and a tree (using excellent [`phylolm`](https://CRAN.R-project.org/package=phylolm) algorithm). The new test comes with its own S3 print, summary and plot functions if the input `dispRity` data contains multiple trees or multiple matrices (running and handling the output of multiple `phylolm`).
  * *New* options to `get.tree` utility function to get the trees in each subsets (thanks to Jack Hadfield for this suggestion).
  * *New vignette* compiling resources for developers to help people (and future me) to edit the package. 
  * *New metric*: `roundness` to measure the roundness of a variance-covariance matrix. 
@@ -433,7 +418,7 @@ dispRity v0.3 (2017-01-25) *dispRity lite*
 
 ### NEW FEATURES
 
-  * Complete change of the `dispRity` object architecture (see more [here](https://github.com/TGuillerme/dispRity/blob/master/disparity_object.md)).
+  * Complete change of the `dispRity` object architecture.
 
 ### MINOR IMPROVEMENTS
 

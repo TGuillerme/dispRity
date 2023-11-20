@@ -74,12 +74,12 @@ custom.subsets <- function(data, group, tree = NULL) {
         matrices <- unlist(lapply(split_data, `[[`, "matrix"), recursive = FALSE)
         ## Get the trees
         if(!is.null(split_data[[1]]$tree)) {
-            trees <- unlist(lapply(split_data, `[[`, "tree"), recursive = FALSE)
+            tree <- unlist(lapply(split_data, `[[`, "tree"), recursive = FALSE)
         } else {
-            trees <- NULL
+            tree <- NULL
         }
         ## Apply the custom.subsets
-        return(dispRity.multi.apply(matrices, fun = custom.subsets, group = group, tree = trees))
+        return(dispRity.multi.apply(matrices, fun = custom.subsets, group = group, tree = tree))
     } else {
         if(!is.null(tree)) {
             tree <- data$tree

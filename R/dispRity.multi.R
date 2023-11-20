@@ -115,14 +115,14 @@ lapply.clean.data <- function(x) {
 }
 
 ## Apply the function to any pair of matrix + tree
-dispRity.multi.apply <- function(matrices, fun, trees = NULL, ...) {
+dispRity.multi.apply <- function(matrices, fun, tree = NULL, ...) {
 
     ## Handle extra args
     dots <- list(...)
     match_call <- match.call()
 
     ## Detect the type:
-    type <- ifelse(any(c(is.null(trees), (length(trees) == 1))), "lapply", "mapply")
+    type <- ifelse(any(c(is.null(tree), (length(tree) == 1))), "lapply", "mapply")
 
     ## Making argument list for chrono.subsets if FADLAD is provided as a list
     if(!is.null(dots$FADLAD) && is(dots$FADLAD, "list")) {
@@ -130,7 +130,7 @@ dispRity.multi.apply <- function(matrices, fun, trees = NULL, ...) {
         type <- "do.call"
 
         ## Get the list of arguments
-        chrono_args <- mapply(function(x, y) list(data = x, tree = y), matrices, trees, SIMPLIFY = FALSE)
+        chrono_args <- mapply(function(x, y) list(data = x, tree = y), matrices, tree, SIMPLIFY = FALSE)
 
         ## Adding the FADLADs
         chrono_args <- mapply(function(x, y) list(data = x$data, tree = x$tree, "FADLAD" = y), chrono_args, dots$FADLAD, SIMPLIFY = FALSE)
@@ -142,14 +142,14 @@ dispRity.multi.apply <- function(matrices, fun, trees = NULL, ...) {
     }
 
     ## Toggle to bootstraps (no tree argument)
-    if(is.null(trees) && match_call$fun == "boot.matrix.call") {
+    if(is.null(tree) && match_call$fun == "boot.matrix.call") {
         type <- "boot"
     }
     
     ## Applying the fun
     out <- switch(type,
-                  "lapply"  = lapply(matrices, fun, trees, ...),
-                  "mapply"  = mapply(fun, matrices, trees, MoreArgs = list(...), SIMPLIFY = FALSE),
+                  "lapply"  = lapply(matrices, fun, tree, ...),
+                  "mapply"  = mapply(fun, matrices, tree, MoreArgs = list(...), SIMPLIFY = FALSE),
                   "do.call" = do.call(fun, chrono_args),
                   "boot"    = lapply(matrices, fun, ...))
     ## New class
@@ -184,9 +184,9 @@ dispRity.multi.merge.data <- function(data) {
         data_out <- data[[1]]
         data_out$matrix <- unlist(lapply(data, `[[`, "matrix"), recursive = FALSE)
         if(!is.null(data_out$tree[[1]])) {
-            trees <- lapply(data, `[[`, "tree")
-            class(trees) <- "multiPhylo"
-            data_out$tree <- trees
+            tree <- lapply(data, `[[`, "tree")
+            class(tree) <- "multiPhylo"
+            data_out$tree <- tree
         }        
         ## Merge subset names
         if(!is.null(names(data_out$subsets))) {
