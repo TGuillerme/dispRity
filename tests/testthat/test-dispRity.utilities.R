@@ -736,7 +736,7 @@ test_that("get.tree with subsets", {
     edgelabels()
     tiplabels()
     tiplabels(simple_tree$tip.label, adj = -1, col = "blue")
-    abline(v = c(0, 1, 2, 3, 3.5), col = "grey", lty = 2)
+    abline(v = c(0, 1, 2, 3, 3.8), col = "grey", lty = 2)
     dev.new()
     tree <- simple_tree
 
@@ -897,40 +897,40 @@ test_that("get.tree with subsets", {
 
 
 
-chrono.subset.tree <- function(subset_n, data, to.root) {
+# chrono.subset.tree <- function(subset_n, data, to.root) {
 
-    slice.type <- data$call$subsets[[1]]
-    age <- as.numeric(strsplit(names(data$subsets[subset_n]), split = " - ")[[1]])
+#     slice.type <- data$call$subsets[[1]]
+#     age <- as.numeric(strsplit(names(data$subsets[subset_n]), split = " - ")[[1]])
 
-    ## Time bin/slice behaviour
-    if(slice.type %in% c("discrete", "continuous")) {
-        if(to.root) {
+#     ## Time bin/slice behaviour
+#     if(slice.type %in% c("discrete", "continuous")) {
+#         if(to.root) {
 
-            slice.tree(data$tree[[1]], age = age[2], model = "acctran")
+#             slice.tree(data$tree[[1]], age = age[2], model = "acctran")
 
-            ## Maybe test this one?
-            # paleotree::timeSliceTree
+#             ## Maybe test this one?
+#             # paleotree::timeSliceTree
 
-            slice.tree(tree, age, model, FAD, LAD)
+#             slice.tree(tree, age, model, FAD, LAD)
 
-            ## cut the trees to the upper bound
-            return(output)
-        } else {
-            if(!to.root && slice.type == "discrete") {
-                ## cut the trees to the upper and lower bounds
-                return(output)
-
-
+#             ## cut the trees to the upper bound
+#             return(output)
+#         } else {
+#             if(!to.root && slice.type == "discrete") {
+#                 ## cut the trees to the upper and lower bounds
+#                 return(output)
 
 
-            }
-        }
-    }
 
-    ## Out
-    return(output)
 
-}
+#             }
+#         }
+#     }
+
+#     ## Out
+#     return(output)
+
+# }
 
 
 # #     ## BUG when using a matrix with just one column! (empty subsets)
