@@ -168,16 +168,8 @@ The problem though is that:
 
 1. Feed the list of elements (in our case element 9, 2)
 2. Feed the boundary ages (1 - 0.2)
-3. Have a function to detect the subtree with the element 
-
-    
-    a.
-
-tree$edge
-[1,] 1 1
-tree$nodelabel
-"d"
-
-    b. go back to the orginal tree
-    c. find the sub tree(s) that go into the future
-    d. cut these sub trees(s) at the younger age (use `slice.tree`)
+    * Edit the age boundaries to that the old age becomes the root of the tree and the young age becomes the cutting point
+3. Recreate the subtree spanning from the selected elements (descendant from them)
+    * Make sure that the elements names are kept
+4. Using `slice.tree` to cut the upper boundary (young age)
+5. Return the new subtree
