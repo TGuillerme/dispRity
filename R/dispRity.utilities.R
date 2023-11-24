@@ -520,7 +520,7 @@ name.subsets <- function(data) {
 #'
 #' @seealso \code{\link{custom.subsets}}, \code{\link{chrono.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
 #'
-#' @author Thomas Guillerme
+#' @author Thomas Guillerme and Jack Hadfield
 add.tree <- function(data, tree, replace = FALSE) {
     ## Add the tree
     if(is.null(data$tree[[1]])) {
@@ -575,7 +575,33 @@ get.tree <- function(data, subsets = FALSE, to.root = TRUE) {
         slice.type <- data$call$subsets[[1]]
 
         ## Get the trees for each subset
-        trees_list <- lapply(data$subsets[subsets], get.one.tree.subset, data, to.root, slice.type)
+        if(!binned_data) {
+            trees_list <- lapply(data$subsets[subsets], get.one.tree.subset, data, to.root, slice.type)
+        } else {
+            bin_names <- name.subsets(data)
+            ## Get the bin ages
+            bin_ages <- lapply(strsplit(bin_names, split = " - "), as.numeric)
+
+            ## Get the list of elements
+            all_elements <- lapply
+
+
+            lapply(bin_ages, slice.one.tree)
+
+            slice.on.tree <- function(age, tree) {
+                slice.tree(tree, age[2])
+            }
+
+
+
+            ## Get the subtrees
+
+            ## Update the subtrees
+
+            ## Cut the subtrees
+
+            ## Return the tree list
+        }
             
         ## return the trees
         return(trees_list)
