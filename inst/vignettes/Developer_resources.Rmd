@@ -94,15 +94,15 @@ object
     \---$matrix* = class:"list" (a list containing the orginal matrix/matrices)
     |   |
     |   \---[[1]]* = class:"matrix" (the matrix (trait-space))
-    |       |
-    |       \---[[...]] = class:"matrix" (any additional matrices)
+    |   |
+    |   \---[[...]] = class:"matrix" (any additional matrices)
     |
     |
     \---$tree* = class:"multiPhylo" (a list containing the attached tree(s) or NULL)
     |   |
     |   \---[[1]] = class:"phylo" (the first tree)
-    |       |
-    |       \---[[...]] = class:"phylo" (any additional trees)  
+    |   |
+    |   \---[[...]] = class:"phylo" (any additional trees)  
     |
     |
     \---$call* = class:"list" (details of the methods used)
