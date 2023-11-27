@@ -479,7 +479,7 @@ name.subsets <- function(data) {
 #' @title Add, remove or get trees (or subtrees)
 #'
 #' @usage add.tree(data, tree, replace = FALSE)
-#' @usage get.tree(data, subsets = FALSE, to.root = TRUE)
+#' @usage get.tree(data, subsets = FALSE, to.root = FALSE)
 #' @usage remove.tree(data)
 #' 
 #' @description Adding, extracting or removing the tree component from a \code{dispRity} object.

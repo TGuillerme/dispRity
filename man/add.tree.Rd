@@ -8,7 +8,7 @@
 \usage{
 add.tree(data, tree, replace = FALSE)
 
-get.tree(data, subsets = FALSE, to.root = TRUE)
+get.tree(data, subsets = FALSE, to.root = FALSE)
 
 remove.tree(data)
 }

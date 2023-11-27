@@ -311,7 +311,7 @@ slide.node.root <- function(bin_age, tree) {
         sliding_value <- node_ages$ages[nodes_to_slide[1]] - time
         node_name <- node_ages$elements[nodes_to_slide[1]]
         ## slide it!
-        tree <- slide.nodes(node_name, tree, slide = sliding_value, allow.negative = TRUE)
+        tree <- slide.nodes(node_name, tree, slide = sliding_value, allow.negative.root = TRUE)
         ## Update the root time
         new_ages <- tree.age(tree)$ages
         tree$root.time <- max(new_ages) + (younger - min(new_ages))
