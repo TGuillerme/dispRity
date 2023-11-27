@@ -86,124 +86,13 @@ remove.zero.brlen <- function(tree, slide, verbose = FALSE) {
     ## Check if they connect to a tip
     if(any(connect_to_tip <- root_edges[,2] <= Ntip(tree))) {
         ## Check if that branch length is zero
-        if(tree_bkp$edge.length[bad_edge <- which(root_edges[connect_to_tip,1] == tree_bkp$edge[,1])[connect_to_tip]] == 0) {
+        if(tree_bkp$edge.length[bad_edge <- which(root_edges[connect_to_tip,1] == tree_bkp$edge[,1])[connect_to_tip]] <= 0) {
                 stop(paste0("The root of the tree is connecting to a tip with a zero branch length: neither can be slid. You can try moving the tip manually by assigning a value to the following edge:\n    ", as.expression(match_call$tree), "$edge.length[",bad_edge ,"] <- your_value"))
         }
     }
 
     ## Verbose
     check.class(verbose, "logical")
-
-    ## Sliding one node randomly
-    slide.one.node <- function(node_pair, tree, slide) {
-        ## Select a direction
-        if(any(is.na(node_pair))) {
-            ## For the direction
-            if(is.na(node_pair)[2]) {
-                direction <- 1
-            } else {
-                direction <- 2
-            }
-        } else {
-            ## Is it a negative edge?
-            edge <- which((tree$edge[,1] == node_pair[1]) & (tree$edge[,2] == node_pair[2]))
-            if(tree$edge.length[edge] < 0) {
-                ## Go to the right
-                direction <- 2
-                ## Slide is bigger
-                slide <- slide - tree$edge.length[edge]
-            } else {
-                ## Get a random direction
-                direction <- sample(c(1, 2), 1)
-            }
-        }
-
-        ## Slide the node
-        tree_slided <- slide.nodes.internal(tree, node_pair[direction], ifelse(direction == 1, -slide, slide), allow.negative.root = FALSE)
-
-        ## Try reversing the slide
-        if(is.null(tree_slided) && !any(is.na(node_pair))) {
-            tree_slided <- slide.nodes.internal(tree, node_pair[-direction], ifelse(direction == 1, slide, -slide), allow.negative.root = FALSE)
-        }
-        return(tree_slided)
-    }
-
-    ## Recursive fun
-    recursive.remove.zero.brlen <- function(tree, slide, max.it, verbose, zero_brlen_tracker) {
-
-        ## Get the zero branch length
-        zero_brlen <- which(tree$edge.length <= 0)
-
-        ## Get the zero nodes
-        zero_nodes <- unique(c(tree$edge[(1:nrow(tree$edge) %in% zero_brlen), 1], tree$edge[(1:nrow(tree$edge) %in% zero_brlen), 2]))
-
-        ## Get the zero nodes surrounding a zero edge
-        zero_nodes <- c(tree$edge[,1] %in% zero_nodes & tree$edge[,2] %in% zero_nodes & 1:nrow(tree$edge) %in% zero_brlen)
-
-        ## Get the node pairs
-        node_pairs <- tree$edge[zero_nodes, , drop = FALSE]
-
-        ## Replace tips by NAs (no sliding them!)
-        node_pairs <- ifelse(node_pairs <= Ntip(tree), NA, node_pairs)
-
-        ## Replace root by NAs (no sliding them)
-        node_pairs <- ifelse(node_pairs == (Ntip(tree) + 1), NA, node_pairs)
-
-        ## Counter for avoiding infinite loops
-        n_pairs <- nrow(node_pairs)
-        counter <- 0
-
-        ## Sliding down all the way
-        while(counter != n_pairs) {
-            ## Slide one node
-            tree_test <- slide.one.node(node_pairs[1,], tree, slide)
-
-            ## If unsuccessful slide, come to that node again
-            if(is.null(tree_test)) {
-                ## Move the pair of nodes at the end
-                node_pairs <- rbind(node_pairs, node_pairs[1,])
-            } else {
-                tree <- tree_test
-            }
-            
-            ## Verbose
-            if(verbose) cat(".")
-
-            ## Increment the counter
-            counter <- counter + 1
-
-            ## Remove pair of nodes
-            node_pairs <- node_pairs[-1, , drop = FALSE]
-        }
-
-        ## Recalculate the branch lengths
-        zero_brlen_tracker <- list("current" = which(tree$edge.length == 0), "previous" = zero_brlen_tracker$current, "multiplier" = zero_brlen_tracker$multiplier)
-        
-        if(length(zero_brlen_tracker$current) == 0) {
-        
-            return(tree)
-        
-        } else {
-
-            ## Check if the current number of zeros is the same as previous ones
-            if(length(zero_brlen_tracker$current) == length(zero_brlen_tracker$previous)) {
-                ## Divide the sliding by two and add a multiplier
-                slide <- slide/2
-                zero_brlen_tracker$multiplier <- 2
-            } else {
-                ## Check if the slider was divided last time
-                if(!is.null(zero_brlen_tracker$multiplier)) {
-                    ## Re-multiply the slider
-                    slide <- slide * 2
-                    zero_brlen_tracker$multiplier <- NULL
-                }
-            }
-
-            ## Recursively rerun the algorithm
-            return(recursive.remove.zero.brlen(tree, slide, max.it, verbose, zero_brlen_tracker))
-        }
-    }
-
  
     ## Verbose
     if(verbose) cat(paste0("Changing ", length(which(tree$edge.length <= 0)), " branch lengths:"))
@@ -211,13 +100,132 @@ remove.zero.brlen <- function(tree, slide, verbose = FALSE) {
     ## Initialising the tracker
     zero_brlen_tracker <- list("current" = which(tree$edge.length <= 0))
     ## Placeholder for a max.it option
-    max.it <- 1000000
+    max.it <- 1000
+    max.recurse <- 10
+    recurse <- 1
 
     ## Remove zeros and negatives
     tree <- recursive.remove.zero.brlen(tree, slide, max.it, verbose, zero_brlen_tracker)
+
+    while(any(tree$edge.length) <= 0 && recurse != max.recurse) {
+        ## Try again!
+        if(verbose) cat(paste0("\nChanging ", length(which(tree$edge.length <= 0)), " branch lengths:"))
+        zero_brlen_tracker <- list("current" = which(tree$edge.length <= 0))
+        tree <- recursive.remove.zero.brlen(tree, slide, max.it, verbose, zero_brlen_tracker)
+        recurse <- recurse + 1
+    }
 
     if(verbose) cat("Done.")
 
     return(tree)
 }
 
+## Internal: sliding one node randomly
+slide.one.node <- function(node_pair, tree, slide) {
+    ## Select a direction
+    if(any(is.na(node_pair))) {
+        ## For the direction
+        if(is.na(node_pair)[2]) {
+            direction <- 1
+        } else {
+            direction <- 2
+        }
+    } else {
+        ## Is it a negative edge?
+        edge <- which((tree$edge[,1] == node_pair[1]) & (tree$edge[,2] == node_pair[2]))
+        if(tree$edge.length[edge] < 0) {
+            ## Go to the right
+            direction <- 2
+            ## Slide is bigger
+            slide <- slide - tree$edge.length[edge]
+        } else {
+            ## Get a random direction
+            direction <- sample(c(1, 2), 1)
+        }
+    }
+
+    ## Slide the node
+    tree_slided <- slide.nodes.internal(tree, node_pair[direction], ifelse(direction == 1, -slide, slide), allow.negative.root = FALSE)
+
+    ## Try reversing the slide
+    if(is.null(tree_slided) && !any(is.na(node_pair))) {
+        tree_slided <- slide.nodes.internal(tree, node_pair[-direction], ifelse(direction == 1, slide, -slide), allow.negative.root = FALSE)
+    }
+    return(tree_slided)
+}
+
+## Internal: recursive fun
+recursive.remove.zero.brlen <- function(tree, slide, max.it, verbose, zero_brlen_tracker) {
+
+    ## Get the zero branch length
+    zero_brlen <- which(tree$edge.length <= 0)
+
+    ## Get the zero nodes
+    zero_nodes <- unique(c(tree$edge[(1:nrow(tree$edge) %in% zero_brlen), 1], tree$edge[(1:nrow(tree$edge) %in% zero_brlen), 2]))
+
+    ## Get the zero nodes surrounding a zero edge
+    zero_nodes <- c(tree$edge[,1] %in% zero_nodes & tree$edge[,2] %in% zero_nodes & 1:nrow(tree$edge) %in% zero_brlen)
+
+    ## Get the node pairs
+    node_pairs <- tree$edge[zero_nodes, , drop = FALSE]
+
+    ## Replace tips by NAs (no sliding them!)
+    node_pairs <- ifelse(node_pairs <= Ntip(tree), NA, node_pairs)
+
+    ## Replace root by NAs (no sliding them)
+    node_pairs <- ifelse(node_pairs == (Ntip(tree) + 1), NA, node_pairs)
+
+    ## Counter for avoiding infinite loops
+    n_pairs <- nrow(node_pairs)
+    counter <- 0
+
+    ## Sliding down all the way
+    while(counter != n_pairs) {
+        ## Slide one node
+        tree_test <- slide.one.node(node_pairs[1,], tree, slide)
+
+        ## If unsuccessful slide, come to that node again
+        if(is.null(tree_test)) {
+            ## Move the pair of nodes at the end
+            node_pairs <- rbind(node_pairs, node_pairs[1,])
+        } else {
+            tree <- tree_test
+        }
+        
+        ## Verbose
+        if(verbose) cat(".")
+
+        ## Increment the counter
+        counter <- counter + 1
+
+        ## Remove pair of nodes
+        node_pairs <- node_pairs[-1, , drop = FALSE]
+    }
+
+    ## Recalculate the branch lengths
+    zero_brlen_tracker <- list("current" = which(tree$edge.length <= 0), "previous" = zero_brlen_tracker$current, "multiplier" = zero_brlen_tracker$multiplier)
+    
+    if(length(zero_brlen_tracker$current) == 0) {
+    
+        return(tree)
+    
+    } else {
+
+        ## Check if the current number of zeros is the same as previous ones
+        if(length(zero_brlen_tracker$current) == length(zero_brlen_tracker$previous)) {
+            ## Divide the sliding by two and add a multiplier
+            slide <- slide/2
+            zero_brlen_tracker$multiplier <- 2
+        } else {
+            ## Check if the slider was divided last time
+            if(!is.null(zero_brlen_tracker$multiplier)) {
+                ## Re-multiply the slider
+                slide <- slide * 2
+                zero_brlen_tracker$multiplier <- NULL
+            }
+        }
+
+        ## Recursively rerun the algorithm
+        return(recursive.remove.zero.brlen(tree, slide, max.it, verbose, zero_brlen_tracker))
+    }
+}

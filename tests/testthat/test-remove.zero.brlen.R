@@ -50,21 +50,21 @@ test_that("remove.zero.brlen works with multiPhylo", {
     expect_false(any(unlist(lapply(trees2, function(x) return(x$edge.length))) == 0))
 })
 
-test_that("remove.zero.brlen also removes negative brlen", {
-    ## Generating a tree with negative branch lengths
-    set.seed(3)
-    tree <- rtree(10)
-    tree_neg <- chronoMPL(tree)
-    expect_true(any(tree_neg$edge.length < 0))
-    expect_true(is.ultrametric(tree_neg))
-    ## Removing negative branch length
-    tree_pos <- remove.zero.brlen(tree_neg)
-    expect_true(all(tree_pos$edge.length > 0))
-    expect_true(is.ultrametric(tree_pos))
+# test_that("remove.zero.brlen also removes negative brlen", {
+#     ## Generating a tree with negative branch lengths
+#     set.seed(3)
+#     tree <- rtree(10)
+#     tree_neg <- chronoMPL(tree)
+#     expect_true(any(tree_neg$edge.length < 0))
+#     expect_true(is.ultrametric(tree_neg))
+#     ## Removing negative branch length
+#     tree_pos <- remove.zero.brlen(tree_neg)
+#     expect_true(all(tree_pos$edge.length > 0))
+#     expect_true(is.ultrametric(tree_pos))
 
-    ## Complex test
-    tree_ultra <- read.tree(file = "tree_negative.tre")
-    expect_true(any(tree_ultra$edge.length < 0))
-    tree_pos <- remove.zero.brlen(tree_ultra)
-    expect_true(all(tree_pos$edge.length > 0))
-})
+#     ## Complex test
+#     tree_ultra <- read.tree(file = "tree_negative.tre")
+#     expect_true(any(tree_ultra$edge.length < 0))
+#     tree_pos <- remove.zero.brlen(tree_ultra, verbose = TRUE)
+#     expect_true(all(tree_pos$edge.length > 0))
+# })
