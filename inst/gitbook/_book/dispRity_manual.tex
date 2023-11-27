@@ -111,9 +111,9 @@
 \usepackage[]{natbib}
 \bibliographystyle{plainnat}
 
-\title{Morphometric geometric demo: a between group analysis}
+\title{dispRity R package manual}
 \author{Thomas Guillerme (\href{mailto:guillert@tcd.ie}{\nolinkurl{guillert@tcd.ie}})}
-\date{2023-11-17}
+\date{2023-11-27}
 
 \begin{document}
 \maketitle
@@ -2855,7 +2855,7 @@ This is what it looks for example for three simulated variance-covariance matric
 ## snapshots
 \end{verbatim}
 
-\includegraphics[width=4in]{../../../../../../tmp/Rtmp6C3iUu/file816455ec2467}
+\includegraphics[width=4in]{../../../../../../tmp/Rtmpuiaze8/filec359325be61c}
 
 \begin{verbatim}
 ## Warning in snapshot3d(scene = x, width = width, height = height): webshot =
@@ -2868,7 +2868,7 @@ This is what it looks for example for three simulated variance-covariance matric
 ## snapshots
 \end{verbatim}
 
-\includegraphics[width=4in]{../../../../../../tmp/Rtmp6C3iUu/file816458aa584d}
+\includegraphics[width=4in]{../../../../../../tmp/Rtmpuiaze8/filec359298b50a4}
 
 \begin{verbatim}
 ## Warning in snapshot3d(scene = x, width = width, height = height): webshot =
@@ -2881,7 +2881,7 @@ This is what it looks for example for three simulated variance-covariance matric
 ## snapshots
 \end{verbatim}
 
-\includegraphics[width=4in]{../../../../../../tmp/Rtmp6C3iUu/file816424b322fc}
+\includegraphics[width=4in]{../../../../../../tmp/Rtmpuiaze8/filec3592145bcd7}
 \includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-69-1.pdf}
 
 \hypertarget{betweengroupmetricslist}{%
@@ -7624,6 +7624,93 @@ These functions allow to manipulate the potential tree components of \texttt{dis
 \end{Highlighting}
 \end{Shaded}
 
+Note that \texttt{get.tree} can also be used to extract trees from different subsets (custom or continuous/discrete subsets).
+
+For example, if we have three time bins like in the example below we have three time bins and we can extract the subtrees for these three time bins in different ways using the option \texttt{subsets} and \texttt{to.root}:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#\# Load the Beck \& Lee 2014 data}
+\KeywordTok{data}\NormalTok{(BeckLee\_tree) ; }\KeywordTok{data}\NormalTok{(BeckLee\_mat99) ; }\KeywordTok{data}\NormalTok{(BeckLee\_ages)}
+
+\CommentTok{\#\# Time binning (discrete method)}
+\CommentTok{\#\# Generate two discrete time bins from 120 to 40 Ma every 20 Ma}
+\NormalTok{time\_bins \textless{}{-}}\StringTok{ }\KeywordTok{chrono.subsets}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ BeckLee\_mat99, }\DataTypeTok{tree =}\NormalTok{ BeckLee\_tree,}
+                            \DataTypeTok{method =} \StringTok{"discrete"}\NormalTok{, }\DataTypeTok{time =} \KeywordTok{c}\NormalTok{(}\DecValTok{120}\NormalTok{, }\DecValTok{100}\NormalTok{, }\DecValTok{80}\NormalTok{, }\DecValTok{60}\NormalTok{),}
+                            \DataTypeTok{inc.nodes =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{FADLAD =}\NormalTok{ BeckLee\_ages)}
+
+\CommentTok{\#\# Getting the subtrees all the way to the root}
+\NormalTok{root\_subsets \textless{}{-}}\StringTok{ }\KeywordTok{get.tree}\NormalTok{(time\_bins, }\DataTypeTok{subsets =} \OtherTok{TRUE}\NormalTok{)}
+
+\CommentTok{\#\# Plotting the bin contents}
+\NormalTok{old\_par \textless{}{-}}\StringTok{ }\KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow =} \KeywordTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+\KeywordTok{plot}\NormalTok{(BeckLee\_tree, }\DataTypeTok{main =} \StringTok{"original tree"}\NormalTok{, }\DataTypeTok{show.tip.label =} \OtherTok{FALSE}\NormalTok{)}
+\KeywordTok{axisPhylo}\NormalTok{()}
+\KeywordTok{abline}\NormalTok{(}\DataTypeTok{v =}\NormalTok{ BeckLee\_tree}\OperatorTok{$}\NormalTok{root.time }\OperatorTok{{-}}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{120}\NormalTok{, }\DecValTok{100}\NormalTok{, }\DecValTok{80}\NormalTok{, }\DecValTok{60}\NormalTok{))}
+\ControlFlowTok{for}\NormalTok{(i }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\DecValTok{3}\NormalTok{) \{}
+     \KeywordTok{plot}\NormalTok{(root\_subsets[[i]], }\DataTypeTok{main =} \KeywordTok{names}\NormalTok{(root\_subsets)[i],}
+          \DataTypeTok{show.tip.label =} \OtherTok{FALSE}\NormalTok{)}
+     \KeywordTok{axisPhylo}\NormalTok{()}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-202-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{par}\NormalTok{(old\_par)}
+\end{Highlighting}
+\end{Shaded}
+
+But we can also extract the subtrees containing only branch lengths for the actual bins using \texttt{to.root\ =\ FALSE}:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#\# Getting the subtrees all the way to the root}
+\NormalTok{bin\_subsets \textless{}{-}}\StringTok{ }\KeywordTok{get.tree}\NormalTok{(time\_bins, }\DataTypeTok{subsets =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{to.root =} \OtherTok{FALSE}\NormalTok{)}
+
+\CommentTok{\#\# Plotting the bin contents}
+\NormalTok{old\_par \textless{}{-}}\StringTok{ }\KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow =} \KeywordTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+\KeywordTok{plot}\NormalTok{(BeckLee\_tree, }\DataTypeTok{main =} \StringTok{"original tree"}\NormalTok{, }\DataTypeTok{show.tip.label =} \OtherTok{FALSE}\NormalTok{)}
+\KeywordTok{axisPhylo}\NormalTok{()}
+\KeywordTok{abline}\NormalTok{(}\DataTypeTok{v =}\NormalTok{ BeckLee\_tree}\OperatorTok{$}\NormalTok{root.time }\OperatorTok{{-}}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{120}\NormalTok{, }\DecValTok{100}\NormalTok{, }\DecValTok{80}\NormalTok{, }\DecValTok{60}\NormalTok{))}
+\ControlFlowTok{for}\NormalTok{(i }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\DecValTok{3}\NormalTok{) \{}
+     \KeywordTok{plot}\NormalTok{(bin\_subsets[[i]], }\DataTypeTok{main =} \KeywordTok{names}\NormalTok{(bin\_subsets)[i],}
+          \DataTypeTok{show.tip.label =} \OtherTok{FALSE}\NormalTok{)}
+     \KeywordTok{axisPhylo}\NormalTok{()}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-203-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{par}\NormalTok{(old\_par)}
+\end{Highlighting}
+\end{Shaded}
+
+This can be useful for example for calculating the branch lengths in each bin:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#\# How many cumulated phylogenetic diversity in each bin?}
+\KeywordTok{lapply}\NormalTok{(bin\_subsets, }\ControlFlowTok{function}\NormalTok{(tree) }\KeywordTok{sum}\NormalTok{(tree}\OperatorTok{$}\NormalTok{edge.length))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## $`120 - 100`
+## [1] 189.2799
+## 
+## $`100 - 80`
+## [1] 341.7199
+## 
+## $`80 - 60`
+## [1] 426.7493
+\end{verbatim}
+
 \hypertarget{disprity-object}{%
 \section{\texorpdfstring{The \texttt{dispRity} object content}{The dispRity object content}}\label{disprity-object}}
 
@@ -7851,7 +7938,7 @@ A classical way to represent this ordinated data would be to use two dimensional
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-205-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-208-1.pdf}
 
 This shows the distribution of the different species in the petal-space along the two first axis of variation.
 This is a pretty standard way to visualise the multidimensional space and further analysis might be necessary to test wether the groups are different such as a linear discriminant analysis (LDA).
@@ -7867,7 +7954,7 @@ If we look at the two other axis we see a totally different result:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-206-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-209-1.pdf}
 
 Additionally, these two represented dimensions do not represent a biological reality \emph{per se}; i.e.~the values on the first dimension do not represent a continuous trait (e.g.~petal length), instead they just represent the ordinations of correlations between the data and some factors.
 
@@ -7981,7 +8068,7 @@ We can also plot the results in a similar way:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-211-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-214-1.pdf}
 
 Now contrary to simply plotting the two first axis of the PCA where we saw that the species have a different position in the two first petal-space, we can now also see that they occupy this space clearly differently!
 
@@ -8073,7 +8160,7 @@ Using a MCMC permutation test we can simulate a petal-space with specific proper
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-213-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-216-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -8084,7 +8171,7 @@ Using a MCMC permutation test we can simulate a petal-space with specific proper
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-214-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-217-1.pdf}
 
 In both cases we can see that our petal-space is not entirely normal or uniform.
 This is expected because of the simplicity of these parameters.
@@ -8171,7 +8258,7 @@ The ordinated matrix will represent our full morphospace, i.e.~all the mammalian
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-215-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-218-1.pdf}
 
 \begin{quote}
 You can have an even nicer looking tree if you use the \texttt{strap} package!
@@ -8184,7 +8271,7 @@ You can have an even nicer looking tree if you use the \texttt{strap} package!
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-216-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-219-1.pdf}
 
 \hypertarget{setting-up-your-own-data}{%
 \subsection{Setting up your own data}\label{setting-up-your-own-data}}
@@ -8463,7 +8550,7 @@ For example here, let see if the sum of variances picks up changes in size but n
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-223-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-226-1.pdf}
 
 We see that changes in the inner size (see \citet{moms} for more details) is actually picked up by the sum of variances but not random changes or outer changes. Which is a good thing!
 
@@ -8534,7 +8621,7 @@ For that we can use the \texttt{plot} S3 function to plot the \texttt{dispRity} 
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-226-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-229-1.pdf}
 
 Nice. The curves look pretty similar.
 
@@ -8717,7 +8804,7 @@ This automatically generates a \texttt{dispRity} object with the information of 
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-231-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-234-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -8793,7 +8880,7 @@ We can visualise the results using the \texttt{plot} function on the resulting d
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-235-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-238-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -8881,6 +8968,9 @@ We can test it using a simple non-parametric mean difference test (e.g.~\texttt{
 \end{verbatim}
 
 So by applying the tests we see a difference in terms of position between each groups and differences in size between groups but between the species.
+
+\hypertarget{disprity-r-package-manual}{%
+\chapter{dispRity R package manual}\label{disprity-r-package-manual}}
 
 \hypertarget{references}{%
 \chapter{References}\label{references}}

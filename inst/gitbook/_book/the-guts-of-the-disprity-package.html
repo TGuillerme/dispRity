@@ -4,26 +4,26 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>7 The guts of the dispRity package | Morphometric geometric demo: a between group analysis</title>
-  <meta name="description" content="dispRity R package manual" />
+  <title>7 The guts of the dispRity package | dispRity R package manual</title>
+  <meta name="description" content="7 The guts of the dispRity package | dispRity R package manual" />
   <meta name="generator" content="bookdown 0.36 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="7 The guts of the dispRity package | Morphometric geometric demo: a between group analysis" />
+  <meta property="og:title" content="7 The guts of the dispRity package | dispRity R package manual" />
   <meta property="og:type" content="book" />
   
-  <meta property="og:description" content="dispRity R package manual" />
+  <meta property="og:description" content="7 The guts of the dispRity package | dispRity R package manual" />
   <meta name="github-repo" content="TGuillerme/dispRity" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="7 The guts of the dispRity package | Morphometric geometric demo: a between group analysis" />
+  <meta name="twitter:title" content="7 The guts of the dispRity package | dispRity R package manual" />
   
-  <meta name="twitter:description" content="dispRity R package manual" />
+  <meta name="twitter:description" content="7 The guts of the dispRity package | dispRity R package manual" />
   
 
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie)" />
 
 
-<meta name="date" content="2023-11-17" />
+<meta name="date" content="2023-11-27" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -335,8 +335,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="10.2" data-path="morphometric-geometric-demo-a-between-group-analysis.html"><a href="morphometric-geometric-demo-a-between-group-analysis.html#calculating-disparity-2"><i class="fa fa-check"></i><b>10.2</b> Calculating disparity</a></li>
 <li class="chapter" data-level="10.3" data-path="morphometric-geometric-demo-a-between-group-analysis.html"><a href="morphometric-geometric-demo-a-between-group-analysis.html#analyse-the-results"><i class="fa fa-check"></i><b>10.3</b> Analyse the results</a></li>
 </ul></li>
+<li class="chapter" data-level="11" data-path="disprity-r-package-manual.html"><a href="disprity-r-package-manual.html"><i class="fa fa-check"></i><b>11</b> dispRity R package manual</a></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
-<li class="chapter" data-level="11" data-path="references-1.html"><a href="references-1.html"><i class="fa fa-check"></i><b>11</b> References</a></li>
+<li class="chapter" data-level="12" data-path="references-1.html"><a href="references-1.html"><i class="fa fa-check"></i><b>12</b> References</a></li>
 <li class="divider"></li>
 <li><a href="https://github.com/TGuillerme/dispRity/" target="blank">Project GitHub page</a></li>
 
@@ -349,7 +350,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Morphometric geometric demo: a between group analysis</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">dispRity R package manual</a>
           </h1>
         </div>
 
@@ -524,6 +525,59 @@ The matrix can be one of the bootstrapped matrices or/and a rarefied matrix.</p>
 <span id="cb583-6"><a href="the-guts-of-the-disprity-package.html#cb583-6" aria-hidden="true"></a></span>
 <span id="cb583-7"><a href="the-guts-of-the-disprity-package.html#cb583-7" aria-hidden="true"></a><span class="co">## Adding a tree</span></span>
 <span id="cb583-8"><a href="the-guts-of-the-disprity-package.html#cb583-8" aria-hidden="true"></a><span class="kw">add.tree</span>(disparity, <span class="dt">tree =</span> BeckLee_tree)</span></code></pre></div>
+<p>Note that <code>get.tree</code> can also be used to extract trees from different subsets (custom or continuous/discrete subsets).</p>
+<p>For example, if we have three time bins like in the example below we have three time bins and we can extract the subtrees for these three time bins in different ways using the option <code>subsets</code> and <code>to.root</code>:</p>
+<div class="sourceCode" id="cb584"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb584-1"><a href="the-guts-of-the-disprity-package.html#cb584-1" aria-hidden="true"></a><span class="co">## Load the Beck &amp; Lee 2014 data</span></span>
+<span id="cb584-2"><a href="the-guts-of-the-disprity-package.html#cb584-2" aria-hidden="true"></a><span class="kw">data</span>(BeckLee_tree) ; <span class="kw">data</span>(BeckLee_mat99) ; <span class="kw">data</span>(BeckLee_ages)</span>
+<span id="cb584-3"><a href="the-guts-of-the-disprity-package.html#cb584-3" aria-hidden="true"></a></span>
+<span id="cb584-4"><a href="the-guts-of-the-disprity-package.html#cb584-4" aria-hidden="true"></a><span class="co">## Time binning (discrete method)</span></span>
+<span id="cb584-5"><a href="the-guts-of-the-disprity-package.html#cb584-5" aria-hidden="true"></a><span class="co">## Generate two discrete time bins from 120 to 40 Ma every 20 Ma</span></span>
+<span id="cb584-6"><a href="the-guts-of-the-disprity-package.html#cb584-6" aria-hidden="true"></a>time_bins &lt;-<span class="st"> </span><span class="kw">chrono.subsets</span>(<span class="dt">data =</span> BeckLee_mat99, <span class="dt">tree =</span> BeckLee_tree,</span>
+<span id="cb584-7"><a href="the-guts-of-the-disprity-package.html#cb584-7" aria-hidden="true"></a>                            <span class="dt">method =</span> <span class="st">&quot;discrete&quot;</span>, <span class="dt">time =</span> <span class="kw">c</span>(<span class="dv">120</span>, <span class="dv">100</span>, <span class="dv">80</span>, <span class="dv">60</span>),</span>
+<span id="cb584-8"><a href="the-guts-of-the-disprity-package.html#cb584-8" aria-hidden="true"></a>                            <span class="dt">inc.nodes =</span> <span class="ot">TRUE</span>, <span class="dt">FADLAD =</span> BeckLee_ages)</span>
+<span id="cb584-9"><a href="the-guts-of-the-disprity-package.html#cb584-9" aria-hidden="true"></a></span>
+<span id="cb584-10"><a href="the-guts-of-the-disprity-package.html#cb584-10" aria-hidden="true"></a><span class="co">## Getting the subtrees all the way to the root</span></span>
+<span id="cb584-11"><a href="the-guts-of-the-disprity-package.html#cb584-11" aria-hidden="true"></a>root_subsets &lt;-<span class="st"> </span><span class="kw">get.tree</span>(time_bins, <span class="dt">subsets =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb584-12"><a href="the-guts-of-the-disprity-package.html#cb584-12" aria-hidden="true"></a></span>
+<span id="cb584-13"><a href="the-guts-of-the-disprity-package.html#cb584-13" aria-hidden="true"></a><span class="co">## Plotting the bin contents</span></span>
+<span id="cb584-14"><a href="the-guts-of-the-disprity-package.html#cb584-14" aria-hidden="true"></a>old_par &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">2</span>))</span>
+<span id="cb584-15"><a href="the-guts-of-the-disprity-package.html#cb584-15" aria-hidden="true"></a><span class="kw">plot</span>(BeckLee_tree, <span class="dt">main =</span> <span class="st">&quot;original tree&quot;</span>, <span class="dt">show.tip.label =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb584-16"><a href="the-guts-of-the-disprity-package.html#cb584-16" aria-hidden="true"></a><span class="kw">axisPhylo</span>()</span>
+<span id="cb584-17"><a href="the-guts-of-the-disprity-package.html#cb584-17" aria-hidden="true"></a><span class="kw">abline</span>(<span class="dt">v =</span> BeckLee_tree<span class="op">$</span>root.time <span class="op">-</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">120</span>, <span class="dv">100</span>, <span class="dv">80</span>, <span class="dv">60</span>))</span>
+<span id="cb584-18"><a href="the-guts-of-the-disprity-package.html#cb584-18" aria-hidden="true"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>) {</span>
+<span id="cb584-19"><a href="the-guts-of-the-disprity-package.html#cb584-19" aria-hidden="true"></a>     <span class="kw">plot</span>(root_subsets[[i]], <span class="dt">main =</span> <span class="kw">names</span>(root_subsets)[i],</span>
+<span id="cb584-20"><a href="the-guts-of-the-disprity-package.html#cb584-20" aria-hidden="true"></a>          <span class="dt">show.tip.label =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb584-21"><a href="the-guts-of-the-disprity-package.html#cb584-21" aria-hidden="true"></a>     <span class="kw">axisPhylo</span>()</span>
+<span id="cb584-22"><a href="the-guts-of-the-disprity-package.html#cb584-22" aria-hidden="true"></a>}</span></code></pre></div>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-202-1.png" width="672" /></p>
+<div class="sourceCode" id="cb585"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb585-1"><a href="the-guts-of-the-disprity-package.html#cb585-1" aria-hidden="true"></a><span class="kw">par</span>(old_par)</span></code></pre></div>
+<p>But we can also extract the subtrees containing only branch lengths for the actual bins using <code>to.root = FALSE</code>:</p>
+<div class="sourceCode" id="cb586"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb586-1"><a href="the-guts-of-the-disprity-package.html#cb586-1" aria-hidden="true"></a><span class="co">## Getting the subtrees all the way to the root</span></span>
+<span id="cb586-2"><a href="the-guts-of-the-disprity-package.html#cb586-2" aria-hidden="true"></a>bin_subsets &lt;-<span class="st"> </span><span class="kw">get.tree</span>(time_bins, <span class="dt">subsets =</span> <span class="ot">TRUE</span>, <span class="dt">to.root =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb586-3"><a href="the-guts-of-the-disprity-package.html#cb586-3" aria-hidden="true"></a></span>
+<span id="cb586-4"><a href="the-guts-of-the-disprity-package.html#cb586-4" aria-hidden="true"></a><span class="co">## Plotting the bin contents</span></span>
+<span id="cb586-5"><a href="the-guts-of-the-disprity-package.html#cb586-5" aria-hidden="true"></a>old_par &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">2</span>))</span>
+<span id="cb586-6"><a href="the-guts-of-the-disprity-package.html#cb586-6" aria-hidden="true"></a><span class="kw">plot</span>(BeckLee_tree, <span class="dt">main =</span> <span class="st">&quot;original tree&quot;</span>, <span class="dt">show.tip.label =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb586-7"><a href="the-guts-of-the-disprity-package.html#cb586-7" aria-hidden="true"></a><span class="kw">axisPhylo</span>()</span>
+<span id="cb586-8"><a href="the-guts-of-the-disprity-package.html#cb586-8" aria-hidden="true"></a><span class="kw">abline</span>(<span class="dt">v =</span> BeckLee_tree<span class="op">$</span>root.time <span class="op">-</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">120</span>, <span class="dv">100</span>, <span class="dv">80</span>, <span class="dv">60</span>))</span>
+<span id="cb586-9"><a href="the-guts-of-the-disprity-package.html#cb586-9" aria-hidden="true"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>) {</span>
+<span id="cb586-10"><a href="the-guts-of-the-disprity-package.html#cb586-10" aria-hidden="true"></a>     <span class="kw">plot</span>(bin_subsets[[i]], <span class="dt">main =</span> <span class="kw">names</span>(bin_subsets)[i],</span>
+<span id="cb586-11"><a href="the-guts-of-the-disprity-package.html#cb586-11" aria-hidden="true"></a>          <span class="dt">show.tip.label =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb586-12"><a href="the-guts-of-the-disprity-package.html#cb586-12" aria-hidden="true"></a>     <span class="kw">axisPhylo</span>()</span>
+<span id="cb586-13"><a href="the-guts-of-the-disprity-package.html#cb586-13" aria-hidden="true"></a>}</span></code></pre></div>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-203-1.png" width="672" /></p>
+<div class="sourceCode" id="cb587"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb587-1"><a href="the-guts-of-the-disprity-package.html#cb587-1" aria-hidden="true"></a><span class="kw">par</span>(old_par)</span></code></pre></div>
+<p>This can be useful for example for calculating the branch lengths in each bin:</p>
+<div class="sourceCode" id="cb588"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb588-1"><a href="the-guts-of-the-disprity-package.html#cb588-1" aria-hidden="true"></a><span class="co">## How many cumulated phylogenetic diversity in each bin?</span></span>
+<span id="cb588-2"><a href="the-guts-of-the-disprity-package.html#cb588-2" aria-hidden="true"></a><span class="kw">lapply</span>(bin_subsets, <span class="cf">function</span>(tree) <span class="kw">sum</span>(tree<span class="op">$</span>edge.length))</span></code></pre></div>
+<pre><code>## $`120 - 100`
+## [1] 189.2799
+## 
+## $`100 - 80`
+## [1] 341.7199
+## 
+## $`80 - 60`
+## [1] 426.7493</code></pre>
 </div>
 </div>
 </div>

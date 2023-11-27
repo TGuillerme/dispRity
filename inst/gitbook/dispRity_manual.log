@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999993 (TeX Live 2022/dev/Debian) (preloaded format=xelatex 2023.11.17)  17 NOV 2023 13:52
+This is XeTeX, Version 3.141592653-2.6-0.999993 (TeX Live 2022/dev/Debian) (preloaded format=xelatex 2023.11.17)  27 NOV 2023 16:49
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1487,9 +1487,9 @@ Overfull \hbox (85.5pt too wide) in paragraph at lines 2856--2856
  rgl does not support[] 
  []
 
-File: ../../../../../../tmp/Rtmp6C3iUu/file816455ec2467.png Graphic file (type 
+File: ../../../../../../tmp/Rtmpuiaze8/filec359325be61c.png Graphic file (type 
 bmp)
-<../../../../../../tmp/Rtmp6C3iUu/file816455ec2467.png>
+<../../../../../../tmp/Rtmpuiaze8/filec359325be61c.png>
 
 Overfull \hbox (64.5pt too wide) in paragraph at lines 2864--2864
 []\TU/lmtt/m/n/10 ## Warning in snapshot3d(scene = x, width = width, height = h
@@ -1508,9 +1508,9 @@ Overfull \hbox (85.5pt too wide) in paragraph at lines 2869--2869
  rgl does not support[] 
  []
 
-File: ../../../../../../tmp/Rtmp6C3iUu/file816458aa584d.png Graphic file (type 
+File: ../../../../../../tmp/Rtmpuiaze8/filec359298b50a4.png Graphic file (type 
 bmp)
-<../../../../../../tmp/Rtmp6C3iUu/file816458aa584d.png>
+<../../../../../../tmp/Rtmpuiaze8/filec359298b50a4.png>
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
@@ -1532,9 +1532,9 @@ Overfull \hbox (85.5pt too wide) in paragraph at lines 2882--2882
  rgl does not support[] 
  []
 
-File: ../../../../../../tmp/Rtmp6C3iUu/file816424b322fc.png Graphic file (type 
+File: ../../../../../../tmp/Rtmpuiaze8/filec3592145bcd7.png Graphic file (type 
 bmp)
-<../../../../../../tmp/Rtmp6C3iUu/file816424b322fc.png>
+<../../../../../../tmp/Rtmpuiaze8/filec3592145bcd7.png>
 File: dispRity_manual_files/figure-latex/unnamed-chunk-69-1.pdf Graphic file (t
 ype pdf)
 <use dispRity_manual_files/figure-latex/unnamed-chunk-69-1.pdf>
@@ -3039,68 +3039,79 @@ Overfull \hbox (1.5pt too wide) in paragraph at lines 7477--7477
 3 ...[] 
  []
 
-[169] [170] [171] [172] [173] [174]
-Chapter 8.
-[175
+[169] [170] [171]
+File: dispRity_manual_files/figure-latex/unnamed-chunk-202-1.pdf Graphic file (
+type pdf)
+<use dispRity_manual_files/figure-latex/unnamed-chunk-202-1.pdf>
+
+Underfull \vbox (badness 5217) has occurred while \output is active []
+
+[172]
+File: dispRity_manual_files/figure-latex/unnamed-chunk-203-1.pdf Graphic file (
+type pdf)
+<use dispRity_manual_files/figure-latex/unnamed-chunk-203-1.pdf>
+[173] [174] [175] [176] [177] [178
 
 ]
-File: dispRity_manual_files/figure-latex/unnamed-chunk-205-1.pdf Graphic file (
-type pdf)
-<use dispRity_manual_files/figure-latex/unnamed-chunk-205-1.pdf>
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-[176]
-File: dispRity_manual_files/figure-latex/unnamed-chunk-206-1.pdf Graphic file (
-type pdf)
-<use dispRity_manual_files/figure-latex/unnamed-chunk-206-1.pdf>
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-[177]
-Overfull \vbox (1.76578pt too high) detected at line 7893
- []
-
-[178]
-Overfull \hbox (38.25pt too wide) in paragraph at lines 7921--7921
-[]\TU/lmtt/m/n/10 ## 3 customised subsets for 150 elements in one matrix with 4
- dimensions:[] 
- []
-
-
-Overfull \hbox (38.25pt too wide) in paragraph at lines 7948--7948
-[]\TU/lmtt/m/n/10 ## 3 customised subsets for 150 elements in one matrix with 4
- dimensions:[] 
- []
-
+Chapter 8.
 [179]
-File: dispRity_manual_files/figure-latex/unnamed-chunk-211-1.pdf Graphic file (
+File: dispRity_manual_files/figure-latex/unnamed-chunk-208-1.pdf Graphic file (
 type pdf)
-<use dispRity_manual_files/figure-latex/unnamed-chunk-211-1.pdf>
+<use dispRity_manual_files/figure-latex/unnamed-chunk-208-1.pdf>
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 [180]
-Overfull \hbox (489.75pt too wide) in paragraph at lines 8003--8003
+File: dispRity_manual_files/figure-latex/unnamed-chunk-209-1.pdf Graphic file (
+type pdf)
+<use dispRity_manual_files/figure-latex/unnamed-chunk-209-1.pdf>
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+[181]
+Overfull \vbox (1.76578pt too high) detected at line 7980
+ []
+
+[182]
+Overfull \hbox (38.25pt too wide) in paragraph at lines 8008--8008
+[]\TU/lmtt/m/n/10 ## 3 customised subsets for 150 elements in one matrix with 4
+ dimensions:[] 
+ []
+
+
+Overfull \hbox (38.25pt too wide) in paragraph at lines 8035--8035
+[]\TU/lmtt/m/n/10 ## 3 customised subsets for 150 elements in one matrix with 4
+ dimensions:[] 
+ []
+
+[183]
+File: dispRity_manual_files/figure-latex/unnamed-chunk-214-1.pdf Graphic file (
+type pdf)
+<use dispRity_manual_files/figure-latex/unnamed-chunk-214-1.pdf>
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+[184]
+Overfull \hbox (489.75pt too wide) in paragraph at lines 8090--8090
 []\TU/lmtt/m/n/10 ## Warning in test.dispRity(petal_disparity, test = adonis.di
 spRity): adonis.dispRity test will be applied to the data matrix, not to the ca
 lculated disparity.[] 
  []
 
 
-Overfull \hbox (195.75pt too wide) in paragraph at lines 8009--8009
+Overfull \hbox (195.75pt too wide) in paragraph at lines 8096--8096
 []\TU/lmtt/m/n/10 ## Warning in adonis.dispRity(data, ...): The input data for 
 adonis.dispRity was not a distance matrix.[] 
  []
 
 
-Overfull \hbox (190.5pt too wide) in paragraph at lines 8009--8009
+Overfull \hbox (190.5pt too wide) in paragraph at lines 8096--8096
 []\TU/lmtt/m/n/10 ## The results are thus based on the distance matrix for the 
 input data (i.e. dist(data$matrix[[1]])).[] 
  []
 
-[181]
-Overfull \hbox (27.75pt too wide) in paragraph at lines 8024--8024
+[185]
+Overfull \hbox (27.75pt too wide) in paragraph at lines 8111--8111
 []\TU/lmtt/m/n/10 ## vegan::adonis2(formula = dist(matrix) ~ group, method = "e
 uclidean")[] 
  []
@@ -3108,154 +3119,91 @@ uclidean")[]
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
-[182]
-File: dispRity_manual_files/figure-latex/unnamed-chunk-213-1.pdf Graphic file (
+[186]
+File: dispRity_manual_files/figure-latex/unnamed-chunk-216-1.pdf Graphic file (
 type pdf)
-<use dispRity_manual_files/figure-latex/unnamed-chunk-213-1.pdf>
-File: dispRity_manual_files/figure-latex/unnamed-chunk-214-1.pdf Graphic file (
+<use dispRity_manual_files/figure-latex/unnamed-chunk-216-1.pdf>
+File: dispRity_manual_files/figure-latex/unnamed-chunk-217-1.pdf Graphic file (
 type pdf)
-<use dispRity_manual_files/figure-latex/unnamed-chunk-214-1.pdf>
+<use dispRity_manual_files/figure-latex/unnamed-chunk-217-1.pdf>
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
-[183] [184]
+[187] [188]
 Chapter 9.
-[185
+[189
 
 ]
-Overfull \hbox (38.25pt too wide) in paragraph at lines 8133--8133
+Overfull \hbox (38.25pt too wide) in paragraph at lines 8220--8220
 []\TU/lmtt/m/n/10 ##                    [,1]        [,2]        [,3]       [,4]
         [,5][] 
  []
 
 
-Overfull \hbox (38.25pt too wide) in paragraph at lines 8133--8133
+Overfull \hbox (38.25pt too wide) in paragraph at lines 8220--8220
 []\TU/lmtt/m/n/10 ## Cimolestes   -0.5613001  0.06006259  0.08414761 -0.2313084
  -0.18825039[] 
  []
 
 
-Overfull \hbox (38.25pt too wide) in paragraph at lines 8133--8133
+Overfull \hbox (38.25pt too wide) in paragraph at lines 8220--8220
 []\TU/lmtt/m/n/10 ## Maelestes    -0.4186019 -0.12186005  0.25556379  0.2737995
  -0.28510479[] 
  []
 
 
-Overfull \hbox (38.25pt too wide) in paragraph at lines 8133--8133
+Overfull \hbox (38.25pt too wide) in paragraph at lines 8220--8220
 []\TU/lmtt/m/n/10 ## Batodon      -0.8337640  0.28718501 -0.10594610 -0.2381511
  -0.07132646[] 
  []
 
 
-Overfull \hbox (38.25pt too wide) in paragraph at lines 8133--8133
+Overfull \hbox (38.25pt too wide) in paragraph at lines 8220--8220
 []\TU/lmtt/m/n/10 ## Bulaklestes  -0.7708261 -0.07629583  0.04549285 -0.4951160
  -0.39962626[] 
  []
 
 
-Overfull \hbox (38.25pt too wide) in paragraph at lines 8133--8133
+Overfull \hbox (38.25pt too wide) in paragraph at lines 8220--8220
 []\TU/lmtt/m/n/10 ## Daulestes    -0.8320466 -0.09559563  0.04336661 -0.5792351
  -0.37385914[] 
  []
 
 
-Overfull \hbox (38.25pt too wide) in paragraph at lines 8133--8133
+Overfull \hbox (38.25pt too wide) in paragraph at lines 8220--8220
 []\TU/lmtt/m/n/10 ## Uchkudukodon -0.5074468 -0.34273248  0.40410310 -0.1223782
  -0.34857351[] 
  []
 
-File: dispRity_manual_files/figure-latex/unnamed-chunk-215-1.pdf Graphic file (
+File: dispRity_manual_files/figure-latex/unnamed-chunk-218-1.pdf Graphic file (
 type pdf)
-<use dispRity_manual_files/figure-latex/unnamed-chunk-215-1.pdf>
+<use dispRity_manual_files/figure-latex/unnamed-chunk-218-1.pdf>
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
-Overfull \hbox (118.47563pt too wide) has occurred while \output is active
-\TU/lmr/m/n/10 186 \TU/lmr/m/sl/10 CHAPTER 9.  PALAEOBIOLOGY DEMO: DISPARITY-TH
-ROUGH-TIME AND WITHIN GROUPS
- []
-
-[186]
-File: dispRity_manual_files/figure-latex/unnamed-chunk-216-1.pdf Graphic file (
-type pdf)
-<use dispRity_manual_files/figure-latex/unnamed-chunk-216-1.pdf>
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-[187]
-Underfull \hbox (badness 1024) in paragraph at lines 8198--8200
-[]\TU/lmr/m/n/10 You can use any type of morphospace in any dataset form (\TU/l
-mtt/m/n/10 "matrix"\TU/lmr/m/n/10 ,
- []
-
-
-Overfull \hbox (3.03001pt too wide) in paragraph at lines 8222--8224
-[]\TU/lmr/bx/n/10 WARNING: \TU/lmr/m/n/10 the data generated by the functions \
-TU/lmtt/m/n/10 i.need.a.matrix\TU/lmr/m/n/10 ,
- []
-
-
-Overfull \hbox (118.47563pt too wide) has occurred while \output is active
-\TU/lmr/m/n/10 188 \TU/lmr/m/sl/10 CHAPTER 9.  PALAEOBIOLOGY DEMO: DISPARITY-TH
-ROUGH-TIME AND WITHIN GROUPS
- []
-
-[188]
-Underfull \vbox (badness 1102) has occurred while \output is active []
-
-[189]
 Overfull \hbox (118.47563pt too wide) has occurred while \output is active
 \TU/lmr/m/n/10 190 \TU/lmr/m/sl/10 CHAPTER 9.  PALAEOBIOLOGY DEMO: DISPARITY-TH
 ROUGH-TIME AND WITHIN GROUPS
  []
 
 [190]
-Overfull \hbox (1.5pt too wide) in paragraph at lines 8373--8373
-[]\TU/lmtt/m/n/10 ##   ..$ : num [1:50, 1:48] -0.561 -0.419 -0.834 -0.771 -0.83
-2 ...[] 
- []
+File: dispRity_manual_files/figure-latex/unnamed-chunk-219-1.pdf Graphic file (
+type pdf)
+<use dispRity_manual_files/figure-latex/unnamed-chunk-219-1.pdf>
 
-
-Overfull \hbox (75.0pt too wide) in paragraph at lines 8373--8373
-[]\TU/lmtt/m/n/10 ##   .. .. ..$ : chr [1:50] "Cimolestes" "Maelestes" "Batodon
-" "Bulaklestes" ...[] 
- []
-
-
-Overfull \hbox (43.5pt too wide) in paragraph at lines 8373--8373
-[]\TU/lmtt/m/n/10 ##   .. ..$ edge       : int [1:98, 1:2] 51 52 52 53 53 51 54
- 55 56 56 ...[] 
- []
-
-
-Overfull \hbox (148.5pt too wide) in paragraph at lines 8373--8373
-[]\TU/lmtt/m/n/10 ##   .. ..$ tip.label  : chr [1:50] "Daulestes" "Bulaklestes"
- "Uchkudukodon" "Kennalestes" ...[] 
- []
-
-
-Overfull \hbox (12.0pt too wide) in paragraph at lines 8373--8373
-[]\TU/lmtt/m/n/10 ##   .. ..- attr(*, "names")= chr [1:4] "" "trees" "matrices"
- "bind"[] 
- []
-
-
-Overfull \hbox (17.25pt too wide) in paragraph at lines 8373--8373
-[]\TU/lmtt/m/n/10 ##   .. ..$ elements: int [1:13, 1] 41 49 24 25 26 27 28 21 2
-2 19 ...[] 
- []
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
 [191]
-Overfull \hbox (80.25pt too wide) in paragraph at lines 8396--8396
-[]\TU/lmtt/m/n/10 ## 5 discrete time subsets for 50 elements in one matrix with
- 1 phylogenetic tree[] 
+Underfull \hbox (badness 1024) in paragraph at lines 8285--8287
+[]\TU/lmr/m/n/10 You can use any type of morphospace in any dataset form (\TU/l
+mtt/m/n/10 "matrix"\TU/lmr/m/n/10 ,
  []
 
 
-Underfull \hbox (badness 1048) in paragraph at lines 8427--8430
-\TU/lmr/m/n/10 some confidence intervals generated by the pseudoreplication ste
-p above
+Overfull \hbox (3.03001pt too wide) in paragraph at lines 8309--8311
+[]\TU/lmr/bx/n/10 WARNING: \TU/lmr/m/n/10 the data generated by the functions \
+TU/lmtt/m/n/10 i.need.a.matrix\TU/lmr/m/n/10 ,
  []
 
 
@@ -3265,60 +3213,60 @@ ROUGH-TIME AND WITHIN GROUPS
  []
 
 [192]
-Overfull \hbox (80.25pt too wide) in paragraph at lines 8458--8458
-[]\TU/lmtt/m/n/10 ##                  10%  20%  30%  40%  50%  60%  70%  80%  9
-0% 100%        slope[] 
- []
-
-
-Overfull \hbox (80.25pt too wide) in paragraph at lines 8458--8458
-[]\TU/lmtt/m/n/10 ## random          2.41 2.51 2.56 2.50 2.54 2.51 2.52 2.53 2.
-53 2.52 0.0006434981[] 
- []
-
-
-Overfull \hbox (80.25pt too wide) in paragraph at lines 8458--8458
-[]\TU/lmtt/m/n/10 ## size.increase   2.23 2.19 2.25 2.33 2.31 2.35 2.43 2.44 2.
-48 2.52 0.0036071419[] 
- []
-
-
-Overfull \hbox (80.25pt too wide) in paragraph at lines 8458--8458
-[]\TU/lmtt/m/n/10 ## size.hollowness 2.40 2.56 2.56 2.60 2.63 2.64 2.60 2.58 2.
-55 2.52 0.0006032204[] 
- []
-
-File: dispRity_manual_files/figure-latex/unnamed-chunk-223-1.pdf Graphic file (
-type pdf)
-<use dispRity_manual_files/figure-latex/unnamed-chunk-223-1.pdf>
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
+Underfull \vbox (badness 1102) has occurred while \output is active []
 
 [193]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
 Overfull \hbox (118.47563pt too wide) has occurred while \output is active
 \TU/lmr/m/n/10 194 \TU/lmr/m/sl/10 CHAPTER 9.  PALAEOBIOLOGY DEMO: DISPARITY-TH
 ROUGH-TIME AND WITHIN GROUPS
  []
 
 [194]
-Underfull \vbox (badness 1540) has occurred while \output is active []
-
-[195]
-Overfull \hbox (69.75pt too wide) in paragraph at lines 8526--8526
-[]\TU/lmtt/m/n/10 ## Warning in quartz(width = 10, height = 5): Quartz device i
-s not available on[] 
+Overfull \hbox (1.5pt too wide) in paragraph at lines 8460--8460
+[]\TU/lmtt/m/n/10 ##   ..$ : num [1:50, 1:48] -0.561 -0.419 -0.834 -0.771 -0.83
+2 ...[] 
  []
 
-File: dispRity_manual_files/figure-latex/unnamed-chunk-226-1.pdf Graphic file (
-type pdf)
-<use dispRity_manual_files/figure-latex/unnamed-chunk-226-1.pdf>
 
-Underfull \hbox (badness 1742) in paragraph at lines 8542--8543
-[]\TU/lmr/m/n/10 Same as for the \TU/lmtt/m/n/10 summary.dispRity \TU/lmr/m/n/1
-0 function, check out the
+Overfull \hbox (75.0pt too wide) in paragraph at lines 8460--8460
+[]\TU/lmtt/m/n/10 ##   .. .. ..$ : chr [1:50] "Cimolestes" "Maelestes" "Batodon
+" "Bulaklestes" ...[] 
+ []
+
+
+Overfull \hbox (43.5pt too wide) in paragraph at lines 8460--8460
+[]\TU/lmtt/m/n/10 ##   .. ..$ edge       : int [1:98, 1:2] 51 52 52 53 53 51 54
+ 55 56 56 ...[] 
+ []
+
+
+Overfull \hbox (148.5pt too wide) in paragraph at lines 8460--8460
+[]\TU/lmtt/m/n/10 ##   .. ..$ tip.label  : chr [1:50] "Daulestes" "Bulaklestes"
+ "Uchkudukodon" "Kennalestes" ...[] 
+ []
+
+
+Overfull \hbox (12.0pt too wide) in paragraph at lines 8460--8460
+[]\TU/lmtt/m/n/10 ##   .. ..- attr(*, "names")= chr [1:4] "" "trees" "matrices"
+ "bind"[] 
+ []
+
+
+Overfull \hbox (17.25pt too wide) in paragraph at lines 8460--8460
+[]\TU/lmtt/m/n/10 ##   .. ..$ elements: int [1:13, 1] 41 49 24 25 26 27 28 21 2
+2 19 ...[] 
+ []
+
+[195]
+Overfull \hbox (80.25pt too wide) in paragraph at lines 8483--8483
+[]\TU/lmtt/m/n/10 ## 5 discrete time subsets for 50 elements in one matrix with
+ 1 phylogenetic tree[] 
+ []
+
+
+Underfull \hbox (badness 1048) in paragraph at lines 8514--8517
+\TU/lmr/m/n/10 some confidence intervals generated by the pseudoreplication ste
+p above
  []
 
 
@@ -3328,20 +3276,83 @@ ROUGH-TIME AND WITHIN GROUPS
  []
 
 [196]
+Overfull \hbox (80.25pt too wide) in paragraph at lines 8545--8545
+[]\TU/lmtt/m/n/10 ##                  10%  20%  30%  40%  50%  60%  70%  80%  9
+0% 100%        slope[] 
+ []
+
+
+Overfull \hbox (80.25pt too wide) in paragraph at lines 8545--8545
+[]\TU/lmtt/m/n/10 ## random          2.41 2.51 2.56 2.50 2.54 2.51 2.52 2.53 2.
+53 2.52 0.0006434981[] 
+ []
+
+
+Overfull \hbox (80.25pt too wide) in paragraph at lines 8545--8545
+[]\TU/lmtt/m/n/10 ## size.increase   2.23 2.19 2.25 2.33 2.31 2.35 2.43 2.44 2.
+48 2.52 0.0036071419[] 
+ []
+
+
+Overfull \hbox (80.25pt too wide) in paragraph at lines 8545--8545
+[]\TU/lmtt/m/n/10 ## size.hollowness 2.40 2.56 2.56 2.60 2.63 2.64 2.60 2.58 2.
+55 2.52 0.0006032204[] 
+ []
+
+File: dispRity_manual_files/figure-latex/unnamed-chunk-226-1.pdf Graphic file (
+type pdf)
+<use dispRity_manual_files/figure-latex/unnamed-chunk-226-1.pdf>
+
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 [197]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
 Overfull \hbox (118.47563pt too wide) has occurred while \output is active
 \TU/lmr/m/n/10 198 \TU/lmr/m/sl/10 CHAPTER 9.  PALAEOBIOLOGY DEMO: DISPARITY-TH
 ROUGH-TIME AND WITHIN GROUPS
  []
 
 [198]
+Underfull \vbox (badness 1540) has occurred while \output is active []
+
+[199]
+Overfull \hbox (69.75pt too wide) in paragraph at lines 8613--8613
+[]\TU/lmtt/m/n/10 ## Warning in quartz(width = 10, height = 5): Quartz device i
+s not available on[] 
+ []
+
+File: dispRity_manual_files/figure-latex/unnamed-chunk-229-1.pdf Graphic file (
+type pdf)
+<use dispRity_manual_files/figure-latex/unnamed-chunk-229-1.pdf>
+
+Underfull \hbox (badness 1742) in paragraph at lines 8629--8630
+[]\TU/lmr/m/n/10 Same as for the \TU/lmtt/m/n/10 summary.dispRity \TU/lmr/m/n/1
+0 function, check out the
+ []
+
+
+Overfull \hbox (118.47563pt too wide) has occurred while \output is active
+\TU/lmr/m/n/10 200 \TU/lmr/m/sl/10 CHAPTER 9.  PALAEOBIOLOGY DEMO: DISPARITY-TH
+ROUGH-TIME AND WITHIN GROUPS
+ []
+
+[200]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+[201]
+Overfull \hbox (118.47563pt too wide) has occurred while \output is active
+\TU/lmr/m/n/10 202 \TU/lmr/m/sl/10 CHAPTER 9.  PALAEOBIOLOGY DEMO: DISPARITY-TH
+ROUGH-TIME AND WITHIN GROUPS
+ []
+
+[202]
 Chapter 10.
-[199
+[203
 
 ]
-Overfull \hbox (2988.75pt too wide) in paragraph at lines 8656--8656
+Overfull \hbox (2988.75pt too wide) in paragraph at lines 8743--8743
 []\TU/lmtt/m/n/10 ##   |                                                       
                        |                                                       
                |   0%  |                                                       
@@ -3355,53 +3366,57 @@ Overfull \hbox (2988.75pt too wide) in paragraph at lines 8656--8656
 
 
 Overfull \hbox (88.00455pt too wide) has occurred while \output is active
-\TU/lmr/m/n/10 200 \TU/lmr/m/sl/10 CHAPTER 10.  MORPHOMETRIC GEOMETRIC DEMO: A 
-BETWEEN GROUP ANALYSIS
- []
-
-[200]
-File: dispRity_manual_files/figure-latex/unnamed-chunk-231-1.pdf Graphic file (
-type pdf)
-<use dispRity_manual_files/figure-latex/unnamed-chunk-231-1.pdf>
-
-Underfull \vbox (badness 1845) has occurred while \output is active []
-
-[201]
-Overfull \hbox (88.00455pt too wide) has occurred while \output is active
-\TU/lmr/m/n/10 202 \TU/lmr/m/sl/10 CHAPTER 10.  MORPHOMETRIC GEOMETRIC DEMO: A 
-BETWEEN GROUP ANALYSIS
- []
-
-[202]
-File: dispRity_manual_files/figure-latex/unnamed-chunk-235-1.pdf Graphic file (
-type pdf)
-<use dispRity_manual_files/figure-latex/unnamed-chunk-235-1.pdf>
-[203]
-Overfull \hbox (88.00455pt too wide) has occurred while \output is active
 \TU/lmr/m/n/10 204 \TU/lmr/m/sl/10 CHAPTER 10.  MORPHOMETRIC GEOMETRIC DEMO: A 
 BETWEEN GROUP ANALYSIS
  []
 
-[204] [205]
+[204]
+File: dispRity_manual_files/figure-latex/unnamed-chunk-234-1.pdf Graphic file (
+type pdf)
+<use dispRity_manual_files/figure-latex/unnamed-chunk-234-1.pdf>
+
+Underfull \vbox (badness 1845) has occurred while \output is active []
+
+[205]
 Overfull \hbox (88.00455pt too wide) has occurred while \output is active
 \TU/lmr/m/n/10 206 \TU/lmr/m/sl/10 CHAPTER 10.  MORPHOMETRIC GEOMETRIC DEMO: A 
 BETWEEN GROUP ANALYSIS
  []
 
-[206
+[206]
+File: dispRity_manual_files/figure-latex/unnamed-chunk-238-1.pdf Graphic file (
+type pdf)
+<use dispRity_manual_files/figure-latex/unnamed-chunk-238-1.pdf>
+[207]
+Overfull \hbox (88.00455pt too wide) has occurred while \output is active
+\TU/lmr/m/n/10 208 \TU/lmr/m/sl/10 CHAPTER 10.  MORPHOMETRIC GEOMETRIC DEMO: A 
+BETWEEN GROUP ANALYSIS
+ []
+
+[208] [209]
+Overfull \hbox (88.00455pt too wide) has occurred while \output is active
+\TU/lmr/m/n/10 210 \TU/lmr/m/sl/10 CHAPTER 10.  MORPHOMETRIC GEOMETRIC DEMO: A 
+BETWEEN GROUP ANALYSIS
+ []
+
+[210
 
 ]
 Chapter 11.
-(./dispRity_manual.bbl [207] [208
+[211] [212
 
-] [209] [210]) [211] (./dispRity_manual.aux) ) 
+]
+Chapter 12.
+(./dispRity_manual.bbl [213] [214
+
+] [215] [216]) [217] (./dispRity_manual.aux) ) 
 Here is how much of TeX's memory you used:
- 20005 strings out of 478190
- 389863 string characters out of 5854826
- 846253 words of memory out of 5000000
- 40239 multiletter control sequences out of 15000+600000
+ 20023 strings out of 478190
+ 390856 string characters out of 5854826
+ 846100 words of memory out of 5000000
+ 40255 multiletter control sequences out of 15000+600000
  475806 words of font info for 93 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  86i,7n,121p,1012b,576s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on dispRity_manual.pdf (211 pages).
+Output written on dispRity_manual.pdf (217 pages).

@@ -4,7 +4,7 @@
 \alias{slice.tree}
 \title{Time slicing a tree.}
 \usage{
-slice.tree(tree, age, model, FAD, LAD)
+slice.tree(tree, age, model, FAD, LAD, keep.all.ancestors = FALSE)
 }
 \arguments{
 \item{tree}{A \code{phylo} object with a \code{root.time} element.}

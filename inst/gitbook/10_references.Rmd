@@ -1,3 +1,15 @@
+---
+title: "dispRity R package manual"
+author: "Thomas Guillerme (guillert@tcd.ie)"
+date: "`r Sys.Date()`"
+bibliography: [../References.bib, ../packages.bib]
+output:
+  html_document: default
+  pdf_document: default
+---
+
+# dispRity R package manual
+
 `r if (knitr:::is_html_output()) '# References {-}'`
 
 # References

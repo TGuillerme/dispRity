@@ -1,6 +1,6 @@
 #' @title Time slicing a tree.
 #'
-#' @usage slice.tree(tree, age, model, FAD, LAD)
+#' @usage slice.tree(tree, age, model, FAD, LAD, keep.all.ancestors = FALSE)
 #' 
 #' @description Time slicing through a phylogenetic tree.
 #'
