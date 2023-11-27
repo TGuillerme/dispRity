@@ -25,6 +25,9 @@
 # shift
 # done
 
+## Update the function index
+sh update.function.index.sh
+
 ## Create the temporary CRAN folder
 rm -R cran_tmp/
 mkdir cran_tmp
