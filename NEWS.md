@@ -1,15 +1,9 @@
-dispRity v1.7.16 (2023-11-17) *dispRity.multi*
+dispRity v1.7.17 (2023-11-17) *dispRity.multi*
 =========================
 
 <!-- TODO: route to 1.8 (and that's it for this one)-->
 <!--
- - [ ] add `get.tree` working for subsets
-    - [x] test
-    - [ ] doc
-    - [ ] example
-    - [ ] manual
  - [ ] update bug with remove.zero.brlen
- - [ ] update function index
  -->
 
 
@@ -19,7 +13,7 @@ dispRity v1.7.16 (2023-11-17) *dispRity.multi*
  * *New utility function*: `name.subsets` for directly accessing the subsets names of a `dispRity` object (basically doing `names(my_dispRity$subsets)`).
  * *New utility function*: `MCMCglmm.variance` for calculating the variance for specific terms in a `"MCMCglmm"` model.
  * *New* statistical test: `pgls.dispRity` to run PGLS test on a `dispRity` object with a level-2 metric and a tree (using excellent [`phylolm`](https://CRAN.R-project.org/package=phylolm) algorithm). The new test comes with its own S3 print, summary and plot functions if the input `dispRity` data contains multiple trees or multiple matrices (running and handling the output of multiple `phylolm`).
- * *New* options to `get.tree` utility function to get the trees in each subsets (thanks to Jack Hadfield for this suggestion).
+ * *New* options to `get.tree` utility function to get the trees in each subsets (thanks to Jack Hadfield for this suggestion and help with implementation).
  * *New vignette* compiling resources for developers to help people (and future me) to edit the package. 
  * *New metric*: `roundness` to measure the roundness of a variance-covariance matrix. 
 

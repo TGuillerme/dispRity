@@ -206,6 +206,61 @@ remove.tree(disparity)
 add.tree(disparity, tree = BeckLee_tree)
 ```
 
+Note that `get.tree` can also be used to extract trees from different subsets (custom or continuous/discrete subsets).
+
+For example, if we have three time bins like in the example below we have three time bins and we can extract the subtrees for these three time bins in different ways using the option `subsets` and `to.root`:
+
+```{r}
+## Load the Beck & Lee 2014 data
+data(BeckLee_tree) ; data(BeckLee_mat99) ; data(BeckLee_ages)
+
+## Time binning (discrete method)
+## Generate two discrete time bins from 120 to 40 Ma every 20 Ma
+time_bins <- chrono.subsets(data = BeckLee_mat99, tree = BeckLee_tree,
+                            method = "discrete", time = c(120, 100, 80, 60),
+                            inc.nodes = TRUE, FADLAD = BeckLee_ages)
+
+## Getting the subtrees all the way to the root
+root_subsets <- get.tree(time_bins, subsets = TRUE)
+
+## Plotting the bin contents
+old_par <- par(mfrow = c(2,2))
+plot(BeckLee_tree, main = "original tree", show.tip.label = FALSE)
+axisPhylo()
+abline(v = BeckLee_tree$root.time - c(120, 100, 80, 60))
+for(i in 1:3) {
+     plot(root_subsets[[i]], main = names(root_subsets)[i],
+          show.tip.label = FALSE)
+     axisPhylo()
+}
+par(old_par)
+```
+
+But we can also extract the subtrees containing only branch lengths for the actual bins using `to.root = FALSE`:
+
+```{r}
+## Getting the subtrees all the way to the root
+bin_subsets <- get.tree(time_bins, subsets = TRUE, to.root = FALSE)
+
+## Plotting the bin contents
+old_par <- par(mfrow = c(2,2))
+plot(BeckLee_tree, main = "original tree", show.tip.label = FALSE)
+axisPhylo()
+abline(v = BeckLee_tree$root.time - c(120, 100, 80, 60))
+for(i in 1:3) {
+     plot(bin_subsets[[i]], main = names(bin_subsets)[i],
+          show.tip.label = FALSE)
+     axisPhylo()
+}
+par(old_par)
+```
+
+This can be useful for example for calculating the branch lengths in each bin:
+
+```{r}
+## How many cumulated phylogenetic diversity in each bin?
+lapply(bin_subsets, function(tree) sum(tree$edge.length))
+```
 
 ## The `dispRity` object content {#disprity-object}
 

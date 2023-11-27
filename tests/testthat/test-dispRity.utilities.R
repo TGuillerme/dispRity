@@ -737,7 +737,7 @@ test_that("get.tree with subsets", {
     tiplabels()
     tiplabels(simple_tree$tip.label, adj = -1, col = "blue")
     abline(v = c(0, 1, 2, 3, 3.8), col = "grey", lty = 2)
-    dev.new()
+    # dev.new()
     tree <- simple_tree
 
     ## Detect edges
