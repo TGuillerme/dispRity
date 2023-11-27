@@ -490,7 +490,7 @@ name.subsets <- function(data) {
 #' @param tree A \code{phylo} or \code{mutiPhylo} object.
 #' @param replace Logical, whether to replace any existing tree (\code{TRUE}) or add to it (\code{FALSE}; default).
 #' @param subsets Either a logical whether to extract the tree for each subset (\code{TRUE}) or not (\code{FALSE}; default) or specific subset names or numbers.
-#' @param to.root Logical, whether to return the subset tree including the root of the tree (\code{TRUE}; default) or only containing the elements in the subset (and their most recent common ancestor; \code{FALSE}). If \code{data} contains time bins (from \code{\link{chrono.subsets}} with \code{method = "discrete"}), and \code{to.root = FALSE} it returns the subtrees containing only what's in the bin.
+#' @param to.root Logical, whether to return the subset tree including the root of the tree (\code{TRUE}) or only containing the elements in the subset (and their most recent common ancestor; \code{FALSE}; default). If \code{data} contains time bins (from \code{\link{chrono.subsets}} with \code{method = "discrete"}), and \code{to.root = FALSE} it returns the subtrees containing only what's in the bin.
 #' 
 #' @examples
 #' ## Loading a dispRity object
@@ -536,8 +536,7 @@ add.tree <- function(data, tree, replace = FALSE) {
     }
     return(data)
 }
-get.tree <- function(data, subsets = FALSE, to.root = TRUE) {
-    
+get.tree <- function(data, subsets = FALSE, to.root = FALSE) {
     ## Check for tree
     match_call <- match.call()
     if(is.null(data$tree)) {
@@ -575,32 +574,39 @@ get.tree <- function(data, subsets = FALSE, to.root = TRUE) {
         slice.type <- data$call$subsets[[1]]
 
         ## Get the trees for each subset
-        if(!binned_data) {
-            trees_list <- lapply(data$subsets[subsets], get.one.tree.subset, data, to.root, slice.type)
+        if(slice.type != "discrete") {
+
+            ## Get the sliced trees
+            trees_list <- lapply(data$subsets[subsets], get.one.tree.subset, data$tree[[1]], to.root)
+            # trees_list <- lapply(data$subsets[subsets], get.slice.subsets, data, to.root)
+
+            # # get.slice.subsets(data$subsets[subsets][[1]], data, to.root)
+            # ## Return the raw list
+            # if(all(unique(unlist(lapply(trees_list, names))) %in% "elements")) {
+            #     list_name <- names(trees_list)
+            #     trees_list <- unlist(trees_list, recursive = FALSE)
+            #     names(trees_list) <- list_name
+            # }
+
         } else {
-            bin_names <- name.subsets(data)
+            bin_names <- subsets
             ## Get the bin ages
             bin_ages <- lapply(strsplit(bin_names, split = " - "), as.numeric)
+            names(bin_ages) <- bin_names
+            
+            ## Get all the tree subsets
+            all_subsets <- lapply(data$tree, get.interval.subtrees, bin_ages, to.root)
 
-            ## Get the list of elements
-            all_elements <- lapply
-
-
-            lapply(bin_ages, slice.one.tree)
-
-            slice.on.tree <- function(age, tree) {
-                slice.tree(tree, age[2])
+            ## Combine into multiphylo or not
+            if(length(all_subsets) != 1) {
+                ## Recursive merge all the trees
+                while(length(all_subsets) != 1) {
+                    all_subsets[[1]] <- mapply(c, all_subsets[[1]], all_subsets[[2]], SIMPLIFY = FALSE)
+                    all_subsets[[2]] <- NULL
+                }
             }
-
-
-
-            ## Get the subtrees
-
-            ## Update the subtrees
-
-            ## Cut the subtrees
-
             ## Return the tree list
+            return(all_subsets[[1]])
         }
             
         ## return the trees

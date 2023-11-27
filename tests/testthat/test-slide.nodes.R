@@ -1,13 +1,12 @@
 #context("slide.nodes")
 
 ## Test
-
 test_that("slide.nodes.internal works", {
     set.seed(1)
     tree <- rtree(5)
 
     ## Error output (null)
-    expect_null(slide.nodes.internal(nodes = c(7,8), tree = tree, slide = 4))
+    expect_null(slide.nodes.internal(nodes = c(7,8), tree = tree, slide = 4, allow.negative.root = FALSE))
 
     ## Works with a single node
     set.seed(42)
@@ -30,7 +29,6 @@ test_that("slide.nodes.internal works", {
     expect_equal(tree$edge.length[-c(3,4,5)], tree_stret_up$edge.length[-c(3,4,5)])
 })
 
-
 test_that("slide.nodes works", {
 
     set.seed(1)
@@ -42,7 +40,7 @@ test_that("slide.nodes works", {
     error <- capture_error(slide.nodes(nodes = c(7,8,10), tree = tree, slide = 0.1))
     expect_equal(error[[1]], "node(s) not found in tree.")
     warning <- capture_warning(slide.nodes(nodes = c(6,8), tree = tree, slide = 0.1))
-    expect_equal(warning[[1]], "The parent of the root node (6) cannot be slideed.")
+    expect_equal(warning[[1]], "The parent of the root node (6) cannot be slid.")
     no_edge <- tree ; no_edge$edge.length <- NULL
     error <- capture_error(slide.nodes(nodes = c(7,8), tree = no_edge, slide = 0.1))
     expect_equal(error[[1]], "The tree has no edge lengths.")
@@ -81,5 +79,4 @@ test_that("slide.nodes works", {
     changed_branches <- c(which(tree$edge[,1] %in% move_nodes), which(tree$edge[,2] %in% move_nodes))
     expect_equal(tree$edge.length[-changed_branches], tree_slideed$edge.length[-changed_branches])
     expect_equal(unique(round(abs(tree$edge.length[changed_branches] - tree_slideed$edge.length[changed_branches]), 3)), 0.07)
-
 })

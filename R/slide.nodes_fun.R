@@ -1,5 +1,5 @@
 ## Internal for slide.nodes
-slide.nodes.internal <- function(tree, nodes, slide) {
+slide.nodes.internal <- function(tree, nodes, slide, allow.negative.root) {
     ## Find the parent and descendants
     parent_edge <- which(tree$edge[,2] %in% nodes)
     descendant_edge <- which(tree$edge[,1] %in% nodes)
@@ -14,7 +14,7 @@ slide.nodes.internal <- function(tree, nodes, slide) {
     }
     tree$edge.length[descendant_edge] <- tree$edge.length[descendant_edge] - slide
     ## Check for negatives
-    if(any(tree$edge.length[descendant_edge] < 0)) {
+    if(!allow.negative.root && any(tree$edge.length[descendant_edge] < 0)) {
         return(NULL)
     }
     return(tree)

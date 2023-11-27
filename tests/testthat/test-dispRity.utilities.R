@@ -874,96 +874,71 @@ test_that("get.tree with subsets", {
     expect_equal(test$clade3$elements$tip.label, c("t7", "t10"))
     expect_equal(test$clade4$elements$tip.label, simple_tree$tip.label)
 
-    ## Time bin subsets
+    ## Testing slide.node.root
     set.seed(1)
     simple_tree <- rtree(5)
     simple_tree$edge.length <- rep(1, Nedge(simple_tree))
     simple_tree$root.time <- 4
     simple_tree$node.label <- letters[1:4]
-    plot(simple_tree, show.tip.label = FALSE); axisPhylo()
-    nodelabels()
-    nodelabels(simple_tree$node.label, adj = -1, col = "blue")
-    edgelabels()
-    tiplabels()
-    tiplabels(simple_tree$tip.label, adj = -1, col = "blue")
-    abline(v = c(0, 1, 2, 3, 3.5), col = "grey", lty = 2)
     tree <- simple_tree
+    bin_age <- c(2, 1)
+    test <- slide.node.root(bin_age, tree)
+    expect_is(test, "phylo")
+    expect_equal(Ntip(test), 4)
+    expect_equal(test$edge.length[c(1,6)], c(0,0))
+
+    ## Testing the pipeline for discrete bins
+    tree <- simple_tree
+    tree$edge.length[8] <- 1.5
     matrix_dumb <- matrix(1, ncol = 1, nrow = 9, dimnames = list(c(simple_tree$tip.label, simple_tree$node.label)))
-    data <- matrix_dumb
-    tree <- simple_tree
-    method = "discrete"
     time = c(0.5, 1, 2, 3, 3.5)
     data_bins <- chrono.subsets(matrix_dumb, tree = simple_tree, method = "discrete", time = time, inc.nodes = TRUE)
 
+    ## Getting the trees from data bin
+    test <- get.tree(data_bins, subsets = FALSE)
+    expect_is(test, "phylo")
+    test <- get.tree(data_bins, subsets = TRUE, to.root = FALSE)
+    expect_is(test, "list")
+    expect_equal(length(test), 4)
+    expect_is(test[[2]], "phylo")
+    expect_equal(test[[2]]$edge.length, c(0,0,1,1))
+    test <- get.tree(data_bins, subsets = TRUE, to.root = TRUE)
+    expect_is(test, "list")
+    expect_equal(length(test), 4)
+    expect_is(test[[2]], "phylo")
+    expect_equal(test[[2]]$edge.length, c(1,1,1,1))
 
+    ## Working on a multiPhylo
+    multi_tree <- list(simple_tree, simple_tree)
+    class(multi_tree) <- "multiPhylo"
+    data_bins <- chrono.subsets(matrix_dumb, tree = multi_tree, method = "discrete", time = time, inc.nodes = TRUE)
+    test <- get.tree(data_bins, subsets = FALSE)
+    expect_is(test, "multiPhylo")
+    test <- get.tree(data_bins, subsets = TRUE, to.root = FALSE)
+    expect_is(test, "list")
+    expect_equal(length(test), 4)
+    expect_is(test[[2]], "multiPhylo")
 
-# chrono.subset.tree <- function(subset_n, data, to.root) {
+    ## Working on slices
+    data_slices <- chrono.subsets(matrix_dumb, tree = simple_tree, method = "continuous", model = "acctran", time = time, inc.nodes = TRUE)
+    test <- get.tree(data_slices, subsets = TRUE, to.root = TRUE)
+    expect_is(test, "list")
+    expect_equal(length(test), 5)
+    expect_is(test[[2]], "phylo")
+    expect_equal(test[[2]]$edge.length, c(1,1))
+    test <- get.tree(data_slices, subsets = TRUE, to.root = FALSE)
+    expect_is(test, "list")
+    expect_equal(length(test), 5)
+    expect_is(test[[2]], "phylo")
+    expect_equal(test[[2]]$edge.length, c(1,1))
 
-#     slice.type <- data$call$subsets[[1]]
-#     age <- as.numeric(strsplit(names(data$subsets[subset_n]), split = " - ")[[1]])
-
-#     ## Time bin/slice behaviour
-#     if(slice.type %in% c("discrete", "continuous")) {
-#         if(to.root) {
-
-#             slice.tree(data$tree[[1]], age = age[2], model = "acctran")
-
-#             ## Maybe test this one?
-#             # paleotree::timeSliceTree
-
-#             slice.tree(tree, age, model, FAD, LAD)
-
-#             ## cut the trees to the upper bound
-#             return(output)
-#         } else {
-#             if(!to.root && slice.type == "discrete") {
-#                 ## cut the trees to the upper and lower bounds
-#                 return(output)
-
-
-
-
-#             }
-#         }
-#     }
-
-#     ## Out
-#     return(output)
-
-# }
-
-
-# #     ## BUG when using a matrix with just one column! (empty subsets)
-
-#     trees <- get.tree(data_bins, subsets = TRUE)
-
-# #     dev.new()
-# #     par(mfrow = c(2,2))
-# #     plot(trees[[1]]$elements[[1]]) ; axisPhylo()
-# #     plot(trees[[2]]$elements[[1]]) ; axisPhylo()
-# #     plot(trees[[3]]$elements[[1]]) ; axisPhylo()
-# #     plot(trees[[4]]$elements[[1]]) ; axisPhylo()
-
-# tree <- trees[[1]]$elements[[1]]
-# bin <- names(trees)[[1]]
-
-
-
-    # test <- dispRity(times, metric = edge.length.tree, to.root = FALSE)
-    # summary(test)
-
-    # matrix <- times$matrix[[1]][times$subsets[[3]]$elements,, drop = FALSE]
-    # matrix <- times$matrix[[1]][times$subsets[[4]]$elements,, drop = FALSE]
-
-    # expect_equal(unique(c(summary(test)$obs)), 2)
-    ## This should output the amount of branch length contained in each bin correctly
-
-
-    ## Time bin subsets + multiPhylo
-
-
-    ## Basic subsets + multiphylo
-    
-    ## Subsets with BS and multiphylo
+    ## Working on multiPhylo
+    data_slices <- chrono.subsets(matrix_dumb, tree = multi_tree, method = "continuous", model = "equal.split", time = time, inc.nodes = TRUE)
+    test <- get.tree(data_slices, subsets = FALSE)
+    expect_is(test, "multiPhylo")
+    test <- get.tree(data_slices, subsets = TRUE, to.root = FALSE)
+    expect_is(test, "list")
+    expect_equal(length(test), 4)
+    expect_is(test[[2]], "multiPhylo")
 
 })
