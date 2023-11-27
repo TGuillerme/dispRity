@@ -2,7 +2,7 @@
 
 ## This function is modified from Dave Bapst paleotree::timeSliceTree (2019/06/19)
 ## (returns null when failure)
-slice.tree.sharp <- function(tree, slice)  {
+slice.tree.sharp <- function(tree, slice, keep.all.ancestors = FALSE)  {
 
     ## Get slice time
     slice_time <- tree$root.time - slice
@@ -48,6 +48,12 @@ slice.tree.sharp <- function(tree, slice)  {
     ## Get the node tips depth
     n_tips_sliced <- Ntip(tree_sliced)
     tips_depth <- castor::get_all_pairwise_distances(tree_sliced)[n_tips_sliced + 1, 1:n_tips_sliced]
+
+    ## Return the tree with ancestors (if needed)
+    if(keep.all.ancestors) {
+        return(tree_sliced)
+    }
+
     ## Find tips that do not have the slice age
     #slice_age <- max(tips_depth)
     tips_at_slice <- (tips_depth == slice_time)

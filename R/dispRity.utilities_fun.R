@@ -180,7 +180,7 @@ detect.edges <- function(tree, elements, to.root) {
 }
 
 ## Get the tree containing requested elements
-get.new.tree <- function(elements, tree, to.root, slice) {
+get.new.tree <- function(elements, tree, to.root) {
 
     ## Detect which edges to keep
     new_edges <- unique(detect.edges(tree, elements, to.root))
@@ -263,12 +263,125 @@ toggle.multiphylo.list <- function(x) {
 }
 
 ## Return a subseted tree
-get.one.tree.subset <- function(one_subset, data, to.root, slice.type) {
+get.one.tree.subset <- function(one_subset, one_tree, to.root) {
     ## Normal behaviour
-    output <- lapply(one_subset, function(x, tree, to.root) apply(x, 2, function(x, tree, to.root) get.new.tree(elements = x, tree = tree, to.root = to.root), tree = tree, to.root = to.root), tree = data$tree[[1]], to.root = to.root)
+    output <- lapply(one_subset, function(x, tree, to.root) apply(x, 2, function(x, tree, to.root) get.new.tree(elements = x, tree = tree, to.root = to.root), tree = tree, to.root = to.root), tree = one_tree, to.root = to.root)
     ## Change the output objects
     output <- lapply(output, toggle.multiphylo.list)
 
     return(output)
 }
 
+
+## Slide nodes from the root
+#@param bin_age the ages of the bin limits
+#@param tree the original tree
+#@return a tree with all old nodes slided
+slide.node.root <- function(bin_age, tree) {
+    ## Get the age to slide the nodes to
+    time <- bin_age[1]
+    ## Get all ages
+    tree_ages <- tree.age(tree)
+    ## Get the yongest age for late
+    younger <- min(tree_ages$ages)
+    ## Remove the older tips
+    to_drop <- tree_ages$elements[which(tree_ages[tree_ages$elements %in% tree$tip.label, ]$ages > time)]
+    tree <- drop.tip(tree, tip = to_drop)
+    ## Update the root time
+    new_ages <- tree.age(tree)$ages
+    tree$root.time <- max(new_ages) + (younger - min(new_ages))
+
+    # warning("DEBUG slide.node.root")
+    # plot(tree, main = "dropped old tips") ; nodelabels(); axisPhylo()
+    # abline(v = 3-c(2, 1), col = "red", lty = 1)
+
+    ## Recalculate the ages for the nodes
+    node_ages <- tree.age(tree)
+    younger <- min(node_ages$ages)
+    node_ages <- node_ages[!(node_ages$elements %in% tree$tip.label), ]
+    ## Get the nodes that are older than the time
+    nodes_to_slide <- which(node_ages$ages > time)
+
+    ## reorder the nodes to slide by age
+    nodes_to_slide <- nodes_to_slide[match(sort(node_ages$ages[nodes_to_slide]), node_ages$ages[nodes_to_slide])]
+
+    ## Recursively slide all nodes
+    while(length(nodes_to_slide) > 0) {
+        ## Get the node name and sliding value
+        sliding_value <- node_ages$ages[nodes_to_slide[1]] - time
+        node_name <- node_ages$elements[nodes_to_slide[1]]
+        ## slide it!
+        tree <- slide.nodes(node_name, tree, slide = sliding_value, allow.negative = TRUE)
+        ## Update the root time
+        new_ages <- tree.age(tree)$ages
+        tree$root.time <- max(new_ages) + (younger - min(new_ages))
+
+        ## Update the list of nodes to slide
+        nodes_to_slide <- nodes_to_slide[-1]
+
+        # warning("DEBUG slide.node.root")
+        # plot(tree, main = "slid one node") ; nodelabels(); axisPhylo()
+        # abline(v = 3-c(2, 1), col = "red", lty = 1)
+    }
+    return(tree)
+}
+
+## Get the subset of trees for one tree in an interval
+get.interval.subtrees <- function(one_tree, bin_ages, to.root) {
+    ## Slice the right sides of the trees
+    slice.one.tree <- function(age, tree) {
+        slice.tree(tree, age[2], model = "acctran", keep.all.ancestors = TRUE)
+    }
+    subset_subtrees <- lapply(bin_ages, slice.one.tree, one_tree) # TODO need fix for multiphylo
+
+    if(!to.root) {
+        ## Compressing the root of the tree up until the slice lower boundary
+        subset_subtrees <- mapply(slide.node.root, bin_ages, subset_subtrees, SIMPLIFY = FALSE)
+    }
+
+    ## Name the subsets
+    names(subset_subtrees) <- names(bin_ages)
+    return(subset_subtrees)
+}
+
+## Get the trees from slices
+get.slice.subsets <- function(one_subset, data, to.root) {
+    ## ONLY FOR ELEMENTS FOR NOW
+    subset <- one_subset$elements
+
+    ## Handeling split slices
+    if(!is.null(data$call$subsets[[2]]) && length(grep("split", data$call$subsets[[2]])) > 0) {
+        ## Sample the probabilities and collapse the matrix
+        sample.x <- function(x) {sample(x[1:2], 1, prob = c(x[3], 1-x[3]))}
+        sampled_subset <- matrix(apply(subset[, 1:3, drop = FALSE], 1, sample.x), ncol = 1)
+        ## remove the sampled
+        subset <- subset[, -c(1:3), drop = FALSE]
+        ## Sample for multiple trees
+        while(ncol(subset) > 0) {
+            sampled_subset <- cbind(sampled_subset, apply(subset[, 1:3, drop = FALSE], 1, sample.x))
+            subset <- subset[, -c(1:3), drop = FALSE]
+        }
+        subset <- sampled_subset
+    }
+
+    trees_list <- data$tree
+    trees_out <- list()
+    while(ncol(subset) > 0) {
+        ## Extract the elements for the tree recursively
+        new_tree <- get.new.tree(subset[,1], trees_list[[1]], to.root)
+        if(is.null(new_tree)) {
+            new_tree <- list(NULL)
+        }
+        trees_out[[length(trees_out) + 1]] <- new_tree
+        ## Remove the tree and the subset row
+        subset <- subset[, -1, drop = FALSE]
+        trees_list[1] <- NULL
+    }
+    ## Handle the tree output
+    if(length(trees_out) > 1) {
+        class(trees_out) <- "multiPhylo"
+        return(trees_out)
+    } else {
+        return(trees_out[[1]])
+    }
+}

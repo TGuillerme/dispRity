@@ -297,3 +297,25 @@ test_that("slice.tree works on a single edge", {
     expect_equal(slice.tree(tree, age = 1, "equal.split"), c("n2", "B", "0.5"))
     expect_equal(slice.tree(tree, age = 3, "gradual.split"), c("n2", "B", "0.6"))
 })
+
+
+# Deep slice from example
+test_that("example works with deep slice", {
+
+    set.seed(1)
+    ## Generate a random ultrametric tree
+    tree <- rtree(20)
+    ## Add some node labels
+    tree$node.label <- letters[1:19]
+    ## Add its root time
+    tree$root.time <- max(tree.age(tree)$ages)
+    ## Slice the tree at age 1.5
+    tree_slice <- slice.tree(tree, age = 1.5, "deltran")
+    ## The slice at age 0.5 but keeping all the ancestors
+    deep_slice <- slice.tree(tree, age = 1.5, "deltran",
+                                keep.all.ancestors = TRUE)
+
+    expect_equal(deep_slice$tip.label, c("t10", "t14", "t20", "t7", "t9", "t15", "i", "l", "l", "o", "o", "t17"))
+    expect_equal(which(tree.age(deep_slice)$age == 1.5), 7:11)
+    expect_equal(deep_slice$root.time, tree$root.time)
+})

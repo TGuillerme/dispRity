@@ -1,6 +1,6 @@
 #' @title Time slicing a tree.
 #'
-#' @usage slice.tree(tree, age, model, FAD, LAD)
+#' @usage slice.tree(tree, age, model, FAD, LAD, keep.all.ancestors = FALSE)
 #' 
 #' @description Time slicing through a phylogenetic tree.
 #'
@@ -8,13 +8,14 @@
 #' @param age A single \code{numeric} value indicating where to perform the slice.
 #' @param model One of the following models: \code{"acctran"}, \code{"deltran"}, \code{"random"}, \code{"proximity"}, \code{"equal.split"} or \code{"gradual.split"}. Is ignored if \code{method = "discrete"}. See \code{\link{chrono.subsets}} for the models description.
 #' @param FAD,LAD The first and last occurrence data.
+#' @param keep.all.ancestors Optional, whether to also include the ancestors of the tree slice (\code{TRUE}) or just the ones linking the elements present at the slice (\code{FALSE}; default)
 #' 
 #' @seealso \code{paleotree::timeSliceTree}, \code{\link{chrono.subsets}}.
 #'
 #' @examples
 #' set.seed(1)
 #' ## Generate a random ultrametric tree
-#' tree <- rcoal(20)
+#' tree <- rtree(20)
 #' 
 #' ## Add some node labels
 #' tree$node.label <- letters[1:19]
@@ -22,8 +23,21 @@
 #' ## Add its root time
 #' tree$root.time <- max(tree.age(tree)$ages)
 #' 
-#' ## Slice the tree at age 0.75
-#' tree_75 <- slice.tree(tree, age = 0.75, "deltran")
+#' ## Slice the tree at age 1.5
+#' tree_slice <- slice.tree(tree, age = 1.5, "deltran")
+#'
+#' ## The slice at age 0.5 but keeping all the ancestors
+#' deep_slice <- slice.tree(tree, age = 0.5, "deltran",
+#'                             keep.all.ancestors = TRUE)
+#'
+#' ## Visualising the trees
+#' old_par <- par(mfrow = c(2,2))
+#' plot(ladderize(tree), main = "full tree"); axisPhylo()
+#' abline(v =  tree$root.time - 1.5)
+#' plot(ladderize(tree_slice), main = "tree slice"); axisPhylo()
+#' plot(ladderize(deep_slice), main = "slice with ancestors"); axisPhylo()
+#'
+#' par(old_par)
 #'
 #' @author Thomas Guillerme
 # @export
@@ -37,7 +51,7 @@
 # source("sanitizing.R")
 
 #Function modified from paleotree::timeSliceTree
-slice.tree <- function(tree, age, model, FAD, LAD) {
+slice.tree <- function(tree, age, model, FAD, LAD, keep.all.ancestors = FALSE) {
 
     #For adding modules (i.e. models) follow the format
     # tree_slice<-timeSliceTree(tree, age, drop.extinct = TRUE, plot = FALSE)
@@ -88,7 +102,7 @@ slice.tree <- function(tree, age, model, FAD, LAD) {
         ## Don't slice the tree if age is too old
         return(NA)
     } else {
-        tree_slice <- slice.tree.sharp(tree, age)
+        tree_slice <- slice.tree.sharp(tree, age, keep.all.ancestors = keep.all.ancestors)
         if(is.null(tree_slice)) {
             return(slice.edge(tree, age, model))
         }

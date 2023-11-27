@@ -2,9 +2,10 @@
 #'
 #' @description Stretches a phylogenetic tree at a particular node
 #'
-#' @param nodes A list of the ID nodes to slide (\code{"integer"}). The first node is \code{ape::Ntip(tree) + 1}, etc.
+#' @param nodes A list of the ID nodes to slide (\code{"integer"}) or names (\code{"character"}). The first node is \code{ape::Ntip(tree) + 1}, etc.
 #' @param tree a \code{"phylo"} object.
 #' @param slide the sliding value.
+#' @param allow.negative.root logical, whether to allow negative branch lengths and moving the root node (\code{TRUE}) or not (\code{FALSE}; default).
 #' 
 #' @details
 #' The sliding works by subtracting the slide value to the branch leading to the node and adding it to the descendant branches.
@@ -48,16 +49,27 @@
 #' @author Thomas Guillerme
 #' @export
 
-slide.nodes <- function(nodes, tree, slide) {
+slide.nodes <- function(nodes, tree, slide, allow.negative.root = FALSE) {
     ## Sanitizing
-    check.class(nodes, c("integer", "numeric"))
+    check.class(allow.negative.root, "logical")
+    node_class <- check.class(nodes, c("integer", "numeric", "character"))
+
+    ## Getting the node IDs (if character)
+    if(node_class == "character") {
+        if(is.null(tree$node.label)) {
+            stop("The tree has no node labels, provide the nodes as integers.")
+        } 
+        nodes <- which(tree$node.label %in% nodes) + Ntip(tree)
+    }
     nodes <- as.integer(nodes)
     check.class(tree, "phylo")
 
     ## Check whether nodes exist in the tree
     if(any(nodes > (Nnode(tree)+Ntip(tree)))) stop("node(s) not found in tree.")
     if(any(nodes < Nnode(tree))) stop("node(s) not found in tree.")
-    if(any(nodes == (Ntip(tree)+1))) warning(paste0("The parent of the root node (", (Ntip(tree) + 1), ") cannot be slideed."))
+    if(!allow.negative.root) {
+        if(any(nodes == (Ntip(tree)+1))) warning(paste0("The parent of the root node (", (Ntip(tree) + 1), ") cannot be slid."))
+    }
 
     ## Check whether the tree has edge lengths
     if(is.null(tree$edge.length)) stop("The tree has no edge lengths.")
@@ -66,7 +78,7 @@ slide.nodes <- function(nodes, tree, slide) {
     check.class(slide, c("numeric", "integer"))
 
     ## Slide the nodes
-    tree <- slide.nodes.internal(tree, nodes, slide)
+    tree <- slide.nodes.internal(tree, nodes, slide, allow.negative.root)
 
     ## Catch eventual errors
     if(is.null(tree)) {

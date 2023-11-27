@@ -119,11 +119,11 @@ remove.zero.brlen <- function(tree, slide, verbose = FALSE) {
         }
 
         ## Slide the node
-        tree_slided <- slide.nodes.internal(tree, node_pair[direction], ifelse(direction == 1, -slide, slide))
+        tree_slided <- slide.nodes.internal(tree, node_pair[direction], ifelse(direction == 1, -slide, slide), allow.negative.root = FALSE)
 
         ## Try reversing the slide
         if(is.null(tree_slided) && !any(is.na(node_pair))) {
-            tree_slided <- slide.nodes.internal(tree, node_pair[-direction], ifelse(direction == 1, slide, -slide))
+            tree_slided <- slide.nodes.internal(tree, node_pair[-direction], ifelse(direction == 1, slide, -slide), allow.negative.root = FALSE)
         }
         return(tree_slided)
     }
