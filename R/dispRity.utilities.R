@@ -576,18 +576,16 @@ get.tree <- function(data, subsets = FALSE, to.root = FALSE) {
         ## Get the trees for each subset
         if(slice.type != "discrete") {
 
-            ## Get the sliced trees
-            trees_list <- lapply(data$subsets[subsets], get.one.tree.subset, data$tree[[1]], to.root)
-            # trees_list <- lapply(data$subsets[subsets], get.slice.subsets, data, to.root)
+            ## Get the sliced trees for custom subsets
+            if(slice.type == "customised") {
+                trees_list <- lapply(data$subsets[subsets], get.one.tree.subset, data$tree[[1]], to.root)
+            }
 
-            # # get.slice.subsets(data$subsets[subsets][[1]], data, to.root)
-            # ## Return the raw list
-            # if(all(unique(unlist(lapply(trees_list, names))) %in% "elements")) {
-            #     list_name <- names(trees_list)
-            #     trees_list <- unlist(trees_list, recursive = FALSE)
-            #     names(trees_list) <- list_name
-            # }
-
+            ## Get the sliced trees for custom subsets
+            if(slice.type == "continuous") {
+                trees_list <- lapply(data$subsets[subsets], get.slice.subsets, data, to.root)
+            }
+            
         } else {
             bin_names <- subsets
             ## Get the bin ages

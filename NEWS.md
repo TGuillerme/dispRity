@@ -8,6 +8,8 @@ dispRity v1.7.16 (2023-11-17) *dispRity.multi*
     - [ ] doc
     - [ ] example
     - [ ] manual
+ - [ ] update bug with remove.zero.brlen
+ - [ ] update function index
  -->
 
 
@@ -43,6 +45,7 @@ dispRity v1.7.16 (2023-11-17) *dispRity.multi*
  * `remove.zero.brlen` now also removes negative branch lengths and works on `"multiPhylo"` objects (thanks to Thomas Johnson for this suggestion).
  * `fill.dispRity` has now an extra argument `check` to toggle the data checking on and off (more for developers).
  * `multi.ace` is now described in details in the manual.
+ * `slice.tree` has now a `keep.all.ancestors` option to do exactly that.
 
 ### BUG FIXES
  

@@ -378,10 +378,10 @@ get.slice.subsets <- function(one_subset, data, to.root) {
         trees_list[1] <- NULL
     }
     ## Handle the tree output
-    if(length(trees_list) > 1) {
-        class(trees_list) <- "multiPhylo"
-        return(trees_list)
+    if(length(trees_out) > 1) {
+        class(trees_out) <- "multiPhylo"
+        return(trees_out)
     } else {
-        return(trees_list[[1]])
+        return(trees_out[[1]])
     }
 }

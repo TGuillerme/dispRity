@@ -874,6 +874,11 @@ test_that("get.tree with subsets", {
     expect_equal(test$clade3$elements$tip.label, c("t7", "t10"))
     expect_equal(test$clade4$elements$tip.label, simple_tree$tip.label)
 
+
+
+
+
+
     ## Testing slide.node.root
     set.seed(1)
     simple_tree <- rtree(5)
@@ -938,7 +943,6 @@ test_that("get.tree with subsets", {
     expect_is(test, "multiPhylo")
     test <- get.tree(data_slices, subsets = TRUE, to.root = FALSE)
     expect_is(test, "list")
-    expect_equal(length(test), 4)
+    expect_equal(length(test), 5)
     expect_is(test[[2]], "multiPhylo")
-
 })
