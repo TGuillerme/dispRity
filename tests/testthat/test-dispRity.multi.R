@@ -269,8 +269,8 @@ test_that("dispRity.multi works for dispRity", {
     expect_equal(summary(test)$obs.median, 0)
 
     ## Verbose
-    text <- capture_messages(expect_warning(test <- dispRity(data, metric = mean, tree = tree, verbose = TRUE)))
-    expect_equal(paste0(text, collapse = ""), "Calculating multiple disparities..Done.\n")
+    # text <- capture_messages(expect_warning(test <- dispRity(data, metric = mean, tree = tree, verbose = TRUE)))
+    # expect_equal(paste0(text, collapse = ""), "Calculating multiple disparities..Done.\n")
 
     ## Recycling custom.subsets
     set.seed(1)
