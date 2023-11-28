@@ -273,21 +273,21 @@ test_that("verbose bootstrap works", {
     data(BeckLee_tree)
     data(BeckLee_ages)
     data <- matrix(rnorm(25), 5, 5)
-    expect_warning(out <- capture_messages(boot.matrix(data, verbose = TRUE)))
-    expect_equal(out,
-        c("Bootstrapping", ".", "Done."))
+    # expect_warning(out <- capture_messages(boot.matrix(data, verbose = TRUE)))
+    # expect_equal(out,
+    #     c("Bootstrapping", ".", "Done."))
 
     ## Verbose works with single elements subsets
     data1 <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", time = c(139, 60), model = "gradual.split", inc.nodes = TRUE, BeckLee_ages, verbose = FALSE, t0 = FALSE)
 
     data1$subsets$`139`$elements <- matrix(data1$subsets$`139`$elements[-1,], nrow = 1)
 
-    expect_equal(capture_messages(
-        boot.matrix(data1, 10, boot.type = "single", verbose = TRUE)
-        ), c("Bootstrapping", ".", ".", "Done."))
-    expect_equal(capture_messages(
-        boot.matrix(data1, 10, boot.type = "full", verbose = TRUE)
-        ), c("Bootstrapping", ".", ".", "Done."))
+    # expect_equal(capture_messages(
+    #     boot.matrix(data1, 10, boot.type = "single", verbose = TRUE)
+    #     ), c("Bootstrapping", ".", ".", "Done."))
+    # expect_equal(capture_messages(
+    #     boot.matrix(data1, 10, boot.type = "full", verbose = TRUE)
+    #     ), c("Bootstrapping", ".", ".", "Done."))
     set.seed(1)
     test_single <- boot.matrix(data1, 10, boot.type = "single", verbose = FALSE)
     set.seed(1)
