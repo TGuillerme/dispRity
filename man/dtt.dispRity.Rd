@@ -30,7 +30,7 @@ dtt.dispRity(
 
 \item{scale.time}{Optional, whether to scale the time (between 0 and 1; \code{TRUE}, default) or not (\code{FALSE}).}
 
-\item{...}{Any other arguments to be passed to \\code{geiger::dtt}.}
+\item{...}{Any other arguments to be passed to \code{geiger::dtt}.}
 }
 \description{
 A wrapper for the \code{geiger::dtt} function working with any disparity metric.

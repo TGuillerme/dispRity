@@ -2,7 +2,7 @@
 #'
 #' @description Selects the crown
 #'
-#' @param tree a code{"phylo"} object
+#' @param tree a \code{"phylo"} object
 #' @param inc.nodes whether to include the nodes (\code{TRUE}; default) or not (\code{FALSE}) in the output.
 #' @param output.names whether to output the taxa names (\code{TRUE}; default) or two phylogenetic trees (\code{FALSE}).
 #' 

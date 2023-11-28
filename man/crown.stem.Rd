@@ -7,7 +7,7 @@
 crown.stem(tree, inc.nodes = TRUE, output.names = TRUE)
 }
 \arguments{
-\item{tree}{a code{"phylo"} object}
+\item{tree}{a \code{"phylo"} object}
 
 \item{inc.nodes}{whether to include the nodes (\code{TRUE}; default) or not (\code{FALSE}) in the output.}
 

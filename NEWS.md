@@ -1,11 +1,5 @@
-dispRity v1.7.17 (2023-11-17) *dispRity.multi*
+dispRity v1.8 (2023-11-28) *dispRity.multi*
 =========================
-
-<!-- TODO: route to 1.8 (and that's it for this one)-->
-<!--
- - [ ] update bug with remove.zero.brlen
- -->
-
 
 ### NEW FEATURES
 

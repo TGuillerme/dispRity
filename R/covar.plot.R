@@ -26,7 +26,7 @@
 #' \itemize{
 #'      \item A \code{function} to calculate the centre from a group like the default \code{colMeans} function that calculates the centroid coordinates of each group;
 #'      \item A \code{numeric} value to be replicated as the coordinates for the centre of each group (e.g. \code{centres = 0} sets all the centres at the coordinates \code{c(0,0,0,...)}); or a vector of numeric values to be directly used as the coordinates for each group (e.g. \code{centres = c(1,2,3)} sets all the centres at the coordinates \code{c(1,2,3)}); or a list of numeric values or numeric vectors to be used as the coordinates for the centres of each group;
-#'      \item code{"intercept"} for using the estimated posterior intercept for each sample.
+#'      \item \code{"intercept"} for using the estimated posterior intercept for each sample.
 #' }
 #' 
 #' \emph{NOTE} that if the input contains more dimensions than the visualised dimensions (by default \code{dimensions = c(1,2)}) the ellipses and major axes are projected from an n-dimensional space onto a 2D space which might make them look incorrect.
