@@ -257,7 +257,7 @@ get.bin.ages.R,62,num.decimals
 make.metric.R,54,make.metric
 make.metric_fun.R,2,check.metric
 match.tip.edge.R,43,match.tip.edge
-model.test.R,102,model.test
+model.test.R,97,model.test
 model.test.sim.R,109,model.test.sim
 model.test.sim.R,144,check.arg.inherit
 model.test.wrapper.R,77,model.test.wrapper
