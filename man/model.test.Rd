@@ -33,11 +33,11 @@ model.test(
 A list of class \code{dispRity} and \code{model.test} that can be plotted and summarised via \code{\link{summary.dispRity}} and \code{\link{plot.dispRity}}.
 The list is composed of:
 \itemize{
-	\item{$aic.models}{ summary for each model's small sample Akaike Information Criterion (AICc), delta AICc, and AICc weight}
-	\item{$full.models}{ the list of the full models outputs from \code{\link{optim}} with the estimated parameters, log-likelihood, convergence statistics, and the split.time if applicable }
-	\item{$call}{ the model input}
-	\item{$models.data}{ input data used by the model(s)}
-	\item{$fixed.optima}{ Logical indicating whether a fixed optima was assumed for OU model(s)}
+	\item \code{$aic.models} summary for each model's small sample Akaike Information Criterion (AICc), delta AICc, and AICc weight
+	\item \code{$full.models} the list of the full models outputs from \code{\link{optim}} with the estimated parameters, log-likelihood, convergence statistics, and the split.time if applicable
+	\item \code{$call} the model input
+	\item \code{$models.data} input data used by the model(s)
+	\item \code{$fixed.optima} Logical indicating whether a fixed optima was assumed for OU model(s)
 }
 }
 \description{

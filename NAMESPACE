@@ -17,7 +17,7 @@ importFrom("phangorn", "dist.hamming", "NJ", "RF.dist", "CI", "RI", "optim.parsi
 importFrom("phyclust", "gen.seq.HKY")
 importFrom("phylolm", "phylolm")
 importFrom("utils", "combn", "data", "capture.output", "tail")
-importFrom("vegan", "adonis", "vegdist")
+importFrom("vegan", "adonis2", "vegdist")
 importFrom("scales", "rescale")
 importFrom("GET", "create_curve_set", "rank_envelope")
 importFrom("parallel", "parLapply", "detectCores", "makeCluster", "clusterExport", "stopCluster")
@@ -147,7 +147,6 @@ export(sim.morpho)
 export(multi.ace)
 
 ##S3 
-S3method(adonis, dispRity)
 S3method(matrix, dispRity)
 S3method(plot, char.diff)
 S3method(plot, dispRity)
