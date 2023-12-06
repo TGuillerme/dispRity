@@ -485,10 +485,10 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
         ## Make the lapply loops
         n_trees <- ifelse((is.null(data$call$subsets["trees"]) || is.na(data$call$subsets["trees"])), 1, as.numeric(data$call$subsets["trees"]))
         ## Splitting the lapply loop for bound trees 
-        lapply_loops <- split.lapply_loop(lapply_loop, n_trees)
+        lapply_loops <- lapply_loop.split(lapply_loop, n_trees)
 
         ## Make the matrix list
-        splitted_data <- split.data(data)
+        splitted_data <- bound.data.split(data)
 
         splitted_data[[1]]$call$dimensions
 

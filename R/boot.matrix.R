@@ -378,7 +378,7 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions 
                                     lapply( ## Opens 3
                                         data$subsets,
                                         ## Fun 3: Split the data per tree
-                                        split.subsets, n_trees = n_trees),
+                                        do.split.subsets, n_trees = n_trees),
                                     ## Fun 2: Apply the bootstraps
                                     lapply, bootstrap.wrapper, bootstraps_per_tree, rarefaction, boot.type.fun, verbose),
                                 ## Fun 1: Merge into one normal bootstrap table

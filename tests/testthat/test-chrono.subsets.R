@@ -508,15 +508,15 @@ test_that("chrono.subsets detects distance matrices", {
     expect_equal(msg, "chrono.subsets is applied on what seems to be a distance matrix.\nThe resulting matrices won't be distance matrices anymore!")
 })
 
-test_that("cbind.fill and recursive.combine list works", {
+test_that("do.cbind.fill and recursive.combine list works", {
         x  <- matrix(1, nrow = 2, ncol = 1)
         x2 <- matrix(1, nrow = 2, ncol = 2)
         y  <- matrix(2, nrow = 4, ncol = 1)
-        expect_equal(dim(cbind.fill(x, x2)[[1]]), dim(cbind(x, x2)))
-        expect_equal(dim(cbind.fill(x, y)[[1]]) , c(4,2))
-        expect_equal(dim(cbind.fill(x2, y)[[1]]), c(4,3))
-        expect_equal(cbind.fill(x, y)$elements, matrix(c(1,1,NA,NA,2,2,2,2), ncol = 2))
-        expect_equal(cbind.fill(y, x)$elements, matrix(c(2,2,2,2,1,1,NA,NA), ncol = 2))
+        expect_equal(dim(do.cbind.fill(x, x2)[[1]]), dim(cbind(x, x2)))
+        expect_equal(dim(do.cbind.fill(x, y)[[1]]) , c(4,2))
+        expect_equal(dim(do.cbind.fill(x2, y)[[1]]), c(4,3))
+        expect_equal(do.cbind.fill(x, y)$elements, matrix(c(1,1,NA,NA,2,2,2,2), ncol = 2))
+        expect_equal(do.cbind.fill(y, x)$elements, matrix(c(2,2,2,2,1,1,NA,NA), ncol = 2))
 
         ## Dummy test lists
         test1 <- list("A" = list("elements" = matrix(1, nrow = 1, ncol = 1)),

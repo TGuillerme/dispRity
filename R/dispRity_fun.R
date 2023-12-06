@@ -390,7 +390,7 @@ mapply.wrapper <- function(lapply_loop, data, metrics_list, matrix_decomposition
 }
 
 ## Split the lapply_loop for bound tree/matrices
-split.lapply_loop <- function(lapply_loop, n_trees) {
+lapply_loop.split <- function(lapply_loop, n_trees) {
 
     split.matrix <- function(matrix, n_trees) {
         ncol_out  <- ncol(matrix)/n_trees
@@ -403,7 +403,7 @@ split.lapply_loop <- function(lapply_loop, n_trees) {
 }
 
 ## Split the data for bound tree/matrices
-split.data <- function(data) {
+bound.data.split <- function(data) {
 
     ## Extract the necessary variables
     matrices   <- data$matrix

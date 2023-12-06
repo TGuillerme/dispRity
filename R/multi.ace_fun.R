@@ -65,7 +65,7 @@ make.args <- function(character, character_states, model, castor.options, cores,
 }
 
 ## Update the tree and data
-update.tree.data <- function(castor_args) {
+tree.data.update <- function(castor_args) {
     ## Find if any of the tips have NAs
     if(any(dropped <- apply(castor_args$tip_priors, 1, FUN = function(x) any(is.na(x))))) {
         ## Update the tip_priors
@@ -87,7 +87,7 @@ castor.ace <- function(castor_args) {
     verboseplaceholder <- "silent"
 
     ## Drop the tips with no data if needed
-    dropped <- update.tree.data(castor_args)
+    dropped <- tree.data.update(castor_args)
     castor_args <- dropped[[1]]
     dropped <- dropped[[2]]
 

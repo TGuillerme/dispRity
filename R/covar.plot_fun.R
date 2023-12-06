@@ -68,7 +68,7 @@ VCV.cent.tend <- function(one_covar, fun) {
 }
 
 ## Scale a VCV matrix to another one
-scale.VCV <- function(VCV1, VCV2) {
+VCV.scale <- function(VCV1, VCV2) {
     ## Dividing both VCVs
     
     ## Getting the off diagonal (the scaling ratio)

@@ -136,7 +136,7 @@ covar.plot <- function(data, n, points = TRUE, major.axes = FALSE, ellipses = FA
     ## Scaling the VCVs
     if(do_scale) {
         scale_VCV <- covars[[scale]]
-        covars <- lapply(covars, function(one_covar, scale) mapply(scale.VCV, one_covar, scale, SIMPLIFY = FALSE), scale = scale_VCV)
+        covars <- lapply(covars, function(one_covar, scale) mapply(VCV.scale, one_covar, scale, SIMPLIFY = FALSE), scale = scale_VCV)
     }
 
     ## Measuring the axes

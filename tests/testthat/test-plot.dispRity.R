@@ -207,7 +207,7 @@ test_that("get.quantile.col works", {
     expect_equal(get.quantile.col(1, 2, 2), c(3, 4))
 })
 
-test_that("plot.observed works", {
+test_that("do.plot.observed works", {
 
     ## Set plot params
     plot_params <- get.plot.params(data = disparity,
@@ -219,11 +219,11 @@ test_that("plot.observed works", {
                                   type = "continuous",
                                   observed_args = list(observed = TRUE, col = c("black", "blue")))
     plot(1)
-    expect_null(plot.observed(plot_params))
+    expect_null(do.plot.observed(plot_params))
 
     plot(1)
     plot_params <- list(observed_args = list(observed = FALSE))
-    expect_null(plot.observed(plot_params))
+    expect_null(do.plot.observed(plot_params))
 
 })
 
@@ -273,7 +273,7 @@ test_that("plot.dispRity examples work", {
     error <- capture_error(plot(test_wrong, rarefaction = TRUE, col = "blue"))
     expect_equal(error[[1]], "Impossible to plot rarefaction curves with only one level of rarefaction. Try to use plot(..., rarefaction = 5) to just see the rarefied data for that level instead.")
 
-    ## Testing additional behaviours for plot.discrete/continuous
+    ## Testing additional behaviours for do.plot.discrete/continuous
     expect_null(plot(disparity, rarefaction = 5, type = "l", col = c("blue", "orange")))
     expect_null(plot(disparity, rarefaction = 5, type = "p", col = "blue", observed = TRUE))
     expect_null(plot(disparity, type = "c", col = c("blue", "orange")))
@@ -313,8 +313,8 @@ test_that("plot.dispRity with preview", {
     data_cust <- custom.subsets(BeckLee_mat99, crown.stem(BeckLee_tree, inc.nodes = TRUE))
     data_slice <- chrono.subsets(BeckLee_mat99, tree = BeckLee_tree, method = "discrete", time = 5)
 
-    expect_null(plot.preview(data_cust, specific.args = list(dimensions = c(1,2), matrix = 1)))
-    expect_null(plot.preview(data_slice, specific.args = list(dimensions = c(1,2), matrix = 1)))
+    expect_null(do.plot.preview(data_cust, specific.args = list(dimensions = c(1,2), matrix = 1)))
+    expect_null(do.plot.preview(data_slice, specific.args = list(dimensions = c(1,2), matrix = 1)))
     expect_null(plot(data_cust))
     expect_null(plot(data_slice, type = "preview", specific.args = list(dimensions = c(38, 22)), main = "Ha!"))
     expect_null(plot(data_slice, type = "preview", legend = FALSE, main = "Ha!"))

@@ -1,4 +1,4 @@
-dispRity v1.8 (2023-11-28) *dispRity.multi*
+dispRity v1.8 (2023-12-06) *dispRity.multi*
 =========================
 
 ### NEW FEATURES

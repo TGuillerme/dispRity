@@ -442,7 +442,7 @@ multi.ace <- function(data, tree, models = "ER", threshold = TRUE, special.token
                                    "invariant_characters_states")
         export_functions_list <- c("one.tree.ace",
                                    "castor.ace",
-                                   "update.tree.data",
+                                   "tree.data.update",
                                    "add.state.names",
                                    "translate.likelihood")
 

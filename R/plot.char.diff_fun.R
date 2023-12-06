@@ -14,7 +14,7 @@ select.nas <- function(column) {
 }
 
 ## Plotting density
-plot.char.diff.density <- function(matrix, main, legend, col, xlim, ylim, legend.pos, xlab, ylab) {
+do.plot.char.diff.density <- function(matrix, main, legend, col, xlim, ylim, legend.pos, xlab, ylab) {
     ## Removing columns with NAs
     NA_columns <- which(apply(matrix, 2, select.nas) == TRUE)
     

@@ -73,13 +73,13 @@ test_that("get.digit", {
     expect_equal(get.digit(1234.123456789), 0)
 })
 
-test_that("round.column", {
+test_that("column.round", {
     column <- c(12.123, 1.1234)
-    expect_equal(round.column(column, digits = "default"), c(12.12, 1.12))
-    expect_equal(round.column(column, digits = 5), c(12.12300, 1.12340))
-    expect_equal(round.column(column, digits = 1), c(12.1, 1.1))
-    expect_equal(round.column(column, digits = 0), c(12, 1))
-    expect_equal(round.column(column, digits = -1), c(10, 0))
+    expect_equal(column.round(column, digits = "default"), c(12.12, 1.12))
+    expect_equal(column.round(column, digits = 5), c(12.12300, 1.12340))
+    expect_equal(column.round(column, digits = 1), c(12.1, 1.1))
+    expect_equal(column.round(column, digits = 0), c(12, 1))
+    expect_equal(column.round(column, digits = -1), c(10, 0))
 })
 
 test_that("digits.fun", {

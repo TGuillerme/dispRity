@@ -311,7 +311,7 @@ get.quantile.col <- function(cent_tend_col, cis, n_quantiles) {
 }
 
 ## Observed points
-plot.observed <- function(plot_params) {
+do.plot.observed <- function(plot_params) {
     if(plot_params$observed_args$observed) {
 
         ## Set the observed arguments
@@ -330,7 +330,7 @@ plot.observed <- function(plot_params) {
 }
 
 ## Plot elements
-plot.elements <- function(plot_params, data_params, type) {
+do.plot.elements <- function(plot_params, data_params, type) {
     ## Elements plots
     add_args <- plot_params$elements_args
     add_args$elements <- NULL
@@ -406,7 +406,7 @@ plot.elements <- function(plot_params, data_params, type) {
 }
 
 ## discrete plotting
-plot.discrete <- function(plot_params, data_params, add, density, type) {
+do.plot.discrete <- function(plot_params, data_params, add, density, type) {
 
     ## Get the shifting argument
     shift <- get.shift(add, plot_params)
@@ -515,7 +515,7 @@ plot.discrete <- function(plot_params, data_params, add, density, type) {
 }
 
 ## continuous plotting
-plot.continuous <- function(plot_params, data_params, add, density) {
+do.plot.continuous <- function(plot_params, data_params, add, density) {
     ## Get the shifting argument
     shift <- get.shift(add, plot_params)
 
@@ -628,7 +628,7 @@ plot.continuous <- function(plot_params, data_params, add, density) {
 }
 
 ## Plot the rarefaction
-plot.rarefaction <- function(plot_params, data_params, data) {
+do.plot.rarefaction <- function(plot_params, data_params, data) {
 
     ## How many rarefaction plots?
     n_plots <- length(data$subsets)
@@ -691,7 +691,7 @@ plot.rarefaction <- function(plot_params, data_params, data) {
 }
 
 ## Plotting a space preview
-plot.preview <- function(data, specific.args, ...) {
+do.plot.preview <- function(data, specific.args, ...) {
 
     dots <- list(...)
 
@@ -876,7 +876,7 @@ plot.preview <- function(data, specific.args, ...) {
 }
 
 ## The following is a modified version of plot.randtest from ade4 v1.4-3
-plot.randtest <- function(plot_data) {
+do.plot.randtest <- function(plot_data) {
     
     ## Extracting the elements
     dots <- plot_data$dots
@@ -939,7 +939,7 @@ plot.randtest <- function(plot_data) {
 }
 
 ## The following is a modified version of dtt plots (from https://github.com/mwpennell/geiger-v2/blob/master/R/disparity.R)
-plot.dtt <- function(data, quantiles, cent.tend, density, ...) {
+do.plot.dtt <- function(data, quantiles, cent.tend, density, ...) {
     dots <- list(...)
 
     plot_args <- dots
@@ -1022,7 +1022,7 @@ plot.dtt <- function(data, quantiles, cent.tend, density, ...) {
 }
 
 ## Plotting model tests results
-plot.model.test <- function(data, ...) {
+do.plot.model.test <- function(data, ...) {
 
     plot_args <- list(...)
     ## Set the default plotting arguments
@@ -1040,7 +1040,7 @@ plot.model.test <- function(data, ...) {
 }
 
 ## Plotting the model simulation results
-plot.model.sim <- function(data, add, density, quantiles, cent.tend, ...) {
+do.plot.model.sim <- function(data, add, density, quantiles, cent.tend, ...) {
 
     dots <- list(...)
 
@@ -1079,13 +1079,13 @@ plot.model.sim <- function(data, add, density, quantiles, cent.tend, ...) {
     options(warn = 0)
 
     ## Plot the simulated data
-    plot.continuous(plot_params, data_params, add = add, density = density)
+    do.plot.continuous(plot_params, data_params, add = add, density = density)
 }
 
 ## Plotting test metrics
-plot.test.metric <- function(data, specific.args, ...) {
+do.plot.test.metric <- function(data, specific.args, ...) {
 
-    # specific.args <- list() ; warning("DEBUG plot.test.metric")
+    # specific.args <- list() ; warning("DEBUG do.plot.test.metric")
 
     ## Adding slopes
     add.slope <- function(model, col) {
@@ -1455,7 +1455,7 @@ plot.test.metric <- function(data, specific.args, ...) {
 }
 
 ## Plot axes
-plot.axes <- function(data, ...) {
+do.plot.axes <- function(data, ...) {
 
     ## Magic value for below
     transparency <- 0.5
@@ -1539,7 +1539,7 @@ plot.axes <- function(data, ...) {
 }
 
 ## Plot projections
-plot.projection <- function(data, specific.args, cent.tend, ...) {
+do.plot.projection <- function(data, specific.args, cent.tend, ...) {
 
     dots <- list(...)
 

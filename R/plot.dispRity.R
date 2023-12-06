@@ -138,7 +138,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
                 ## Select the right dataset
                 plot_data$data_sub <- data[[1]]
                 ## Run the plot
-                plot.randtest(plot_data)
+                do.plot.randtest(plot_data)
             } else {
                 ## Set up multiple plot windows
                 plot_size <- ifelse(length_data == 3, 4, length_data)
@@ -159,7 +159,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
                         plot_data$dots$main <- dots$main[model]
                     }
                     ## Run the plot
-                    plot.randtest(plot_data)
+                    do.plot.randtest(plot_data)
                 }
                 par(op_tmp)
             }
@@ -171,7 +171,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         if(is(data, c("dispRity")) && is(data, c("dtt"))) {
         
             ## Dtt style plots
-            plot.dtt(data, quantiles, cent.tend, density, ...)
+            do.plot.dtt(data, quantiles, cent.tend, density, ...)
             rm(data)
             return(invisible())
         } 
@@ -180,7 +180,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         if(is(data, c("dispRity")) && is(data, c("model.test"))) {
 
             ## Plotting the model support
-            plot.model.test(data, ...)
+            do.plot.model.test(data, ...)
             rm(data)
             return(invisible())
         }
@@ -197,7 +197,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
                 check.length(density, 1, " must be a single numeric value.")
             }
 
-            plot.model.sim(data, add, density, quantiles, cent.tend, ...)
+            do.plot.model.sim(data, add, density, quantiles, cent.tend, ...)
             rm(data)
             return(invisible())
         }
@@ -206,7 +206,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         if(is(data, c("dispRity")) && is(data, c("test.metric"))) {
 
             ## Plotting the test.metric results
-            plot.test.metric(data, specific.args, ...)
+            do.plot.test.metric(data, specific.args, ...)
             rm(data)
                 
             ## Exit subclass plots
@@ -217,7 +217,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         if(is(data, c("dispRity")) && is(data, c("axes"))) {
 
             ## Plot the data
-            plot.axes(data, ...)
+            do.plot.axes(data, ...)
             rm(data)
 
             ## Exit subclass plots
@@ -228,7 +228,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
         if(is(data, c("dispRity")) && is(data, c("projection"))) {
 
             ## Plot the data
-            plot.projection(data, specific.args, cent.tend, ...)
+            do.plot.projection(data, specific.args, cent.tend, ...)
             rm(data)
 
             ## Exit subclass plots
@@ -290,7 +290,7 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
     ## Plot the matrix preview
     if(!missing(type) && type == "preview") {
         ## Plotting the matrix preview
-        plot.preview(data, specific.args, ...)
+        do.plot.preview(data, specific.args, ...)
         rm(data)
         return(invisible())
     }
@@ -423,13 +423,13 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
 
     switch(plot_task,
         "rarefaction" = {
-            plot.rarefaction(plot_params, data_params, data)
+            do.plot.rarefaction(plot_params, data_params, data)
         },
         "continuous" = {
-            plot.continuous(plot_params, data_params, add = add, density = density)
+            do.plot.continuous(plot_params, data_params, add = add, density = density)
         },
         "polygon" = {
-            plot.discrete(plot_params, data_params, add = add, density = density, type = type)
+            do.plot.discrete(plot_params, data_params, add = add, density = density, type = type)
         },
         "box" = {
             ## Set the box arguments
@@ -443,12 +443,12 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
 
     ## Add the observed
     if(plot_params$observed_args$observed) {
-        plot.observed(plot_params)
+        do.plot.observed(plot_params)
     }
 
     ## Add elements
     if(plot_params$elements_args$elements) {
-        plot.elements(plot_params, data_params, type)
+        do.plot.elements(plot_params, data_params, type)
     }
 
     rm(plot_params)

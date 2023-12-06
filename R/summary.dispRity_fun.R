@@ -71,7 +71,7 @@ get.digit <- function(column) {
 }
 
 
-round.column <- function(column, digits) {
+column.round <- function(column, digits) {
     ## Get the digits value
     digits <- ifelse(digits != "default", digits, get.digit(as.numeric(column)))
     ## Round the table
@@ -91,7 +91,7 @@ digits.fun <- function(results_table, digits, model.test = FALSE) {
 
     ## Apply the digits
     rounded_table <- as.matrix(results_table[,c(start_column:ncol(results_table))])
-    rounded_table <- apply(rounded_table, 2, round.column, digits)
+    rounded_table <- apply(rounded_table, 2, column.round, digits)
     results_table[,c(start_column:ncol(results_table))] <- rounded_table
 
     return(results_table)

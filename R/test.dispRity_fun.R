@@ -27,19 +27,19 @@ convert.to.numeric <- function(list, object) {
 }
 
 ## Getting the names (character) (convert.to.character internal)
-names.fun <- function(list, object) {
+name.fun <- function(list, object) {
     return(names(object[c(list)]))
 }
 
 ## convert a list from numeric to character
 convert.to.character <- function(list, object) {
     ## Applying to the list
-    return(lapply(list, names.fun, object))
+    return(lapply(list, name.fun, object))
 }
 
 
 ## function for repeating the extracted_data names (list to table internal)
-rep.names <- function(name, subsets) {
+repeat.names <- function(name, subsets) {
     return(rep(name, subsets))
 }
 
@@ -56,7 +56,7 @@ list.to.table <- function(extracted_data) {
     subsets_length <- unlist(lapply(extracted_data, length), recursive = FALSE)
 
     ## Create the data.frame
-    output <- data.frame("data" = unlist(extracted_data), row.names = NULL, "subsets" = unlist(mapply(rep.names, names_list, subsets_length, SIMPLIFY = FALSE)))
+    output <- data.frame("data" = unlist(extracted_data), row.names = NULL, "subsets" = unlist(mapply(repeat.names, names_list, subsets_length, SIMPLIFY = FALSE)))
 
     ## Transform groups to numeric
     # if(style == "binomial") {

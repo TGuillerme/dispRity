@@ -105,7 +105,7 @@ combine.bootstraps <- function(one_bs_result, one_subsets) {
 }
 
 ## Split the subsets
-split.subsets <- function(one_subset, n_trees) {
+do.split.subsets <- function(one_subset, n_trees) {
     ## split the whole dataset
     ncol_out <- ncol(one_subset$elements)/n_trees
     splitted <- lapply(
