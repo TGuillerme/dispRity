@@ -11,6 +11,7 @@
 \alias{centroids}
 \alias{mode.val}
 \alias{ellipsoid.volume}
+\alias{ellipse.volume}
 \alias{edge.length.tree}
 \alias{convhull.surface}
 \alias{convhull.volume}

@@ -2,6 +2,7 @@
 % Please edit documentation in R/dispRity.utilities.R
 \name{scale.dispRity}
 \alias{scale.dispRity}
+\alias{rescale.dispRity}
 \title{Rescaling and centering disparity results.}
 \usage{
 \method{scale}{dispRity}(x, center = FALSE, scale = TRUE, ...)

@@ -628,6 +628,8 @@ remove.tree <- function(data) {
 
 #' @title Rescaling and centering disparity results.
 #'
+#' @aliases rescale.dispRity
+#'
 #' @description Scales or/and centers the disparity measurements.
 #'
 #' @param x a \code{dispRity} object.
