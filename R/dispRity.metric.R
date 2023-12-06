@@ -1,5 +1,5 @@
 #' @name dispRity.metric
-#' @aliases dimension.level3.fun dimension.level2.fun dimension.level1.fun between.groups.fun variances ranges centroids mode.val ellipse.volume edge.length.tree convhull.surface convhull.volume diagonal ancestral.dist pairwise.dist span.tree.length n.ball.volume radius neighbours displacements quantiles func.eve func.div angles deviations group.dist point.dist projections projections.tree projections.between disalignment roundness
+#' @aliases dimension.level3.fun dimension.level2.fun dimension.level1.fun between.groups.fun variances ranges centroids mode.val ellipsoid.volume edge.length.tree convhull.surface convhull.volume diagonal ancestral.dist pairwise.dist span.tree.length n.ball.volume radius neighbours displacements quantiles func.eve func.div angles deviations group.dist point.dist projections projections.tree projections.between disalignment roundness
 #' @title Disparity metrics
 #'
 #' @description Different implemented disparity metrics.
@@ -31,7 +31,7 @@
 #'          \item WARNING: This function is the generalisation of Pythagoras' theorem and thus \bold{works only if each dimensions are orthogonal to each other}.
 #'      }
 #'
-#'   \item \code{ellipse.volume}: calculates the ellipsoid volume of a matrix. This function tries to determine the nature of the input matrix and uses one of these following methods to calculate the volume. You can always specify the method using \code{method = "my_choice"} to overrun the automatic method choice.
+#'   \item \code{ellipsoid.volume}: calculates the ellipsoid volume of a matrix. This function tries to determine the nature of the input matrix and uses one of these following methods to calculate the volume. You can always specify the method using \code{method = "my_choice"} to overrun the automatic method choice.
 #'      \itemize{
 #'             \item \code{"eigen"}: this method directly calculates the eigen values from the input matrix (using \code{\link{eigen}}). This method is automatically selected if the input matrix is "distance like" (i.e. square with two mirrored triangles and a diagonal).
 #'             \item \code{"pca"}: this method calculates the eigen values as the sum of the variances of the matrix (\code{abs(apply(var(matrix),2, sum))}). This is automatically selected if the input matrix is NOT "distance like". Note that this method is faster than \code{"eigen"} but only works if the input matrix is an ordinated matrix from a PCA, PCO, PCoA, NMDS or MDS.
@@ -218,13 +218,13 @@
 #' ## The edge lengths for each edge leading to the elements in the matrix
 #' edge.length.tree(named_matrix, tree = dummy_tree, to.root = FALSE)
 #' 
-#' ## ellipse.volume
+#' ## ellipsoid.volume
 #' ## Ellipsoid volume of a matrix
-#' ellipse.volume(dummy_matrix)
+#' ellipsoid.volume(dummy_matrix)
 #' ## Calculating the same volume with provided eigen values
 #' ordination <- prcomp(dummy_matrix)
 #' ## Calculating the ellipsoid volume by providing your own eigen values
-#' ellipse.volume(ordination$x, method = ordination$sdev^2)
+#' ellipsoid.volume(ordination$x, method = ordination$sdev^2)
 #' 
 #' ## func.div
 #' ## Functional divergence
@@ -397,7 +397,7 @@ dimension.level1.fun <- function(matrix, ...) {
     cat("\n?convhull.surface")
     cat("\n?convhull.volume")
     cat("\n?diagonal")
-    cat("\n?ellipse.volume")
+    cat("\n?ellipsoid.volume")
     cat("\n?func.div")
     cat("\n?func.eve")
     cat("\n?group.dist")
@@ -515,7 +515,7 @@ mode.val <- function(matrix, ...){
 }
 
 ## Calculate the ellipse volume of matrix
-ellipse.volume <- function(matrix, method, ...) {
+ellipsoid.volume <- function(matrix, method, ...) {
 
     ## Initialising the variables
     ncol_matrix <- ncol(matrix)
@@ -549,6 +549,10 @@ ellipse.volume <- function(matrix, method, ...) {
 
     ## Volume (from https://keisan.casio.com/exec/system/1223381019)
     return(pi^(ncol_matrix/2)/gamma((ncol_matrix/2)+1)*prod(semi_axes))
+}
+## Alias
+ellipse.volume <- function(x, ...) {
+    ellipsoid.volume(matrix = x, ...)
 }
 
 ## Calculate the convex hull hypersurface

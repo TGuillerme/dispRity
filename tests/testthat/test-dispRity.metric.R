@@ -7,7 +7,7 @@ nocov <- TRUE
 test_that("dimension generic", {
     expect_equal(capture_output(dimension.level3.fun()), "No implemented Dimension level 3 functions implemented in dispRity!\nYou can create your own by using: ?make.metric")
     expect_equal(capture_output(dimension.level2.fun()), "Dimension level 2 functions implemented in dispRity:\n?ancestral.dist\n?angles\n?centroids\n?deviations\n?displacements\n?edge.length.tree\n?neighbours\n?pairwise.dist\n?point.dist\n?projections\n?projections.tree\n?ranges\n?radius\n?variances\n?span.tree.length")
-    expect_equal(capture_output(dimension.level1.fun()), "Dimension level 1 functions implemented in dispRity:\n?convhull.surface\n?convhull.volume\n?diagonal\n?ellipse.volume\n?func.div\n?func.eve\n?group.dist\n?mode.val\n?n.ball.volume\n?roundness")
+    expect_equal(capture_output(dimension.level1.fun()), "Dimension level 1 functions implemented in dispRity:\n?convhull.surface\n?convhull.volume\n?diagonal\n?ellipsoid.volume\n?func.div\n?func.eve\n?group.dist\n?mode.val\n?n.ball.volume\n?roundness")
     expect_equal(capture_output(between.groups.fun()), "Between groups functions implemented in dispRity:\n?disalignment # level 1\n?group.dist # level 1\n?point.dist # level 2\n?projections.between # level 2")
 })
 
@@ -130,7 +130,7 @@ test_that("mode.val metric", {
     	)
 })
 
-test_that("ellipse.volume metric", {
+test_that("ellipsoid.volume metric", {
     # Calculate the proper volume (using the eigen values)
     volume.true <- function(matrix, eigen.val) {
         #Correct calculation of the volume (using the eigen values)
@@ -156,14 +156,14 @@ test_that("ellipse.volume metric", {
     # Calculate the true volume (with eigen values)
     true_vol <- volume.true(dummy_ord, dummy_eig/(nrow(dummy_dis)-1))
     # Calculate the volume without the eigen values
-    test_vol <- ellipse.volume(dummy_ord)
+    test_vol <- ellipsoid.volume(dummy_ord)
     # test
     expect_equal(
     	true_vol, test_vol
     	)
     # test with the eigen val estimation
     expect_equal(
-        true_vol, ellipse.volume(dummy_ord, eigen.value = dummy_eig/(nrow(dummy_dis)-1))
+        true_vol, ellipsoid.volume(dummy_ord, eigen.value = dummy_eig/(nrow(dummy_dis)-1))
         )
 
     # Now testing for PCOA
@@ -173,14 +173,14 @@ test_that("ellipse.volume metric", {
     # Calculate the true volume (with eigen values)
     true_vol <- volume.true(dummy_ord, dummy_eig/(nrow(dummy_dis)-1))
     # Calculate the volume without the eigen values
-    test_vol <- ellipse.volume(dummy_ord)
+    test_vol <- ellipsoid.volume(dummy_ord)
     # test
     expect_equal(
     	true_vol, test_vol
     	)
     # test with the eigen val estimation
     expect_equal(
-        true_vol, ellipse.volume(dummy_ord, eigen.value = dummy_eig/(nrow(dummy_dis)-1))
+        true_vol, ellipsoid.volume(dummy_ord, eigen.value = dummy_eig/(nrow(dummy_dis)-1))
         )
 
 

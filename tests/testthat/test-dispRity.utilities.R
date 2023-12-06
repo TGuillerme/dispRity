@@ -476,8 +476,8 @@ test_that("get.disparity", {
     expect_equal(length(test[[1]]), nrow(BeckLee_mat99))
 })
 
-## rescale.dispRity
-test_that("rescale.dispRity", {
+## scale.dispRity
+test_that("scale.dispRity", {
     data(BeckLee_mat50)
     groups <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2), rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1, dimnames = list(rownames(BeckLee_mat50))))
     customised_subsets <- custom.subsets(BeckLee_mat50, groups)
@@ -485,31 +485,31 @@ test_that("rescale.dispRity", {
     data <- dispRity(bootstrapped_data, metric = c(sum, centroids))
 
     expect_error(
-        rescale.dispRity(bootstrapped_data)
+        scale.dispRity(bootstrapped_data)
         )
     expect_error(
-        rescale.dispRity(data, scale = "yes")
+        scale.dispRity(data, scale = "yes")
         )
     expect_error(
-        rescale.dispRity(data, center = "yes")
+        scale.dispRity(data, center = "yes")
         )
     expect_error(
-        rescale.dispRity(data, center = c(1,2))
+        scale.dispRity(data, center = c(1,2))
         )
 
     expect_is(
-        rescale.dispRity(data, scale = TRUE)
+        scale.dispRity(data, scale = TRUE)
         ,"dispRity")
     expect_is(
-        rescale.dispRity(data, scale = FALSE)
+        scale.dispRity(data, scale = FALSE)
         ,"dispRity")
     expect_is(
-        rescale.dispRity(data, scale = TRUE, center = TRUE)
+        scale.dispRity(data, scale = TRUE, center = TRUE)
         ,"dispRity")
 
     base <- summary(data)
-    scaled_down <- summary(rescale.dispRity(data, scale = TRUE))
-    scaled_up <- summary(rescale.dispRity(data, scale = 0.1))
+    scaled_down <- summary(scale.dispRity(data, scale = TRUE))
+    scaled_up <- summary(scale.dispRity(data, scale = 0.1))
     expect_lt(
         scaled_down[1,3]
         ,base[1,3])

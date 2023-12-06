@@ -45,7 +45,7 @@ test_that("as.covar works in standalone", {
     if(!nocov) expect_true(eval.covar(test$level1.fun, null.return = FALSE))
 
     ## level 1 covar (with formals)
-    metric <- as.covar(ellipse.volume)
+    metric <- as.covar(ellipsoid.volume)
     if(!nocov) expect_true(check.covar(metric, covar_data)$is_covar)
     test <- get.dispRity.metric.handle(metric, match_call, data = covar_data, tree = NULL)$levels
     expect_true(is.null(test$level3.fun))

@@ -118,7 +118,7 @@ test_that("normal printing", {
 
 test_that("randtest printing", {
     set.seed(1)
-    obs_disparity <- dispRity(BeckLee_mat50, metric = ellipse.volume, dimensions = c(1:5))
+    obs_disparity <- dispRity(BeckLee_mat50, metric = ellipsoid.volume, dimensions = c(1:5))
     expect_warning(test <- null.test(obs_disparity, replicates = 100, null.distrib = rnorm))
 
     expect_equal(capture.output(test),

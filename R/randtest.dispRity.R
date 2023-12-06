@@ -2,7 +2,7 @@
 #'
 #' @description Performs a random test (aka permutation test) on a \code{matrix} or a \code{dispRity} object.
 #'
-#' @param data The \code{matrix} or a \code{dispRity} object to draw from.
+#' @param xtest The \code{matrix} or a \code{dispRity} object to draw from.
 #' @param subsets A \code{vector} of elements to test (or a \code{list} of \code{vectors} - see details).
 #' @param replicates A \code{numeric} value for the number of replicates (\code{default = 100}).
 #' @param metric A \code{function} to be the statistic to apply to the subset.
@@ -65,9 +65,12 @@
 #' @author Thomas Guillerme
 #' @export
 
-randtest.dispRity <- function(data, subsets, metric, replicates = 100, resample = TRUE, alter = "two-sided", ...) {
+randtest.dispRity <- function(xtest, subsets, metric, replicates = 100, resample = TRUE, alter = "two-sided", ...) {
     match_call <- match.call()
     args <- list(...)
+    data <- xtest
+    names(match_call)[which(names(match_call) == "xtest")] <- "data"
+
 
     ## Sanitizing
     ## Distribution and subset

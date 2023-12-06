@@ -4,7 +4,7 @@
 
 # Testing data
 data(BeckLee_mat50)
-single_disp <- dispRity(BeckLee_mat50, metric = ellipse.volume)
+single_disp <- dispRity(BeckLee_mat50, metric = ellipsoid.volume)
 groups <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2),
      rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1,
      dimnames = list(rownames(BeckLee_mat50))))

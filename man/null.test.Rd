@@ -42,7 +42,7 @@ Testing the difference between the observed disparity and disparity under a null
 ## Load the Beck & Lee 2014 data
 data(BeckLee_mat50)
 ## Calculating the disparity as the ellipsoid volume
-obs_disparity <- dispRity(BeckLee_mat50, metric = ellipse.volume)
+obs_disparity <- dispRity(BeckLee_mat50, metric = ellipsoid.volume)
 ## Testing against normal distribution
 results <- null.test(obs_disparity, replicates = 100, null.distrib = rnorm)
 results ; plot(results)

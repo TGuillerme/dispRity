@@ -630,7 +630,7 @@ remove.tree <- function(data) {
 #'
 #' @description Scales or/and centers the disparity measurements.
 #'
-#' @param data a \code{dispRity} object.
+#' @param x a \code{dispRity} object.
 #' @param center either a \code{logical} value or a \code{numeric} vector of length equal to the number of elements of \code{data} (default is \code{FALSE}).
 #' @param scale either a \code{logical} value or a \code{numeric} vector of length equal to the number of elements of \code{data} (default is \code{TRUE}).
 #' @param use.all \code{logical}, whether to scale/center using the full distribution (i.e. all the disparity values) or only the distribution within each subsets of bootstraps (default is \code{TRUE}).
@@ -641,9 +641,9 @@ remove.tree <- function(data) {
 #' data(disparity)
 #' 
 #' ## Scaling the data
-#' summary(rescale.dispRity(disparity, scale = TRUE)) # Dividing by the maximum
+#' summary(scale.dispRity(disparity, scale = TRUE)) # Dividing by the maximum
 #' ## Multiplying by 10 (dividing by 0.1)
-#' summary(rescale.dispRity(disparity, scale = 0.1))
+#' summary(scale.dispRity(disparity, scale = 0.1))
 #'
 #' @seealso \code{\link{dispRity}}, \code{\link{test.dispRity}}, \code{\link[base]{scale}}.
 #'
@@ -659,11 +659,12 @@ remove.tree <- function(data) {
 # data <- dispRity(bootstrapped_data, metric = c(sum, centroids))
 
 # summary(data) # No scaling
-# summary(rescale.dispRity(data, scale = TRUE)) # Dividing by the maximum
-# summary(rescale.dispRity(data, scale = 0.1)) # Multiplying by 10
-# summary(rescale.dispRity(data, center = TRUE, scale = TRUE)) # Scaling and centering
-rescale.dispRity <- function(data, center = FALSE, scale = TRUE, use.all = TRUE, ...) {
+# summary(scale.dispRity(data, scale = TRUE)) # Dividing by the maximum
+# summary(scale.dispRity(data, scale = 0.1)) # Multiplying by 10
+# summary(scale.dispRity(data, center = TRUE, scale = TRUE)) # Scaling and centering
+scale.dispRity <- function(x, center = FALSE, scale = TRUE, use.all = TRUE, ...) {
 
+    data <- x
     match_call <- match.call()
 
     ## data
@@ -705,7 +706,9 @@ rescale.dispRity <- function(data, center = FALSE, scale = TRUE, use.all = TRUE,
 
     return(data)
 }
-
+rescale.dispRity <- function(x, ...) {
+    scale.dispRity(x, ...)
+}
 
 
 

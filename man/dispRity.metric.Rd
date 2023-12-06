@@ -10,7 +10,7 @@
 \alias{ranges}
 \alias{centroids}
 \alias{mode.val}
-\alias{ellipse.volume}
+\alias{ellipsoid.volume}
 \alias{edge.length.tree}
 \alias{convhull.surface}
 \alias{convhull.volume}
@@ -69,7 +69,7 @@ The currently implemented dimension-level 1 metrics are:
          \item WARNING: This function is the generalisation of Pythagoras' theorem and thus \bold{works only if each dimensions are orthogonal to each other}.
      }
 
-  \item \code{ellipse.volume}: calculates the ellipsoid volume of a matrix. This function tries to determine the nature of the input matrix and uses one of these following methods to calculate the volume. You can always specify the method using \code{method = "my_choice"} to overrun the automatic method choice.
+  \item \code{ellipsoid.volume}: calculates the ellipsoid volume of a matrix. This function tries to determine the nature of the input matrix and uses one of these following methods to calculate the volume. You can always specify the method using \code{method = "my_choice"} to overrun the automatic method choice.
      \itemize{
             \item \code{"eigen"}: this method directly calculates the eigen values from the input matrix (using \code{\link{eigen}}). This method is automatically selected if the input matrix is "distance like" (i.e. square with two mirrored triangles and a diagonal).
             \item \code{"pca"}: this method calculates the eigen values as the sum of the variances of the matrix (\code{abs(apply(var(matrix),2, sum))}). This is automatically selected if the input matrix is NOT "distance like". Note that this method is faster than \code{"eigen"} but only works if the input matrix is an ordinated matrix from a PCA, PCO, PCoA, NMDS or MDS.
@@ -242,13 +242,13 @@ edge.length.tree(named_matrix, tree = dummy_tree)
 ## The edge lengths for each edge leading to the elements in the matrix
 edge.length.tree(named_matrix, tree = dummy_tree, to.root = FALSE)
 
-## ellipse.volume
+## ellipsoid.volume
 ## Ellipsoid volume of a matrix
-ellipse.volume(dummy_matrix)
+ellipsoid.volume(dummy_matrix)
 ## Calculating the same volume with provided eigen values
 ordination <- prcomp(dummy_matrix)
 ## Calculating the ellipsoid volume by providing your own eigen values
-ellipse.volume(ordination$x, method = ordination$sdev^2)
+ellipsoid.volume(ordination$x, method = ordination$sdev^2)
 
 ## func.div
 ## Functional divergence

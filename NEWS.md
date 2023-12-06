@@ -42,6 +42,12 @@ dispRity v1.8 (2023-12-06) *dispRity.multi*
  * `make.metric` now internally handles `covar` object correctly (i.e. as distance matrices).
  * Calculating disparity for multiple matrices and customised subsets now works as expected for all metric levels.
 
+### DEPRECATED AND DEFUNCT
+
+ * `ellipse.volume` has been changed to `ellipsoid.volume` to more accurately reflect what it is measuring.
+ * `rescale.dispRity` has been changed to `scale.dispRity` and correctly registered as a S3 method.
+
+
 dispRity v1.7 (2022-08-08) *MacMacGlimm*
 =========================
 

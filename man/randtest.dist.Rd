@@ -4,10 +4,10 @@
 \alias{randtest.dist}
 \title{Randtest distance}
 \usage{
-\method{randtest}{dist}(randtest, quantile = c(0.025, 0.975), abs = FALSE)
+\method{randtest}{dist}(xtest, quantile = c(0.025, 0.975), abs = FALSE)
 }
 \arguments{
-\item{randtest}{an object of class \code{"randtest"}}
+\item{xtest}{an object of class \code{"randtest"}}
 
 \item{quantile}{a \code{numeric} value for the quantile edges to compare the observed data to on either sides (by default \code{quantile = c(0.025. 0.975)}).}
 

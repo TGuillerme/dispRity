@@ -5,7 +5,7 @@
 \title{Random (permutation) test}
 \usage{
 \method{randtest}{dispRity}(
-  data,
+  xtest,
   subsets,
   metric,
   replicates = 100,
@@ -15,7 +15,7 @@
 )
 }
 \arguments{
-\item{data}{The \code{matrix} or a \code{dispRity} object to draw from.}
+\item{xtest}{The \code{matrix} or a \code{dispRity} object to draw from.}
 
 \item{subsets}{A \code{vector} of elements to test (or a \code{list} of \code{vectors} - see details).}
 
