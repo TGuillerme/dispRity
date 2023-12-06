@@ -633,9 +633,11 @@ remove.tree <- function(data) {
 #' @param x a \code{dispRity} object.
 #' @param center either a \code{logical} value or a \code{numeric} vector of length equal to the number of elements of \code{data} (default is \code{FALSE}).
 #' @param scale either a \code{logical} value or a \code{numeric} vector of length equal to the number of elements of \code{data} (default is \code{TRUE}).
-#' @param use.all \code{logical}, whether to scale/center using the full distribution (i.e. all the disparity values) or only the distribution within each subsets of bootstraps (default is \code{TRUE}).
 #' @param ... optional arguments to be passed to \code{scale}.
 #' 
+#' @details
+#' To scale or and center using the full distribution (i.e. all the disparity values) or only the distribution within each subsets of bootstraps you can use the optional argument \code{use.all} as a logical. By default is \code{use.all = TRUE} and uses all the disparity values not only the ones in the subset.
+#'
 #' @examples
 #' ## Load the disparity data based on Beck & Lee 2014
 #' data(disparity)
@@ -662,8 +664,15 @@ remove.tree <- function(data) {
 # summary(scale.dispRity(data, scale = TRUE)) # Dividing by the maximum
 # summary(scale.dispRity(data, scale = 0.1)) # Multiplying by 10
 # summary(scale.dispRity(data, center = TRUE, scale = TRUE)) # Scaling and centering
-scale.dispRity <- function(x, center = FALSE, scale = TRUE, use.all = TRUE, ...) {
+scale.dispRity <- function(x, center = FALSE, scale = TRUE, ...) {
 
+    dots <- list(...)
+    if(!is.null(dots$use.all)) {
+        use.all <- dots$use.all
+    } else {
+        use.all <- TRUE
+    }
+        
     data <- x
     match_call <- match.call()
 
