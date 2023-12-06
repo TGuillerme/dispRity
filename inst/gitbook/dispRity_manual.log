@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999993 (TeX Live 2022/dev/Debian) (preloaded format=xelatex 2023.11.17)  27 NOV 2023 16:49
+This is XeTeX, Version 3.141592653-2.6-0.999993 (TeX Live 2022/dev/Debian) (preloaded format=xelatex 2023.11.17)  6 DEC 2023 16:18
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1217,8 +1217,8 @@ Overfull \hbox (59.84747pt too wide) in paragraph at lines 1818--1819
  []
 
 
-Overfull \hbox (54.34747pt too wide) in paragraph at lines 1827--1828
-[]\TU/lmtt/m/n/10 ellipse.volume\TU/lmr/m/n/10 1|  
+Overfull \hbox (64.84747pt too wide) in paragraph at lines 1827--1828
+[]\TU/lmtt/m/n/10 ellipsoid.volume\TU/lmr/m/n/10 1|  
  []
 
 
@@ -1487,9 +1487,9 @@ Overfull \hbox (85.5pt too wide) in paragraph at lines 2856--2856
  rgl does not support[] 
  []
 
-File: ../../../../../../tmp/Rtmpuiaze8/filec359325be61c.png Graphic file (type 
+File: ../../../../../../tmp/RtmpuRA2JU/file80cb6a29f05b.png Graphic file (type 
 bmp)
-<../../../../../../tmp/Rtmpuiaze8/filec359325be61c.png>
+<../../../../../../tmp/RtmpuRA2JU/file80cb6a29f05b.png>
 
 Overfull \hbox (64.5pt too wide) in paragraph at lines 2864--2864
 []\TU/lmtt/m/n/10 ## Warning in snapshot3d(scene = x, width = width, height = h
@@ -1508,9 +1508,9 @@ Overfull \hbox (85.5pt too wide) in paragraph at lines 2869--2869
  rgl does not support[] 
  []
 
-File: ../../../../../../tmp/Rtmpuiaze8/filec359298b50a4.png Graphic file (type 
+File: ../../../../../../tmp/RtmpuRA2JU/file80cb29a4e334.png Graphic file (type 
 bmp)
-<../../../../../../tmp/Rtmpuiaze8/filec359298b50a4.png>
+<../../../../../../tmp/RtmpuRA2JU/file80cb29a4e334.png>
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
@@ -1532,9 +1532,9 @@ Overfull \hbox (85.5pt too wide) in paragraph at lines 2882--2882
  rgl does not support[] 
  []
 
-File: ../../../../../../tmp/Rtmpuiaze8/filec3592145bcd7.png Graphic file (type 
+File: ../../../../../../tmp/RtmpuRA2JU/file80cb4a93cfcb.png Graphic file (type 
 bmp)
-<../../../../../../tmp/Rtmpuiaze8/filec3592145bcd7.png>
+<../../../../../../tmp/RtmpuRA2JU/file80cb4a93cfcb.png>
 File: dispRity_manual_files/figure-latex/unnamed-chunk-69-1.pdf Graphic file (t
 ype pdf)
 <use dispRity_manual_files/figure-latex/unnamed-chunk-69-1.pdf>
@@ -3412,8 +3412,8 @@ Chapter 12.
 ] [215] [216]) [217] (./dispRity_manual.aux) ) 
 Here is how much of TeX's memory you used:
  20023 strings out of 478190
- 390856 string characters out of 5854826
- 846100 words of memory out of 5000000
+ 390854 string characters out of 5854826
+ 846096 words of memory out of 5000000
  40255 multiletter control sequences out of 15000+600000
  475806 words of font info for 93 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191

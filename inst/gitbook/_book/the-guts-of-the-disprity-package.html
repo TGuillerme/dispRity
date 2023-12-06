@@ -23,7 +23,7 @@
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie)" />
 
 
-<meta name="date" content="2023-11-27" />
+<meta name="date" content="2023-12-06" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -490,20 +490,20 @@ The matrix can be one of the bootstrapped matrices or/and a rarefied matrix.</p>
 <span id="cb580-5"><a href="the-guts-of-the-disprity-package.html#cb580-5" aria-hidden="true"></a><span class="co">## 10th rarefaction level from the second subsets (80 Mya)</span></span>
 <span id="cb580-6"><a href="the-guts-of-the-disprity-package.html#cb580-6" aria-hidden="true"></a><span class="kw">get.disparity</span>(disparity, <span class="dt">observed =</span> <span class="ot">FALSE</span>, <span class="dt">subsets =</span> <span class="dv">2</span>, <span class="dt">rarefaction =</span> <span class="dv">10</span>)</span></code></pre></div>
 </div>
-<div id="rescale.disprity" class="section level4 hasAnchor" number="7.2.1.10">
-<h4><span class="header-section-number">7.2.1.10</span> <code>rescale.dispRity</code><a href="the-guts-of-the-disprity-package.html#rescale.disprity" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="scale.disprity" class="section level4 hasAnchor" number="7.2.1.10">
+<h4><span class="header-section-number">7.2.1.10</span> <code>scale.dispRity</code><a href="the-guts-of-the-disprity-package.html#scale.disprity" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>This is the modified S3 method for <code>scale</code> (scaling and/or centring) that can be applied to the disparity data of a <code>dispRity</code> object and can take optional arguments (for example the rescaling by dividing by a maximum value).</p>
 <div class="sourceCode" id="cb581"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb581-1"><a href="the-guts-of-the-disprity-package.html#cb581-1" aria-hidden="true"></a><span class="co">## Getting the disparity values of the time subsets</span></span>
 <span id="cb581-2"><a href="the-guts-of-the-disprity-package.html#cb581-2" aria-hidden="true"></a><span class="kw">head</span>(<span class="kw">summary</span>(disparity))</span>
 <span id="cb581-3"><a href="the-guts-of-the-disprity-package.html#cb581-3" aria-hidden="true"></a></span>
 <span id="cb581-4"><a href="the-guts-of-the-disprity-package.html#cb581-4" aria-hidden="true"></a><span class="co">## Scaling the same disparity values</span></span>
-<span id="cb581-5"><a href="the-guts-of-the-disprity-package.html#cb581-5" aria-hidden="true"></a><span class="kw">head</span>(<span class="kw">summary</span>(<span class="kw">rescale.dispRity</span>(disparity, <span class="dt">scale =</span> <span class="ot">TRUE</span>)))</span>
+<span id="cb581-5"><a href="the-guts-of-the-disprity-package.html#cb581-5" aria-hidden="true"></a><span class="kw">head</span>(<span class="kw">summary</span>(<span class="kw">scale.dispRity</span>(disparity, <span class="dt">scale =</span> <span class="ot">TRUE</span>)))</span>
 <span id="cb581-6"><a href="the-guts-of-the-disprity-package.html#cb581-6" aria-hidden="true"></a></span>
 <span id="cb581-7"><a href="the-guts-of-the-disprity-package.html#cb581-7" aria-hidden="true"></a><span class="co">## Scaling and centering:</span></span>
-<span id="cb581-8"><a href="the-guts-of-the-disprity-package.html#cb581-8" aria-hidden="true"></a><span class="kw">head</span>(<span class="kw">summary</span>(<span class="kw">rescale.dispRity</span>(disparity, <span class="dt">scale =</span> <span class="ot">TRUE</span>, <span class="dt">center =</span> <span class="ot">TRUE</span>)))</span>
+<span id="cb581-8"><a href="the-guts-of-the-disprity-package.html#cb581-8" aria-hidden="true"></a><span class="kw">head</span>(<span class="kw">summary</span>(<span class="kw">scale.dispRity</span>(disparity, <span class="dt">scale =</span> <span class="ot">TRUE</span>, <span class="dt">center =</span> <span class="ot">TRUE</span>)))</span>
 <span id="cb581-9"><a href="the-guts-of-the-disprity-package.html#cb581-9" aria-hidden="true"></a></span>
 <span id="cb581-10"><a href="the-guts-of-the-disprity-package.html#cb581-10" aria-hidden="true"></a><span class="co">## Rescaling the value by dividing by a maximum value</span></span>
-<span id="cb581-11"><a href="the-guts-of-the-disprity-package.html#cb581-11" aria-hidden="true"></a><span class="kw">head</span>(<span class="kw">summary</span>(<span class="kw">rescale.dispRity</span>(disparity, <span class="dt">max =</span> <span class="dv">10</span>)))</span></code></pre></div>
+<span id="cb581-11"><a href="the-guts-of-the-disprity-package.html#cb581-11" aria-hidden="true"></a><span class="kw">head</span>(<span class="kw">summary</span>(<span class="kw">scale.dispRity</span>(disparity, <span class="dt">max =</span> <span class="dv">10</span>)))</span></code></pre></div>
 </div>
 <div id="sort.disprity" class="section level4 hasAnchor" number="7.2.1.11">
 <h4><span class="header-section-number">7.2.1.11</span> <code>sort.dispRity</code><a href="the-guts-of-the-disprity-package.html#sort.disprity" class="anchor-section" aria-label="Anchor link to header"></a></h4>

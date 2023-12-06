@@ -497,7 +497,7 @@ Level | Name | Description | Source |
 1 | `disalignment` | The rejection of the centroid of a matrix from the major axis of another (typically an `"as.covar"` metric) | `dispRity` |
 2 | `displacements` | The ratio between the distance from a reference and the distance from the centroid | `dispRity` |
 1 | `edge.length.tree` | The edge lengths of the elements on a tree | `ape` |
-1 | `ellipse.volume`<sup>1</sup> | The volume of the ellipsoid of the space | Donohue _et al._ (2013) |
+1 | `ellipsoid.volume`<sup>1</sup> | The volume of the ellipsoid of the space | Donohue _et al._ (2013) |
 1 | `func.div` | The functional divergence (the ratio of deviation from the centroid) | `dispRity` (similar to [`FD`](https://cran.r-project.org/web/packages/FD/index.html)`::dbFD$FDiv` but without abundance)|
 1 | `func.eve` | The functional evenness (the minimal spanning tree distances evenness) | `dispRity` (similar to [`FD`](https://cran.r-project.org/web/packages/FD/index.html)`::dbFD$FEve` but without abundance)|
 1 | `group.dist` | The distance between two groups | `dispRity` |
@@ -547,7 +547,7 @@ Some of the functions described below are implemented in the `dispRity` package 
 \end{equation}
 
 \begin{equation}
-    ellipse.volume = \frac{\pi^{d/2}}{\Gamma(\frac{d}{2}+1)}\displaystyle\prod_{i=1}^{d} (\lambda_{i}^{0.5})
+    ellipsoid.volume = \frac{\pi^{d/2}}{\Gamma(\frac{d}{2}+1)}\displaystyle\prod_{i=1}^{d} (\lambda_{i}^{0.5})
 \end{equation}
 
 \begin{equation}
@@ -609,15 +609,15 @@ rownames(dummy_space) <- 1:10
 We will use this simulated space to demonstrate the different metrics.
 
 #### Volumes and surface metrics
-The functions `ellipse.volume`, `convhull.surface`, `convhull.volume` and `n.ball.volume`  all measure the surface or the volume of the ordinated space occupied:
+The functions `ellipsoid.volume`, `convhull.surface`, `convhull.volume` and `n.ball.volume`  all measure the surface or the volume of the ordinated space occupied:
 
 Because there is only one subset (i.e. one matrix) in the dispRity object, the operations below are the equivalent of `metric(dummy_space)` (with rounding).
 
 ```{r}
 ## Calculating the ellipsoid volume
-summary(dispRity(dummy_space, metric = ellipse.volume))
+summary(dispRity(dummy_space, metric = ellipsoid.volume))
 ```
-> WARNING: in such dummy space, this gives the estimation of the ellipsoid volume, not the real ellipsoid volume! See the cautionary note in `?ellipse.volume`.
+> WARNING: in such dummy space, this gives the estimation of the ellipsoid volume, not the real ellipsoid volume! See the cautionary note in `?ellipsoid.volume`.
 
 ```{r}
 ## Calculating the convex hull surface

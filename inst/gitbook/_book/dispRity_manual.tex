@@ -113,7 +113,7 @@
 
 \title{dispRity R package manual}
 \author{Thomas Guillerme (\href{mailto:guillert@tcd.ie}{\nolinkurl{guillert@tcd.ie}})}
-\date{2023-11-27}
+\date{2023-12-06}
 
 \begin{document}
 \maketitle
@@ -1824,7 +1824,7 @@ The edge lengths of the elements on a tree\strut
 \begin{minipage}[t]{0.07\columnwidth}\raggedright
 1\strut
 \end{minipage} & \begin{minipage}[t]{0.07\columnwidth}\raggedright
-\texttt{ellipse.volume}1\strut
+\texttt{ellipsoid.volume}1\strut
 \end{minipage} & \begin{minipage}[t]{0.64\columnwidth}\raggedright
 The volume of the ellipsoid of the space\strut
 \end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\raggedright
@@ -2019,7 +2019,7 @@ Some of the functions described below are implemented in the \texttt{dispRity} p
 \end{equation}
 
 \begin{equation}
-    ellipse.volume = \frac{\pi^{d/2}}{\Gamma(\frac{d}{2}+1)}\displaystyle\prod_{i=1}^{d} (\lambda_{i}^{0.5})
+    ellipsoid.volume = \frac{\pi^{d/2}}{\Gamma(\frac{d}{2}+1)}\displaystyle\prod_{i=1}^{d} (\lambda_{i}^{0.5})
 \end{equation}
 
 \begin{equation}
@@ -2086,14 +2086,14 @@ We will use this simulated space to demonstrate the different metrics.
 \hypertarget{volumes-and-surface-metrics}{%
 \subsubsection{Volumes and surface metrics}\label{volumes-and-surface-metrics}}
 
-The functions \texttt{ellipse.volume}, \texttt{convhull.surface}, \texttt{convhull.volume} and \texttt{n.ball.volume} all measure the surface or the volume of the ordinated space occupied:
+The functions \texttt{ellipsoid.volume}, \texttt{convhull.surface}, \texttt{convhull.volume} and \texttt{n.ball.volume} all measure the surface or the volume of the ordinated space occupied:
 
 Because there is only one subset (i.e.~one matrix) in the dispRity object, the operations below are the equivalent of \texttt{metric(dummy\_space)} (with rounding).
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{\#\# Calculating the ellipsoid volume}
-\KeywordTok{summary}\NormalTok{(}\KeywordTok{dispRity}\NormalTok{(dummy\_space, }\DataTypeTok{metric =}\NormalTok{ ellipse.volume))}
+\KeywordTok{summary}\NormalTok{(}\KeywordTok{dispRity}\NormalTok{(dummy\_space, }\DataTypeTok{metric =}\NormalTok{ ellipsoid.volume))}
 \end{Highlighting}
 \end{Shaded}
 
@@ -2103,7 +2103,7 @@ Because there is only one subset (i.e.~one matrix) in the dispRity object, the o
 \end{verbatim}
 
 \begin{quote}
-WARNING: in such dummy space, this gives the estimation of the ellipsoid volume, not the real ellipsoid volume! See the cautionary note in \texttt{?ellipse.volume}.
+WARNING: in such dummy space, this gives the estimation of the ellipsoid volume, not the real ellipsoid volume! See the cautionary note in \texttt{?ellipsoid.volume}.
 \end{quote}
 
 \begin{Shaded}
@@ -2855,7 +2855,7 @@ This is what it looks for example for three simulated variance-covariance matric
 ## snapshots
 \end{verbatim}
 
-\includegraphics[width=4in]{../../../../../../tmp/Rtmpuiaze8/filec359325be61c}
+\includegraphics[width=4in]{../../../../../../tmp/RtmpuRA2JU/file80cb6a29f05b}
 
 \begin{verbatim}
 ## Warning in snapshot3d(scene = x, width = width, height = height): webshot =
@@ -2868,7 +2868,7 @@ This is what it looks for example for three simulated variance-covariance matric
 ## snapshots
 \end{verbatim}
 
-\includegraphics[width=4in]{../../../../../../tmp/Rtmpuiaze8/filec359298b50a4}
+\includegraphics[width=4in]{../../../../../../tmp/RtmpuRA2JU/file80cb29a4e334}
 
 \begin{verbatim}
 ## Warning in snapshot3d(scene = x, width = width, height = height): webshot =
@@ -2881,7 +2881,7 @@ This is what it looks for example for three simulated variance-covariance matric
 ## snapshots
 \end{verbatim}
 
-\includegraphics[width=4in]{../../../../../../tmp/Rtmpuiaze8/filec3592145bcd7}
+\includegraphics[width=4in]{../../../../../../tmp/RtmpuRA2JU/file80cb4a93cfcb}
 \includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-69-1.pdf}
 
 \hypertarget{betweengroupmetricslist}{%
@@ -7570,8 +7570,8 @@ This function extracts the calculated disparity values of a specific matrix.
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{rescale.disprity}{%
-\subsubsection{\texorpdfstring{\texttt{rescale.dispRity}}{rescale.dispRity}}\label{rescale.disprity}}
+\hypertarget{scale.disprity}{%
+\subsubsection{\texorpdfstring{\texttt{scale.dispRity}}{scale.dispRity}}\label{scale.disprity}}
 
 This is the modified S3 method for \texttt{scale} (scaling and/or centring) that can be applied to the disparity data of a \texttt{dispRity} object and can take optional arguments (for example the rescaling by dividing by a maximum value).
 
@@ -7581,13 +7581,13 @@ This is the modified S3 method for \texttt{scale} (scaling and/or centring) that
 \KeywordTok{head}\NormalTok{(}\KeywordTok{summary}\NormalTok{(disparity))}
 
 \CommentTok{\#\# Scaling the same disparity values}
-\KeywordTok{head}\NormalTok{(}\KeywordTok{summary}\NormalTok{(}\KeywordTok{rescale.dispRity}\NormalTok{(disparity, }\DataTypeTok{scale =} \OtherTok{TRUE}\NormalTok{)))}
+\KeywordTok{head}\NormalTok{(}\KeywordTok{summary}\NormalTok{(}\KeywordTok{scale.dispRity}\NormalTok{(disparity, }\DataTypeTok{scale =} \OtherTok{TRUE}\NormalTok{)))}
 
 \CommentTok{\#\# Scaling and centering:}
-\KeywordTok{head}\NormalTok{(}\KeywordTok{summary}\NormalTok{(}\KeywordTok{rescale.dispRity}\NormalTok{(disparity, }\DataTypeTok{scale =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{center =} \OtherTok{TRUE}\NormalTok{)))}
+\KeywordTok{head}\NormalTok{(}\KeywordTok{summary}\NormalTok{(}\KeywordTok{scale.dispRity}\NormalTok{(disparity, }\DataTypeTok{scale =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{center =} \OtherTok{TRUE}\NormalTok{)))}
 
 \CommentTok{\#\# Rescaling the value by dividing by a maximum value}
-\KeywordTok{head}\NormalTok{(}\KeywordTok{summary}\NormalTok{(}\KeywordTok{rescale.dispRity}\NormalTok{(disparity, }\DataTypeTok{max =} \DecValTok{10}\NormalTok{)))}
+\KeywordTok{head}\NormalTok{(}\KeywordTok{summary}\NormalTok{(}\KeywordTok{scale.dispRity}\NormalTok{(disparity, }\DataTypeTok{max =} \DecValTok{10}\NormalTok{)))}
 \end{Highlighting}
 \end{Shaded}
 
