@@ -75,11 +75,9 @@ Not sure what a disparity metric is in the first place?
 Check out this paper on selecting the best metric for your specific question in [Ecology and Evolution](https://onlinelibrary.wiley.com/doi/full/10.1002/ece3.6452) or the [`moms` shiny app](https://tguillerme.shinyapps.io/moms/).
 You can also find more information in the [`dispRity` manual](https://rawcdn.githack.com/TGuillerme/dispRity/c94452e6877fbb274eb0a4ff1363272a6297a9ee/inst/gitbook/_book/details-of-specific-functions.html#disparity-metrics).
 
-## Latest major patch
-* dispRity v1.8 (2023-12-11) *dispRity.multi*
-
-### Patch highlights:
-[Read the full patch note here.](https://github.com/TGuillerme/dispRity/blob/master/NEWS.md).
+## Latest major patch highlights
+### dispRity v1.8 (2023-12-11) *dispRity.multi*
+[Read the full patch note here](https://github.com/TGuillerme/dispRity/blob/master/NEWS.md).
 
  * Added the _dispRity.multi_ internal architecture now allowing users to work with different matrices **and** different trees as inputs for `custom.subsets`, `chrono.subsets`, `boot.matrix` and `dispRity`. This change is not affecting the user level appart from now allowing to bypass some error messages (thanks to Mario Corio for that obvious suggestion).
  * *New* statistical test: `pgls.dispRity` to run PGLS test on a `dispRity` object with a level-2 metric and a tree (using excellent [`phylolm`](https://CRAN.R-project.org/package=phylolm) algorithm). The new test comes with its own S3 print, summary and plot functions if the input `dispRity` data contains multiple trees or multiple matrices (running and handling the output of multiple `phylolm`).
@@ -95,6 +93,7 @@ Authors
 * [Thomas Guillerme](http://tguillerme.github.io)
 * [Natalie Cooper](http://nhcooper123.github.io)
 * [Mark Puttick](https://puttickbiology.wordpress.com/)
+* [Jack Hatfield](https://www.york.ac.uk/anthropocene-biodiversity/people/jack-hatfield/)
 
 #### Contributors (bug fixes, pull requests and suggestions)
 
