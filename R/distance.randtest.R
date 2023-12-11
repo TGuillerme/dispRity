@@ -22,17 +22,17 @@
 #' dummy_test ; plot(dummy_test)
 #' 
 #' ## The distance between the observed data and the 95% quantile
-#' randtest.dist(dummy_test)
+#' distance.randtest(dummy_test)
 #' 
 #' ## The absolute distance from the median
-#' randtest.dist(dummy_test, quantile = 0.5, abs = TRUE)
+#' distance.randtest(dummy_test, quantile = 0.5, abs = TRUE)
 #' 
 #' @seealso \code{\link[ade4]{randtest}} \code{\link{randtest.dispRity}}
 #' 
 #' @author Thomas Guillerme
 #' @export
 
-randtest.dist <- function(xtest, quantile = c(0.025, 0.975), abs = FALSE) {
+distance.randtest <- function(xtest, quantile = c(0.025, 0.975), abs = FALSE) {
 
     randtest <- xtest
 

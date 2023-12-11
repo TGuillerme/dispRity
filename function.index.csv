@@ -240,6 +240,7 @@ dispRity_fun.R,395,split.matrix
 dispRity_fun.R,406,bound.data.split
 dispRity_fun.R,425,recursive.merge
 dispRity_fun.R,434,combine.pairs
+distance.randtest.R,35,distance.randtest
 dtt.dispRity.R,67,dtt.dispRity
 dtt.dispRity.R,105,get.p.value
 dtt.dispRity.R,114,get.p.value
@@ -371,7 +372,6 @@ randtest.dispRity_fun.R,5,make.lapply.loop.nosample
 randtest.dispRity_fun.R,15,one.randtest
 randtest.dispRity_fun.R,57,get.sample.pop
 randtest.dispRity_fun.R,65,get.sample.pop.name
-randtest.dist.R,35,randtest.dist
 reduce.matrix.R,33,reduce.matrix
 reduce.matrix.R,88,remove.one.by.one
 reduce.space.R,89,reduce.space

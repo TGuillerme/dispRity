@@ -1,5 +1,5 @@
 ## Test
-test_that("randtest.dist works", {
+test_that("distance.randtest works", {
 
     set.seed(1)
     dummy_matrix <- matrix(rnorm(500), 100, 5)
@@ -18,19 +18,19 @@ test_that("randtest.dist works", {
     quant <- c(0.4, 0.6)
 
     ## Sanitizing
-    error <- capture_error(randtest.dist("test", quantile = quant, abs = TRUE))
+    error <- capture_error(distance.randtest("test", quantile = quant, abs = TRUE))
     expect_equal(error[[1]], "randtest must be of class randtest.")
-    error <- capture_error(randtest.dist(test, quantile = "quant", abs = TRUE))
+    error <- capture_error(distance.randtest(test, quantile = "quant", abs = TRUE))
     expect_equal(error[[1]], "quantile must be of class numeric.")
-    error <- capture_error(randtest.dist(test, quantile = quant, abs = "Wrong!"))
+    error <- capture_error(distance.randtest(test, quantile = quant, abs = "Wrong!"))
     expect_equal(error[[1]], "abs must be of class logical.")
 
-    res <- randtest.dist(test)
+    res <- distance.randtest(test)
     expect_equal_round(res, c("2.5%" = -0.2861862), digits = 6)
-    res <- randtest.dist(test, abs = TRUE)
+    res <- distance.randtest(test, abs = TRUE)
     expect_equal_round(res, c("2.5%" = 0.2861862), digits = 6)
-    res <- randtest.dist(test_right, quantile = quant)
+    res <- distance.randtest(test_right, quantile = quant)
     expect_equal_round(res, c("60%" = 0.9972712), digits = 6)
-    res <- randtest.dist(test_left, quantile = quant)
+    res <- distance.randtest(test_left, quantile = quant)
     expect_equal_round(res, c("40%" = 0.7982932), digits = 6)
 })

@@ -1,4 +1,4 @@
-dispRity v1.8 (2023-12-06) *dispRity.multi*
+dispRity v1.8 (2023-12-11) *dispRity.multi*
 =========================
 
 ### NEW FEATURES
@@ -46,7 +46,7 @@ dispRity v1.8 (2023-12-06) *dispRity.multi*
 
  * `ellipse.volume` has been changed to `ellipsoid.volume` to more accurately reflect what it is measuring.
  * `rescale.dispRity` has been changed to `scale.dispRity` and correctly registered as a S3 method.
-
+ * `randtest.dist` has been changed to `distance.randtest` to avoid conflict with `*.dist` S3 methods.
 
 dispRity v1.7 (2022-08-08) *MacMacGlimm*
 =========================
@@ -98,7 +98,7 @@ dispRity v1.7 (2022-08-08) *MacMacGlimm*
  * `standardGeneric` functions are now correctly interpreted as functions throughout the package.
  * Fixed bug when plotting level 1 disparity metric results without bootstrapped (`observed = TRUE` is now used as the default).
  * Fixed bug when plotting `test.metric` plots with `save.steps` options with more than two types of shifts.
- * Fixed bug with `null.test` which is now correctly managing the number of dimensions inherited from `dispRity` objects (thanks to [Alex Slavenko](https://alexslavenko.weebly.com/) for spotting this one and the two above).
+ * Fixed bug with `null.test` which is now correctly managing the number of dimensions inherited from `dispRity` objects (thanks to Alex Slavenko for spotting this one and the two above).
  * Fixed bug when using level 2 dimension metrics on unidimensional data (the metric is now detected as a level 2 correctly; thanks to Catherine Klein and [Rachel Warnock](https://www.gzn.nat.fau.de/palaeontologie/team/professors/rachel-warnock/) for noticing that one).
  * Update internal use of `is(data, c("array", "matrix"))` to `is.array(data)` for R 4.1.2.
 
@@ -117,7 +117,7 @@ dispRity v1.6.0 (2021-04-16) *dispRitree*
  * You can now save the shifts results in `test.metric` with `save.steps` and then visualise them with `plot.dispRity` along side the disparity metric test results.
  * *New* utility function `n.subsets` to directly get the number of subsets in a `dispRity` object.
  * *New* statistical test: `randtest.dispRity` that is a wrapper for `ade4::randtest` applied to `dispRity` objects (not dissimilar from `null.test`).
- * Six more demo datasets have been added to the package! These datasets are the ones used in [Guillerme et al. 2020](https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Shifting+spaces%3A+Which+disparity+or+dissimilarity+measurement+best+summarize+occupancy+in+multidimensional+spaces%3F&btnG=) and published originally in [Beck & Lee 2014](https://royalsocietypublishing.org/doi/full/10.1098/rspb.2014.1278) (that one was originally the only demo dataset in the package), [Wright 2017](https://www.cambridge.org/core/journals/journal-of-paleontology/article/bayesian-estimation-of-fossil-phylogenies-and-the-evolution-of-early-to-middle-paleozoic-crinoids-echinodermata/E37972902541CD0995AAD08A1122BD54), [Marcy et al. 2016](https://link.springer.com/article/10.1186/s12862-016-0782-1), [Hopkins & Pearson 2016](https://pdfs.semanticscholar.org/a3f0/50944d2aefa1df811ea94a3eea630d82c24f.pdf)), [Jones et al. 2015](https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Dispersal+mode+mediates+the+effect+of+patch+size+and+patch+connectivity+on+metacommunity+diversity&btnG=), [Healy et al. 2019](https://www.nature.com/articles/s41559-019-0938-7). Thanks to all these authors for their open science work!
+ * Six more demo datasets have been added to the package! These datasets are the ones used in [Guillerme et al. 2020](https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Shifting+spaces%3A+Which+disparity+or+dissimilarity+measurement+best+summarize+occupancy+in+multidimensional+spaces%3F&btnG=) and published originally in [Beck & Lee 2014](https://doi.org/10.1098/rspb.2014.1278) (that one was originally the only demo dataset in the package), [Wright 2017](https://www.cambridge.org/core/journals/journal-of-paleontology/article/bayesian-estimation-of-fossil-phylogenies-and-the-evolution-of-early-to-middle-paleozoic-crinoids-echinodermata/E37972902541CD0995AAD08A1122BD54), [Marcy et al. 2016](https://link.springer.com/article/10.1186/s12862-016-0782-1), [Hopkins & Pearson 2016](https://pdfs.semanticscholar.org/a3f0/50944d2aefa1df811ea94a3eea630d82c24f.pdf)), [Jones et al. 2015](https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Dispersal+mode+mediates+the+effect+of+patch+size+and+patch+connectivity+on+metacommunity+diversity&btnG=), [Healy et al. 2019](https://www.nature.com/articles/s41559-019-0938-7). Thanks to all these authors for their open science work!
  * `dispRity` objects now have a reserved `$tree` component that contain any number of trees attached to the data. This allows any function to use the reserved argument name `tree` to extract directly the relevant tree from the `dispRity` object, for functions like `chrono.subsets` or metrics like `ancestral.dist`! To help manipulate the `tree` component of the `dispRity` object, you can now use the new utility functions `add.tree`, `get.tree` and `remove.tree`.
 
 ### MINOR IMPROVEMENT
