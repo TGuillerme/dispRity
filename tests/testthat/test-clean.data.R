@@ -45,7 +45,9 @@ test_that("clean.tree.table works", {
 })
 
 #Testing clean.data
-trees_list <- list(rtree(5, tip.label = LETTERS[1:5]), rtree(4, tip.label = LETTERS[1:4]), rtree(6, tip.label = LETTERS[1:6])) ; class(trees_list) <- "multiPhylo"
+trees_list <- list(rtree(5, tip.label = LETTERS[1:5]), rtree(4, tip.label = LETTERS[1:4]), rtree(6, tip.label = LETTERS[1:6]))
+trees_listlist <- trees_list
+class(trees_list) <- "multiPhylo"
 dummy_data <- matrix(c(rnorm(5), runif(5)), 5, 2, dimnames = list(LETTERS[1:5], c("var1", "var2")))
 cleaned <- clean.data(data = dummy_data, tree = trees_list)
 test_that("clean.data works", {
@@ -89,6 +91,13 @@ test_that("clean.data works", {
     expect_equal(
     	cleaned[[4]], "E"
     	)
+
+
+    # Works also if input is a list of phylo
+    expect_is(clean.data(dummy_data, trees_listlist), "list")
+    # But not if it has something else
+    tree_listlist <- list(rtree(5, tip.label = LETTERS[1:5]), rtree(5, tip.label = LETTERS[1:5]), "ha")
+    expect_error(clean.data(dummy_data, tree_listlist))
 
     ## Working with a single tree
     test <- clean.data(dummy_data, trees_list[[1]])
@@ -147,11 +156,10 @@ test_that("clean.data works with nodes", {
 
     ## Error! no node match
     error <- capture_error(clean.data(data, tree2, inc.nodes = TRUE))
-    expect_equal(error[[1]], "Node bob not found in the data (nodes cannot be trimmed automatically).")
+    expect_equal(error[[1]], "Node bob not found in the data. Nodes cannot be trimmed automatically. You can try using the following to remove them\n  my_tree$node.labels <- NULL")
 
     ## Error in the 2nd tree
     error <- capture_error(clean.data(data, tree12, inc.nodes = TRUE))
-    expect_equal(error[[1]], "Node bob from tree 2 not found in the data. (nodes cannot be trimmed automatically).")
-
+    expect_equal(error[[1]], "Node bob from tree 2 not found in the data. Nodes cannot be trimmed automatically. You can try using the following to remove them\n  my_tree$node.labels <- NULL")
 })
 

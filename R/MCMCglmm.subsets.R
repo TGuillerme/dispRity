@@ -72,7 +72,7 @@ MCMCglmm.subsets <- function(data, posteriors, group, tree, rename.groups, set.l
 
     ## Extracting the residuals and randoms
     posterior_levels <- MCMCglmm.levels(posteriors)
-    posterior_terms <- lapply(posterior_levels, split.term.name)
+    posterior_terms <- lapply(posterior_levels, term.name.split)
     
     ## Extracting the group from the posteriors
     extracted_group <- lapply(posterior_terms, get.one.group, group_classifier, elements = rownames(cleaned_data))
@@ -108,7 +108,7 @@ MCMCglmm.subsets <- function(data, posteriors, group, tree, rename.groups, set.l
         ## Replace the location for the invariant groups
         for(group in 1:length(invariants)) {
             if(invariants[group]) {
-                covar_matrices <- update.location(covar_matrices, cleaned_data, subsets, group, dimensions)
+                covar_matrices <- location.update(covar_matrices, cleaned_data, subsets, group, dimensions)
             }
         }
     }
@@ -122,7 +122,7 @@ MCMCglmm.subsets <- function(data, posteriors, group, tree, rename.groups, set.l
     }
 
     ## Create a dispRity style object
-    output <- dispRity::make.dispRity(data = cleaned_data, call = list("subsets" = "covar", "dimensions" = dimensions), subsets = subsets)
+    output <- make.dispRity(data = cleaned_data, call = list("subsets" = "covar", "dimensions" = dimensions), subsets = subsets)
     ## Add the covar element
     output$covar <- covar_matrices
     ## Update the call (bootstrap part)

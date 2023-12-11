@@ -26,7 +26,7 @@ get.one.group <- function(one_term, group_classifier, elements) {
 }
 
 ## Splitting a term name
-split.term.name <- function(one_term) {
+term.name.split <- function(one_term) {
     ## Initialise the factor and level
     factor <- level <- NULL
     ## Split the term
@@ -45,7 +45,7 @@ split.term.name <- function(one_term) {
 }
 
 ## Set the location
-update.location <- function(covar, data, subsets, group, dimensions) {
+location.update <- function(covar, data, subsets, group, dimensions) {
     ## Get the group mean
     centroid <- unname(colMeans(data[subsets[[group]]$elements, ])[dimensions])
     ## Update the centroids

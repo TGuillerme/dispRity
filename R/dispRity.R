@@ -123,7 +123,7 @@
 # start_mem <- mem_used()
 
 
-dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verbose = FALSE, tree = NULL){#, parallel) {
+dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALSE, verbose = FALSE, tree = NULL){#, parallel) {
     ## ----------------------
     ##  SANITIZING
     ## ----------------------
@@ -134,32 +134,104 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
     # warning("DEBUG") ; return(match_call)
 
     ## Check data input
+    is_multi <- FALSE
     if(!is(data, "dispRity")) {
         ## Adding the tree
         if(!is.null(tree)) {
-            data <- fill.dispRity(make.dispRity(data = check.dispRity.data(data), tree = tree))
+            data_check <- check.dispRity.data(data, tree, returns = c("matrix", "tree", "multi"))
+            is_multi <- data_check$multi
+            data <- fill.dispRity(make.dispRity(data = data_check$matrix, tree = data_check$tree), check = FALSE)
         } else {
-            data <- fill.dispRity(make.dispRity(data = check.dispRity.data(data)))
+            data_check <- check.dispRity.data(data, returns = c("matrix", "multi"))
+            is_multi <- data_check$multi
+            data <- fill.dispRity(make.dispRity(data = data_check$matrix), check = FALSE)
+        }
+        if(is_multi) {
+            data$call$dispRity.multi <- is_multi
         }
     } else {
-        ## Make sure that data is not a dual class
-        if(length(class(data)) > 1) {
-            stop.call(match_call$data, " must be a raw dispRity object (i.e. not dual class).")
+        if(!is(data, "multi")) {
+            ## Make sure that data is not a dual class
+            if(length(class(data)) > 1) {
+                stop.call(match_call$data, " must be a raw dispRity object (i.e. not dual class).")
+            }
+            ## Making sure matrix exist
+            if(is.null(data$matrix[[1]])) {
+                stop.call(match_call$data, " must contain a matrix or a list of matrices.")
+            }
         }
-        ## Making sure matrix exist
-        if(is.null(data$matrix[[1]])) {
-            stop.call(match_call$data, " must contain a matrix or a list of matrices.")
-        }
+       
         ## Adding tree (if possible)
         if(!is.null(tree)) {
             data <- remove.tree(data)
-            data <- add.tree(data, tree = check.dispRity.tree(tree, data = data))
+            data <- add.tree(data, tree = check.dispRity.data(data = data, tree = tree, returns = "tree"))
         }
 
-        ## Make sure dimensions exist in the call
-        if(is.null(data$call$dimensions)) {
-            data$call$dimensions <- 1:ncol(data$matrix[[1]])
+        ## Togggle multi?
+        if(is(data, "dispRity") && is(data, "multi")) {
+            is_multi <- TRUE
+        } else {
+            ## Fill in dimensionality
+            if(is.null(data$call$dimensions)) {
+                data$call$dimensions <- 1:ncol(data$matrix[[1]])
+            }
         }
+    }
+
+    ## dispRity.multi
+    if(is_multi) {
+
+        ## Check if data needs splitting (if not *.subsets or boot.matrix)
+        do_split <- !(is(data, "dispRity") && is(data, "multi"))
+
+        if(do_split) {
+            ## Split the data
+            split_data <- dispRity.multi.split(data)
+            data$call$dispRity.multi <- TRUE
+            ## Get only the matrices and/or the trees
+            matrices <- unlist(lapply(split_data, `[[`, "matrix"), recursive = FALSE)
+            ## Get the trees
+            if(!is.null(split_data[[1]]$tree)) {
+                tree <- unlist(lapply(split_data, `[[`, "tree"), recursive = FALSE)
+            } else {
+                tree <- NULL
+            }
+        } else {
+            ## Get the first element in data as a template
+            split_data <- data
+            data <- dispRity.multi.merge.data(data)
+            ## Get the correct elements
+            matrices <- split_data[which(unlist(lapply(split_data, class)) == "dispRity")]
+            tree <- NULL
+        }
+
+        ## Change the call in dispRity (if verbose)
+        dispRity.call <- dispRity
+        if(verbose) {
+            ## Changing the dispRit yfunction name (verbose line edited out)
+            ## Find the verbose lines
+            start_verbose <- which(as.character(body(dispRity.call)) == "if (verbose) message(\"Calculating disparity\", appendLF = FALSE)")
+            end_verbose <- which(as.character(body(dispRity.call)) == "if (verbose) message(\"Done.\\n\", appendLF = FALSE)")
+
+            ## Comment out both lines
+            body(dispRity.call)[[start_verbose]] <- body(dispRity.call)[[end_verbose]] <- substitute(empty_line <- NULL)
+        }
+        ## Set up the function to call
+        dispRity.int.call <- function(data, tree, metric, dimensions, between.groups, verbose, ...) {
+            return(dispRity.call(data = data, metric = metric, dimensions = dimensions, ..., between.groups = between.groups, verbose = verbose, tree = tree))
+        }
+
+        ## Run the apply
+        if(verbose) message("Calculating multiple disparities", appendLF = FALSE)
+
+        output <- dispRity.multi.apply(matrices, fun = dispRity.int.call, metric = metric, tree = tree, dimensions = dimensions, between.groups = between.groups, verbose = verbose, ...)
+        # output <- dispRity.multi.apply(matrices, fun = dispRity.int.call, metric = metric, trees = trees, dimensions = dimensions, between.groups = between.groups, verbose = verbose) ; warning("DEBUG")
+        # test <- dispRity.int.call(matrices[[1]], trees[[1]], metric = metric, dimensions = dimensions, between.groups = between.groups, verbose = verbose) ; warning("DEBUG")   
+
+        if(verbose) message("Done.\n", appendLF = FALSE)
+
+        ## Return the merged results
+        return(dispRity.multi.merge(data, output, match_call))
     }
 
     ## Get the metric list
@@ -212,7 +284,7 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
     has_probabilities <- ifelse(length(grep("\\.split", data$call$subsets)) == 0, FALSE, TRUE)
 
     ## Dimensions
-    if(!missing(dimensions)) {
+    if(!is.null(dimensions)) {
         ## Else must be a single numeric value (proportional)
         check.class(dimensions, c("numeric", "integer"), " must be a proportional threshold value.")
         if(length(dimensions) == 1) {
@@ -404,19 +476,19 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
           c(## Data is bound to a tree
             is_bound,
             ## Data has multiple matrices and the metric needs matrix decomp
-            length(data$matrix) > 1 && matrix_decomposition && is.null(data$call$subsets["trees"]),
+            length(data$matrix) > 1 && matrix_decomposition && (is.null(data$call$subsets["trees"]) || is.na(data$call$subsets["trees"])),
             ## Data has multiple trees and the metric needs a tree
             length(data$tree) > 1 && any(metric_has_tree)
           )
         )) {
 
         ## Make the lapply loops
-        n_trees <- ifelse(is.null(data$call$subsets["trees"]), 1, as.numeric(data$call$subsets["trees"]))
+        n_trees <- ifelse((is.null(data$call$subsets["trees"]) || is.na(data$call$subsets["trees"])), 1, as.numeric(data$call$subsets["trees"]))
         ## Splitting the lapply loop for bound trees 
-        lapply_loops <- split.lapply_loop(lapply_loop, n_trees)
+        lapply_loops <- lapply_loop.split(lapply_loop, n_trees)
 
         ## Make the matrix list
-        splitted_data <- split.data(data)
+        splitted_data <- bound.data.split(data)
 
         splitted_data[[1]]$call$dimensions
 
@@ -424,7 +496,7 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
         disparities <- mapply(mapply.wrapper, lapply_loops, splitted_data, 
                             MoreArgs = list(metrics_list, matrix_decomposition, verbose, metric_has_tree, ...),
                             SIMPLIFY = FALSE)
-        # disparities <- mapply(mapply.wrapper, lapply_loops, matrices_data, MoreArgs = list(metrics_list, matrix_decomposition, verbose, metric_has_tree), SIMPLIFY = FALSE) ; warning("DEBUG dispRity")
+        # disparities <- mapply(mapply.wrapper, lapply_loops, splitted_data, MoreArgs = list(metrics_list, matrix_decomposition, verbose, metric_has_tree), SIMPLIFY = FALSE) ; warning("DEBUG dispRity")
         
         ## Reformat to normal disparity object
         disparity <- unlist(lapply(as.list(1:ifelse(is.null(data$call$subsets["trees"]), n_trees, length(disparities[[1]]))),
@@ -435,6 +507,9 @@ dispRity <- function(data, metric, dimensions, ..., between.groups = FALSE, verb
         ## Normal disparity lapply
         disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, metric_has_tree, ...)
         #TG: check out the file disparity_internal_logic.md (located on the root of the package) for explanation about the logic in this lapply
+
+        ## If multiple matrices, split the resulting output into columns
+
     }
 
     # }

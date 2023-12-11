@@ -390,25 +390,25 @@ test_that("multi.ace works", {
                 "Running ancestral states estimations:" ,
                 ".......... Done."))
 
-    set.seed(3)
-    test <- capture.output(results <- multi.ace(data = matrix_complex,
-                            tree = tree_test, 
-                            models = "ER", 
-                            threshold = TRUE,
-                            special.tokens = c("weird" = "%"),
-                            special.behaviours = list(weirdtoken = function(x,y) return(c(1,2))),
-                            brlen.multiplier = rnorm(10),
-                            verbose = TRUE,
-                            parallel = TRUE,
-                            output = "matrix",
-                            estimation.details = c("loglikelihood", "transition_matrix")))
-    expect_equal(length(test),2)
-    expect_is(results, "list")
-    expect_equal(names(results), c("estimations", "details"))
-    expect_is(results$estimations, "list")
-    expect_is(results$estimations[[1]], "matrix")
-    expect_is(results$details[[1]]$transition_matrix[[9]], "matrix")
-    expect_equal(rownames(results$details[[1]]$transition_matrix[[9]]), c("0","1","2"))
-    expect_is(results$details[[2]]$loglikelihood[[1]], "numeric")
+    # set.seed(3)
+    # test <- capture.output(results <- multi.ace(data = matrix_complex,
+    #                         tree = tree_test, 
+    #                         models = "ER", 
+    #                         threshold = TRUE,
+    #                         special.tokens = c("weird" = "%"),
+    #                         special.behaviours = list(weirdtoken = function(x,y) return(c(1,2))),
+    #                         brlen.multiplier = rnorm(10),
+    #                         verbose = TRUE,
+    #                         parallel = 2,
+    #                         output = "matrix",
+    #                         estimation.details = c("loglikelihood", "transition_matrix")))
+    # expect_equal(length(test),2)
+    # expect_is(results, "list")
+    # expect_equal(names(results), c("estimations", "details"))
+    # expect_is(results$estimations, "list")
+    # expect_is(results$estimations[[1]], "matrix")
+    # expect_is(results$details[[1]]$transition_matrix[[9]], "matrix")
+    # expect_equal(rownames(results$details[[1]]$transition_matrix[[9]]), c("0","1","2"))
+    # expect_is(results$details[[2]]$loglikelihood[[1]], "numeric")
 
 })

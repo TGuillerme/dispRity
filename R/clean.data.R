@@ -50,7 +50,14 @@ clean.data <- function(data, tree, inc.nodes = FALSE) {
     }
 
     ## tree
-    tree_class <- check.class(tree, c("phylo", "multiPhylo"), " must be a phylo or multiPhylo object.")
+    tree_class <- check.class(tree, c("phylo", "multiPhylo", "list"), " must be a phylo or multiPhylo object.")
+    if(tree_class == "list") {
+        ## Check if all phylo
+        tree_class <- unique(unlist(lapply(tree, is)))
+        if(length(tree_class) > 1 || tree_class[1] != "phylo") {
+            stop.call(call = match_call$tree, msg = " must be a phylo or multiPhylo object.")
+        }
+    }
 
     ## inc.nodes
     check.class(inc.nodes, "logical")
@@ -88,7 +95,7 @@ clean.data <- function(data, tree, inc.nodes = FALSE) {
             for(i in 1:length(wrongs_trees)) {
                 error_msg <- c(error_msg, paste0("Node", ifelse(length(wrongs_nodes[[i]]) > 1, "s ", " "), paste(wrongs_nodes[[i]], collapse = ", "), " from tree ", wrongs_trees[[i]]," not found in the data."))
             }
-            stop(paste(error_msg, "(nodes cannot be trimmed automatically).") , call. = FALSE)
+            stop(paste(error_msg, "Nodes cannot be trimmed automatically. You can try using the following to remove them\n  my_tree$node.labels <- NULL") , call. = FALSE)
         }
 
         ## Selecting the tips to drop
@@ -136,7 +143,7 @@ clean.data <- function(data, tree, inc.nodes = FALSE) {
     }
 
     if(!is(cleaned_data, "list")) {
-        stop(paste0("Node", ifelse(length(cleaned_data) > 1, "s ", " "), paste(cleaned_data, collapse = ", "), " not found in the data (nodes cannot be trimmed automatically)."), call. = FALSE)
+        stop(paste0("Node", ifelse(length(cleaned_data) > 1, "s ", " "), paste(cleaned_data, collapse = ", "), " not found in the data. Nodes cannot be trimmed automatically. You can try using the following to remove them\n  my_tree$node.labels <- NULL"), call. = FALSE)
     } else {
         return(cleaned_data)
     }

@@ -67,11 +67,12 @@ print.dispRity <- function(x, all = FALSE, ...) {
                 randtest = {
                     ## Remove the call (messy)
                     remove.call <- function(element) {
-                        if(element$call != "dispRity.randtest") {
+                        if(length(grep("dispRity.randtest", element$call)) == 0) {
                             element$call <- "dispRity::null.test"
                         }
                         return(element)
                     }
+
                     x <- lapply(x, remove.call)
 
                     if(length(x) == 1) {
@@ -111,7 +112,16 @@ print.dispRity <- function(x, all = FALSE, ...) {
                     cat("\n")
 
                     if(!is.null(x$p.value)) {
-                        print(x$p.value)
+                        cat("Rank envelope test:\n")
+                        cat(" p-value of the global test: ", attr(x$p.value, "p", exact = TRUE), sep="")
+                        if(!is.null(attr(x$p.value, "ties"))) {
+                            cat(" (ties method: ", attr(x$p.value, "ties"), ")\n", sep="")
+                        } else {
+                            cat("\n")
+                        }
+                        if(!is.null(attr(x$p.value, "p_interval"))) {
+                            cat(" p-interval                : (", attr(x$p.value, "p_interval")[1], ", ", attr(x$p.value, "p_interval")[2],")\n", sep="")
+                        }
                     }
 
                     return(invisible())
@@ -193,6 +203,54 @@ print.dispRity <- function(x, all = FALSE, ...) {
                     class(x) <- "list"
                     print(x)
                     return(invisible())
+                },
+                pgls.dispRity = {
+
+                    ## Modified from phylolm::print.phylolm
+                    ## Print the general info
+                    cat(paste0("phylolm test (pgls) applied to ", length(x), " disparity estimates\n"))
+                    cat(paste0("using the formula: ", Reduce(paste, deparse(x[[1]]$formula))," and the model: ", x[[1]]$model,"\n\n"))
+
+                    ## Print fit
+                    print(rbind(pool.pgls.param(x, "aic"), pool.pgls.param(x, "logLik")), ...)
+
+                    ## Print param
+                    cat("\nParameter estimate(s) using ML:\n")
+                    if(!is.null(x[[1]]$optpar)) {
+                        opt_param <- pool.pgls.param(x, "optpar")
+                        if (x[[1]]$model %in% c("OUrandomRoot","OUfixedRoot")) {
+                            rownames(opt_param) <- "alpha"
+                            print(opt_param, ...)
+                        }
+                        if (x[[1]]$model %in% c("lambda","kappa","delta")) {
+                            cat(x[[1]]$model,":")
+                            print(opt_param, ...)
+                        }
+                        if (x[[1]]$model=="EB") {
+                            rownames(opt_param) <- "rate"
+                            print(opt_param, ...)
+                        }
+                    cat("\n")
+                    }
+
+                    ## Variance
+                    print(pool.pgls.param(x, "sigma2"), ...)
+                    if(x[[1]]$sigma2_error > 0) {
+                        print(pool.pgls.param(x, "sigma2_error"), ...)
+                    }
+                    
+                    ## Print the coefficients
+                    cat("\nCoefficients:\n")
+                    pool_coef <- pool.pgls.param(x, "coefficients")
+                    # rownames(pool_coef) <- names(x[[1]]$coefficients)
+                    print(pool_coef, ...)
+
+                    cat(paste0("\nYou can access individual models by using their index (e.g. x[[1]])\nor summarise and plot all models using summary(x) or plot(x)."))
+                    return(invisible())
+                },
+                multi = {
+                    print.dispRity(dispRity.multi.merge.data(x), ...)
+                    return(invisible())
                 }
             )
         }
@@ -235,17 +293,21 @@ print.dispRity <- function(x, all = FALSE, ...) {
                     "covar"      = cat(paste(length(subsets), method[1], "subsets for", nrow(x$matrix[[1]]), "elements"))
                     )
 
+                ## Print the number of matrices
                 if(length(x$matrix) > 1) {
-                    cat(paste0(" in ", length(x$matrix), " matrices"), sep = "")
+                    cat(paste0(" in ", length(x$matrix), ifelse((!is.null(x$call$dispRity.multi) && x$call$dispRity.multi), " separated", ""), " matrices"), sep = "")
                 } else {
                     cat(paste0(" in one matrix"), sep = "")
                 }
                 if(length(x$call$dimensions) != 0) cat(paste(" with", length(x$call$dimensions), "dimensions"), sep = "")
+                
+                ## Print the number of trees
                 if(!is.null(x$tree[[1]])) {
                     cat(" with ") ; print(x$tree)
                 } else {
                     cat(":\n")
                 }
+
                 if(length(subsets) > 5) {
                     cat("    ",paste(subsets[1:5], collapse=", "),"...\n")
                 } else {
@@ -258,10 +320,9 @@ print.dispRity <- function(x, all = FALSE, ...) {
             if(!is.null(x$call$subsets) && ("covar" %in% x$call$subsets)) {
                 cat(paste0("One covar matrix (", names(x$subsets), ") with "))
             }
-
             cat(paste(nrow(x$matrix[[1]]), "elements"))
             if(length(x$matrix) > 1) {
-                cat(paste0(" in ", length(x$matrix), " matrices"), sep = "")
+                cat(paste0(" in ", length(x$matrix), ifelse((!is.null(x$call$dispRity.multi) && x$call$dispRity.multi), " separated", ""), " matrices"), sep = "")
             } else {
                 cat(paste0(" in one matrix"), sep = "")
             }
@@ -294,6 +355,15 @@ print.dispRity <- function(x, all = FALSE, ...) {
             if(x$call$disparity$metrics$between.groups) {
                 cat(" between groups")
             }
+
+            ## Print info from dispRitreats
+            if(!is.null(x$call$dispRitreats)) {
+                ## PLACEHOLDER FOR dispRitreats INFO
+                if(x$call$dispRitreats) {
+                    cat(".\nDisparity was calculated from treats simulated data")
+                }
+            }
+
             cat(".\n")
         }
     }

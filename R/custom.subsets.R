@@ -5,7 +5,7 @@
 #'
 #' @param data A \code{matrix} or a \code{list} of matrices.
 #' @param group Either a \code{list} of row numbers or names to be used as different groups, a \code{data.frame} with the same \eqn{k} elements as in \code{data} as rownames or a \code{factor} vector. If \code{group} is a \code{phylo} object matching \code{data}, groups are automatically generated as clades (and the tree is attached to the resulting \code{dispRity} object).
-#' @param tree Optional, a \code{phylo} or \code{multiPhylo} object to attach to the resulting \code{dispRity} data.
+#' @param tree \code{NULL} (default) or an optional \code{phylo} or \code{multiPhylo} object to be attached to the data.
 #' 
 #' @details
 #' Note that every element from the input data can be assigned to multiple groups!
@@ -50,7 +50,7 @@
 # group2 <- list("A" = c("a", "b", "c", "d"), "B" = c(letters[5:10]))
 # group3 <- as.data.frame(matrix(data = c(rep(1,5), rep(2,5)), nrow = 10, ncol = 1, dimnames = list(letters[1:10])))
 
-custom.subsets <- function(data, group, tree) {
+custom.subsets <- function(data, group, tree = NULL) {
 
     ## Saving the call
     match_call <- match.call()
@@ -60,7 +60,32 @@ custom.subsets <- function(data, group, tree) {
     ## ----------------------
     ## DATA
     ## data must be a matrix
-    data <- check.dispRity.data(data)
+    if(!is.null(tree)) {
+        data <- check.dispRity.data(data, tree, returns = c("matrix", "tree", "multi"))
+    } else {
+        data <- check.dispRity.data(data, returns = c("matrix", "multi"))
+    }
+
+    ## If is multi lapply the stuff
+    if(((!is.null(data$call$dispRity.multi) && data$call$dispRity.multi) || data$multi)) {
+        ## Split the data
+        split_data <- dispRity.multi.split(data)
+        ## Get only the matrices and/or the trees
+        matrices <- unlist(lapply(split_data, `[[`, "matrix"), recursive = FALSE)
+        ## Get the trees
+        if(!is.null(split_data[[1]]$tree)) {
+            tree <- unlist(lapply(split_data, `[[`, "tree"), recursive = FALSE)
+        } else {
+            tree <- NULL
+        }
+        ## Apply the custom.subsets
+        return(dispRity.multi.apply(matrices, fun = custom.subsets, group = group, tree = tree))
+    } else {
+        if(!is.null(tree)) {
+            tree <- data$tree
+        }
+        data <- data$matrix
+    }
 
     ## Check whether it is a distance matrix
     if(check.dist.matrix(data[[1]], just.check = TRUE)) {
@@ -91,7 +116,7 @@ custom.subsets <- function(data, group, tree) {
     subsets_list <- lapply(group_list, function(x) list(elements = matrix(x, ncol = 1)))
 
     ## Attach the tree
-    if(group_class == "phylo" || !missing(tree)) {
+    if(group_class == "phylo" || !is.null(tree)) {
         ## Output as a dispRity object (with tree)
         return(make.dispRity(data = data, call = list("subsets" = "customised"), subsets = subsets_list, tree = tree))
     } else {

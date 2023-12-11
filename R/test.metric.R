@@ -90,8 +90,6 @@
 #' 
 #' @references
 #' Guillerme T, Puttick MN, Marcy AE, Weisbecker V. \bold{2020} Shifting spaces: Which disparity or dissimilarity measurement best summarize occupancy in multidimensional spaces?. Ecol Evol. 2020;00:1-16. (doi:10.1002/ece3.6452)
-
-
 test.metric <- function(data, metric, ..., shifts, shift.options, model, replicates = 3, steps = 10, dimensions, verbose = FALSE, save.steps = FALSE) {
 
     ## Saving the call
@@ -104,7 +102,7 @@ test.metric <- function(data, metric, ..., shifts, shift.options, model, replica
     metric_name <- NULL
     if(!is(data, "dispRity")) {
         options(warn = -1)
-        data <- check.dispRity.data(data)
+        data <- check.dispRity.data(data, returns = "matrix")
         options(warn = 0)
     } else {
         ## See if the metric needs to be recycled

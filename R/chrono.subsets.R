@@ -4,12 +4,12 @@
 #' @description Splits the data into a chronological (time) subsets list.
 #'
 #' @param data A \code{matrix} or a \code{list} of matrices.
-#' @param tree A \code{phylo} or a \code{multiPhylo} object matching the data and with a \code{root.time} element. This argument can be left missing if \code{method = "discrete"} and all elements are present in the optional \code{FADLAD} argument.
+#' @param tree \code{NULL} (default) or an optional \code{phylo} or \code{multiPhylo} object matching the data and with a \code{root.time} element. This argument can be left missing if \code{method = "discrete"} and all elements are present in the optional \code{FADLAD} argument.
 #' @param method The time subsampling method: either \code{"discrete"} (or \code{"d"}) or \code{"continuous"} (or \code{"c"}).
 #' @param time Either a single \code{integer} for the number of discrete or continuous samples or a \code{vector} containing the age of each sample.
 #' @param model One of the following models: \code{"acctran"}, \code{"deltran"}, \code{"random"}, \code{"proximity"}, \code{"equal.split"} or \code{"gradual.split"}. Is ignored if \code{method = "discrete"}.
 #' @param inc.nodes A \code{logical} value indicating whether nodes should be included in the time subsets. Is ignored if \code{method = "continuous"}.
-#' @param FADLAD An optional \code{data.frame} containing the first and last occurrence data.
+#' @param FADLAD \code{NULL} (default) or an optional \code{data.frame} or \code{list} of \code{data.frame}s containing the first and last occurrence data.
 #' @param verbose A \code{logical} value indicating whether to be verbose or not. Is ignored if \code{method = "discrete"}.
 #' @param t0 If \code{time} is a number of samples, whether to start the sampling from the \code{tree$root.time} (\code{TRUE}), or from the first sample containing at least three elements (\code{FALSE} - default) or from a fixed time point (if \code{t0} is a single \code{numeric} value).
 #' @param bind.data If \code{data} contains multiple matrices and \code{tree} contains the same number of trees, whether to bind the pairs of matrices and the trees (\code{TRUE}) or not (\code{FALSE} - default).
@@ -95,16 +95,73 @@
 # t0 = 5
 # bind.data = TRUE
 
-chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, FADLAD, verbose = FALSE, t0 = FALSE, bind.data = FALSE) {    
+chrono.subsets <- function(data, tree = NULL, method, time, model, inc.nodes = FALSE, FADLAD = NULL, verbose = FALSE, t0 = FALSE, bind.data = FALSE) {
     match_call <- match.call()
 
     ## ----------------------
     ##  SANITIZING
     ## ----------------------
     ## DATA
-    ## data must be a matrix or a list
-    data <- check.dispRity.data(data)
+    # data <- check.dispRity.data(data, returns = "matrix")
 
+    if(!is.null(tree)) {
+        data <- check.dispRity.data(data, tree, returns = c("matrix", "tree", "multi"))
+    } else {
+        data <- check.dispRity.data(data, returns = c("matrix", "multi"))
+    }
+
+    ## VERBOSE
+    check.class(verbose, "logical")
+
+    # If is multi lapply the stuff
+    if(((!is.null(data$call$dispRity.multi) && data$call$dispRity.multi) || data$multi)) {
+        ## Split the data
+        split_data <- dispRity.multi.split(data)
+        
+        ## Get only the matrices and/or the trees
+        matrices <- unlist(lapply(split_data, `[[`, "matrix"), recursive = FALSE)
+        
+        ## Get the trees
+        if(!is.null(split_data[[1]]$tree)) {
+            tree <- unlist(lapply(split_data, `[[`, "tree"), recursive = FALSE)
+        } else {
+            tree <- NULL
+        }
+
+        ## Toggle bind data (each is now a pair of matrix + tree)
+        bind.data <- FALSE
+
+        ## Toggle verbose (if required)
+        chrono.subsets.call <- chrono.subsets
+        if(verbose) {
+            ## Changing the chrono.subsets function name (verbose line edited out)
+            ## Find the verbose lines
+            start_verbose <- which(as.character(body(chrono.subsets.call)) == "if (method == \"discrete\") {\n    chrono.subsets.fun <- chrono.subsets.discrete\n    if (verbose) \n        message(\"Creating \", length(time) - 1, \" time bins through time:\", appendLF = FALSE)\n} else {\n    chrono.subsets.fun <- chrono.subsets.continuous\n    if (verbose) \n        message(\"Creating \", length(time), \" time samples through \", ifelse(length(tree) > 1, paste0(length(tree), \" trees:\"), \"one tree:\"), appendLF = FALSE)\n}")
+            end_verbose <- which(as.character(body(chrono.subsets.call)) == "if (verbose) message(\"Done.\\n\", appendLF = FALSE)")
+
+            ## Blank out the lines
+            body(chrono.subsets.call)[[start_verbose]][[3]][[3]] <- body(chrono.subsets.call)[[start_verbose]][[4]][[3]] <- body(chrono.subsets.call)[[end_verbose]] <- substitute(empty_line <- NULL)
+        }
+
+        ## Apply the custom.subsets
+        if(method == "discrete") {
+            if(verbose) message("Creating ", length(time)-1, " time bins through time:", appendLF = FALSE)
+        } else {
+            if(verbose) message("Creating ", length(time), " time samples through ", length(matrices), " trees and matrices:", appendLF = FALSE)
+        }
+
+        output <- dispRity.multi.apply(matrices, fun = chrono.subsets.call, tree = tree, method = method, time = time, model = model, inc.nodes = inc.nodes, FADLAD = FADLAD, verbose = verbose, t0 = t0, bind.data = bind.data)
+
+        if(verbose) message("Done.\n", appendLF = FALSE)
+        return(output)
+
+    } else {
+        if(!is.null(tree)) {
+            tree <- data$tree
+        }
+        data <- data$matrix
+    }
+    
     ## Check whether it is a distance matrix
     if(check.dist.matrix(data[[1]], just.check = TRUE)) {
         warning("chrono.subsets is applied on what seems to be a distance matrix.\nThe resulting matrices won't be distance matrices anymore!", call. = FALSE)
@@ -115,19 +172,17 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
 
     ## TREE (1)
     ## tree must be a phylo object
-    if(!missing(tree)) {
+    if(!is.null(tree)) {
         tree_class <- check.class(tree, c("phylo", "multiPhylo"))
-        is_multiPhylo <- ifelse(tree_class == "multiPhylo", TRUE, FALSE)
+        is_multiPhylo <- ifelse((tree_class == "multiPhylo" && length(tree) > 1), TRUE, FALSE)
         ## Make the tree into a single multiPhylo object
-        if(!is_multiPhylo) {
-            tree <- list(tree)
-            class(tree) <- "multiPhylo"
-        } else {
-            ## Check if all the trees are the same
-            tips <- lapply(tree, function(x) x$tip.label)
-            if(!all(unique(unlist(tips)) %in% tips[[1]])) {
-                stop.call(match_call$tree, msg.pre = "The trees in ", msg = " must have the same tip labels.")
-            }
+
+        ## Check if all the trees are the same
+        tips <- lapply(tree, function(x) x$tip.label)
+        if(!all(unique(unlist(tips)) %in% tips[[1]])) {
+            stop.call(match_call$tree, msg.pre = "The trees in ", msg = " must have the same tip labels.")
+        }
+        if(inc.nodes) {
             nodes <- lapply(tree, function(x) x$node.label)
             unique_nodes <- unique(unlist(nodes))
             if(is.null(unique_nodes) || !all(unique_nodes %in% nodes[[1]])) {
@@ -173,17 +228,8 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
         ## tree.age_tree variable declaration
         tree.age_tree <- lapply(tree, tree.age)
     } else {
-
         ## Default tree list
         is_multiPhylo <- FALSE
-
-        # ## If the data has a tree attached, use that one
-        # TG: this is not supposed to happen
-        # if(!is.null(data$tree[[1]])) {
-        #     tree <- data$tree
-        #     tree.age_tree <- lapply(tree, tree.age)
-        #     is_multiPhylo <- length(data$tree) > 1
-        # }
     }
 
     ## METHOD
@@ -200,8 +246,8 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
     if(method == "c") method <- "continuous"
 
     ## If the tree is missing, the method can intake a star tree (i.e. no phylogeny)
-    if(missing(tree)) {
-        if(missing(FADLAD)) {
+    if(is.null(tree)) {
+        if(is.null(FADLAD)) {
             stop.call("", "If no phylogeny is provided, all elements must be present in the FADLAD argument.")
         }
         if(method == "continuous") {
@@ -347,7 +393,7 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
     ## If FADLAD is missing, set it to NULL (skipped in the chrono.subsets.fun)
     ## Remove adjust FADLAD and associated functions from the whole package
 
-    if(missing(FADLAD)) {
+    if(is.null(FADLAD)) {
         if(method != "continuous") {
             ## If missing, create the FADLAD table
             make.fadlad <- function(tree.age_tree, Ntip_tree) {
@@ -403,10 +449,6 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
         }
     }
 
-
-    ## VERBOSE
-    check.class(verbose, "logical")
-
     ## -------------------------------
     ##  GENRATING THE TIME subsets
     ## -------------------------------
@@ -457,5 +499,4 @@ chrono.subsets <- function(data, tree, method, time, model, inc.nodes = FALSE, F
     } else {
         return(make.dispRity(data = data, call = list("subsets" = c(method, model, "trees" = length(tree), "matrices" = length(data), "bind" = bind.data)), subsets = time_subsets))        
     }
-
 }

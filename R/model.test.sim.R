@@ -208,7 +208,7 @@ model.test.sim <- function(sim = 1, model, model.rank = 1, alternative = "two-si
         model <- strsplit(model, ":")[[1]]
         
         # MP: necessary for the combination of 'multi.OU' and 'fixed.optima=TRUE' otherwise simulations take wrong optimum
-        if(fixed.optima && model == "multi.OU") parameters$optima.1 <- parameters$ancestral.state
+        if(fixed.optima && model[[1]] == "multi.OU") parameters$optima.1 <- parameters$ancestral.state
         
         if(model[1] == "Stasis")  parameters$ancestral.state <- parameters$theta.1
 

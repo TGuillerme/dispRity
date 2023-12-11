@@ -178,69 +178,56 @@ test_that("chrono.subsets.continuous works properly with acctran model", {
         , sort(subsets_3))
 })
 
-## chrono.subsets
-data = BeckLee_mat99
-tree = BeckLee_tree
-method = "continuous"
-model = "acctran"
-inc.nodes = TRUE
-FADLAD = BeckLee_ages
-verbose = FALSE
-
 test_that("Sanitizing works for chrono.subsets (wrapper)", {
+
+    ## chrono.subsets
+    data = BeckLee_mat99
+    tree = BeckLee_tree
+    method = "continuous"
+    model = "acctran"
+    inc.nodes = TRUE
+    FADLAD = BeckLee_ages
+    verbose = FALSE
+
     ## Data
-    expect_error(
-        chrono.subsets(data = "A", tree, method, time, model, inc.nodes, FADLAD, verbose = FALSE)
-        )
-    expect_error(
-        chrono.subsets(data = 1, tree, method, time, model, inc.nodes, FADLAD, verbose = FALSE)
-        )
-    expect_warning(expect_error(
-        chrono.subsets(data = matrix(NA, nrow = 2, ncol = 3), tree, method, time, model, inc.nodes, FADLAD, verbose = FALSE)
-        ))
+    error <- capture_error(chrono.subsets(data = "A", tree, method, time, model, inc.nodes, FADLAD, verbose = FALSE))
+    expect_equal(error[[1]], "data must be of class matrix or data.frame or list.")
+    error <- capture_error(chrono.subsets(data = 1, tree, method, time, model, inc.nodes, FADLAD, verbose = FALSE))
+    expect_equal(error[[1]], "data must be of class matrix or data.frame or list.")
+    expect_warning(error <- capture_error(chrono.subsets(data = matrix(NA, nrow = 2, ncol = 3), tree, method, time, model, inc.nodes, FADLAD, verbose = FALSE)))
+    expect_equal(error[[1]], "The data is not matching the tree labels (you can use ?clean.data to match both data and tree).")
+
     ## tree
-    expect_error(
-        chrono.subsets(data, tree = "A", method, time, model, inc.nodes, FADLAD, verbose = FALSE)
-        )
-    expect_error(
-        chrono.subsets(data, tree = 1, method, time, model, inc.nodes, FADLAD, verbose = FALSE)
-        )
-    expect_error(
-        chrono.subsets(data, tree = rtree(5), method, time, model, inc.nodes, FADLAD, verbose = FALSE)
-        )
+    error <- capture_error(chrono.subsets(data, tree = "A", method, time, model, inc.nodes, FADLAD, verbose = FALSE))
+    expect_equal(error[[1]], "tree must be of class phylo or multiPhylo.")
+    error <- capture_error(chrono.subsets(data, tree = 1, method, time, model, inc.nodes, FADLAD, verbose = FALSE))
+    expect_equal(error[[1]], "tree must be of class phylo or multiPhylo.")
+    error <- capture_error(chrono.subsets(data, tree = rtree(5), method, time, model, inc.nodes, FADLAD, verbose = FALSE))
+    expect_equal(error[[1]], "The data is not matching the tree labels (you can use ?clean.data to match both data and tree).")
     ## method
-    expect_error(
-        chrono.subsets(data, tree, method = 1, time, model, inc.nodes, FADLAD, verbose = FALSE)
-        )
-    expect_error(
-        chrono.subsets(data, tree, method = "a", time, model, inc.nodes, FADLAD, verbose = FALSE)
-        )
-    expect_error(
-        chrono.subsets(data, tree, method = c("c","d"), time, model, inc.nodes, FADLAD, verbose = FALSE)
-        )
+    error <- capture_error(chrono.subsets(data, tree, method = 1, time, model, inc.nodes, FADLAD, verbose = FALSE))
+    expect_equal(error[[1]], "method must be of class character.")
+    error <- capture_error(chrono.subsets(data, tree, method = "a", time, model, inc.nodes, FADLAD, verbose = FALSE))
+    expect_equal(error[[1]], "method argument must be one of the following: discrete, d, continuous, c.")
+    error <- capture_error(chrono.subsets(data, tree, method = c("c","d"), time, model, inc.nodes, FADLAD, verbose = FALSE))
+    expect_equal(error[[1]], "method argument must be one of the following: discrete, d, continuous, c.")
     ## time
-    expect_error(
-        chrono.subsets(data, tree, method, time = "time", model, inc.nodes, FADLAD, verbose = FALSE)
-        )
+    error <- capture_error(chrono.subsets(data, tree, method, time = "time", model, inc.nodes, FADLAD, verbose = FALSE))
+    expect_equal(error[[1]], "time must be of class numeric or integer.")
     ## model
-    expect_error(
-        chrono.subsets(data, tree, method, time, model = 3, inc.nodes, FADLAD, verbose = FALSE)
-        )
-    expect_error(
-        chrono.subsets(data, tree, method, time, model = c("acctran","deltran"), inc.nodes, FADLAD, verbose = FALSE)
-        )
+    error <- capture_error(chrono.subsets(data, tree, method, time, model = 3, inc.nodes, FADLAD, verbose = FALSE))
+    expect_equal(error[[1]], "model argument must be one of the following: acctran, deltran, random, proximity, equal.split, gradual.split.")
+    error <- capture_error(chrono.subsets(data, tree, method, time, model = c("acctran","deltran"), inc.nodes, FADLAD, verbose = FALSE))
+    expect_equal(error[[1]], "model argument must be one of the following: acctran, deltran, random, proximity, equal.split, gradual.split.")
     ## FADlAD
-    expect_error(
-        chrono.subsets(data, tree, method, time, model, inc.nodes, FADLAD = data.frame(nrow = 2, ncol = 3), verbose = FALSE)
-        )
+    error <- capture_error(chrono.subsets(data, tree, method, time, model, inc.nodes, FADLAD = data.frame(nrow = 2, ncol = 3), verbose = FALSE))
+    expect_equal(error[[1]], "data.frame(nrow = 2, ncol = 3) must be a data.frame with two columns being called respectively:\n\"FAD\" (First Apparition Datum) and \"LAD\" (Last Apparition Datum).")
 
     ## t0
-    expect_error(
-        chrono.subsets(data, tree, method, time, model, inc.nodes, FADLAD = data.frame(nrow = 2, ncol = 3), verbose = FALSE, t0 = "a")
-        )
-    expect_error(
-        chrono.subsets(data, tree, method, time, model, inc.nodes, verbose = FALSE, t0 = c(1,2))
-        )
+    error <- capture_error(chrono.subsets(data, tree, method, time, model, inc.nodes, FADLAD = data.frame(nrow = 2, ncol = 3), verbose = FALSE, t0 = "a"))
+    expect_equal(error[[1]], "t0 must be logical or a single numeric value.")
+    error <- capture_error(chrono.subsets(data, tree, method, time, model, inc.nodes, verbose = FALSE, t0 = c(1,2)))
+    expect_equal(error[[1]], "t0 must be logical or a single numeric value.")
 
     data(BeckLee_mat99)
     data(BeckLee_mat50)
@@ -278,8 +265,11 @@ test_that("Sanitizing works for chrono.subsets (wrapper)", {
     ## Tree doesn't match
     wrong_tree <- rtree(50)
     wrong_tree$root.time <- 100
-    expect_error(chrono.subsets(BeckLee_mat99, wrong_tree, method = "c", time = 3, model = "acctran", inc.nodes = FALSE))
-    expect_error(chrono.subsets(BeckLee_mat99, wrong_tree, method = "c", time = 3, model = "acctran", inc.nodes = TRUE))
+    error <- capture_error(chrono.subsets(BeckLee_mat99, wrong_tree, method = "c", time = 3, model = "acctran", inc.nodes = FALSE))
+    expect_equal(error[[1]], "The data is not matching the tree labels (you can use ?clean.data to match both data and tree).")
+    error <- capture_error(chrono.subsets(BeckLee_mat99, wrong_tree, method = "c", time = 3, model = "acctran", inc.nodes = TRUE))
+    expect_equal(error[[1]], "The data is not matching the tree labels (you can use ?clean.data to match both data and tree).")
+
 
     ## FADLAD is inverse
     FADLAD_tmp <- FADLAD_tmp[,c(2,1)]
@@ -298,8 +288,8 @@ test_that("Sanitizing works for chrono.subsets (wrapper)", {
     multitrees <- list(BeckLee_tree, BeckLee_tree)
     multitrees[[1]]$tip.label[1] <- "bob"
     class(multitrees) <- "multiPhylo"
-    error <- capture_error(chrono.subsets(BeckLee_mat99, multitrees, method = "c", time = 3, model = "deltran"))
-    expect_equal(error[[1]], "The trees in multitrees must have the same tip labels.")
+    expect_warning(error <- capture_error(chrono.subsets(BeckLee_mat99, multitrees, method = "c", time = 3, model = "deltran")))
+    expect_equal(error[[1]], "The data is not matching the tree labels (you can use ?clean.data to match both data and tree).")
 
     ## No phylogeny provided!
     error <- capture_error(chrono.subsets(data = BeckLee_mat99, method = "c", time = 3, model = "acctran", FADLAD = BeckLee_ages))
@@ -309,10 +299,20 @@ test_that("Sanitizing works for chrono.subsets (wrapper)", {
     data_wrong <- BeckLee_mat99
     rownames(data_wrong)[1] <- "wrong!"
     error <- capture_error(chrono.subsets(data = data_wrong, tree = BeckLee_tree, method = "c", time = 3, model = "acctran"))
-    expect_equal(error[[1]], "The labels in the matrix and in the tree do not match!\nTry using clean.data() to match both tree and data or make sure whether nodes should be included or not (inc.nodes = FALSE by default).")
+    expect_equal(error[[1]], "The data is not matching the tree labels (you can use ?clean.data to match both data and tree).")
 })
 
 test_that("Output format is correct", {
+
+    ## chrono.subsets
+    data = BeckLee_mat99
+    tree = BeckLee_tree
+    method = "continuous"
+    model = "acctran"
+    inc.nodes = TRUE
+    FADLAD = BeckLee_ages
+    verbose = FALSE
+
     out_test <- chrono.subsets(data, tree, method, time, model, inc.nodes, FADLAD)
     ## Class
     expect_is(
@@ -330,6 +330,15 @@ test_that("Output format is correct", {
 })
 
 test_that("Output format is correct", {
+    ## chrono.subsets
+    data = BeckLee_mat99
+    tree = BeckLee_tree
+    method = "continuous"
+    model = "acctran"
+    inc.nodes = TRUE
+    FADLAD = BeckLee_ages
+    verbose = FALSE
+
     output_continuous <- capture_message(test <- chrono.subsets(data, tree, method = "continuous", time, model, inc.nodes, FADLAD, verbose = TRUE))
     expect_equal(strsplit(as.character(output_continuous), split = ", : ")[[1]][2], "Creating 3 time samples through one tree:\n")
 
@@ -499,15 +508,15 @@ test_that("chrono.subsets detects distance matrices", {
     expect_equal(msg, "chrono.subsets is applied on what seems to be a distance matrix.\nThe resulting matrices won't be distance matrices anymore!")
 })
 
-test_that("cbind.fill and recursive.combine list works", {
+test_that("do.cbind.fill and recursive.combine list works", {
         x  <- matrix(1, nrow = 2, ncol = 1)
         x2 <- matrix(1, nrow = 2, ncol = 2)
         y  <- matrix(2, nrow = 4, ncol = 1)
-        expect_equal(dim(cbind.fill(x, x2)[[1]]), dim(cbind(x, x2)))
-        expect_equal(dim(cbind.fill(x, y)[[1]]) , c(4,2))
-        expect_equal(dim(cbind.fill(x2, y)[[1]]), c(4,3))
-        expect_equal(cbind.fill(x, y)$elements, matrix(c(1,1,NA,NA,2,2,2,2), ncol = 2))
-        expect_equal(cbind.fill(y, x)$elements, matrix(c(2,2,2,2,1,1,NA,NA), ncol = 2))
+        expect_equal(dim(do.cbind.fill(x, x2)[[1]]), dim(cbind(x, x2)))
+        expect_equal(dim(do.cbind.fill(x, y)[[1]]) , c(4,2))
+        expect_equal(dim(do.cbind.fill(x2, y)[[1]]), c(4,3))
+        expect_equal(do.cbind.fill(x, y)$elements, matrix(c(1,1,NA,NA,2,2,2,2), ncol = 2))
+        expect_equal(do.cbind.fill(y, x)$elements, matrix(c(2,2,2,2,1,1,NA,NA), ncol = 2))
 
         ## Dummy test lists
         test1 <- list("A" = list("elements" = matrix(1, nrow = 1, ncol = 1)),
@@ -551,10 +560,10 @@ test_that("chrono.subsets works with multiPhylo", {
 
     error <- capture_error(chrono.subsets(data, method = "continuous", time = c(1, 0.5, 0), tree = trees_no_root_time))
     expect_equal(error$message, "The following tree(s) in trees_no_root_time 1 needs a $root.time element.")
-    error <- capture_error(chrono.subsets(data, method = "continuous", time = c(1, 0.5, 0), tree = trees_wrong_tip))
+    expect_warning(error <- capture_error(chrono.subsets(data, method = "continuous", time = c(1, 0.5, 0), tree = trees_wrong_tip)))
     expect_equal(error$message, "trees_wrong_tip: wrong number of tips in the following tree(s): 2.")
     error <- capture_error(chrono.subsets(data, method = "continuous", time = c(1, 0.5, 0), tree = tree_wrong_label))
-    expect_equal(error$message, "The trees in tree_wrong_label must have the same node labels.")
+    expect_equal(error$message, "Node WRONG not found in the data. Nodes cannot be trimmed automatically. You can try using the following to remove them\n  my_tree$node.labels <- NULL")
     warning <- capture_warning(test <- chrono.subsets(data, method = "continuous", time = c(1, 0.5, 0), tree = tree_wrong_roottime, model = "acctran"))
     expect_equal(warning$message, "Differing root times in tree_wrong_roottime. The $root.time for all tree has been set to the maximum (oldest) root time: 81 by stretching the root edge.")
 
@@ -582,7 +591,6 @@ test_that("chrono.subsets works with multiPhylo", {
     expect_is(test$tree, "multiPhylo")
     expect_equal(test$tree[[1]]$edge.length, tree[[1]]$edge.length)
     expect_equal(test$tree[[2]]$edge.length, tree[[2]]$edge.length)
-
 })
 
 test_that("chrono.subsets works with multiple matrices", {
@@ -618,10 +626,18 @@ test_that("chrono.subsets works with multiple matrices", {
     rownames(matrices_wrong1[[2]])[1] <- "t2000" 
     rownames(matrices_wrong2[[3]])[11] <- "root" 
 
-    error <- capture_error(chrono.subsets(matrices_wrong1, tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5))
-    expect_equal(error[[1]], "data must be matrix or a list of matrices with the same dimensions and unique row names.")
-    error <- capture_error(chrono.subsets(matrices_wrong2, tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5))
-    expect_equal(error[[1]], "data must be matrix or a list of matrices with the same dimensions and unique row names.")
+
+    ## Now warnings for multi dispRity
+    # error <- capture_error(chrono.subsets(matrices_wrong1, tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5))
+    # expect_equal(error[[1]], "data must be matrix or a list of matrices with the same dimensions and unique row names.")
+    warn <- capture_warning(chrono.subsets(matrices_wrong1, tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5))
+    expect_equal(warn[[1]], "The following elements are not present in all matrices: t2000, t1, t2000. The matrices will be treated as separate trait-spaces.")
+
+    # error <- capture_error(chrono.subsets(matrices_wrong2, tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5))
+    # expect_equal(error[[1]], "data must be matrix or a list of matrices with the same dimensions and unique row names.")
+    warn <- capture_warning(chrono.subsets(chrono.subsets(matrices_wrong2, tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5)))
+    expect_equal(warn[[1]], "The following elements are not present in all matrices: root, root, n1. The matrices will be treated as separate trait-spaces.")
+
 
     ## Test working fine
     test <- chrono.subsets(matrices, tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5)
@@ -640,7 +656,6 @@ test_that("chrono.subsets works with multiple matrices", {
     expect_equal(test$tree[[1]]$edge.length, trees[[1]]$edge.length)
     expect_equal(test$tree[[2]]$edge.length, trees[[2]]$edge.length)
     expect_equal(test$tree[[3]]$edge.length, trees[[3]]$edge.length)
-
 })
 
 test_that("fast internal functions work", {
@@ -827,5 +842,5 @@ test_that("tree Sanitizing works", {
     BeckLee_tree_wrong <- BeckLee_tree
     BeckLee_tree_wrong$tip.label[1] <- "hahahaha"
     error <- capture_error(chrono.subsets(BeckLee_mat50, BeckLee_tree_wrong, method = "discrete", time = 5, inc.nodes = FALSE))
-    expect_equal(error[[1]], "The labels in the matrix and in the tree do not match!\nTry using clean.data() to match both tree and data or make sure whether nodes should be included or not (inc.nodes = FALSE by default).")    
+    expect_equal(error[[1]], "The data is not matching the tree labels (you can use ?clean.data to match both data and tree).")    
 })

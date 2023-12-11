@@ -9,9 +9,10 @@
 #' @param n optional, a random number of covariance matrices to sample (if left empty, all are used).
 #' @param major.axis which major axis to use (default is \code{1}; see \code{\link{axis.covar}} for more details).
 #' @param level the confidence interval to estimate the major axis (default is \code{0.95}; see \code{\link{axis.covar}} for more details)).
-#' @param output which values to output from the projection. By default, the three values \code{c("position", "distance", "degree")} are used to respectively output the projection, rejection and angle values (see \code{\link{projections}} for more details).
+#' @param output which values to output from the projection. By default, the three values \code{c("position", "distance", "degree")} are used to respectively output the projection, rejection and angle values (see \code{\link{projections}} for more details). The argument \code{"orthogonality"} can also be added to this vector.
 #' @param inc.base logical, when using \code{type = "elements"} with a supplied \code{base} argument, whether to also calculate the projections for the base group (\code{TRUE}) or not (\code{FALSE}; default).
-#' @param ... any optional arguments to pass to \code{\link{projections}} (such as \code{centre} or \code{abs}). 
+# @param distance.method which method to use to calculate the distance (rejection). Can be either \code{"euclidean"} (default) or \code{"CI"} to change the unit vector to either the projection of the confidence interval (see details).
+#' @param ... any optional arguments to pass to \code{\link{projections}} (such as \code{centre} or \code{abs}). \emph{NOTE that this function uses by default \code{centre = TRUE} and \code{abs = TRUE} which are not the defaults for \code{\link{projections}}}. 
 #' @param verbose logical, whether to be verbose (\code{TRUE}) or not (\code{FALSE}, default).
 #' 
 #' @details
@@ -26,6 +27,12 @@
 #'      \item \code{type = "groups"} will run pairs elements each subset and \code{base} (instead of the full pairwise analyses).
 #'      \item \code{type = "elements"} will run the projection of each subset onto the major axis from \code{base} rather than its own.
 #' }
+#'
+# If \code{output} contains \code{"distance"}, the \code{distance.method} allows for the two following calculations of the rejections:
+# \itemize{
+#      \item \code{"euclidean"} (default): calculates the distance values (rejections) as true euclidean distances in the space using typically the unit vector from the space (or from the rescaled space if the optional argument (\code{...}), \code{scale = TRUE} - default - is used). With this method, a rejection (\code{"distance"}) of 1 is at the same distance from the center of the space as a projection (\code{"position"}) of 1.
+#      \item \code{"CI"}: calculates the distance values (rejections) as non-euclidean distances but relative distances from the confidence interval (from the argument \code{level}). With this method, a rejection (\code{"distance"}) of 1 must be interpreted as a distance relative to the confidence interval ellipse: a value of equals that the rejection is on the confidence interval ellipse, and values above and below that value respectively mean within and without that confidence interval. With this method, a rejection of 1 is not at the same distance from the center of the space as a projection of 1 but are both on the same place relative to the confidence interval ellipse.
+#}
 #' 
 #' @returns
 #' A \code{list} of class \code{"dispRity"} and \code{"projection"} which contains \code{dispRity} objects corresponding to each projection value from \code{output}.
@@ -63,7 +70,7 @@
 #' @author Thomas Guillerme
 #' @export
 
-dispRity.covar.projections <- function(data, type, base, sample, n, major.axis = 1, level = 0.95, output = c("position", "distance", "degree"), inc.base = FALSE, ..., verbose = FALSE) {
+dispRity.covar.projections <- function(data, type, base, sample, n, major.axis = 1, level = 0.95, output = c("position", "distance", "degree"), inc.base = FALSE, ..., verbose = FALSE) { #distance.method = "euclidean"
 
     match_call <- match.call()
 
@@ -85,7 +92,7 @@ dispRity.covar.projections <- function(data, type, base, sample, n, major.axis =
     }
 
     ## output
-    check.method(output, c("position", "distance", "degree"), "output must be")
+    check.method(output, c("position", "distance", "degree", "orthogonality"), "output must be")
 
     ## Check logicals
     check.class(verbose, "logical")

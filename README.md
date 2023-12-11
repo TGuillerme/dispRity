@@ -3,7 +3,7 @@ Release:
 [![R-CMD-check](https://github.com/TGuillerme/dispRity/workflows/R-CMD-check/badge.svg)](https://github.com/TGuillerme/dispRity/actions)
 [![codecov](https://codecov.io/gh/TGuillerme/dispRity/branch/release/graph/badge.svg)](https://codecov.io/gh/TGuillerme/dispRity)
 [![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
-[![develVersion](https://img.shields.io/badge/devel%20version-1.7.0-green.svg?style=flat)](https://github.com/TGuillerme/dispRity)
+[![develVersion](https://img.shields.io/badge/devel%20version-1.8.0-green.svg?style=flat)](https://github.com/TGuillerme/dispRity)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1186467.svg)](https://doi.org/10.5281/zenodo.1186467)
 
 Development (master):
@@ -11,7 +11,7 @@ Development (master):
 [![R-CMD-check](https://github.com/TGuillerme/dispRity/workflows/R-CMD-check/badge.svg)](https://github.com/TGuillerme/dispRity/actions)
 [![codecov](https://codecov.io/gh/TGuillerme/dispRity/branch/master/graph/badge.svg)](https://codecov.io/gh/TGuillerme/dispRity)
 [![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
-[![develVersion](https://img.shields.io/badge/devel%20version-1.7.0-green.svg?style=flat)](https://github.com/TGuillerme/dispRity)
+[![dispRity status badge](https://phylotastic.r-universe.dev/badges/dispRity)](https://phylotastic.r-universe.dev)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1186467.svg)](https://doi.org/10.5281/zenodo.1186467)
 
 CRAN:
@@ -40,7 +40,7 @@ install.packages("dispRity")
 library(dispRity)
 ```
 
-The package is also available in the [phylotastic r-universe](https://phylotastic.r-universe.dev/ui#packages). [![dispRity status badge](https://phylotastic.r-universe.dev/badges/dispRity)](https://phylotastic.r-universe.dev)
+The package is also available in the [phylotastic r-universe](https://phylotastic.r-universe.dev/ui#packages) [![dispRity status badge](https://phylotastic.r-universe.dev/badges/dispRity)](https://phylotastic.r-universe.dev) or through the [phylogenetics CRAN Task View](https://cran.r-project.org/web/views/Phylogenetics.html). 
 
 
 You can also install the piping hot development version (not always recommended!) by installing the package directly through github:
@@ -74,54 +74,16 @@ Not sure what disparity metric to use?
 Not sure what a disparity metric is in the first place?
 Check out this paper on selecting the best metric for your specific question in [Ecology and Evolution](https://onlinelibrary.wiley.com/doi/full/10.1002/ece3.6452) or the [`moms` shiny app](https://tguillerme.shinyapps.io/moms/).
 You can also find more information in the [`dispRity` manual](https://rawcdn.githack.com/TGuillerme/dispRity/c94452e6877fbb274eb0a4ff1363272a6297a9ee/inst/gitbook/_book/details-of-specific-functions.html#disparity-metrics).
-<!-- biorXiv preprint -->
 
+## Latest major patch highlights
+### dispRity v1.8 (2023-12-11) *dispRity.multi*
+[Read the full patch note here](https://github.com/TGuillerme/dispRity/blob/master/NEWS.md).
 
-## Latest major patch notes
-* 2022/08/08 v1.7 *MacMacGlimm*
-
- * *New* data function: `select.axes` for selecting and analysing the number of axes required to contain an arbitrary amount of variance.
- * *New* utility function: `randtest.dist` for measuring the distance between the observed statistic and a specific quantile of the simulated statistic (thanks to [Frane Babarovic](https://twitter.com/FBabarovic) for the inspiration).
- * `dispRity` objects can now contain covariance matrices as a `$covar` object. The `covar` part can be directly used for some specific metrics (usually `my_metric.covar`) and are handled by the `dispRity` function (and `plot`, `summary`, etc...) in a specific way. `$covar` contains a list of two elements `VCV` the variance covariance matrix and `loc` the coordinates of the centre of the `VCV` in space (can be left empty). `$covar` matrices are effectively treated as bootstraps.
- * *New function* `covar.plot` for plotting the `covar` content of `dispRity` objects (this is separated from `plot.dispRity` because of the many different options).
- * *New function*: `MCMCglmm.subsets` is a function that allows to convert a `MCMCglmm` object into a `dispRity` object.
- * *New metric*: `projections.between` a between group metric for applying the `projections` metric between the major covariance axis of two matrices.
- * *New metric*: `disalignment`: the (dis)alignment of a group compared to another one (i.e. the rejection from group B's centre on the group A's major axis).
- a between group metric for applying the `projections` metric between the major covariance axis of two matrices.
- * New `dispRity.fast` function for the fastest disparity calculations at the expanses of pretty much everything this package does. This is a really situational function.
- * *New utility functions* for manipulating `MCMCglmm` objects: `MCMCglmm.traits` for extracting the number of traits, `MCMCglmm.levels` for extracting the level names, `MCMCglmm.sample` for sampling posterior IDs and `MCMCglmm.covars` for extracting variance-covariance matrices
- * *New utility functions* for `dispRity` objects with `covar` matrices: `get.covar` to extract the VCV matrices (or a subsample of them); `axes.covar` to extract the major axes of the VCV matrices and `as.covar` to transform `dispRity` metric function to use a covar object.
- * *New utility function* `match.tip.edge` for matching tip labels as factors/characters/integer to tree edges.
- * *New wrapper function* `dispRity.covar.projections` for covariance projections analyses (with its associated S3 sub-class).
- * One new demo datasets: `charadriiformes`, a `data.frame` and a `phylo` object of 359 _Charadriiformes_ species (gulls, plovers and sandpipers) from [Cooney et al 2017](https://www.nature.com/articles/d41586-021-02480-z) along with a `MCMCglmm` model with each clade as a random term.
- * Additional plot arguments `...` in all the `dispRity` plotting functions can now be targeted to a specific plotting element. When multiple elements are plot by default (e.g. lines, legend, points, etc...) it is now possible to pass a specific `...` argument to the specific plotted element using the syntax `<element>.<argument>` (e.g. `points.col = "blue"` will only apply the argument `col = "blue"` to the points).
- * **Changed default arguments** for `projections` and `projections.tree` metrics: the default `"position"` output is now scaled, centred and absolute (see `?projections` for details).
- * Formalised the grouping logic for `custom.subsets` and `select.axes`. This can create some minor user level changes namely: warning messages for empty subsets now correctly mentions "subsets" (rather than subsamples); groups with incorrect elements are now always flagged as errors (rather than just ignored). The changes at the developer level is that the logic is now made smoother and exported in `custom.subsets_fun.R`.
- * Added a `function.index.csv` list (and updater) to help developers find internal functions locations easily.
- * Restricted the type-I error inflation warning message in `test.dispRity` to only occur when using a test of class `"htest"`.
- * Continuous Integration has been moved from Travis-CI to GitHub Actions.
- * `custom.subsets` can now group elements using a `"factor"` vector.
- * Utility functions manuals are now grouped by topic (e.g. utilities related to `MCMCglmm` objects, `dispRity` objects in general, `dispRity` objects with subsets, ect...). It should now be much easier to find these sometimes overlooked functions.
- * Many updates and new entries in the `dispRity` manual, including a section on `covar` and `between.groups` specific analyses.
- * Improving speed for the `test.metric` (using the new official `dispRity.fast` function).
- * Most core functions in the package now have a garbage memory cleaning component. This improves the speed and the memory footprint when handling very large datasets.
- * Disparity results stored in `data$disparity` now don't have dimension names anymore (significantly reducing the size of `disparity` objects). However, you can always retrieve the dimensions names using `get.disparity`.
- * Updated the calculation options for `ellipse.volume`, you can now directly specify one of the following methods: `"pca"` to calculate the eigen values from the ordinated matrix; `"eigen"` to directly do an eigen decomposition of the matrix (new); or `"axes"` to directly measure the axes (new); or directly provide the eigen values.
- * The interval function `check.subsets` now handles the checking of `"dispRity"` objects much faster making most functions relying on it slightly faster (this function is typically not called more than once per function).
- * Updated `adonis.dispRity` to the newest `vegan::adonis2` code (thanks to Jari Oksanen for the notification).
- * Removed dependency to `geiger` for `dtt.dispRity` to avoid package maintenance errors. This leads to no changes at the user level and `geiger::dtt` is still acknowledged in the manual.
- * `tree.age` function's manual now makes it clear it does not estimate tree ages.
- * When using `plot.dispRity(..., type = "preview")`, group's colour attribution and plotting is now made so that the groups larger groups are plotted in the background and the smaller in the foreground.
- * `NA`s are now better handled in internal checking functions. 
- * Removed warning in `dispRity` when selecting a specific number of dimensions (old warning artefact).
- * Fixed bug in `plot.dispRity` when using `type = "preview"` on bootstrapped data and for `type = "box"` when the subsets to plot are from different sizes (now plots all the data correctly).
- * Fixed bug when using `chrono.subsets` with `"continuous"` method a `FADLAD` data containing only node values (now correctly taken into account; thanks to [Peng-Wei Li](https://www.researchgate.net/profile/Peng-Wei-Li) for noticing it) and when using `chrono.subsets` with `"gradual.*"` models on empty subsets.
- * `standardGeneric` functions are now correctly interpreted as functions throughout the package.
- * Fixed bug when plotting level 1 disparity metric results without bootstrapped (`observed = TRUE` is now used as the default).
- * Fixed bug when plotting `test.metric` plots with `save.steps` options with more than two types of shifts.
- * Fixed bug with `null.test` which is now correctly managing the number of dimensions inherited from `dispRity` objects (thanks to [Alex Slavenko](https://alexslavenko.weebly.com/) for spotting this one and the two above).
- * Fixed bug when using level 2 dimension metrics on unidimensional data (the metric is now detected as a level 2 correctly; thanks to [Catherine Klein](https://www.researchgate.net/profile/Catherine-Klein) and [Rachel Warnock](https://www.gzn.nat.fau.de/palaeontologie/team/professors/rachel-warnock/) for noticing that one).
- * Update internal use of `is(data, c("array", "matrix"))` to `is.array(data)` for R 4.1.2.
+ * Added the _dispRity.multi_ internal architecture now allowing users to work with different matrices **and** different trees as inputs for `custom.subsets`, `chrono.subsets`, `boot.matrix` and `dispRity`. This change is not affecting the user level appart from now allowing to bypass some error messages (thanks to Mario Corio for that obvious suggestion).
+ * *New* statistical test: `pgls.dispRity` to run PGLS test on a `dispRity` object with a level-2 metric and a tree (using excellent [`phylolm`](https://CRAN.R-project.org/package=phylolm) algorithm). The new test comes with its own S3 print, summary and plot functions if the input `dispRity` data contains multiple trees or multiple matrices (running and handling the output of multiple `phylolm`).
+ * *New vignette* compiling resources for developers to help people (and future me) to edit the package. 
+ * And many more new additions, improvements and couple of bug fixes!
+ * **NOTE** there are now changes in the following function names: `ellipse.volume` is now `ellipsoid.volume`; `rescale.dispRity` is now `scale.dispRity` and `randtest.dist` is now `distance.randtest` (the old aliases still work).
 
 Previous patch notes and notes for the *next version* can be seen [here](https://github.com/TGuillerme/dispRity/blob/master/NEWS.md).
 
@@ -131,6 +93,7 @@ Authors
 * [Thomas Guillerme](http://tguillerme.github.io)
 * [Natalie Cooper](http://nhcooper123.github.io)
 * [Mark Puttick](https://puttickbiology.wordpress.com/)
+* [Jack Hatfield](https://www.york.ac.uk/anthropocene-biodiversity/people/jack-hatfield/)
 
 #### Contributors (bug fixes, pull requests and suggestions)
 
@@ -191,7 +154,7 @@ Schaeffer J, Benton MJ, Rayfield EJ, Stubbs TL. Morphological disparity in thero
 * <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=A+Kuramoto+model+of+self-other+integration+across+interpersonal+synchronization+strategies&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a> 
 Heggli OA, Cabral J, Konvalinka I, Vuust P, Kringelbach ML. A Kuramoto model of self-other integration across interpersonal synchronization strategies. *PLoS computational biology*. **2019** [DOI:10.1371/journal.pcbi.1007422](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1007422)
 
-##### Comparisons between groups using `custom.subsets` and `test.dispRity`:
+#### Comparisons between groups using `custom.subsets` and `test.dispRity`:
 
 * <a href="https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Phylogenomics%2C+biogeography+and+morphometrics+reveal+rapid+phenotypic+evolution+in+pythons+after+crossing+Wallace%27s+line&btnG="><img src="http://tguillerme.github.io/images/649298-64.png" height="15" widht="15"/></a>
 Esquerré D, Donnellan S, Brennan IG, Lemmon AR, Lemmon EM, Zaher H, Grazziotin FG, Keogh JS. Phylogenomics, biogeography and morphometrics reveal rapid phenotypic evolution in pythons after crossing Wallace’s line. *Systematic Biology*. **2019** [DOI: 10.1093/sysbio/syaa024](https://doi.org/10.1093/sysbio/syaa024)

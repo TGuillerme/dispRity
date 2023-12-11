@@ -244,6 +244,12 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
             return(lapply(data, summary.dispRity, quantiles = quantiles, cent.tend = cent.tend, recall = FALSE))
         }
 
+        if(is(data, "pgls.dispRity")) {
+
+            ## SUmmarise pgls.dispRity output into phylolm
+            return(convert.to.summary.phylolm(data))
+        }
+
         ## No dual class summary available
         stop.call("", paste0("No specific summary for combined class \"dispRity\" and \"", class(data)[2], "\"."))
     } 

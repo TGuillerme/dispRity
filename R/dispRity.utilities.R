@@ -6,12 +6,13 @@
 #' @description Creating an empty \code{dispRity} object from a matrix
 #'
 #' @usage make.dispRity(data, tree, call, subsets)
-#' @usage fill.dispRity(data, tree)
+#' @usage fill.dispRity(data, tree, check)
 #' 
 #' @param data A \code{matrix}.
 #' @param tree Optional, a \code{phylo} or \code{multiPhylo} object.
 #' @param call Optional, a \code{list} to be a \code{dispRity} call.
 #' @param subsets Optional, a \code{list} to be a \code{dispRity} subsets list.
+#' @param check Logical, whether to check the data (\code{TRUE}; default, highly advised) or not (\code{FALSE}).
 #' 
 #' @examples
 #' ## An empty dispRity object
@@ -43,13 +44,13 @@ make.dispRity <- function(data, tree, call, subsets) {
             list = {dispRity_object$matrix <- data})
     }
 
-    ## Add the tree
+    ## Add the call
     if(!missing(call)) {
         check.class(call, "list")
         dispRity_object$call <- call
     }
 
-    ## Add the call
+    ## Add the tree
     if(!missing(tree)) {
         class_tree <- check.class(tree, c("multiPhylo", "phylo"))
         if(class_tree == "multiPhylo") {
@@ -71,11 +72,13 @@ make.dispRity <- function(data, tree, call, subsets) {
 
     return(dispRity_object)
 }
-fill.dispRity <- function(data, tree) {
+fill.dispRity <- function(data, tree, check = TRUE) {
 
     ## Data have a matrix
     if(!is.null(data)) {
-        data$matrix <- check.dispRity.data(data$matrix)
+        if(check) {
+            data$matrix <- check.dispRity.data(data$matrix, returns = "matrix")
+        }
 
         ## Dimensions
         if(length(data$call$dimensions) == 0) {
@@ -94,7 +97,11 @@ fill.dispRity <- function(data, tree) {
 
     if(!missing(tree)) {
         ## Add the trees
-        data$tree <- check.dispRity.tree(tree, data = data)
+        if(check) {
+            data$tree <- check.dispRity.data(tree = tree, data = data, returns = "tree")
+        } else {
+            data$tree <- tree
+        }
     }
     return(data)
 }
@@ -218,6 +225,10 @@ get.disparity <- function(data, subsets, rarefaction, observed = TRUE, concatena
             output <- lapply(data$disparity[subsets], lapply.observed)
         } else {
             output <- lapply(data$disparity[subsets], function(X) X$elements)
+            ## Flatten the output matrix if 1 row
+            if(all(unique(unlist(lapply(output, nrow))) == 1)) {
+                output <- lapply(output, c)
+            }
         }
     } else {
         output <- lapply(as.list(subsets), extract.disparity.values, data, rarefaction, concatenate)
@@ -250,12 +261,13 @@ extract.dispRity <- function(...) {
 
 
 #' @name get.subsets 
-#' @aliases n.subsets size.subsets get.subsets combine.subsets 
+#' @aliases n.subsets name.subsets size.subsets get.subsets combine.subsets
 #'
 #' @title Extracts or modify subsets from a \code{dispRity} object.
 #' @description Extracting or modify some subsets' data and information from a \code{dispRity} object.
 #' 
 #' @usage n.subsets(data)
+#' @usage name.subsets(data)
 #' @usage size.subsets(data)
 #' @usage get.subsets(data, subsets)
 #' @usage combine.subsets(data, subsets)
@@ -274,6 +286,9 @@ extract.dispRity <- function(...) {
 #' 
 #' ## How many subsets are in disparity?
 #' n.subsets(disparity)
+#'
+#' ## What are the subset names
+#' name.subsets(disparity)
 #'
 #' ## What are the number of elements per subsets?
 #' size.subsets(disparity)
@@ -324,7 +339,6 @@ get.subsets <- function(data, subsets) {
     class(data_out) <- "dispRity"
     return(data_out)
 }
-
 combine.subsets <- function(data, subsets) {
 
     ## Internal cleaning function for only selecting the elements of the list in a subset
@@ -443,6 +457,10 @@ n.subsets <- function(data) {
     ## Getting the size of subsets
     return(length(data$subsets))
 }
+name.subsets <- function(data) {
+    ## Getting the subsets names
+    return(names(data$subsets))
+}
 
 
 
@@ -456,18 +474,23 @@ n.subsets <- function(data) {
 
 
 #' @name add.tree
-#' @aliases add.tree get.tree remove.tree
+#' @aliases add.tree remove.tree get.tree
 #' 
-#' @title Add, get or remove tree
+#' @title Add, remove or get trees (or subtrees)
 #'
-#' @usage add.tree(data, tree)
-#' @usage get.tree(data)
+#' @usage add.tree(data, tree, replace = FALSE)
+#' @usage get.tree(data, subsets = FALSE, to.root = FALSE)
 #' @usage remove.tree(data)
 #' 
-#' @description Adding, extracting or removing the tree component from a \code{dispRity} object
+#' @description Adding, extracting or removing the tree component from a \code{dispRity} object.
+#'
+#' @details \code{get.tree} allows to extract the trees specific to each subsets.
 #'
 #' @param data A \code{dispRity} object.
 #' @param tree A \code{phylo} or \code{mutiPhylo} object.
+#' @param replace Logical, whether to replace any existing tree (\code{TRUE}) or add to it (\code{FALSE}; default).
+#' @param subsets Either a logical whether to extract the tree for each subset (\code{TRUE}) or not (\code{FALSE}; default) or specific subset names or numbers.
+#' @param to.root Logical, whether to return the subset tree including the root of the tree (\code{TRUE}) or only containing the elements in the subset (and their most recent common ancestor; \code{FALSE}; default). If \code{data} contains time bins (from \code{\link{chrono.subsets}} with \code{method = "discrete"}), and \code{to.root = FALSE} it returns the subtrees containing only what's in the bin.
 #' 
 #' @examples
 #' ## Loading a dispRity object
@@ -486,26 +509,106 @@ n.subsets <- function(data) {
 #'
 #' ## Extracting the tree
 #' get.tree(tree_data) # is a "phylo" object
-#' 
+#'
+#' ## Adding the same tree again
+#' tree_data <- add.tree(tree_data, tree = BeckLee_tree)
+#' get.tree(tree_data) # is a "multiPhylo" object (2 trees)
+#'
+#' ## Replacing the two trees by one tree
+#' tree_data <- add.tree(tree_data, tree = BeckLee_tree, replace = TRUE)
+#' get.tree(tree_data) # is a "phylo" object
+#'
 #' @seealso \code{\link{custom.subsets}}, \code{\link{chrono.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
 #'
-#' @author Thomas Guillerme
-add.tree <- function(data, tree) {
+#' @author Thomas Guillerme and Jack Hadfield
+add.tree <- function(data, tree, replace = FALSE) {
     ## Add the tree
     if(is.null(data$tree[[1]])) {
-        data$tree <- check.dispRity.tree(tree = tree, data = data)
+        data$tree <- check.dispRity.data(data = data, tree = tree, returns = "tree")
     } else {
-        data$tree <- check.dispRity.tree(tree = c(get.tree(data$tree), tree), data = data)
+        if(replace) {
+            ## Remove existing trees
+            data <- remove.tree(data)
+            data <- add.tree(data, tree)
+        } else {
+            data$tree <- check.dispRity.data(tree = c(get.tree(data), tree), data = data, returns = "tree")
+        }
     }
     return(data)
 }
-get.tree <- function(data) {
-    ## Return the tree
-    tree <- data$tree
-    if(length(tree) == 1) {
-        return(tree[[1]])
+get.tree <- function(data, subsets = FALSE, to.root = FALSE) {
+    ## Check for tree
+    match_call <- match.call()
+    if(is.null(data$tree)) {
+        stop.call(match_call$data, " does not contain any tree(s).")
+    }
+    
+    ## Returns just the tree
+    if((is(subsets, "logical") && !subsets) || is.null(data$subsets)) {
+
+        ## Get the tree
+        tree <- data$tree
+
+        ## Return the tree
+        if(length(tree) == 1) {
+            return(tree[[1]])
+        } else {
+            return(tree)
+        }
+
     } else {
-        return(tree)
+
+        ## Extract subset trees
+        if((is(subsets, "logical") && subsets)) {
+            ## Get all subsets
+            subsets <- name.subsets(data)
+        }
+
+        ## Check the subsets names
+        check.subsets(subsets, data)
+
+        ## Check to root
+        check.class(to.root, "logical")
+
+        ## Check whether to use slicing
+        slice.type <- data$call$subsets[[1]]
+
+        ## Get the trees for each subset
+        if(slice.type != "discrete") {
+
+            ## Get the sliced trees for custom subsets
+            if(slice.type == "customised") {
+                trees_list <- lapply(data$subsets[subsets], get.one.tree.subset, data$tree[[1]], to.root)
+            }
+
+            ## Get the sliced trees for custom subsets
+            if(slice.type == "continuous") {
+                trees_list <- lapply(data$subsets[subsets], get.slice.subsets, data, to.root)
+            }
+            
+        } else {
+            bin_names <- subsets
+            ## Get the bin ages
+            bin_ages <- lapply(strsplit(bin_names, split = " - "), as.numeric)
+            names(bin_ages) <- bin_names
+            
+            ## Get all the tree subsets
+            all_subsets <- lapply(data$tree, get.interval.subtrees, bin_ages, to.root)
+
+            ## Combine into multiphylo or not
+            if(length(all_subsets) != 1) {
+                ## Recursive merge all the trees
+                while(length(all_subsets) != 1) {
+                    all_subsets[[1]] <- mapply(c, all_subsets[[1]], all_subsets[[2]], SIMPLIFY = FALSE)
+                    all_subsets[[2]] <- NULL
+                }
+            }
+            ## Return the tree list
+            return(all_subsets[[1]])
+        }
+            
+        ## return the trees
+        return(trees_list)
     }
 }
 remove.tree <- function(data) {
@@ -523,26 +626,28 @@ remove.tree <- function(data) {
 
 
 
-
-
 #' @title Rescaling and centering disparity results.
+#'
+#' @aliases rescale.dispRity
 #'
 #' @description Scales or/and centers the disparity measurements.
 #'
-#' @param data a \code{dispRity} object.
+#' @param x a \code{dispRity} object.
 #' @param center either a \code{logical} value or a \code{numeric} vector of length equal to the number of elements of \code{data} (default is \code{FALSE}).
 #' @param scale either a \code{logical} value or a \code{numeric} vector of length equal to the number of elements of \code{data} (default is \code{TRUE}).
-#' @param use.all \code{logical}, whether to scale/center using the full distribution (i.e. all the disparity values) or only the distribution within each subsets of bootstraps (default is \code{TRUE}).
 #' @param ... optional arguments to be passed to \code{scale}.
 #' 
+#' @details
+#' To scale or and center using the full distribution (i.e. all the disparity values) or only the distribution within each subsets of bootstraps you can use the optional argument \code{use.all} as a logical. By default is \code{use.all = TRUE} and uses all the disparity values not only the ones in the subset.
+#'
 #' @examples
 #' ## Load the disparity data based on Beck & Lee 2014
 #' data(disparity)
 #' 
 #' ## Scaling the data
-#' summary(rescale.dispRity(disparity, scale = TRUE)) # Dividing by the maximum
+#' summary(scale.dispRity(disparity, scale = TRUE)) # Dividing by the maximum
 #' ## Multiplying by 10 (dividing by 0.1)
-#' summary(rescale.dispRity(disparity, scale = 0.1))
+#' summary(scale.dispRity(disparity, scale = 0.1))
 #'
 #' @seealso \code{\link{dispRity}}, \code{\link{test.dispRity}}, \code{\link[base]{scale}}.
 #'
@@ -558,11 +663,19 @@ remove.tree <- function(data) {
 # data <- dispRity(bootstrapped_data, metric = c(sum, centroids))
 
 # summary(data) # No scaling
-# summary(rescale.dispRity(data, scale = TRUE)) # Dividing by the maximum
-# summary(rescale.dispRity(data, scale = 0.1)) # Multiplying by 10
-# summary(rescale.dispRity(data, center = TRUE, scale = TRUE)) # Scaling and centering
-rescale.dispRity <- function(data, center = FALSE, scale = TRUE, use.all = TRUE, ...) {
+# summary(scale.dispRity(data, scale = TRUE)) # Dividing by the maximum
+# summary(scale.dispRity(data, scale = 0.1)) # Multiplying by 10
+# summary(scale.dispRity(data, center = TRUE, scale = TRUE)) # Scaling and centering
+scale.dispRity <- function(x, center = FALSE, scale = TRUE, ...) {
 
+    dots <- list(...)
+    if(!is.null(dots$use.all)) {
+        use.all <- dots$use.all
+    } else {
+        use.all <- TRUE
+    }
+        
+    data <- x
     match_call <- match.call()
 
     ## data
@@ -604,7 +717,9 @@ rescale.dispRity <- function(data, center = FALSE, scale = TRUE, use.all = TRUE,
 
     return(data)
 }
-
+rescale.dispRity <- function(x, ...) {
+    scale.dispRity(x, ...)
+}
 
 
 
@@ -706,7 +821,7 @@ sort.dispRity <- function(x, decreasing = FALSE, sort, ...) {
 
 
 
-#' @title Getting the time subsets from at and after an extinction event
+#' @title Getting the time subsets before and after an extinction event
 #'
 #' @description Getting the reference (pre-extinction) and the comparison (post-extinction) time subsets
 #'

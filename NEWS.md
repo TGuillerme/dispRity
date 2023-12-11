@@ -1,27 +1,52 @@
-<!-- 
-dispRity 0.2.0 (2016-04-01)
+dispRity v1.8 (2023-12-11) *dispRity.multi*
 =========================
 
 ### NEW FEATURES
 
-  * Blabla
+ * Added the _dispRity.multi_ internal architecture now allowing users to work with different matrices **and** different trees as inputs for `custom.subsets`, `chrono.subsets`, `boot.matrix` and `dispRity`. This change is not affecting the user level appart from now allowing to bypass some error messages (thanks to Mario Corio for that obvious suggestion).
+ * *New utility function*: `name.subsets` for directly accessing the subsets names of a `dispRity` object (basically doing `names(my_dispRity$subsets)`).
+ * *New utility function*: `MCMCglmm.variance` for calculating the variance for specific terms in a `"MCMCglmm"` model.
+ * *New* statistical test: `pgls.dispRity` to run PGLS test on a `dispRity` object with a level-2 metric and a tree (using excellent [`phylolm`](https://CRAN.R-project.org/package=phylolm) algorithm). The new test comes with its own S3 print, summary and plot functions if the input `dispRity` data contains multiple trees or multiple matrices (running and handling the output of multiple `phylolm`).
+ * *New* options to `get.tree` utility function to get the trees in each subsets (thanks to Jack Hadfield for this suggestion and help with implementation).
+ * *New vignette* compiling resources for developers to help people (and future me) to edit the package. 
+ * *New metric*: `roundness` to measure the roundness of a variance-covariance matrix. 
 
 ### MINOR IMPROVEMENTS
 
-  * Blabla
+ * **CHANGE IN DEFAULT ARGUMENTS** for the `custom.subsets`, `chrono.subsets`, `boot.matrix` and `dispRity` functions: the `tree`, `FADLAD`, `prob` and `dimensions` arguments is now `NULL` by default (instead of missing).
+ * **CHANGE IN DEFAULT ARGUMENTS** for the `projections` function. The defaults are now `scale = TRUE`, `centre = FALSE` (previously `TRUE`) and `abs = FALSE` (previously `TRUE`). The default arguments for `dispRity.covar.projections` remain unchanged though (`scale = TRUE`, `centre = TRUE`, `abs = TRUE`).
+ * `randtest.dispRity` function's `subsets` argument now can take a list of arguments of subsets to compare is `data` is a `dispRity` object. The call message has also been updated to be much more verbose and clear of what has been tested.
+ * optimised internal logic for all the `projections.*` functions for speed.
+ * `test.metric` now also adds the slope coefficient if the option `model` is used.
+ * the default legends/row names when using `plot`/`summary` on `test.metric` results are now more easy to interpret.
+ * `reduce.space` has now 25 times less chances to be stuck on a local optimum.
+ * `match.tip.edges` now also works on nodes and on `"multiPhylo"` objects and has a added an option `use.parsimony` (default is `TRUE`) to propagate the matching down the tree (i.e. if two nodes have the same unique ancestor and variable value, the ancestor is consider to have that variable value as well).
+ * Improved margins handling in `covar.plot`.
+ * Updated test coverage here and there.
+ * `clean.data` can now also handle a list of `"phylo"` objects as `tree` input (i.e. it does not need to be specifically classed as `"multiPhylo"`).
+ * Changed dependencies to [`spptest`](https://github.com/myllym/spptest) to [`GET`](https://github.com/myllym/GET).
+ * `space.maker` can now generate specific row names and be replicated to generate a bunch of spaces (via the new optional arguments `elements.names` and `replicates` respectively).
+ * The `add.tree` utility function now has an optional argument to override any existing trees (`replace = TRUE`) or not (`replace = FALSE`; which remains the default previous behaviour). 
+ * `print.dispRity` now recognises and highlights simulated data from the [`treats`](https://github.com/tguillerme/treats) package.
+ * Improved `NA` management for `S3` functions.
+ * Improved automatic centering and scaling for `covar.plot` making the figures more aesthetic.
+ * `remove.zero.brlen` now also removes negative branch lengths and works on `"multiPhylo"` objects (thanks to Thomas Johnson for this suggestion).
+ * `fill.dispRity` has now an extra argument `check` to toggle the data checking on and off (more for developers).
+ * `multi.ace` is now described in details in the manual.
+ * `slice.tree` has now a `keep.all.ancestors` option to do exactly that.
 
 ### BUG FIXES
-
-  * Blabla
+ 
+ * The correct types of changes are now plotted in legend when plotting the results of `test.metric`.
+ * `get.disparity` now correctly concatenates one dimensional results into a `"numeric"` (rather than a `"matrix"`).
+ * `make.metric` now internally handles `covar` object correctly (i.e. as distance matrices).
+ * Calculating disparity for multiple matrices and customised subsets now works as expected for all metric levels.
 
 ### DEPRECATED AND DEFUNCT
 
-  * Blabla
- -->
-
-<!--   * `dtt.dispRity` now works with any tree (including non-ultrametric ones and fossils only ones). -->
-<!--   * `dtt.dispRity` now works with time-slicing. -->
-
+ * `ellipse.volume` has been changed to `ellipsoid.volume` to more accurately reflect what it is measuring.
+ * `rescale.dispRity` has been changed to `scale.dispRity` and correctly registered as a S3 method.
+ * `randtest.dist` has been changed to `distance.randtest` to avoid conflict with `*.dist` S3 methods.
 
 dispRity v1.7 (2022-08-08) *MacMacGlimm*
 =========================
@@ -73,7 +98,7 @@ dispRity v1.7 (2022-08-08) *MacMacGlimm*
  * `standardGeneric` functions are now correctly interpreted as functions throughout the package.
  * Fixed bug when plotting level 1 disparity metric results without bootstrapped (`observed = TRUE` is now used as the default).
  * Fixed bug when plotting `test.metric` plots with `save.steps` options with more than two types of shifts.
- * Fixed bug with `null.test` which is now correctly managing the number of dimensions inherited from `dispRity` objects (thanks to [Alex Slavenko](https://alexslavenko.weebly.com/) for spotting this one and the two above).
+ * Fixed bug with `null.test` which is now correctly managing the number of dimensions inherited from `dispRity` objects (thanks to Alex Slavenko for spotting this one and the two above).
  * Fixed bug when using level 2 dimension metrics on unidimensional data (the metric is now detected as a level 2 correctly; thanks to Catherine Klein and [Rachel Warnock](https://www.gzn.nat.fau.de/palaeontologie/team/professors/rachel-warnock/) for noticing that one).
  * Update internal use of `is(data, c("array", "matrix"))` to `is.array(data)` for R 4.1.2.
 
@@ -92,7 +117,7 @@ dispRity v1.6.0 (2021-04-16) *dispRitree*
  * You can now save the shifts results in `test.metric` with `save.steps` and then visualise them with `plot.dispRity` along side the disparity metric test results.
  * *New* utility function `n.subsets` to directly get the number of subsets in a `dispRity` object.
  * *New* statistical test: `randtest.dispRity` that is a wrapper for `ade4::randtest` applied to `dispRity` objects (not dissimilar from `null.test`).
- * Six more demo datasets have been added to the package! These datasets are the ones used in [Guillerme et al. 2020](https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Shifting+spaces%3A+Which+disparity+or+dissimilarity+measurement+best+summarize+occupancy+in+multidimensional+spaces%3F&btnG=) and published originally in [Beck & Lee 2014](https://royalsocietypublishing.org/doi/full/10.1098/rspb.2014.1278) (that one was originally the only demo dataset in the package), [Wright 2017](https://www.cambridge.org/core/journals/journal-of-paleontology/article/bayesian-estimation-of-fossil-phylogenies-and-the-evolution-of-early-to-middle-paleozoic-crinoids-echinodermata/E37972902541CD0995AAD08A1122BD54), [Marcy et al. 2016](https://link.springer.com/article/10.1186/s12862-016-0782-1), [Hopkins & Pearson 2016](https://pdfs.semanticscholar.org/a3f0/50944d2aefa1df811ea94a3eea630d82c24f.pdf)), [Jones et al. 2015](https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Dispersal+mode+mediates+the+effect+of+patch+size+and+patch+connectivity+on+metacommunity+diversity&btnG=), [Healy et al. 2019](https://www.nature.com/articles/s41559-019-0938-7). Thanks to all these authors for their open science work!
+ * Six more demo datasets have been added to the package! These datasets are the ones used in [Guillerme et al. 2020](https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Shifting+spaces%3A+Which+disparity+or+dissimilarity+measurement+best+summarize+occupancy+in+multidimensional+spaces%3F&btnG=) and published originally in [Beck & Lee 2014](https://doi.org/10.1098/rspb.2014.1278) (that one was originally the only demo dataset in the package), [Wright 2017](https://www.cambridge.org/core/journals/journal-of-paleontology/article/bayesian-estimation-of-fossil-phylogenies-and-the-evolution-of-early-to-middle-paleozoic-crinoids-echinodermata/E37972902541CD0995AAD08A1122BD54), [Marcy et al. 2016](https://link.springer.com/article/10.1186/s12862-016-0782-1), [Hopkins & Pearson 2016](https://pdfs.semanticscholar.org/a3f0/50944d2aefa1df811ea94a3eea630d82c24f.pdf)), [Jones et al. 2015](https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Dispersal+mode+mediates+the+effect+of+patch+size+and+patch+connectivity+on+metacommunity+diversity&btnG=), [Healy et al. 2019](https://www.nature.com/articles/s41559-019-0938-7). Thanks to all these authors for their open science work!
  * `dispRity` objects now have a reserved `$tree` component that contain any number of trees attached to the data. This allows any function to use the reserved argument name `tree` to extract directly the relevant tree from the `dispRity` object, for functions like `chrono.subsets` or metrics like `ancestral.dist`! To help manipulate the `tree` component of the `dispRity` object, you can now use the new utility functions `add.tree`, `get.tree` and `remove.tree`.
 
 ### MINOR IMPROVEMENT
@@ -390,7 +415,7 @@ dispRity v0.3 (2017-01-25) *dispRity lite*
 
 ### NEW FEATURES
 
-  * Complete change of the `dispRity` object architecture (see more [here](https://github.com/TGuillerme/dispRity/blob/master/disparity_object.md)).
+  * Complete change of the `dispRity` object architecture.
 
 ### MINOR IMPROVEMENTS
 

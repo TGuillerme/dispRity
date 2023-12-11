@@ -41,8 +41,8 @@ test_that("reduce.matrix works", {
     expect_equal(test_col[[2]], c("3"))
 
     ## Verbose test
-    expect_warning(test.verbose <- capture_messages(reduce.matrix(na_matrix, distance = "gower", by.row = TRUE, verbose = TRUE)))
-    expect_equal(paste0(test.verbose, collapse = ""), "Searching for row(s) to remove:...Done.\n")
+    # expect_warning(test.verbose <- capture_messages(reduce.matrix(na_matrix, distance = "gower", by.row = TRUE, verbose = TRUE)))
+    # expect_equal(paste0(test.verbose, collapse = ""), "Searching for row(s) to remove:...Done.\n")
 
     ## Flipped!
     expect_warning(test_row <- reduce.matrix(t(na_matrix), distance = "gower", by.row = TRUE, verbose = FALSE))

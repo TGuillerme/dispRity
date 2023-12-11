@@ -26,7 +26,7 @@
 #' \itemize{
 #'      \item A \code{function} to calculate the centre from a group like the default \code{colMeans} function that calculates the centroid coordinates of each group;
 #'      \item A \code{numeric} value to be replicated as the coordinates for the centre of each group (e.g. \code{centres = 0} sets all the centres at the coordinates \code{c(0,0,0,...)}); or a vector of numeric values to be directly used as the coordinates for each group (e.g. \code{centres = c(1,2,3)} sets all the centres at the coordinates \code{c(1,2,3)}); or a list of numeric values or numeric vectors to be used as the coordinates for the centres of each group;
-#'      \item code{"intercept"} for using the estimated posterior intercept for each sample.
+#'      \item \code{"intercept"} for using the estimated posterior intercept for each sample.
 #' }
 #' 
 #' \emph{NOTE} that if the input contains more dimensions than the visualised dimensions (by default \code{dimensions = c(1,2)}) the ellipses and major axes are projected from an n-dimensional space onto a 2D space which might make them look incorrect.
@@ -136,7 +136,7 @@ covar.plot <- function(data, n, points = TRUE, major.axes = FALSE, ellipses = FA
     ## Scaling the VCVs
     if(do_scale) {
         scale_VCV <- covars[[scale]]
-        covars <- lapply(covars, function(one_covar, scale) mapply(scale.VCV, one_covar, scale, SIMPLIFY = FALSE), scale = scale_VCV)
+        covars <- lapply(covars, function(one_covar, scale) mapply(VCV.scale, one_covar, scale, SIMPLIFY = FALSE), scale = scale_VCV)
     }
 
     ## Measuring the axes
@@ -187,17 +187,43 @@ covar.plot <- function(data, n, points = TRUE, major.axes = FALSE, ellipses = FA
     }
 
     ## Get the plot limits
-    lims <- range(data$matrix[[1]], na.rm = TRUE)
+    ylims <- xlims <- c(-0, 0)
+    if(points) {
+        point_xlims <- range(c(data$matrix[[1]][, dimensions[1]]), na.rm = TRUE)
+        point_ylims <- range(c(data$matrix[[1]][, dimensions[2]]), na.rm = TRUE)
+        xlims <- range(c(xlims, point_xlims))
+        ylims <- range(c(ylims, point_ylims))
+    }
     if(do_major_axes) {
-        lims <- max(range(c(range(abs(data$matrix[[1]])), abs(unlist(all_axes)))))
-        lims <- c(-lims, lims)
+        axes_xlims <- range(unlist(lapply(all_axes, lapply, function(x, dim) return(x[, dim]), dim = dimensions[1])))
+        axes_ylims <- range(unlist(lapply(all_axes, lapply, function(x, dim) return(x[, dim]), dim = dimensions[2])))
+        xlims <- range(c(xlims, axes_xlims))
+        ylims <- range(c(ylims, axes_ylims))
     }
     if(do_ellipses) {
-        lims <- max(c(range(abs(data$matrix[[1]])), range(abs(unlist(all_ellipses)))))
-        lims <- c(-lims, lims)
-    }    
-    plot_args <- get.dots(plot_args, plot_args, "xlim", lims)
-    plot_args <- get.dots(plot_args, plot_args, "ylim", lims)
+        ellipses_xlims <- range(unlist(lapply(all_ellipses, lapply, function(x, dim) return(x[, dim]), dim = dimensions[1])))
+        ellipses_ylims <- range(unlist(lapply(all_ellipses, lapply, function(x, dim) return(x[, dim]), dim = dimensions[2])))
+        xlims <- range(c(xlims, ellipses_xlims))
+        ylims <- range(c(ylims, ellipses_ylims))
+    }
+
+    ## Get the x centre of the plot
+    centre_x <- mean(xlims)
+    ## Get the y centre of the plit
+    centre_y <- mean(ylims)
+
+    ## Center the limits on the range
+    if(diff(xlims) > diff(ylims)) {
+        ## Large range is x, scale and centre the ylims on it
+        ylims <- c(centre_y - diff(xlims)/2, centre_y + diff(xlims)/2)
+    }
+    if(diff(ylims) < diff(xlims)) {
+        ## Large range is y, scale and centre the xlims on it
+        xlims <- c(centre_x - diff(ylims)/2, centre_x + diff(ylims)/2)
+    }
+
+    plot_args <- get.dots(plot_args, plot_args, "xlim", xlims)
+    plot_args <- get.dots(plot_args, plot_args, "ylim", ylims)
 
     ## Setting the x/y labels
     percentage <- apply(data$matrix[[1]], 2, var)

@@ -4,26 +4,26 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>6 Other functionalities | Morphometric geometric demo: a between group analysis</title>
-  <meta name="description" content="dispRity R package vignette" />
-  <meta name="generator" content="bookdown 0.27 and GitBook 2.6.7" />
+  <title>6 Other functionalities | dispRity R package manual</title>
+  <meta name="description" content="6 Other functionalities | dispRity R package manual" />
+  <meta name="generator" content="bookdown 0.36 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="6 Other functionalities | Morphometric geometric demo: a between group analysis" />
+  <meta property="og:title" content="6 Other functionalities | dispRity R package manual" />
   <meta property="og:type" content="book" />
   
-  <meta property="og:description" content="dispRity R package vignette" />
+  <meta property="og:description" content="6 Other functionalities | dispRity R package manual" />
   <meta name="github-repo" content="TGuillerme/dispRity" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="6 Other functionalities | Morphometric geometric demo: a between group analysis" />
+  <meta name="twitter:title" content="6 Other functionalities | dispRity R package manual" />
   
-  <meta name="twitter:description" content="dispRity R package vignette" />
+  <meta name="twitter:description" content="6 Other functionalities | dispRity R package manual" />
   
 
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie)" />
 
 
-<meta name="date" content="2022-08-09" />
+<meta name="date" content="2023-12-06" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -53,6 +53,28 @@
 <link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
 <link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
 <script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script src="libs/htmlwidgets-1.6.2/htmlwidgets.js"></script>
+<script src="libs/rglWebGL-binding-1.2.1/rglWebGL.js"></script>
+<link href="libs/rglwidgetClass-1.2.1/rgl.css" rel="stylesheet" />
+<script src="libs/rglwidgetClass-1.2.1/rglClass.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/utils.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/buffer.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/subscenes.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/shaders.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/shadersrc.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/textures.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/projection.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/mouse.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/init.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/pieces.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/draw.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/controls.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/selection.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/rglTimer.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/pretty.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/axes.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/animation.src.js"></script>
+<script src="libs/CanvasMatrix4-1.2.1/CanvasMatrix.src.js"></script>
 
 
 <style type="text/css">
@@ -119,6 +141,10 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
 </head>
@@ -250,6 +276,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="6.10" data-path="other-functionalities.html"><a href="other-functionalities.html#slice.tree"><i class="fa fa-check"></i><b>6.10</b> <code>slice.tree</code></a></li>
 <li class="chapter" data-level="6.11" data-path="other-functionalities.html"><a href="other-functionalities.html#slide.nodes-and-remove.zero.brlen"><i class="fa fa-check"></i><b>6.11</b> <code>slide.nodes</code> and <code>remove.zero.brlen</code></a></li>
 <li class="chapter" data-level="6.12" data-path="other-functionalities.html"><a href="other-functionalities.html#tree.age"><i class="fa fa-check"></i><b>6.12</b> <code>tree.age</code></a></li>
+<li class="chapter" data-level="6.13" data-path="other-functionalities.html"><a href="other-functionalities.html#multi.ace"><i class="fa fa-check"></i><b>6.13</b> <code>multi.ace</code></a>
+<ul>
+<li class="chapter" data-level="6.13.1" data-path="other-functionalities.html"><a href="other-functionalities.html#using-different-character-tokens-in-different-situations"><i class="fa fa-check"></i><b>6.13.1</b> Using different character tokens in different situations</a></li>
+<li class="chapter" data-level="6.13.2" data-path="other-functionalities.html"><a href="other-functionalities.html#feeding-the-results-to-char.diff-to-get-distance-matrices"><i class="fa fa-check"></i><b>6.13.2</b> Feeding the results to <code>char.diff</code> to get distance matrices</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="7" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html"><i class="fa fa-check"></i><b>7</b> The guts of the <code>dispRity</code> package</a>
 <ul>
@@ -266,16 +297,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="7.3.4" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#disparity"><i class="fa fa-check"></i><b>7.3.4</b> <code>$disparity</code></a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="8" data-path="ecology-demo.html"><a href="ecology-demo.html"><i class="fa fa-check"></i><b>8</b> Ecology demo</a>
+<li class="chapter" data-level="8" data-path="disprity-ecology-demo.html"><a href="disprity-ecology-demo.html"><i class="fa fa-check"></i><b>8</b> dispRity ecology demo</a>
 <ul>
-<li class="chapter" data-level="8.1" data-path="ecology-demo.html"><a href="ecology-demo.html#data"><i class="fa fa-check"></i><b>8.1</b> Data</a></li>
-<li class="chapter" data-level="8.2" data-path="ecology-demo.html"><a href="ecology-demo.html#classic-analysis"><i class="fa fa-check"></i><b>8.2</b> Classic analysis</a></li>
-<li class="chapter" data-level="8.3" data-path="ecology-demo.html"><a href="ecology-demo.html#a-multidimensional-approach-with-disprity"><i class="fa fa-check"></i><b>8.3</b> A multidimensional approach with <code>dispRity</code></a>
+<li class="chapter" data-level="8.1" data-path="disprity-ecology-demo.html"><a href="disprity-ecology-demo.html#data"><i class="fa fa-check"></i><b>8.1</b> Data</a></li>
+<li class="chapter" data-level="8.2" data-path="disprity-ecology-demo.html"><a href="disprity-ecology-demo.html#classic-analysis"><i class="fa fa-check"></i><b>8.2</b> Classic analysis</a></li>
+<li class="chapter" data-level="8.3" data-path="disprity-ecology-demo.html"><a href="disprity-ecology-demo.html#a-multidimensional-approach-with-disprity"><i class="fa fa-check"></i><b>8.3</b> A multidimensional approach with <code>dispRity</code></a>
 <ul>
-<li class="chapter" data-level="8.3.1" data-path="ecology-demo.html"><a href="ecology-demo.html#bootstrapping-the-data"><i class="fa fa-check"></i><b>8.3.1</b> Bootstrapping the data</a></li>
-<li class="chapter" data-level="8.3.2" data-path="ecology-demo.html"><a href="ecology-demo.html#calculating-disparity"><i class="fa fa-check"></i><b>8.3.2</b> Calculating disparity</a></li>
-<li class="chapter" data-level="8.3.3" data-path="ecology-demo.html"><a href="ecology-demo.html#summarising-the-results-plot"><i class="fa fa-check"></i><b>8.3.3</b> Summarising the results (plot)</a></li>
-<li class="chapter" data-level="8.3.4" data-path="ecology-demo.html"><a href="ecology-demo.html#testing-hypothesis"><i class="fa fa-check"></i><b>8.3.4</b> Testing hypothesis</a></li>
+<li class="chapter" data-level="8.3.1" data-path="disprity-ecology-demo.html"><a href="disprity-ecology-demo.html#bootstrapping-the-data"><i class="fa fa-check"></i><b>8.3.1</b> Bootstrapping the data</a></li>
+<li class="chapter" data-level="8.3.2" data-path="disprity-ecology-demo.html"><a href="disprity-ecology-demo.html#calculating-disparity"><i class="fa fa-check"></i><b>8.3.2</b> Calculating disparity</a></li>
+<li class="chapter" data-level="8.3.3" data-path="disprity-ecology-demo.html"><a href="disprity-ecology-demo.html#summarising-the-results-plot"><i class="fa fa-check"></i><b>8.3.3</b> Summarising the results (plot)</a></li>
+<li class="chapter" data-level="8.3.4" data-path="disprity-ecology-demo.html"><a href="disprity-ecology-demo.html#testing-hypothesis"><i class="fa fa-check"></i><b>8.3.4</b> Testing hypothesis</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="9" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html"><i class="fa fa-check"></i><b>9</b> Palaeobiology demo: disparity-through-time and within groups</a>
@@ -304,7 +335,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="10.2" data-path="morphometric-geometric-demo-a-between-group-analysis.html"><a href="morphometric-geometric-demo-a-between-group-analysis.html#calculating-disparity-2"><i class="fa fa-check"></i><b>10.2</b> Calculating disparity</a></li>
 <li class="chapter" data-level="10.3" data-path="morphometric-geometric-demo-a-between-group-analysis.html"><a href="morphometric-geometric-demo-a-between-group-analysis.html#analyse-the-results"><i class="fa fa-check"></i><b>10.3</b> Analyse the results</a></li>
 </ul></li>
+<li class="chapter" data-level="11" data-path="disprity-r-package-manual.html"><a href="disprity-r-package-manual.html"><i class="fa fa-check"></i><b>11</b> dispRity R package manual</a></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+<li class="chapter" data-level="12" data-path="references-1.html"><a href="references-1.html"><i class="fa fa-check"></i><b>12</b> References</a></li>
 <li class="divider"></li>
 <li><a href="https://github.com/TGuillerme/dispRity/" target="blank">Project GitHub page</a></li>
 
@@ -317,7 +350,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Morphometric geometric demo: a between group analysis</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">dispRity R package manual</a>
           </h1>
         </div>
 
@@ -358,7 +391,7 @@ Specifically it can handle any rules specific to special tokens (i.e. symbols) 
 This means it can easily be plotted via the disparity package:</p>
 <div class="sourceCode" id="cb438"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb438-1"><a href="other-functionalities.html#cb438-1" aria-hidden="true"></a><span class="co">## Visualising the matrix</span></span>
 <span id="cb438-2"><a href="other-functionalities.html#cb438-2" aria-hidden="true"></a><span class="kw">plot</span>(differences)</span></code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-144-1.png" width="672" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-149-1.png" width="672" /></p>
 <p>You can check all the numerous plotting options in the <code>?plot.char.diff</code> manual (it won’t be developed here).</p>
 <p>The <code>char.diff</code> function has much more options however (see all of them in the <code>?char.diff</code> manual) for example to measure different differences (via <code>method</code>) or making the comparison work per row (for a distance matrix between the rows):</p>
 <div class="sourceCode" id="cb439"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb439-1"><a href="other-functionalities.html#cb439-1" aria-hidden="true"></a><span class="co">## Euclidean distance between rows</span></span>
@@ -555,7 +588,7 @@ Note that these edges are usually the edges at the root of the tree that are the
 <span id="cb460-4"><a href="other-functionalities.html#cb460-4" aria-hidden="true"></a></span>
 <span id="cb460-5"><a href="other-functionalities.html#cb460-5" aria-hidden="true"></a><span class="co">## Plotting the results</span></span>
 <span id="cb460-6"><a href="other-functionalities.html#cb460-6" aria-hidden="true"></a><span class="kw">plot</span>(<span class="kw">ladderize</span>(my_tree), <span class="dt">show.tip.label =</span> <span class="ot">FALSE</span>, <span class="dt">edge.color =</span> clade_edges)</span></code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-154-1.png" width="672" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-159-1.png" width="672" /></p>
 <p>But you can also use this option to only select some specific edges and modify them (for example making them all equal to one):</p>
 <div class="sourceCode" id="cb461"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb461-1"><a href="other-functionalities.html#cb461-1" aria-hidden="true"></a><span class="co">## Adding a fixed edge length to the green clade</span></span>
 <span id="cb461-2"><a href="other-functionalities.html#cb461-2" aria-hidden="true"></a>my_tree_modif &lt;-<span class="st"> </span>my_tree</span>
@@ -563,13 +596,13 @@ Note that these edges are usually the edges at the root of the tree that are the
 <span id="cb461-4"><a href="other-functionalities.html#cb461-4" aria-hidden="true"></a>my_tree_modif<span class="op">$</span>edge.length[green_clade] &lt;-<span class="st"> </span><span class="dv">1</span></span>
 <span id="cb461-5"><a href="other-functionalities.html#cb461-5" aria-hidden="true"></a><span class="kw">plot</span>(<span class="kw">ladderize</span>(my_tree_modif), <span class="dt">show.tip.label =</span> <span class="ot">FALSE</span>,</span>
 <span id="cb461-6"><a href="other-functionalities.html#cb461-6" aria-hidden="true"></a>     <span class="dt">edge.color =</span> clade_edges)</span></code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-155-1.png" width="672" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-160-1.png" width="672" /></p>
 </div>
 <div id="MCMCglmm-utilities" class="section level2 hasAnchor" number="6.6">
 <h2><span class="header-section-number">6.6</span> <code>MCMCglmm</code> utilities<a href="other-functionalities.html#MCMCglmm-utilities" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Since version <code>1.7</code>, the <code>dispRity</code> package contains several utility functions for manipulating <code>"MCMCglmm"</code> (that is, objects returned by the function <code>MCMCglmm::MCMCglmm</code>).
 These objects are a modification of the <code>mcmc</code> object (from the package <code>coda</code>) and can be sometimes cumbersome to manipulate because of the huge amount of data in it.
-You can use the functions <code>MCMCglmm.traits</code> for extracting the number of traits, <code>MCMCglmm.levels</code> for extracting the level names, <code>MCMCglmm.sample</code> for sampling posterior IDs and <code>MCMCglmm.covars</code> for extracting variance-covariance matrices.</p>
+You can use the functions <code>MCMCglmm.traits</code> for extracting the number of traits, <code>MCMCglmm.levels</code> for extracting the level names, <code>MCMCglmm.sample</code> for sampling posterior IDs and <code>MCMCglmm.covars</code> for extracting variance-covariance matrices. You can also quickly calculate the variance (or relative variance) for each terms in the model using <code>MCMCglmm.variance</code> (the variance is calculated as the sum of the diagonal of each variance-covariance matrix for each term).</p>
 <div class="sourceCode" id="cb462"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb462-1"><a href="other-functionalities.html#cb462-1" aria-hidden="true"></a><span class="co">## Loading the charadriiformes data that contains a MCMCglmm object</span></span>
 <span id="cb462-2"><a href="other-functionalities.html#cb462-2" aria-hidden="true"></a><span class="kw">data</span>(charadriiformes)</span>
 <span id="cb462-3"><a href="other-functionalities.html#cb462-3" aria-hidden="true"></a>my_MCMCglmm &lt;-<span class="st"> </span>charadriiformes<span class="op">$</span>posteriors</span>
@@ -595,8 +628,14 @@ You can use the functions <code>MCMCglmm.traits</code> for extracting the number
 <div class="sourceCode" id="cb468"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb468-1"><a href="other-functionalities.html#cb468-1" aria-hidden="true"></a><span class="co">## Sampling 2 random posteriors samples IDs</span></span>
 <span id="cb468-2"><a href="other-functionalities.html#cb468-2" aria-hidden="true"></a>(random_samples &lt;-<span class="st"> </span><span class="kw">MCMCglmm.sample</span>(my_MCMCglmm, <span class="dt">n =</span> <span class="dv">2</span>))</span></code></pre></div>
 <pre><code>## [1] 749 901</code></pre>
-<div class="sourceCode" id="cb470"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb470-1"><a href="other-functionalities.html#cb470-1" aria-hidden="true"></a><span class="co">## Extracting these two random amples</span></span>
-<span id="cb470-2"><a href="other-functionalities.html#cb470-2" aria-hidden="true"></a>my_covars &lt;-<span class="st"> </span><span class="kw">MCMCglmm.covars</span>(my_MCMCglmm, <span class="dt">sample =</span> random_samples)</span></code></pre></div>
+<div class="sourceCode" id="cb470"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb470-1"><a href="other-functionalities.html#cb470-1" aria-hidden="true"></a><span class="co">## Extracting these two random samples</span></span>
+<span id="cb470-2"><a href="other-functionalities.html#cb470-2" aria-hidden="true"></a>my_covars &lt;-<span class="st"> </span><span class="kw">MCMCglmm.covars</span>(my_MCMCglmm, <span class="dt">sample =</span> random_samples)</span>
+<span id="cb470-3"><a href="other-functionalities.html#cb470-3" aria-hidden="true"></a></span>
+<span id="cb470-4"><a href="other-functionalities.html#cb470-4" aria-hidden="true"></a><span class="co">## Plotting the variance for each term in the model</span></span>
+<span id="cb470-5"><a href="other-functionalities.html#cb470-5" aria-hidden="true"></a><span class="kw">boxplot</span>(<span class="kw">MCMCglmm.variance</span>(my_MCMCglmm), <span class="dt">horizontal =</span> <span class="ot">TRUE</span>, <span class="dt">las =</span> <span class="dv">1</span>,</span>
+<span id="cb470-6"><a href="other-functionalities.html#cb470-6" aria-hidden="true"></a>        <span class="dt">xlab =</span> <span class="st">&quot;Relative variance&quot;</span>,</span>
+<span id="cb470-7"><a href="other-functionalities.html#cb470-7" aria-hidden="true"></a>        <span class="dt">main =</span> <span class="st">&quot;Variance explained by each term&quot;</span>)</span></code></pre></div>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-161-1.png" width="672" /></p>
 <p>See more in the <a href="details-of-specific-functions.html#covar"><code>$covar</code> section</a> on what to do with these <code>"MCMCglmm"</code> objects.</p>
 </div>
 <div id="pair.plot" class="section level2 hasAnchor" number="6.7">
@@ -609,7 +648,7 @@ This can be useful when getting pairwise comparisons and if you’d like to see 
 <span id="cb471-4"><a href="other-functionalities.html#cb471-4" aria-hidden="true"></a><span class="co">## Plotting the first column as a pairwise comparisons</span></span>
 <span id="cb471-5"><a href="other-functionalities.html#cb471-5" aria-hidden="true"></a><span class="kw">pair.plot</span>(data, <span class="dt">what =</span> <span class="dv">1</span>, <span class="dt">col =</span> <span class="kw">c</span>(<span class="st">&quot;orange&quot;</span>, <span class="st">&quot;blue&quot;</span>), <span class="dt">legend =</span> <span class="ot">TRUE</span>,</span>
 <span id="cb471-6"><a href="other-functionalities.html#cb471-6" aria-hidden="true"></a>          <span class="dt">diag =</span> <span class="dv">1</span>)</span></code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-157-1.png" width="672" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-162-1.png" width="672" /></p>
 <p>Here blue squares are ones that have a high value and orange ones the ones that have low values.
 Note that the values plotted correspond the first column of the data as designated by <code>what = 1</code>.</p>
 <p>It is also possible to add some tokens or symbols to quickly highlight to specific cells, for example which elements in the data are below a certain value:</p>
@@ -620,7 +659,7 @@ Note that the values plotted correspond the first column of the data as designat
 <span id="cb472-5"><a href="other-functionalities.html#cb472-5" aria-hidden="true"></a><span class="co">## Highlighting with an asterisk which squares have a value</span></span>
 <span id="cb472-6"><a href="other-functionalities.html#cb472-6" aria-hidden="true"></a><span class="co">## below 0.2</span></span>
 <span id="cb472-7"><a href="other-functionalities.html#cb472-7" aria-hidden="true"></a><span class="kw">pair.plot</span>(data, <span class="dt">what =</span> <span class="dv">1</span>, <span class="dt">binary =</span> <span class="fl">0.2</span>, <span class="dt">add =</span> <span class="st">&quot;*&quot;</span>, <span class="dt">cex =</span> <span class="dv">2</span>)</span></code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-158-1.png" width="672" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-163-1.png" width="672" /></p>
 <p>This function can also be used as a binary display when running a series of pairwise t-tests.
 For example, the following script runs a wilcoxon test between the time-slices from the <code>disparity</code> example dataset and displays in black which pairs of slices have a p-value below 0.05:</p>
 <div class="sourceCode" id="cb473"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb473-1"><a href="other-functionalities.html#cb473-1" aria-hidden="true"></a><span class="co">## Loading disparity data</span></span>
@@ -631,7 +670,7 @@ For example, the following script runs a wilcoxon test between the time-slices f
 <span id="cb473-6"><a href="other-functionalities.html#cb473-6" aria-hidden="true"></a></span>
 <span id="cb473-7"><a href="other-functionalities.html#cb473-7" aria-hidden="true"></a><span class="co">## Plotting the significance</span></span>
 <span id="cb473-8"><a href="other-functionalities.html#cb473-8" aria-hidden="true"></a><span class="kw">pair.plot</span>(<span class="kw">as.data.frame</span>(tests), <span class="dt">what =</span> <span class="st">&quot;p.value&quot;</span>, <span class="dt">binary =</span> <span class="fl">0.05</span>)</span></code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-159-1.png" width="672" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-164-1.png" width="672" /></p>
 </div>
 <div id="reduce.matrix" class="section level2 hasAnchor" number="6.8">
 <h2><span class="header-section-number">6.8</span> <code>reduce.matrix</code><a href="other-functionalities.html#reduce.matrix" class="anchor-section" aria-label="Anchor link to header"></a></h2>
@@ -648,7 +687,7 @@ This is particularly useful if you are going to use distance matrices since it u
 <span id="cb474-8"><a href="other-functionalities.html#cb474-8" aria-hidden="true"></a>na_matrix[<span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">50</span>, <span class="dv">25</span>)] &lt;-<span class="st"> </span><span class="ot">NA</span></span>
 <span id="cb474-9"><a href="other-functionalities.html#cb474-9" aria-hidden="true"></a><span class="co">## Illustrating the gappy matrix</span></span>
 <span id="cb474-10"><a href="other-functionalities.html#cb474-10" aria-hidden="true"></a><span class="kw">image</span>(<span class="kw">t</span>(na_matrix), <span class="dt">col =</span> <span class="st">&quot;black&quot;</span>)</span></code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-160-1.png" width="672" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-165-1.png" width="672" /></p>
 <p>We can use the <code>reduce.matrix</code> to double check whether any rows cannot be compared.
 The functions needs as an input the type of distance that will be used, say a <code>"gower"</code> distance:</p>
 <div class="sourceCode" id="cb475"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb475-1"><a href="other-functionalities.html#cb475-1" aria-hidden="true"></a><span class="co">## Reducing the matrix by row</span></span>
@@ -661,7 +700,7 @@ The functions needs as an input the type of distance that will be used, say a <c
 <p>We can not remove the rows 1 and 9 and see if that improved the overlap:</p>
 <div class="sourceCode" id="cb477"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb477-1"><a href="other-functionalities.html#cb477-1" aria-hidden="true"></a><span class="kw">image</span>(<span class="kw">t</span>(na_matrix[<span class="op">-</span><span class="kw">as.numeric</span>(reduction<span class="op">$</span>rows.to.remove), ]),</span>
 <span id="cb477-2"><a href="other-functionalities.html#cb477-2" aria-hidden="true"></a>      <span class="dt">col =</span> <span class="st">&quot;black&quot;</span>)</span></code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-162-1.png" width="672" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-167-1.png" width="672" /></p>
 </div>
 <div id="select.axes" class="section level2 hasAnchor" number="6.9">
 <h2><span class="header-section-number">6.9</span> <code>select.axes</code><a href="other-functionalities.html#select.axes" class="anchor-section" aria-label="Anchor link to header"></a></h2>
@@ -710,7 +749,7 @@ You can do that automatically in <code>dispRity</code> using the <code>select.ax
 ## whole_space      0.043          1</code></pre>
 <div class="sourceCode" id="cb486"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb486-1"><a href="other-functionalities.html#cb486-1" aria-hidden="true"></a><span class="co">## Plotting it</span></span>
 <span id="cb486-2"><a href="other-functionalities.html#cb486-2" aria-hidden="true"></a><span class="kw">plot</span>(selected)</span></code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-165-1.png" width="672" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-170-1.png" width="672" /></p>
 <div class="sourceCode" id="cb487"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb487-1"><a href="other-functionalities.html#cb487-1" aria-hidden="true"></a><span class="co">## Extracting the dimensions</span></span>
 <span id="cb487-2"><a href="other-functionalities.html#cb487-2" aria-hidden="true"></a><span class="co">## (for the dispRity function for example)</span></span>
 <span id="cb487-3"><a href="other-functionalities.html#cb487-3" aria-hidden="true"></a>selected<span class="op">$</span>dimensions</span></code></pre></div>
@@ -733,7 +772,7 @@ You can thus use the <code>select.axes</code> function to look at the results pe
 <span id="cb489-10"><a href="other-functionalities.html#cb489-10" aria-hidden="true"></a>selected &lt;-<span class="st"> </span><span class="kw">select.axes</span>(ordination, <span class="dt">group =</span> states_groups, <span class="dt">threshold =</span> <span class="fl">0.9</span>)</span>
 <span id="cb489-11"><a href="other-functionalities.html#cb489-11" aria-hidden="true"></a><span class="co">## Plotting the results</span></span>
 <span id="cb489-12"><a href="other-functionalities.html#cb489-12" aria-hidden="true"></a><span class="kw">plot</span>(selected)</span></code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-166-1.png" width="672" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-171-1.png" width="672" /></p>
 <p>As you can see here, the whole space requires the three first axes to explain at least 90% of the variance (in fact, 95% as seen before).
 However, different groups have a different story!
 The Group 1 and 3 requires 4 dimensions whereas Group 2 requires only 1 dimensions (note how for Group 3, there is actually nearly no variance explained on the second axes)!
@@ -749,7 +788,7 @@ Using this method, you can safely use the four axes returned by the function (<c
 <div class="sourceCode" id="cb492"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb492-1"><a href="other-functionalities.html#cb492-1" aria-hidden="true"></a><span class="co">## Selecting axes on a dispRity object</span></span>
 <span id="cb492-2"><a href="other-functionalities.html#cb492-2" aria-hidden="true"></a>selected &lt;-<span class="st"> </span><span class="kw">select.axes</span>(demo_data<span class="op">$</span>hopkins)</span>
 <span id="cb492-3"><a href="other-functionalities.html#cb492-3" aria-hidden="true"></a><span class="kw">plot</span>(selected)</span></code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-167-1.png" width="672" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-172-1.png" width="672" /></p>
 <div class="sourceCode" id="cb493"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb493-1"><a href="other-functionalities.html#cb493-1" aria-hidden="true"></a><span class="co">## Displaying which axes are necessary for which group</span></span>
 <span id="cb493-2"><a href="other-functionalities.html#cb493-2" aria-hidden="true"></a>selected<span class="op">$</span>dim.list</span></code></pre></div>
 <pre><code>## $adult
@@ -786,7 +825,7 @@ The models for choosing which tip or node are the same as the ones used in the <
 <span id="cb496-15"><a href="other-functionalities.html#cb496-15" aria-hidden="true"></a><span class="kw">axisPhylo</span>() ; <span class="kw">nodelabels</span>(tree<span class="op">$</span>node.label, <span class="dt">cex =</span> <span class="fl">0.8</span>)</span>
 <span id="cb496-16"><a href="other-functionalities.html#cb496-16" aria-hidden="true"></a><span class="kw">abline</span>(<span class="dt">v =</span> (<span class="kw">max</span>(<span class="kw">tree.age</span>(tree)<span class="op">$</span>ages) <span class="op">-</span><span class="st"> </span><span class="fl">0.75</span>), <span class="dt">col =</span> <span class="st">&quot;red&quot;</span>)</span>
 <span id="cb496-17"><a href="other-functionalities.html#cb496-17" aria-hidden="true"></a><span class="kw">plot</span>(tree_<span class="dv">75</span>, <span class="dt">main =</span> <span class="st">&quot;sliced tree&quot;</span>)</span></code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-168-1.png" width="672" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-173-1.png" width="672" /></p>
 </div>
 <div id="slide.nodes-and-remove.zero.brlen" class="section level2 hasAnchor" number="6.11">
 <h2><span class="header-section-number">6.11</span> <code>slide.nodes</code> and <code>remove.zero.brlen</code><a href="other-functionalities.html#slide.nodes-and-remove.zero.brlen" class="anchor-section" aria-label="Anchor link to header"></a></h2>
@@ -809,7 +848,7 @@ You can move the node “down” (towards the roots) using a negative value.</p>
 <span id="cb497-11"><a href="other-functionalities.html#cb497-11" aria-hidden="true"></a><span class="kw">plot</span>(tree, <span class="dt">main =</span> <span class="st">&quot;original tree&quot;</span>) ; <span class="kw">axisPhylo</span>() ; <span class="kw">nodelabels</span>()</span>
 <span id="cb497-12"><a href="other-functionalities.html#cb497-12" aria-hidden="true"></a><span class="kw">plot</span>(tree_slide_up, <span class="dt">main =</span> <span class="st">&quot;slide up!&quot;</span>) ; <span class="kw">axisPhylo</span>() ; <span class="kw">nodelabels</span>()</span>
 <span id="cb497-13"><a href="other-functionalities.html#cb497-13" aria-hidden="true"></a><span class="kw">plot</span>(tree_slide_down, <span class="dt">main =</span> <span class="st">&quot;slide down!&quot;</span>) ; <span class="kw">axisPhylo</span>() ; <span class="kw">nodelabels</span>()</span></code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-169-1.png" width="672" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-174-1.png" width="672" /></p>
 <p>The <code>remove.zero.brlen</code> is a “clever” wrapping function that uses the <code>slide.nodes</code> function to stochastically remove zero branch lengths across a whole tree.
 This function will slide nodes up or down in successive postorder traversals (i.e. going down the tree clade by clade) in order to minimise the number of nodes to slide while making sure there are no silly negative branch lengths produced!
 By default it is trying to slide the nodes using 1% of the minimum branch length to avoid changing the topology too much.</p>
@@ -838,7 +877,7 @@ By default it is trying to slide the nodes using 1% of the minimum branch length
 <span id="cb504-3"><a href="other-functionalities.html#cb504-3" aria-hidden="true"></a><span class="kw">plot</span>(tree, <span class="dt">main =</span> <span class="st">&quot;with zero edges&quot;</span>)</span>
 <span id="cb504-4"><a href="other-functionalities.html#cb504-4" aria-hidden="true"></a><span class="kw">plot</span>(tree_no_zero, <span class="dt">main =</span> <span class="st">&quot;without zero edges!&quot;</span>)</span>
 <span id="cb504-5"><a href="other-functionalities.html#cb504-5" aria-hidden="true"></a><span class="kw">plot</span>(tree_exaggerated, <span class="dt">main =</span> <span class="st">&quot;with longer edges&quot;</span>)</span></code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-170-1.png" width="672" /></p>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-175-1.png" width="672" /></p>
 </div>
 <div id="tree.age" class="section level2 hasAnchor" number="6.12">
 <h2><span class="header-section-number">6.12</span> <code>tree.age</code><a href="other-functionalities.html#tree.age" class="anchor-section" aria-label="Anchor link to header"></a></h2>
@@ -913,7 +952,215 @@ By default it is trying to slide the nodes using 1% of the minimum branch length
 ## 17 0.776       17
 ## 18 0.876       18
 ## 19 1.369       19</code></pre>
+</div>
+<div id="multi.ace" class="section level2 hasAnchor" number="6.13">
+<h2><span class="header-section-number">6.13</span> <code>multi.ace</code><a href="other-functionalities.html#multi.ace" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>This function allows to run the <code>ape::ace</code> function (ancestral characters estimations) on multiple trees.
+In it’s most basic structure (e.g. using all default arguments) this function is using a mix of <code>ape::ace</code> and <code>castor::asr_mk_model</code> depending on the data and the situation and is generally faster than both functions when applied to a list of trees.
+However, this function provides also some more complex and modular functionalities, especially appropriate when using discrete morphological character data.</p>
+<div id="using-different-character-tokens-in-different-situations" class="section level3 hasAnchor" number="6.13.1">
+<h3><span class="header-section-number">6.13.1</span> Using different character tokens in different situations<a href="other-functionalities.html#using-different-character-tokens-in-different-situations" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>This data can be often coded in non-standard way with different character tokens having different meanings.
+For example, in some datasets the token <code>-</code> can mean “the trait is inapplicable” but this can be also coded by the more conventional <code>NA</code> or can mean “this trait is missing” (often coded <code>?</code>).
+This makes the meaning of specific tokens idiosyncratic to different matrices.
+For example we can have the following discrete morphological matrix with all the data encoded:</p>
+<div class="sourceCode" id="cb511"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb511-1"><a href="other-functionalities.html#cb511-1" aria-hidden="true"></a><span class="kw">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb511-2"><a href="other-functionalities.html#cb511-2" aria-hidden="true"></a><span class="co">## A random tree with 10 tips</span></span>
+<span id="cb511-3"><a href="other-functionalities.html#cb511-3" aria-hidden="true"></a>tree &lt;-<span class="st"> </span><span class="kw">rcoal</span>(<span class="dv">10</span>)</span>
+<span id="cb511-4"><a href="other-functionalities.html#cb511-4" aria-hidden="true"></a><span class="co">## Setting up the parameters</span></span>
+<span id="cb511-5"><a href="other-functionalities.html#cb511-5" aria-hidden="true"></a>my_rates =<span class="st"> </span><span class="kw">c</span>(rgamma, <span class="dt">rate =</span> <span class="dv">10</span>, <span class="dt">shape =</span> <span class="dv">5</span>)</span>
+<span id="cb511-6"><a href="other-functionalities.html#cb511-6" aria-hidden="true"></a></span>
+<span id="cb511-7"><a href="other-functionalities.html#cb511-7" aria-hidden="true"></a><span class="co">## Generating a bunch of trees</span></span>
+<span id="cb511-8"><a href="other-functionalities.html#cb511-8" aria-hidden="true"></a>multiple_trees &lt;-<span class="st"> </span><span class="kw">rmtree</span>(<span class="dv">5</span>, <span class="dv">10</span>)</span>
+<span id="cb511-9"><a href="other-functionalities.html#cb511-9" aria-hidden="true"></a></span>
+<span id="cb511-10"><a href="other-functionalities.html#cb511-10" aria-hidden="true"></a><span class="co">## A random Mk matrix (10*50)</span></span>
+<span id="cb511-11"><a href="other-functionalities.html#cb511-11" aria-hidden="true"></a>matrix_simple &lt;-<span class="st"> </span><span class="kw">sim.morpho</span>(tree, <span class="dt">characters =</span> <span class="dv">50</span>, <span class="dt">model =</span> <span class="st">&quot;ER&quot;</span>, <span class="dt">rates =</span> my_rates,</span>
+<span id="cb511-12"><a href="other-functionalities.html#cb511-12" aria-hidden="true"></a>                            <span class="dt">invariant =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb511-13"><a href="other-functionalities.html#cb511-13" aria-hidden="true"></a>matrix_simple[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>]</span></code></pre></div>
+<pre><code>##     [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
+## t8  &quot;1&quot;  &quot;1&quot;  &quot;1&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  
+## t3  &quot;1&quot;  &quot;1&quot;  &quot;1&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  
+## t2  &quot;1&quot;  &quot;1&quot;  &quot;1&quot;  &quot;1&quot;  &quot;0&quot;  &quot;1&quot;  &quot;1&quot;  &quot;1&quot;  &quot;0&quot;  &quot;1&quot;  
+## t1  &quot;1&quot;  &quot;1&quot;  &quot;1&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;1&quot;  &quot;0&quot;  &quot;1&quot;  
+## t10 &quot;1&quot;  &quot;1&quot;  &quot;1&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;1&quot;  &quot;1&quot;  
+## t9  &quot;1&quot;  &quot;1&quot;  &quot;1&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  
+## t5  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;1&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  
+## t6  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;1&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  
+## t4  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  
+## t7  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  &quot;0&quot;</code></pre>
+<p>But of course, as mentioned above, in practice, such matrices have more nuance and can including missing characters, ambiguous characters, multi-state characters, inapplicable characters, etc…
+All these coded and defined by different authors using different tokens (or symbols).
+Let’s give it a go and transform this simple data to something more messy:</p>
+<div class="sourceCode" id="cb513"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb513-1"><a href="other-functionalities.html#cb513-1" aria-hidden="true"></a><span class="co">## Modify the matrix to contain missing and special data</span></span>
+<span id="cb513-2"><a href="other-functionalities.html#cb513-2" aria-hidden="true"></a>matrix_complex &lt;-<span class="st"> </span>matrix_simple</span>
+<span id="cb513-3"><a href="other-functionalities.html#cb513-3" aria-hidden="true"></a><span class="co">## Adding 50 random &quot;-&quot; tokens</span></span>
+<span id="cb513-4"><a href="other-functionalities.html#cb513-4" aria-hidden="true"></a>matrix_complex[<span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(matrix_complex), <span class="dv">50</span>)] &lt;-<span class="st"> &quot;-&quot;</span></span>
+<span id="cb513-5"><a href="other-functionalities.html#cb513-5" aria-hidden="true"></a><span class="co">## Adding 50 random &quot;?&quot; tokens</span></span>
+<span id="cb513-6"><a href="other-functionalities.html#cb513-6" aria-hidden="true"></a>matrix_complex[<span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(matrix_complex), <span class="dv">50</span>)] &lt;-<span class="st"> &quot;?&quot;</span></span>
+<span id="cb513-7"><a href="other-functionalities.html#cb513-7" aria-hidden="true"></a><span class="co">## Adding 50 random &quot;0%2&quot; tokens</span></span>
+<span id="cb513-8"><a href="other-functionalities.html#cb513-8" aria-hidden="true"></a>matrix_complex[<span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(matrix_complex), <span class="dv">50</span>)] &lt;-<span class="st"> &quot;0%2&quot;</span></span>
+<span id="cb513-9"><a href="other-functionalities.html#cb513-9" aria-hidden="true"></a>matrix_complex[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>]</span></code></pre></div>
+<pre><code>##     [,1] [,2]  [,3] [,4]  [,5]  [,6]  [,7]  [,8]  [,9] [,10]
+## t8  &quot;1&quot;  &quot;1&quot;   &quot;1&quot;  &quot;1&quot;   &quot;?&quot;   &quot;0&quot;   &quot;0&quot;   &quot;0&quot;   &quot;0&quot;  &quot;0%2&quot;
+## t3  &quot;1&quot;  &quot;-&quot;   &quot;1&quot;  &quot;1&quot;   &quot;?&quot;   &quot;0&quot;   &quot;0&quot;   &quot;0&quot;   &quot;0&quot;  &quot;1&quot;  
+## t2  &quot;1&quot;  &quot;1&quot;   &quot;1&quot;  &quot;0%2&quot; &quot;0&quot;   &quot;0%2&quot; &quot;1&quot;   &quot;1&quot;   &quot;0&quot;  &quot;1&quot;  
+## t1  &quot;1&quot;  &quot;1&quot;   &quot;1&quot;  &quot;1&quot;   &quot;0&quot;   &quot;0&quot;   &quot;1&quot;   &quot;?&quot;   &quot;0&quot;  &quot;1&quot;  
+## t10 &quot;1&quot;  &quot;0%2&quot; &quot;1&quot;  &quot;1&quot;   &quot;-&quot;   &quot;?&quot;   &quot;0%2&quot; &quot;0%2&quot; &quot;1&quot;  &quot;1&quot;  
+## t9  &quot;1&quot;  &quot;1&quot;   &quot;?&quot;  &quot;1&quot;   &quot;0%2&quot; &quot;0&quot;   &quot;1&quot;   &quot;0&quot;   &quot;0&quot;  &quot;1&quot;  
+## t5  &quot;0&quot;  &quot;-&quot;   &quot;?&quot;  &quot;0&quot;   &quot;1&quot;   &quot;1&quot;   &quot;1&quot;   &quot;0&quot;   &quot;0&quot;  &quot;-&quot;  
+## t6  &quot;0&quot;  &quot;-&quot;   &quot;0&quot;  &quot;0&quot;   &quot;1&quot;   &quot;1&quot;   &quot;-&quot;   &quot;-&quot;   &quot;?&quot;  &quot;0&quot;  
+## t4  &quot;?&quot;  &quot;0&quot;   &quot;0&quot;  &quot;0&quot;   &quot;1&quot;   &quot;0&quot;   &quot;0&quot;   &quot;0&quot;   &quot;1&quot;  &quot;0&quot;  
+## t7  &quot;0&quot;  &quot;0&quot;   &quot;0&quot;  &quot;0%2&quot; &quot;1&quot;   &quot;0&quot;   &quot;0&quot;   &quot;-&quot;   &quot;1&quot;  &quot;-&quot;</code></pre>
+<p>In <code>multi.ace</code> you can specify what all these tokens actually mean and how the code should interpret them.
+For example, <code>-</code> often means inapplicable data (i.e. the specimen does not have the coded feature, for example, the colour of the tail of a tailless bird); or <code>?</code> that often means missing data (i.e. it is unknown if the specimen has a tail or not since only the head was available).
+And more than the differences in meaning between these characters, different people treat these characters differently even if they have the same meaning for the token.
+For example, one might want to treat <code>-</code> as meaning “we don’t know” (which will be treated by the algorithm as “any possible trait value”) or “we know, and it’s no possible” (which will be treated by the algorithm as <code>NA</code>).
+Because of this situation, <code>multi.ace</code> allows combining any special case marked with a special token to a special behaviour.
+For example we might want to create a special case called <code>"missing"</code> (i.e. the data is missing) that we want to denote using the token <code>"?"</code> and we can specify the algorithm to treat this <code>"missing"</code> cases (<code>"?"</code>) as treating the character token value as “any possible values”.
+This behaviour can be hard coded by providing a function with the name of the behaviour.
+For example:</p>
+<div class="sourceCode" id="cb515"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb515-1"><a href="other-functionalities.html#cb515-1" aria-hidden="true"></a><span class="co">## The specific token for the missing cases (note the &quot;\\&quot; for protecting the value)</span></span>
+<span id="cb515-2"><a href="other-functionalities.html#cb515-2" aria-hidden="true"></a>special.tokens &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;missing&quot;</span> =<span class="st"> &quot;</span><span class="ch">\\</span><span class="st">?&quot;</span>)</span>
+<span id="cb515-3"><a href="other-functionalities.html#cb515-3" aria-hidden="true"></a></span>
+<span id="cb515-4"><a href="other-functionalities.html#cb515-4" aria-hidden="true"></a><span class="co">## The behaviour for the missing cases (?)</span></span>
+<span id="cb515-5"><a href="other-functionalities.html#cb515-5" aria-hidden="true"></a>special.behaviour &lt;-<span class="st"> </span><span class="kw">list</span>(missing &lt;-<span class="st"> </span><span class="cf">function</span>(x, y) <span class="kw">return</span>(y))</span>
+<span id="cb515-6"><a href="other-functionalities.html#cb515-6" aria-hidden="true"></a><span class="co">## Where x is the input value (here &quot;?&quot;) and y is all the possible normal values for the character</span></span></code></pre></div>
+<p>This example shows a very common case (and is actually used by default, more on that below) but this architecture allows for very modular combination of tokens and behaviours.
+For example, in our code above we introduced the token <code>"%"</code> which is very odd (to my knowledge) and might mean something very specific in our case.
+Say we want to call this case <code>"weirdtoken"</code> and mean that whenever this token is encountered in a character, it should be interpreted by the algorithm as the values 1 and 2, no matter what:</p>
+<div class="sourceCode" id="cb516"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb516-1"><a href="other-functionalities.html#cb516-1" aria-hidden="true"></a><span class="co">## Set a list of extra special tokens</span></span>
+<span id="cb516-2"><a href="other-functionalities.html#cb516-2" aria-hidden="true"></a>my_spec_tokens &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;weirdtoken&quot;</span> =<span class="st"> &quot;</span><span class="ch">\\</span><span class="st">%&quot;</span>)</span>
+<span id="cb516-3"><a href="other-functionalities.html#cb516-3" aria-hidden="true"></a></span>
+<span id="cb516-4"><a href="other-functionalities.html#cb516-4" aria-hidden="true"></a><span class="co">## Weird tokens are considered as state 0 and 3</span></span>
+<span id="cb516-5"><a href="other-functionalities.html#cb516-5" aria-hidden="true"></a>my_spec_behaviours &lt;-<span class="st"> </span><span class="kw">list</span>()</span>
+<span id="cb516-6"><a href="other-functionalities.html#cb516-6" aria-hidden="true"></a>my_spec_behaviours<span class="op">$</span>weirdtoken &lt;-<span class="st"> </span><span class="cf">function</span>(x,y) <span class="kw">return</span>(<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span></code></pre></div>
+<p>If you don’t need/don’t have any of this specific tokens, don’t worry, most special but common tokens are handled by default as such:</p>
+<div class="sourceCode" id="cb517"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb517-1"><a href="other-functionalities.html#cb517-1" aria-hidden="true"></a><span class="co">## The token for missing values:</span></span>
+<span id="cb517-2"><a href="other-functionalities.html#cb517-2" aria-hidden="true"></a>default_tokens &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;missing&quot;</span>      =<span class="st"> &quot;</span><span class="ch">\\</span><span class="st">?&quot;</span>,</span>
+<span id="cb517-3"><a href="other-functionalities.html#cb517-3" aria-hidden="true"></a><span class="co">## The token for inapplicable values:                    </span></span>
+<span id="cb517-4"><a href="other-functionalities.html#cb517-4" aria-hidden="true"></a>                    <span class="st">&quot;inapplicable&quot;</span> =<span class="st"> &quot;</span><span class="ch">\\</span><span class="st">-&quot;</span>,</span>
+<span id="cb517-5"><a href="other-functionalities.html#cb517-5" aria-hidden="true"></a><span class="co">## The token for polymorphisms:</span></span>
+<span id="cb517-6"><a href="other-functionalities.html#cb517-6" aria-hidden="true"></a>                    <span class="st">&quot;polymorphism&quot;</span> =<span class="st"> &quot;</span><span class="ch">\\</span><span class="st">&amp;&quot;</span>,</span>
+<span id="cb517-7"><a href="other-functionalities.html#cb517-7" aria-hidden="true"></a><span class="co">## The token for uncertainties:</span></span>
+<span id="cb517-8"><a href="other-functionalities.html#cb517-8" aria-hidden="true"></a>                    <span class="st">&quot;uncertanity&quot;</span>  =<span class="st"> &quot;</span><span class="ch">\\</span><span class="st">/&quot;</span>)</span></code></pre></div>
+<p>With the following associated default behaviours</p>
+<div class="sourceCode" id="cb518"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb518-1"><a href="other-functionalities.html#cb518-1" aria-hidden="true"></a><span class="co">## Treating missing data as all data values</span></span>
+<span id="cb518-2"><a href="other-functionalities.html#cb518-2" aria-hidden="true"></a>default_behaviour &lt;-<span class="st"> </span><span class="kw">list</span>(missing      &lt;-<span class="st"> </span><span class="cf">function</span>(x,y) y,</span>
+<span id="cb518-3"><a href="other-functionalities.html#cb518-3" aria-hidden="true"></a><span class="co">## Treating inapplicable data as all data values (like missing)    </span></span>
+<span id="cb518-4"><a href="other-functionalities.html#cb518-4" aria-hidden="true"></a>                          inapplicable &lt;-<span class="st"> </span><span class="cf">function</span>(x, y) y,</span>
+<span id="cb518-5"><a href="other-functionalities.html#cb518-5" aria-hidden="true"></a><span class="co">## Treating polymorphisms as all values present:</span></span>
+<span id="cb518-6"><a href="other-functionalities.html#cb518-6" aria-hidden="true"></a>                          polymorphism &lt;-<span class="st"> </span><span class="cf">function</span>(x,y) <span class="kw">strsplit</span>(x, <span class="dt">split =</span> <span class="st">&quot;</span><span class="ch">\\</span><span class="st">&amp;&quot;</span>)[[<span class="dv">1</span>]],</span>
+<span id="cb518-7"><a href="other-functionalities.html#cb518-7" aria-hidden="true"></a><span class="co">## Treating uncertainties as all values present (like polymorphisms):</span></span>
+<span id="cb518-8"><a href="other-functionalities.html#cb518-8" aria-hidden="true"></a>                          uncertanity  &lt;-<span class="st"> </span><span class="cf">function</span>(x,y) <span class="kw">strsplit</span>(x, <span class="dt">split =</span> <span class="st">&quot;</span><span class="ch">\\</span><span class="st">&amp;&quot;</span>)[[<span class="dv">1</span>]])</span></code></pre></div>
+<p>We can then use these token description along with our complex matrix and our list of trees to run the ancestral states estimations as follows:</p>
+<div class="sourceCode" id="cb519"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb519-1"><a href="other-functionalities.html#cb519-1" aria-hidden="true"></a><span class="co">## Running ancestral states</span></span>
+<span id="cb519-2"><a href="other-functionalities.html#cb519-2" aria-hidden="true"></a>ancestral_states &lt;-<span class="st"> </span><span class="kw">multi.ace</span>(matrix_complex, multiple_trees,</span>
+<span id="cb519-3"><a href="other-functionalities.html#cb519-3" aria-hidden="true"></a>                              <span class="dt">special.tokens =</span> my_spec_tokens,</span>
+<span id="cb519-4"><a href="other-functionalities.html#cb519-4" aria-hidden="true"></a>                              <span class="dt">special.behaviours =</span> my_spec_behaviours,</span>
+<span id="cb519-5"><a href="other-functionalities.html#cb519-5" aria-hidden="true"></a>                              <span class="dt">verbose =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
+<pre><code>## Preparing the data:...</code></pre>
+<pre><code>## Warning: The characters 39 are invariant (using the current special behaviours
+## for special characters) and are simply duplicated for each node.</code></pre>
+<pre><code>## ..Done.
+## Running ancestral states estimations:
+## .................................................</code></pre>
+<pre><code>## Warning in mapply(replace.NA, ancestral_states, characters_states, MoreArgs =
+## list(special.tokens = special.tokens), : longer argument not a multiple of
+## length of shorter</code></pre>
+<pre><code>##  Done.
+## Running ancestral states estimations:
+## .................................................</code></pre>
+<pre><code>## Warning in mapply(replace.NA, ancestral_states, characters_states, MoreArgs =
+## list(special.tokens = special.tokens), : longer argument not a multiple of
+## length of shorter</code></pre>
+<pre><code>##  Done.
+## Running ancestral states estimations:
+## .................................................</code></pre>
+<pre><code>## Warning in mapply(replace.NA, ancestral_states, characters_states, MoreArgs =
+## list(special.tokens = special.tokens), : longer argument not a multiple of
+## length of shorter</code></pre>
+<pre><code>##  Done.
+## Running ancestral states estimations:
+## .................................................</code></pre>
+<pre><code>## Warning in mapply(replace.NA, ancestral_states, characters_states, MoreArgs =
+## list(special.tokens = special.tokens), : longer argument not a multiple of
+## length of shorter</code></pre>
+<pre><code>##  Done.
+## Running ancestral states estimations:
+## .................................................</code></pre>
+<pre><code>## Warning in mapply(replace.NA, ancestral_states, characters_states, MoreArgs =
+## list(special.tokens = special.tokens), : longer argument not a multiple of
+## length of shorter</code></pre>
+<pre><code>##  Done.</code></pre>
+<div class="sourceCode" id="cb533"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb533-1"><a href="other-functionalities.html#cb533-1" aria-hidden="true"></a><span class="co">## This outputs a list of ancestral parts of the matrices for each tree</span></span>
+<span id="cb533-2"><a href="other-functionalities.html#cb533-2" aria-hidden="true"></a><span class="co">## For example, here&#39;s the first one:</span></span>
+<span id="cb533-3"><a href="other-functionalities.html#cb533-3" aria-hidden="true"></a>ancestral_states[[<span class="dv">1</span>]][<span class="dv">1</span><span class="op">:</span><span class="dv">9</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>]</span></code></pre></div>
+<pre><code>##       [,1] [,2]  [,3]  [,4] [,5]  [,6]    [,7]  [,8] [,9] [,10]
+##  [1,] &quot;1&quot;  &quot;1&quot;   &quot;1&quot;   &quot;1&quot;  &quot;1&quot;   &quot;0/1/2&quot; &quot;1&quot;   &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  
+##  [2,] &quot;1&quot;  &quot;1&quot;   &quot;1&quot;   &quot;1&quot;  &quot;0/1&quot; &quot;0/1/2&quot; &quot;0/1&quot; &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  
+##  [3,] &quot;1&quot;  &quot;1&quot;   &quot;1&quot;   &quot;1&quot;  &quot;0/1&quot; &quot;0/1/2&quot; &quot;0&quot;   &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  
+##  [4,] &quot;1&quot;  &quot;1&quot;   &quot;1&quot;   &quot;1&quot;  &quot;0&quot;   &quot;0/1/2&quot; &quot;1&quot;   &quot;1&quot;  &quot;0&quot;  &quot;1&quot;  
+##  [5,] &quot;1&quot;  &quot;1&quot;   &quot;1&quot;   &quot;1&quot;  &quot;1&quot;   &quot;0/1/2&quot; &quot;1&quot;   &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  
+##  [6,] &quot;1&quot;  &quot;1&quot;   &quot;1&quot;   &quot;1&quot;  &quot;1&quot;   &quot;0/1/2&quot; &quot;1&quot;   &quot;0&quot;  &quot;0&quot;  &quot;1&quot;  
+##  [7,] &quot;0&quot;  &quot;0/1&quot; &quot;0/1&quot; &quot;0&quot;  &quot;1&quot;   &quot;1&quot;     &quot;1&quot;   &quot;0&quot;  &quot;0&quot;  &quot;0/1&quot;
+##  [8,] &quot;0&quot;  &quot;0&quot;   &quot;0&quot;   &quot;0&quot;  &quot;1&quot;   &quot;0/1/2&quot; &quot;0&quot;   &quot;0&quot;  &quot;1&quot;  &quot;0&quot;  
+##  [9,] &quot;0&quot;  &quot;0&quot;   &quot;0&quot;   &quot;0&quot;  &quot;1&quot;   &quot;1&quot;     &quot;0&quot;   &quot;0&quot;  &quot;1&quot;  &quot;0&quot;</code></pre>
+<p>Note that there are many different options that are not covered here.
+For example, you can use different models for each character via the <code>models</code> argument, you can specify how to handle uncertainties via the <code>threshold</code> argument, use a branch length modifier (<code>brlen.multiplier</code>), specify the type of output, etc…</p>
+</div>
+<div id="feeding-the-results-to-char.diff-to-get-distance-matrices" class="section level3 hasAnchor" number="6.13.2">
+<h3><span class="header-section-number">6.13.2</span> Feeding the results to <code>char.diff</code> to get distance matrices<a href="other-functionalities.html#feeding-the-results-to-char.diff-to-get-distance-matrices" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Finally, after running your ancestral states estimations, it is not uncommon to then use these resulting data to calculate the distances between taxa and then ordinate the results to measure disparity.
+You can do that using the <code>char.diff</code> function <a href="other-functionalities.html#char.diff">described above</a> but instead of measuring the distances between characters (columns) you can measure the distances between species (rows).
+You might notice that this function uses the same modular token and behaviour descriptions.
+That makes sense because they’re using the same core C functions implemented in dispRity that greatly speed up distance calculations.</p>
+<div class="sourceCode" id="cb535"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb535-1"><a href="other-functionalities.html#cb535-1" aria-hidden="true"></a><span class="co">## Running ancestral states</span></span>
+<span id="cb535-2"><a href="other-functionalities.html#cb535-2" aria-hidden="true"></a><span class="co">## and outputing a list of combined matrices (tips and nodes)</span></span>
+<span id="cb535-3"><a href="other-functionalities.html#cb535-3" aria-hidden="true"></a>ancestral_states &lt;-<span class="st"> </span><span class="kw">multi.ace</span>(matrix_complex, multiple_trees,</span>
+<span id="cb535-4"><a href="other-functionalities.html#cb535-4" aria-hidden="true"></a>                              <span class="dt">special.tokens =</span> my_spec_tokens,</span>
+<span id="cb535-5"><a href="other-functionalities.html#cb535-5" aria-hidden="true"></a>                              <span class="dt">special.behaviours =</span> my_spec_behaviours,</span>
+<span id="cb535-6"><a href="other-functionalities.html#cb535-6" aria-hidden="true"></a>                              <span class="dt">output =</span> <span class="st">&quot;combined.matrix&quot;</span>,</span>
+<span id="cb535-7"><a href="other-functionalities.html#cb535-7" aria-hidden="true"></a>                              <span class="dt">verbose =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
+<pre><code>## Preparing the data:...</code></pre>
+<pre><code>## Warning: The characters 39 are invariant (using the current special behaviours
+## for special characters) and are simply duplicated for each node.</code></pre>
+<pre><code>## ..Done.
+## Running ancestral states estimations:
+## .................................................</code></pre>
+<pre><code>## Warning in mapply(replace.NA, ancestral_states, characters_states, MoreArgs =
+## list(special.tokens = special.tokens), : longer argument not a multiple of
+## length of shorter</code></pre>
+<pre><code>##  Done.
+## Running ancestral states estimations:
+## .................................................</code></pre>
+<pre><code>## Warning in mapply(replace.NA, ancestral_states, characters_states, MoreArgs =
+## list(special.tokens = special.tokens), : longer argument not a multiple of
+## length of shorter</code></pre>
+<pre><code>##  Done.
+## Running ancestral states estimations:
+## .................................................</code></pre>
+<pre><code>## Warning in mapply(replace.NA, ancestral_states, characters_states, MoreArgs =
+## list(special.tokens = special.tokens), : longer argument not a multiple of
+## length of shorter</code></pre>
+<pre><code>##  Done.
+## Running ancestral states estimations:
+## .................................................</code></pre>
+<pre><code>## Warning in mapply(replace.NA, ancestral_states, characters_states, MoreArgs =
+## list(special.tokens = special.tokens), : longer argument not a multiple of
+## length of shorter</code></pre>
+<pre><code>##  Done.
+## Running ancestral states estimations:
+## .................................................</code></pre>
+<pre><code>## Warning in mapply(replace.NA, ancestral_states, characters_states, MoreArgs =
+## list(special.tokens = special.tokens), : longer argument not a multiple of
+## length of shorter</code></pre>
+<pre><code>##  Done.</code></pre>
+<p>We can then feed these matrices directly to <code>char.diff</code>, say for calculating the “MORD” distance:</p>
+<div class="sourceCode" id="cb549"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb549-1"><a href="other-functionalities.html#cb549-1" aria-hidden="true"></a><span class="co">## Measuring the distances between rows using the MORD distance</span></span>
+<span id="cb549-2"><a href="other-functionalities.html#cb549-2" aria-hidden="true"></a>distances &lt;-<span class="st"> </span><span class="kw">lapply</span>(ancestral_states, char.diff, <span class="dt">method =</span> <span class="st">&quot;mord&quot;</span>, <span class="dt">by.col =</span> <span class="ot">FALSE</span>)</span></code></pre></div>
+<p>And we now have a list of distances matrices with ancestral states estimated!</p>
 
+</div>
 </div>
 </div>
             </section>
@@ -982,7 +1229,7 @@ gitbook.start({
     var script = document.createElement("script");
     script.type = "text/javascript";
     var src = "true";
-    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:")
       if (/^https?:/.test(src))
         src = src.replace(/^https?:/, '');

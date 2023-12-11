@@ -4,14 +4,16 @@
 \alias{slide.nodes}
 \title{Stretching a tree}
 \usage{
-slide.nodes(nodes, tree, slide)
+slide.nodes(nodes, tree, slide, allow.negative.root = FALSE)
 }
 \arguments{
-\item{nodes}{A list of the ID nodes to slide (\code{"integer"}). The first node is \code{ape::Ntip(tree) + 1}, etc.}
+\item{nodes}{A list of the ID nodes to slide (\code{"integer"}) or names (\code{"character"}). The first node is \code{ape::Ntip(tree) + 1}, etc.}
 
 \item{tree}{a \code{"phylo"} object.}
 
 \item{slide}{the sliding value.}
+
+\item{allow.negative.root}{logical, whether to allow negative branch lengths and moving the root node (\code{TRUE}) or not (\code{FALSE}; default).}
 }
 \value{
 A \code{"phylo"} object.

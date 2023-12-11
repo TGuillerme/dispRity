@@ -8,7 +8,6 @@ output:
   pdf_document: default
 ---
 
-
 # Palaeobiology demo: disparity-through-time and within groups
 
 This demo aims to give quick overview of the `dispRity` package (v.`r version_release`) for palaeobiology analyses of disparity, including disparity through time analyses.

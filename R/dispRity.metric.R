@@ -1,5 +1,5 @@
 #' @name dispRity.metric
-#' @aliases dimension.level3.fun dimension.level2.fun dimension.level1.fun between.groups.fun variances ranges centroids mode.val ellipse.volume edge.length.tree convhull.surface convhull.volume diagonal ancestral.dist pairwise.dist span.tree.length n.ball.volume radius neighbours displacements quantiles func.eve func.div angles deviations group.dist point.dist projections projections.tree projections.between disalignment
+#' @aliases dimension.level3.fun dimension.level2.fun dimension.level1.fun between.groups.fun variances ranges centroids mode.val ellipsoid.volume ellipse.volume edge.length.tree convhull.surface convhull.volume diagonal ancestral.dist pairwise.dist span.tree.length n.ball.volume radius neighbours displacements quantiles func.eve func.div angles deviations group.dist point.dist projections projections.tree projections.between disalignment roundness
 #' @title Disparity metrics
 #'
 #' @description Different implemented disparity metrics.
@@ -11,7 +11,7 @@
 #'  
 #' @param matrix A matrix.
 #' @param matrix2 Optional, a second matrix for metrics between groups.
-#' @param ... Optional arguments to be passed to the function. Usual optional arguments are \code{method} for specifying the method for calculating distance passed to \code{\link[vegan]{vegdist}} (e.g. \code{method = "euclidean"} - default - or \code{method = "manhattan"}) or \code{k.root} to scale the result using the eqn{kth} root. See details below for available optional arguments for each function.
+#' @param ... Optional arguments to be passed to the function. Usual optional arguments are \code{method} for specifying the method for calculating distance passed to \code{\link[vegan]{vegdist}} (e.g. \code{method = "euclidean"} - default - or \code{method = "manhattan"}) or \code{k.root} to scale the result using the \eqn{kth} root. See details below for available optional arguments for each function.
 #'
 #' @details
 #' These are inbuilt functions for calculating disparity. See \code{\link{make.metric}} for details on \code{dimension.level3.fun}, \code{dimension.level2.fun}, \code{dimension.level1.fun} and \code{between.groups.fun}. The dimensions levels (1, 2 and 3) can be seen as similar to ranks in linear algebra.
@@ -31,7 +31,7 @@
 #'          \item WARNING: This function is the generalisation of Pythagoras' theorem and thus \bold{works only if each dimensions are orthogonal to each other}.
 #'      }
 #'
-#'   \item \code{ellipse.volume}: calculates the ellipsoid volume of a matrix. This function tries to determine the nature of the input matrix and uses one of these following methods to calculate the volume. You can always specify the method using \code{method = "my_choice"} to overrun the automatic method choice.
+#'   \item \code{ellipsoid.volume}: calculates the ellipsoid volume of a matrix. This function tries to determine the nature of the input matrix and uses one of these following methods to calculate the volume. You can always specify the method using \code{method = "my_choice"} to overrun the automatic method choice.
 #'      \itemize{
 #'             \item \code{"eigen"}: this method directly calculates the eigen values from the input matrix (using \code{\link{eigen}}). This method is automatically selected if the input matrix is "distance like" (i.e. square with two mirrored triangles and a diagonal).
 #'             \item \code{"pca"}: this method calculates the eigen values as the sum of the variances of the matrix (\code{abs(apply(var(matrix),2, sum))}). This is automatically selected if the input matrix is NOT "distance like". Note that this method is faster than \code{"eigen"} but only works if the input matrix is an ordinated matrix from a PCA, PCO, PCoA, NMDS or MDS.
@@ -39,13 +39,15 @@
 #'             \item \code{<a numeric vector>}: finally, you can directly provide a numeric vector of eigen values. This method is never automatically selected and overrides any other options.
 #'      }
 #' 
-#'   \item \code{func.div}: The functional divergence (Vill'{e}ger et al. 2008): the ratio of deviation from the centroid (this is similar to \code{FD::dbFD()$FDiv}).
+#'   \item \code{func.div}: The functional divergence (Villeger et al. 2008): the ratio of deviation from the centroid (this is similar to \code{FD::dbFD()$FDiv}).
 #' 
-#'   \item \code{func.eve}: The functional evenness (Vill'{e}ger et al. 2008): the minimal spanning tree distances evenness (this is similar to \code{FD::dbFD()$FEve}). If the matrix used is not a distance matrix, the distance method can be passed using, for example \code{method = "euclidean"} (default).
+#'   \item \code{func.eve}: The functional evenness (Villeger et al. 2008): the minimal spanning tree distances evenness (this is similar to \code{FD::dbFD()$FEve}). If the matrix used is not a distance matrix, the distance method can be passed using, for example \code{method = "euclidean"} (default).
 #' 
 #'   \item \code{mode.val}: calculates the modal value of a vector.
 #'
 #'   \item \code{n.ball.volume}: calculate the volume of the minimum n-ball (if \code{sphere = TRUE}) or of the ellipsoid (if \code{sphere = FALSE}).
+#'
+#'   \item \code{roundness}: calculate the roundness of an elliptical representation of a variance-covariance matrix as the integral of the ranked distribution of the major axes. A value of 1 indicates a sphere, a value between 1 and 0.5 indicates a more pancake like representation and a value between 0.5 and 0 a more cigar like representation. You can force the variance-covariance calculation by using the option \code{vcv = TRUE} (default) that will calculate the variance-covariance matrix if the input is not one.
 #' 
 #' }
 #' 
@@ -57,7 +59,7 @@
 #' 
 #'   \item \code{angles}: calculates the angles of the main axis of variation per dimension in a \code{matrix}. The angles are calculated using the least square algorithm from the \code{\link[stats]{lm}} function. The unit of the angle can be changed through the \code{unit} argument (either \code{"degree"} (default), \code{radian} or \code{slope}) and a base angle to measure the angle from can be passed through the \code{base} argument (by default \code{base = 0}, measuring the angle from the horizontal line (note that the \code{base} argument has to be passed in the same unit as \code{unit}). When estimating the slope through \code{\link[stats]{lm}}, you can use the option \code{significant} to only consider significant slopes (\code{TRUE}) or not (\code{FALSE} - default).
 #' 
-#'   \item \code{centroids}: calculates the distance between each row and the centroid of the matrix (Lalibert'{e} 2010). This function can take an optional arguments \code{centroid} for defining the centroid (if missing (default), the centroid of the matrix is used). This argument can be either a subset of coordinates matching the matrix's dimensions (e.g. \code{c(0, 1, 2)} for a matrix with three columns) or a single value to be the coordinates of the centroid (e.g. \code{centroid = 0} will set the centroid coordinates to \code{c(0, 0, 0)} for a three dimensional matrix). NOTE: distance is calculated as \code{"euclidean"} by default, this can be changed using the \code{method} argument.
+#'   \item \code{centroids}: calculates the distance between each row and the centroid of the matrix (Laliberte 2010). This function can take an optional arguments \code{centroid} for defining the centroid (if missing (default), the centroid of the matrix is used). This argument can be either a subset of coordinates matching the matrix's dimensions (e.g. \code{c(0, 1, 2)} for a matrix with three columns) or a single value to be the coordinates of the centroid (e.g. \code{centroid = 0} will set the centroid coordinates to \code{c(0, 0, 0)} for a three dimensional matrix). NOTE: distance is calculated as \code{"euclidean"} by default, this can be changed using the \code{method} argument.
 #'
 #' \item \code{deviations}: calculates the minimal Euclidean distance between each element in and the hyperplane (or line if 2D, or a plane if 3D). You can specify equation of hyperplane of \emph{d} dimensions in the \eqn{intercept + ax + by + ... + nd = 0} format. For example the line \eqn{y = 3x + 1} should be entered as \code{c(1, 3, -1)} or the plane \eqn{x + 2y - 3z = 44} as \code{c(44, 1, 2, -3)}. If missing the \code{hyperplane} (default) is calculated using a least square regression using a gaussian \code{\link[stats]{glm}}. Extra arguments can be passed to \code{\link[stats]{glm}} through \code{...}. When estimating the hyperplane, you can use the option \code{significant} to only consider significant slopes (\code{TRUE}) or not (\code{FALSE} - default).
 #'   \item \code{displacements}: calculates the ratio between the distance to the centroid (see \code{centroids} above) and the distance from a reference (by default the origin of the space). The reference can be changed through the \code{reference} argument. NOTE: distance is calculated as \code{"euclidean"} by default, this can be changed using the \code{method} argument.
@@ -79,7 +81,7 @@
 #'  }
 #' By default, \code{point1} is the centre of the space (coordinates \code{0, 0, 0, ...}) and \code{point2} is the centroid of the space (coordinates \code{colMeans(matrix)}). Coordinates for \code{point1} and \code{point2} can be given as a single value to be repeated (e.g. \code{point1 = 1} is translated into \code{point1 = c(1, 1, ...)}) or a specific set of coordinates.
 #' Furthermore, by default, the space is scaled so that the vector (\code{point1}, \code{point2}) becomes the unit vector (distance (\code{point1}, \code{point2}) is set to 1; option \code{scale = TRUE}; default). You can use the unit vector of the space using the option \code{scale = FALSE}.
-#' Other options include the centering of the projections on 0.5 (code{centre = TRUE}; default) ranging the projection onto the vector (\code{point1}, \code{point2}) between -1 and 1 (higher or lower values project beyond the vector); and whether to output the projection values as absolute values (\code{abs = TRUE}; default). These two last options only affect the results from \code{measure = "position"}.
+#' Other options include the centering of the projections on 0.5 (\code{centre = TRUE}; default is set to \code{FALSE}) ranging the projection onto the vector (\code{point1}, \code{point2}) between -1 and 1 (higher or lower values project beyond the vector); and whether to output the projection values as absolute values (\code{abs = FALSE}; default is set to \code{FALSE}). These two last options only affect the results from \code{measure = "position"}.
 #'
 #'   \item \code{projections.tree}: calculates the \code{projections} metric but drawing the vectors from a phylogenetic tree. This metric can intake any argument from \code{projections} (see above) but for \code{point1} and \code{point2} that are replaced by the argument \code{type}. \code{type} is a \code{vector} or a \code{list} of two elements that designates which vector to draw and can be any pair of the following options (the first element being the origin of the vector and the second where the vector points to):
 #'      \itemize{
@@ -92,7 +94,7 @@
 #'          \item any numeric values that can be interpreted as \code{point1} and \code{point2} in \code{\link{projections}};
 #'          \item or a user defined function that with the inputs \code{matrix} and \code{tree} and \code{row} (the element's ID, i.e. the row number in \code{matrix}). 
 #'      }
-#' \emph{NOTE:} the elements to calculate the origin and end points of the vector are calculated by default on the provided input \code{matrix} which can be missing data from the tree if used with \code{\link{custom.subsets}} or \code{\link{chrono.subsets}}. You can always provide the full matrix using the option \code{reference.data = my_matrix}.
+#' \emph{NOTE:} the elements to calculate the origin and end points of the vector are calculated by default on the provided input \code{matrix} which can be missing data from the tree if used with \code{\link{custom.subsets}} or \code{\link{chrono.subsets}}. You can always provide the full matrix using the option \code{reference.data = my_matrix}. Additional arguments include any arguments to be passed to \code{\link{projections}} (e.g. \code{centre} or \code{abs}).
 #' 
 #'   \item \code{quantiles}: calculates the quantile range of each axis of the matrix. The quantile can be changed using the \code{quantile} argument (default is \code{quantile = 95}, i.e. calculating the range on each axis that includes 95\% of the data). An optional argument, \code{k.root}, can be set to \code{TRUE} to scale the ranges by using its \eqn{kth} root (where \eqn{k} are the number of dimensions). By default, \code{k.root = FALSE}.
 #'
@@ -109,6 +111,7 @@
 #' The currently implemented between.groups metrics are:
 #' \itemize{
 #'   \item \code{disalignment}: calculates the rejection of a point from \code{matrix} from the major axis of \code{matrix2}. Options are, \code{axis} to choose which major axis to reject from (default is \code{axis = 1}); \code{level} for the ellipse' confidence interval (to calculate the axis) (default is \code{level = 0.95}) and \code{point.to.reject}, a numeric value for designating which point in \code{matrix} to use or a function for calculating it (default is \code{point.to.reject = colMeans} for \code{matrix}'s centroid).
+#Additional arguments include any arguments to be passed to \code{\link{projections}} (e.g. \code{centre} or \code{abs}).
 #'
 #'   \item \code{group.dist}: calculates the distance between two groups (by default, this is the minimum euclidean vector norm distance between groups). Negative distances are considered as 0. This function must intake two matrices (\code{matrix} and \code{matrix2}) and the quantiles to consider. For the minimum distance between two groups, the 100th quantiles are considered (default: \code{probs = c(0,1)}) but this can be changed to any values (e.g. distance between the two groups accounting based on the 95th CI: \code{probs = c(0.025, 0.975)}; distance between centroids: \code{probs = c(0.5)}, etc...). This function is the linear algebra equivalent of the \code{hypervolume::hypervolume_distance} function.
 #' 
@@ -215,13 +218,13 @@
 #' ## The edge lengths for each edge leading to the elements in the matrix
 #' edge.length.tree(named_matrix, tree = dummy_tree, to.root = FALSE)
 #' 
-#' ## ellipse.volume
+#' ## ellipsoid.volume
 #' ## Ellipsoid volume of a matrix
-#' ellipse.volume(dummy_matrix)
+#' ellipsoid.volume(dummy_matrix)
 #' ## Calculating the same volume with provided eigen values
 #' ordination <- prcomp(dummy_matrix)
 #' ## Calculating the ellipsoid volume by providing your own eigen values
-#' ellipse.volume(ordination$x, method = ordination$sdev^2)
+#' ellipsoid.volume(ordination$x, method = ordination$sdev^2)
 #' 
 #' ## func.div
 #' ## Functional divergence
@@ -337,6 +340,14 @@
 #' ## ranges of each column in the matrix corrected using the kth root
 #' ranges(dummy_matrix, k.root = TRUE)
 #'
+#' ## roundness
+#' ## calculating the variance-covariance of the dummy_matrix
+#' vcv <- var(dummy_matrix)
+#' ## calculating the roundness of it
+#' roundness(vcv)
+#' ## calculating the roundness of the dummy matrix by calculating the vcv
+#' roundness(dummy_matrix, vcv = TRUE)
+#'
 #' ## span.tree.length
 #' ## Minimum spanning tree length (default)
 #' span.tree.length(dummy_matrix)
@@ -386,12 +397,13 @@ dimension.level1.fun <- function(matrix, ...) {
     cat("\n?convhull.surface")
     cat("\n?convhull.volume")
     cat("\n?diagonal")
-    cat("\n?ellipse.volume")
+    cat("\n?ellipsoid.volume")
     cat("\n?func.div")
     cat("\n?func.eve")
     cat("\n?group.dist")
     cat("\n?mode.val")
     cat("\n?n.ball.volume")
+    cat("\n?roundness")
 }
 
 between.groups.fun <- function(matrix, matrix2, ...) {
@@ -503,7 +515,7 @@ mode.val <- function(matrix, ...){
 }
 
 ## Calculate the ellipse volume of matrix
-ellipse.volume <- function(matrix, method, ...) {
+ellipsoid.volume <- function(matrix, method, ...) {
 
     ## Initialising the variables
     ncol_matrix <- ncol(matrix)
@@ -528,7 +540,7 @@ ellipse.volume <- function(matrix, method, ...) {
             "eigen" = {sqrt(eigen(matrix)$values)},
             ## The eigenvalue is equal to the sum of the variance/covariance within each axis (* nrow(matrix) as used in pco/pcoa)
             "pca"   = {sqrt(abs(apply(var(matrix, na.rm = TRUE), 2, sum)))},
-            ## Calculate the 
+            ## Calculate the axes directly
             "axes"  = {(sapply(1:ncol(matrix), function(dim, VCV) {dist(get.one.axis(VCV, axis = dim, ...))}, VCV = matrix))/2})            
     } else {
         semi_axes <- method[1:ncol_matrix]
@@ -537,6 +549,10 @@ ellipse.volume <- function(matrix, method, ...) {
 
     ## Volume (from https://keisan.casio.com/exec/system/1223381019)
     return(pi^(ncol_matrix/2)/gamma((ncol_matrix/2)+1)*prod(semi_axes))
+}
+## Alias
+ellipse.volume <- function(x, ...) {
+    ellipsoid.volume(matrix = x, ...)
 }
 
 ## Calculate the convex hull hypersurface
@@ -819,7 +835,7 @@ point.dist <- function(matrix, matrix2, point = colMeans, method = "euclidean", 
 
 ## Angle between two vectors
 vector.angle <- function(v1, v2){
-
+    ## Transform a vector into an angle
     return(acos(geometry::dot(v1, v2, d = 1) / (sqrt(sum(v1^2))*sqrt(sum(v2^2)))) *180/pi)
 }
 ## Rotate a matrix along one axis (y)
@@ -856,11 +872,8 @@ orthogonise <- function(angle) {
 
     return(ortho/90)
 }
-
-## Projection of elements on an axis
-projections <- function(matrix, point1 = 0, point2 = colMeans(matrix), measure = "position", scale = TRUE, centre = TRUE, abs = TRUE, ...) {
-    ## IMPORTANT: edits in this function must also be copy/pasted to dispRity.covar.projections_fun.R/projections.fast
-    
+## Calculate the linear algebraic projection of matrix onto the vector (point1, point2)
+linear.algebra.projection <- function(matrix, point1, point2, do_angle, scale) {
     ## Get the point1 and point2
     if(length(point1) != ncol(matrix)) {
         point1 <- rep(point1, ncol(matrix))[1:ncol(matrix)]
@@ -904,11 +917,44 @@ projections <- function(matrix, point1 = 0, point2 = colMeans(matrix), measure =
     base_vector <- space[-c(1:nrow(matrix)), , drop = FALSE]
 
     ## Project the vectors
-    projections <- t(apply(matrix, 1, geometry::dot, y = base_vector[2,], d = 2))
+    projs <- t(apply(matrix, 1, geometry::dot, y = base_vector[2,], d = 2))
+    
     ## Calculate the angles
-    if(measure %in% c("degree", "radian", "orthogonality")) {
+    if(do_angle) {
         angles <- t(t(apply(matrix, 1, vector.angle, base_vector[2,])))
         angles <- ifelse(is.nan(angles), 0, angles)
+    } else {
+        angles <- NULL
+    }
+    return(list("projections" = projs, "angles" = angles, "centred_matrix" = matrix))
+}
+## Correct the position value (centring and absoluting)
+correct.position <- function(values, centre, abs) {
+        if(centre && abs) {
+            return(abs(values - 0.5)/0.5)
+        }
+        if(centre && !abs) {
+            return((values - 0.5)/0.5)
+        }
+        if(!centre && abs) {
+            return(abs(values))
+        }
+        return(values)
+}
+## Correct the distance value (scaling the unit distance to be equal to the unit position)
+get.distance <- function(matrix, projections) {
+    ## Calculating the raw distances
+    return(apply(matrix - projections, 1, function(row) sqrt(sum(row^2))))
+}
+
+## Projection of elements on an axis
+projections <- function(matrix, point1 = 0, point2 = colMeans(matrix), measure = "position", scale = TRUE, centre = FALSE, abs = FALSE, ...) {
+    
+    ## Get the projection (and angles, if asked)
+    proj_results <- linear.algebra.projection(matrix, point1, point2, do_angle = measure %in% c("degree", "radian", "orthogonality"), scale = scale)
+    projections <- proj_results$projections
+    if(measure %in% c("degree", "radian", "orthogonality")) {
+        angles <- proj_results$angles
     }
 
     # "position" #distance on
@@ -923,7 +969,7 @@ projections <- function(matrix, point1 = 0, point2 = colMeans(matrix), measure =
         },
         "distance" = { #distance from
             ## Get the rejection distance
-            apply(matrix - projections, 1, function(row) sqrt(sum(row^2)))
+            get.distance(proj_results$centred_matrix, projections) 
         },
         "degree"  = {
             c(angles)
@@ -937,28 +983,14 @@ projections <- function(matrix, point1 = 0, point2 = colMeans(matrix), measure =
 
     ## If position, apply correction
     if(measure == "position") {
-        if(centre && abs) {
-            values <- abs(values - 0.5)/0.5
-        }
-        if(centre && !abs) {
-            values <- (values - 0.5)/0.5
-        }
-        if(!centre && abs) {
-            values <- abs(values)
-        }
-    }
-    ## If distance, apply correction
-    if(measure == "distance") {
-        if(centre) {
-            values <- values/2
-        }
+        values <- correct.position(values, centre, abs)
     }
 
     return(unname(values))
 }
 
 ## Projections between covar matrices
-projections.between <- function(matrix, matrix2, axis = 1, level = 0.95, measure = "position", scale = TRUE, centre = TRUE, abs = TRUE, ...) {
+projections.between <- function(matrix, matrix2, axis = 1, level = 0.95, measure = "position", scale = TRUE, centre = FALSE, abs = FALSE, ...) {
 
     ## Get the main axes from the VCV matrices
     # source("covar.utilities_fun.R")
@@ -999,7 +1031,7 @@ disalignment <- function(matrix, matrix2, axis = 1, level = 0.95, point.to.rejec
     }
 
     ## Measure the projection
-    return(projections(rejection_point, point1 = base_vector[1,], point2 = base_vector[2,], measure = "distance"))
+    return(projections(rejection_point, point1 = base_vector[1,], point2 = base_vector[2,], measure = "distance", centre = TRUE, abs = TRUE))
 }
 
 ## Select the root coords
@@ -1082,6 +1114,10 @@ projections.tree <- function(matrix, tree, type = c("root","ancestor"), referenc
             }
         }
     }
+    ## Sanitizing (to avoid obscure error message!)
+    if(any(is_null <- unlist(lapply(from_to, is.null)))) {
+        stop(paste0("The following type argument is not recognised in projections.tree: ", paste0(type[is_null], collapse = ", ")))
+    }
 
     if(all(invariables)) {
         ## Point1 and point2 are invariant
@@ -1090,5 +1126,26 @@ projections.tree <- function(matrix, tree, type = c("root","ancestor"), referenc
         ## Apply the to and from to each row
         return(sapply(1:nrow(matrix), sapply.projections, matrix = matrix, tree = tree, from = from_to[[1]], to = from_to[[2]], reference.data, ...))
     }
+}
+
+
+## The roundness function
+roundness <- function(matrix, vcv = TRUE) {
+    ## Check the vcv
+    if(vcv) {
+        ## Check the dimensions and the triangles
+        if(length(unique(dim(matrix))) == 1 && all(matrix[upper.tri(matrix)] == matrix[rev(lower.tri(matrix))], na.rm = TRUE)) {
+            vcv <- matrix
+        } else {
+            vcv <- var(matrix)
+        }
+    }   
+
+    ## Sort and scale the eigen values
+    y <- sort(diag(matrix))
+    y <- y/max(y)
+    x <- seq(from = 0, to = 1, length.out = length(y))
+    ## Measure the integral
+    return(sum(diff(x)*zoo::rollmean(y, 2)))
 }
 

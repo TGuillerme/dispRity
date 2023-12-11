@@ -1,10 +1,14 @@
 Package: dispRity
 Title: Measuring Disparity
-Author: Thomas Guillerme [aut, cre, cph],
-		Mark N Puttick [aut, cph]
+Authors@R: c(person("Thomas", "Guillerme", role = c("aut", "cre", "cph"),
+										   email = "guillert@tcd.ie",
+										   comment = c(ORCID = "0000-0003-4325-1275")),
+  			 person("Mark", "Puttick",     role = c("aut", "cph")),
+  			 person("Jack", "Hatfield",    role = c("aut", "cph"))
+  			 )
 Maintainer: Thomas Guillerme <guillert@tcd.ie>
-Version: 1.7.0
-Date: 2022-08-08
+Version: 1.8
+Date: 2023-12-11
 Description: A modular package for measuring disparity (multidimensional space occupancy). Disparity can be calculated from any matrix defining a multidimensional space. The package provides a set of implemented metrics to measure properties of the space and allows users to provide and test their own metrics. The package also provides functions for looking at disparity in a serial way (e.g. disparity through time) or per groups as well as visualising the results. Finally, this package provides several statistical tests for disparity analysis.
 Depends:
     R (>= 3.6.0),
@@ -16,6 +20,7 @@ Imports:
 	Claddis,
 	ellipse,
 	geometry,
+	GET,
 	graphics,
 	grDevices,
 	MASS,
@@ -24,17 +29,16 @@ Imports:
 	parallel,
 	phangorn,
 	phyclust,
+	phylolm,
 	utils,
 	vegan,
 	scales,
-	spptest,
+	zoo,
 License: GPL-3 | file LICENSE
-Remotes:
-    github::myllym/spptest@no_fastdepth
 Suggests:
 	MCMCglmm,
     geoscale,
     testthat,
     knitr
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.3
 URL: https://github.com/TGuillerme/dispRity

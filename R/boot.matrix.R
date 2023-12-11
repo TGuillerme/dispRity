@@ -28,6 +28,7 @@
 #' \itemize{
 #'   \item \code{"full"}: resamples all the rows of the matrix and replaces them with a new random sample of rows (with \code{replace = TRUE}, meaning all the elements can be duplicated in each bootstrap).
 #'   \item \code{"single"}: resamples only one row of the matrix and replaces it with a new randomly sampled row (with \code{replace = FALSE}, meaning that only one element can be duplicated in each bootstrap).
+#'   \item \code{"null"}: resamples all rows of the matrix across subsets. I.e. for each subset of \emph{n} elements, this algorithm resamples \emph{n} elements across \emph{ALL} subsets. If only one subset (or none) is used, this does the same as the \code{"full"} algorithm.
 #' }
 #' 
 #' \code{prob}: This option allows to attribute specific probability to each element to be drawn.
@@ -86,17 +87,21 @@
 # bootstraps <- 3
 # rarefaction <- TRUE
 
-boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions, verbose = FALSE, boot.type = "full", prob) {
+boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions = NULL, verbose = FALSE, boot.type = "full", prob = NULL) {
 
     match_call <- match.call()
     ## ----------------------
     ## Cleaning and checking
     ## ----------------------
+    is_multi <- FALSE
+
     ## DATA
     ## If class is dispRity, data is serial
     if(!is(data, "dispRity")) {
         ## Data must be a matrix
-        data <- check.dispRity.data(data)
+        data <- check.dispRity.data(data, returns = c("matrix", "multi"))
+        is_multi <- any(is_multi, data$multi)
+        data <- data$matrix
 
         ## Check whether it is a distance matrix
         if(check.dist.matrix(data[[1]], just.check = TRUE)) {
@@ -106,7 +111,6 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
         ## Creating the dispRity object
         data <- make.dispRity(data = data)
     } else {
-
         ## Must not already been bootstrapped
         if(!is.null(data$call$bootstrap)) {
             stop.call(msg.pre = "", match_call$data, msg = " was already bootstrapped.")
@@ -134,6 +138,32 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
         }
     }
 
+    check.class(verbose, "logical")
+
+    ## If is multi lapply the stuff
+    if((!is.null(data$call$dispRity.multi) && data$call$dispRity.multi) || is_multi) {
+        ## Split the data
+        split_data <- dispRity.multi.split(data)
+
+        ## Change the verbose call
+        boot.matrix.call <- boot.matrix
+        if(verbose) {
+            ## Find the verbose lines
+            start_verbose <- which(as.character(body(boot.matrix.call)) == "if (verbose) message(\"Bootstrapping\", appendLF = FALSE)")
+            end_verbose <- which(as.character(body(boot.matrix.call)) == "if (verbose) message(\"Done.\", appendLF = FALSE)")
+            ## Comment out both lines
+            body(boot.matrix.call)[[start_verbose]] <- body(boot.matrix.call)[[end_verbose]] <- substitute(empty_line <- NULL)
+        }
+
+        if(verbose) message("Bootstrapping", appendLF = FALSE)
+
+        ## Apply the custom.subsets
+        output <- dispRity.multi.apply(split_data, fun = boot.matrix.call, bootstraps = bootstraps, rarefaction = rarefaction, dimensions = dimensions, verbose = verbose, boot.type = boot.type, prob = prob)
+
+        if(verbose) message("Done.", appendLF = FALSE)
+        return(output)
+    }
+
     ## Data must contain a first "bootstrap" (empty list)
     if(length(data$subsets) == 0) {
         data <- fill.dispRity(data)
@@ -157,7 +187,7 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
         }
     }
 
-    if(!missing(prob)) {
+    if(!is.null(prob)) {
         if(probabilistic_subsets || has_multiple_trees) {
             stop.call(match_call$data, paste0(" was generated using a gradual time-slicing or using multiple trees (", data$call$subsets[2], ").\nThe prob option is not yet implemented for this case."))
         } else {
@@ -260,16 +290,13 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
         }
     }
 
-    ## VERBOSE
-    check.class(verbose, "logical")
-
     ## BOOT.TYPE
     check.class(boot.type, "character")
     boot.type <- tolower(boot.type)
     check.length(boot.type, 1, " must be a single character string")
     
     ## Must be one of these methods
-    check.method(boot.type, c("full", "single"), "boot.type")
+    check.method(boot.type, c("full", "single", "null"), "boot.type")
 
     ## Change boot type to full if single and multiple trees
     if(boot.type == "single" && has_multiple_trees) {
@@ -292,6 +319,14 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
             } else {
                 boot.type.fun <- boot.single
             }
+        },
+        "null" = {
+            if(probabilistic_subsets) {
+                boot.type.fun <- boot.null #TODO: needs to be boot.null.proba
+                warning("Bootstrap with the null algorithm not implemented for probabilities. Please remind the maintainer to eventually do it!")
+            } else {
+                boot.type.fun <- boot.null
+            }
         }
     )
 
@@ -301,7 +336,7 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
 
     ## RM.LAST.AXIS
     ## If TRUE, set automatic threshold at 0.95
-    if(!missing(dimensions)) {
+    if(!is.null(dimensions)) {
         ## Else must be a single numeric value (proportional)
         check.class(dimensions, c("numeric", "integer"), " must be a proportional threshold value.")
         if(length(dimensions == 1)) {
@@ -343,7 +378,7 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
                                     lapply( ## Opens 3
                                         data$subsets,
                                         ## Fun 3: Split the data per tree
-                                        split.subsets, n_trees = n_trees),
+                                        do.split.subsets, n_trees = n_trees),
                                     ## Fun 2: Apply the bootstraps
                                     lapply, bootstrap.wrapper, bootstraps_per_tree, rarefaction, boot.type.fun, verbose),
                                 ## Fun 1: Merge into one normal bootstrap table
@@ -351,7 +386,7 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions,
                             )
     } else {
         ## Bootstrap the data set 
-        bootstrap_results <- lapply(data$subsets, bootstrap.wrapper, bootstraps, rarefaction, boot.type.fun, verbose)
+        bootstrap_results <- lapply(data$subsets, bootstrap.wrapper, bootstraps, rarefaction, boot.type.fun, verbose, all.elements = 1:dim(data$matrix[[1]])[1])
     }
     if(verbose) message("Done.", appendLF = FALSE)
 

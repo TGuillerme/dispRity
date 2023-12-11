@@ -2,22 +2,24 @@
 % Please edit documentation in R/match.tip.edge.R
 \name{match.tip.edge}
 \alias{match.tip.edge}
-\title{Match tips edge vector}
+\title{Match tips or nodes edge vector}
 \usage{
-match.tip.edge(vector, phylo, replace.na)
+match.tip.edge(vector, phylo, replace.na, use.parsimony = TRUE)
 }
 \arguments{
-\item{vector}{a vector of variables (equal to the number of tips).}
+\item{vector}{a vector of variables (equal to the number of tips or to the number of tips and nodes).}
 
-\item{phylo}{a phylo object.}
+\item{phylo}{a phylo or multiPhylo object.}
 
 \item{replace.na}{optional, what to replace NAs with.}
+
+\item{use.parsimony}{logical, whether to also colour internal edges parsimoniously (\code{TRUE} - default; i.e. if two nodes have the same unique ancestor node and the same variable, the ancestor node is assume to be the of the same value as its descendants) or not (\code{FALSE}).}
 }
 \value{
-A vector of variables equal to the number of edges in the tree
+A vector of variables equal to the number of edges in the tree (or a list of vectors if the \code{phylo} input is of class \code{"multiPhylo"}).
 }
 \description{
-Match a vector of tips with the an edge list
+Match a vector of tips or tips and nodes with the an edge list from a \code{"phylo"} or \code{"multiPhylo"}.
 }
 \examples{
 ## A random tree
@@ -33,7 +35,18 @@ edge_colors <- match.tip.edge(tip_values, tree, replace.na = "grey")
 plot(tree, show.tip.label = FALSE, edge.color = edge_colors)
 tiplabels(1:20, bg = tip_values)
 
+## Same but without assuming parsimony for the internal nodes
+plot(tree, show.tip.label = FALSE,
+     edge.color = match.tip.edge(tip_values, tree,
+                                 use.parsimony = FALSE,
+                                 replace.na = "grey"))
 
+## Matching the tips and nodes colors with the edges
+node_values <- sample(c("blue", "red"), 19, replace = TRUE)
+edge_colors <- match.tip.edge(c(tip_values, node_values), tree)
+plot(tree, show.tip.label = FALSE, edge.color = edge_colors) 
+tiplabels(1:20, bg = tip_values)
+nodelabels(1:19, bg = node_values)
 }
 \author{
 Thomas Guillerme

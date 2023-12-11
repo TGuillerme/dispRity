@@ -2,7 +2,7 @@
 #'
 #' @description Calculates the character difference from a discrete matrix
 #'
-#' @param matrix A discrete matrix or a list containing discrete characters. The differences is calculated between the columns (usually characters). Use \code{t(matrix)} to calculate the differences between the rows.
+#' @param matrix A discrete matrix or a list containing discrete characters. The differences is calculated between the columns (usually characters). Use \code{t(matrix)} or \code{by.col = FALSE} to calculate the differences between the rows.
 #' @param method The method to measure difference: \code{"hamming"} (default; Hamming 1950), \code{"manhattan"}, \code{"comparable"}, \code{"euclidean"}, \code{"maximum"}, \code{"mord"} (Lloyd 2016), \code{"none"} or \code{"binary"}.
 #' @param translate \code{logical}, whether to translate the characters following the \emph{xyz} notation (\code{TRUE} - default; see details - Felsenstein 2004) or not (\code{FALSE}). Translation works for up to 26 tokens per character.
 #' @param special.tokens optional, a named \code{vector} of special tokens to be passed to \code{\link[base]{grep}} (make sure to protect the character with \code{"\\\\"}). By default \code{special.tokens <- c(missing = "\\\\?", inapplicable = "\\\\-", polymorphism = "\\\\&", uncertainty = "\\\\/")}. Note that \code{NA} values are not compared and that the symbol "@" is reserved and cannot be used.

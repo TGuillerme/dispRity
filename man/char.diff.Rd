@@ -16,7 +16,7 @@ char.diff(
 )
 }
 \arguments{
-\item{matrix}{A discrete matrix or a list containing discrete characters. The differences is calculated between the columns (usually characters). Use \code{t(matrix)} to calculate the differences between the rows.}
+\item{matrix}{A discrete matrix or a list containing discrete characters. The differences is calculated between the columns (usually characters). Use \code{t(matrix)} or \code{by.col = FALSE} to calculate the differences between the rows.}
 
 \item{method}{The method to measure difference: \code{"hamming"} (default; Hamming 1950), \code{"manhattan"}, \code{"comparable"}, \code{"euclidean"}, \code{"maximum"}, \code{"mord"} (Lloyd 2016), \code{"none"} or \code{"binary"}.}
 

@@ -10,6 +10,7 @@
 \alias{ranges}
 \alias{centroids}
 \alias{mode.val}
+\alias{ellipsoid.volume}
 \alias{ellipse.volume}
 \alias{edge.length.tree}
 \alias{convhull.surface}
@@ -33,6 +34,7 @@
 \alias{projections.tree}
 \alias{projections.between}
 \alias{disalignment}
+\alias{roundness}
 \title{Disparity metrics}
 \usage{
 dimension.level3.fun(matrix, ...)
@@ -43,7 +45,7 @@ between.groups.fun(matrix, matrix2, ...)
 \arguments{
 \item{matrix}{A matrix.}
 
-\item{...}{Optional arguments to be passed to the function. Usual optional arguments are \code{method} for specifying the method for calculating distance passed to \code{\link[vegan]{vegdist}} (e.g. \code{method = "euclidean"} - default - or \code{method = "manhattan"}) or \code{k.root} to scale the result using the eqn{kth} root. See details below for available optional arguments for each function.}
+\item{...}{Optional arguments to be passed to the function. Usual optional arguments are \code{method} for specifying the method for calculating distance passed to \code{\link[vegan]{vegdist}} (e.g. \code{method = "euclidean"} - default - or \code{method = "manhattan"}) or \code{k.root} to scale the result using the \eqn{kth} root. See details below for available optional arguments for each function.}
 
 \item{matrix2}{Optional, a second matrix for metrics between groups.}
 }
@@ -68,7 +70,7 @@ The currently implemented dimension-level 1 metrics are:
          \item WARNING: This function is the generalisation of Pythagoras' theorem and thus \bold{works only if each dimensions are orthogonal to each other}.
      }
 
-  \item \code{ellipse.volume}: calculates the ellipsoid volume of a matrix. This function tries to determine the nature of the input matrix and uses one of these following methods to calculate the volume. You can always specify the method using \code{method = "my_choice"} to overrun the automatic method choice.
+  \item \code{ellipsoid.volume}: calculates the ellipsoid volume of a matrix. This function tries to determine the nature of the input matrix and uses one of these following methods to calculate the volume. You can always specify the method using \code{method = "my_choice"} to overrun the automatic method choice.
      \itemize{
             \item \code{"eigen"}: this method directly calculates the eigen values from the input matrix (using \code{\link{eigen}}). This method is automatically selected if the input matrix is "distance like" (i.e. square with two mirrored triangles and a diagonal).
             \item \code{"pca"}: this method calculates the eigen values as the sum of the variances of the matrix (\code{abs(apply(var(matrix),2, sum))}). This is automatically selected if the input matrix is NOT "distance like". Note that this method is faster than \code{"eigen"} but only works if the input matrix is an ordinated matrix from a PCA, PCO, PCoA, NMDS or MDS.
@@ -76,13 +78,15 @@ The currently implemented dimension-level 1 metrics are:
             \item \code{<a numeric vector>}: finally, you can directly provide a numeric vector of eigen values. This method is never automatically selected and overrides any other options.
      }
 
-  \item \code{func.div}: The functional divergence (Vill'{e}ger et al. 2008): the ratio of deviation from the centroid (this is similar to \code{FD::dbFD()$FDiv}).
+  \item \code{func.div}: The functional divergence (Villeger et al. 2008): the ratio of deviation from the centroid (this is similar to \code{FD::dbFD()$FDiv}).
 
-  \item \code{func.eve}: The functional evenness (Vill'{e}ger et al. 2008): the minimal spanning tree distances evenness (this is similar to \code{FD::dbFD()$FEve}). If the matrix used is not a distance matrix, the distance method can be passed using, for example \code{method = "euclidean"} (default).
+  \item \code{func.eve}: The functional evenness (Villeger et al. 2008): the minimal spanning tree distances evenness (this is similar to \code{FD::dbFD()$FEve}). If the matrix used is not a distance matrix, the distance method can be passed using, for example \code{method = "euclidean"} (default).
 
   \item \code{mode.val}: calculates the modal value of a vector.
 
   \item \code{n.ball.volume}: calculate the volume of the minimum n-ball (if \code{sphere = TRUE}) or of the ellipsoid (if \code{sphere = FALSE}).
+
+  \item \code{roundness}: calculate the roundness of an elliptical representation of a variance-covariance matrix as the integral of the ranked distribution of the major axes. A value of 1 indicates a sphere, a value between 1 and 0.5 indicates a more pancake like representation and a value between 0.5 and 0 a more cigar like representation. You can force the variance-covariance calculation by using the option \code{vcv = TRUE} (default) that will calculate the variance-covariance matrix if the input is not one.
 
 }
 
@@ -94,7 +98,7 @@ The currently implemented dimension-level 2 metrics are:
 
   \item \code{angles}: calculates the angles of the main axis of variation per dimension in a \code{matrix}. The angles are calculated using the least square algorithm from the \code{\link[stats]{lm}} function. The unit of the angle can be changed through the \code{unit} argument (either \code{"degree"} (default), \code{radian} or \code{slope}) and a base angle to measure the angle from can be passed through the \code{base} argument (by default \code{base = 0}, measuring the angle from the horizontal line (note that the \code{base} argument has to be passed in the same unit as \code{unit}). When estimating the slope through \code{\link[stats]{lm}}, you can use the option \code{significant} to only consider significant slopes (\code{TRUE}) or not (\code{FALSE} - default).
 
-  \item \code{centroids}: calculates the distance between each row and the centroid of the matrix (Lalibert'{e} 2010). This function can take an optional arguments \code{centroid} for defining the centroid (if missing (default), the centroid of the matrix is used). This argument can be either a subset of coordinates matching the matrix's dimensions (e.g. \code{c(0, 1, 2)} for a matrix with three columns) or a single value to be the coordinates of the centroid (e.g. \code{centroid = 0} will set the centroid coordinates to \code{c(0, 0, 0)} for a three dimensional matrix). NOTE: distance is calculated as \code{"euclidean"} by default, this can be changed using the \code{method} argument.
+  \item \code{centroids}: calculates the distance between each row and the centroid of the matrix (Laliberte 2010). This function can take an optional arguments \code{centroid} for defining the centroid (if missing (default), the centroid of the matrix is used). This argument can be either a subset of coordinates matching the matrix's dimensions (e.g. \code{c(0, 1, 2)} for a matrix with three columns) or a single value to be the coordinates of the centroid (e.g. \code{centroid = 0} will set the centroid coordinates to \code{c(0, 0, 0)} for a three dimensional matrix). NOTE: distance is calculated as \code{"euclidean"} by default, this can be changed using the \code{method} argument.
 
 \item \code{deviations}: calculates the minimal Euclidean distance between each element in and the hyperplane (or line if 2D, or a plane if 3D). You can specify equation of hyperplane of \emph{d} dimensions in the \eqn{intercept + ax + by + ... + nd = 0} format. For example the line \eqn{y = 3x + 1} should be entered as \code{c(1, 3, -1)} or the plane \eqn{x + 2y - 3z = 44} as \code{c(44, 1, 2, -3)}. If missing the \code{hyperplane} (default) is calculated using a least square regression using a gaussian \code{\link[stats]{glm}}. Extra arguments can be passed to \code{\link[stats]{glm}} through \code{...}. When estimating the hyperplane, you can use the option \code{significant} to only consider significant slopes (\code{TRUE}) or not (\code{FALSE} - default).
   \item \code{displacements}: calculates the ratio between the distance to the centroid (see \code{centroids} above) and the distance from a reference (by default the origin of the space). The reference can be changed through the \code{reference} argument. NOTE: distance is calculated as \code{"euclidean"} by default, this can be changed using the \code{method} argument.
@@ -116,7 +120,7 @@ The currently implemented dimension-level 2 metrics are:
  }
 By default, \code{point1} is the centre of the space (coordinates \code{0, 0, 0, ...}) and \code{point2} is the centroid of the space (coordinates \code{colMeans(matrix)}). Coordinates for \code{point1} and \code{point2} can be given as a single value to be repeated (e.g. \code{point1 = 1} is translated into \code{point1 = c(1, 1, ...)}) or a specific set of coordinates.
 Furthermore, by default, the space is scaled so that the vector (\code{point1}, \code{point2}) becomes the unit vector (distance (\code{point1}, \code{point2}) is set to 1; option \code{scale = TRUE}; default). You can use the unit vector of the space using the option \code{scale = FALSE}.
-Other options include the centering of the projections on 0.5 (code{centre = TRUE}; default) ranging the projection onto the vector (\code{point1}, \code{point2}) between -1 and 1 (higher or lower values project beyond the vector); and whether to output the projection values as absolute values (\code{abs = TRUE}; default). These two last options only affect the results from \code{measure = "position"}.
+Other options include the centering of the projections on 0.5 (\code{centre = TRUE}; default is set to \code{FALSE}) ranging the projection onto the vector (\code{point1}, \code{point2}) between -1 and 1 (higher or lower values project beyond the vector); and whether to output the projection values as absolute values (\code{abs = FALSE}; default is set to \code{FALSE}). These two last options only affect the results from \code{measure = "position"}.
 
   \item \code{projections.tree}: calculates the \code{projections} metric but drawing the vectors from a phylogenetic tree. This metric can intake any argument from \code{projections} (see above) but for \code{point1} and \code{point2} that are replaced by the argument \code{type}. \code{type} is a \code{vector} or a \code{list} of two elements that designates which vector to draw and can be any pair of the following options (the first element being the origin of the vector and the second where the vector points to):
      \itemize{
@@ -129,7 +133,7 @@ Other options include the centering of the projections on 0.5 (code{centre = TRU
          \item any numeric values that can be interpreted as \code{point1} and \code{point2} in \code{\link{projections}};
          \item or a user defined function that with the inputs \code{matrix} and \code{tree} and \code{row} (the element's ID, i.e. the row number in \code{matrix}). 
      }
-\emph{NOTE:} the elements to calculate the origin and end points of the vector are calculated by default on the provided input \code{matrix} which can be missing data from the tree if used with \code{\link{custom.subsets}} or \code{\link{chrono.subsets}}. You can always provide the full matrix using the option \code{reference.data = my_matrix}.
+\emph{NOTE:} the elements to calculate the origin and end points of the vector are calculated by default on the provided input \code{matrix} which can be missing data from the tree if used with \code{\link{custom.subsets}} or \code{\link{chrono.subsets}}. You can always provide the full matrix using the option \code{reference.data = my_matrix}. Additional arguments include any arguments to be passed to \code{\link{projections}} (e.g. \code{centre} or \code{abs}).
 
   \item \code{quantiles}: calculates the quantile range of each axis of the matrix. The quantile can be changed using the \code{quantile} argument (default is \code{quantile = 95}, i.e. calculating the range on each axis that includes 95\% of the data). An optional argument, \code{k.root}, can be set to \code{TRUE} to scale the ranges by using its \eqn{kth} root (where \eqn{k} are the number of dimensions). By default, \code{k.root = FALSE}.
 
@@ -239,13 +243,13 @@ edge.length.tree(named_matrix, tree = dummy_tree)
 ## The edge lengths for each edge leading to the elements in the matrix
 edge.length.tree(named_matrix, tree = dummy_tree, to.root = FALSE)
 
-## ellipse.volume
+## ellipsoid.volume
 ## Ellipsoid volume of a matrix
-ellipse.volume(dummy_matrix)
+ellipsoid.volume(dummy_matrix)
 ## Calculating the same volume with provided eigen values
 ordination <- prcomp(dummy_matrix)
 ## Calculating the ellipsoid volume by providing your own eigen values
-ellipse.volume(ordination$x, method = ordination$sdev^2)
+ellipsoid.volume(ordination$x, method = ordination$sdev^2)
 
 ## func.div
 ## Functional divergence
@@ -360,6 +364,14 @@ radius(dummy_matrix)
 ranges(dummy_matrix)
 ## ranges of each column in the matrix corrected using the kth root
 ranges(dummy_matrix, k.root = TRUE)
+
+## roundness
+## calculating the variance-covariance of the dummy_matrix
+vcv <- var(dummy_matrix)
+## calculating the roundness of it
+roundness(vcv)
+## calculating the roundness of the dummy matrix by calculating the vcv
+roundness(dummy_matrix, vcv = TRUE)
 
 ## span.tree.length
 ## Minimum spanning tree length (default)

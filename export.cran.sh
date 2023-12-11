@@ -25,7 +25,11 @@
 # shift
 # done
 
+## Update the function index
+sh update.function.index.sh
+
 ## Create the temporary CRAN folder
+rm -R cran_tmp/
 mkdir cran_tmp
 mkdir cran_tmp/dispRity
 TMPPATH="cran_tmp/dispRity"
@@ -69,34 +73,34 @@ rm src/*.rds
 version_number=$(grep "Version:" DESCRIPTION | sed 's/Version: //g')
 
 ## CHANGE THE WARNING zzz.R
-sed 's/# //g' R/zzz.R | sed 's/GitHub release./This is the CRAN release version ('"$version_number"') of the package.\\nFor news, vignettes and future releases,\\nvisit https:\/\/github.com\/TGuillerme\/dispRity/g' > ${TMPPATH}/R/zzz.R
+# sed 's/# //g' R/zzz.R | sed 's/GitHub release./This is the CRAN released version of the package ('"$version_number"').\\nFor news, vignettes and future releases, visit\\nhttps:\/\/github.com\/TGuillerme\/dispRity\\nTo cite the package use\\ncitation("dispRity")/g' > ${TMPPATH}/R/zzz.R
 
-## Add ssptest.support and remove dependencies 
-cp ~/Packaging/CRAN/Support/ssptest.support.R ${TMPPATH}/R/
+# ## Add ssptest.support and remove dependencies 
+# cp ~/Packaging/CRAN/Support/ssptest.support.R ${TMPPATH}/R/
 
-## Remove spptest from model.test.fun.R
-sed 's/spptest::create_curve_set/create_curve_set/g' ${TMPPATH}/R/model.test_fun.R | sed -e 's/spptest::rank_envelope/rank_envelope/g' > export.cran.tmp
-mv export.cran.tmp ${TMPPATH}/R/model.test_fun.R
+# ## Remove spptest from model.test.fun.R
+# sed 's/spptest::create_curve_set/create_curve_set/g' ${TMPPATH}/R/model.test_fun.R | sed -e 's/spptest::rank_envelope/rank_envelope/g' > export.cran.tmp
+# mv export.cran.tmp ${TMPPATH}/R/model.test_fun.R
 
-## Remove remotes from DESCRIPTION
-line_remove=$(grep -n "Remotes" ${TMPPATH}/DESCRIPTION | sed -e 's/:Remotes://g')
-sed ''"${line_remove}"'d' ${TMPPATH}/DESCRIPTION > export.cran.tmp
-line_remove=$(grep -n "github::myllym/spptest@no_fastdepth" export.cran.tmp | sed -e 's/:    github::myllym\/spptest@no_fastdepth//g')
-sed ''"${line_remove}"'d' export.cran.tmp > export.cran.tmp2
-## Remove imports
-line_remove=$(grep -n "spptest" export.cran.tmp2 | sed -e 's/:[[:space:]]spptest//g' | sed -e  's/,//g')
-sed ''"${line_remove}"'d' export.cran.tmp2 > export.cran.tmp
-## Remove coma to last import
-let "line_remove -= 1"
-sed ''"${line_remove}"'s/,//' export.cran.tmp > ${TMPPATH}/DESCRIPTION
+# ## Remove remotes from DESCRIPTION
+# line_remove=$(grep -n "Remotes" ${TMPPATH}/DESCRIPTION | sed -e 's/:Remotes://g')
+# sed ''"${line_remove}"'d' ${TMPPATH}/DESCRIPTION > export.cran.tmp
+# line_remove=$(grep -n "github::myllym/spptest@no_fastdepth" export.cran.tmp | sed -e 's/:    github::myllym\/spptest@no_fastdepth//g')
+# sed ''"${line_remove}"'d' export.cran.tmp > export.cran.tmp2
+# ## Remove imports
+# line_remove=$(grep -n "spptest" export.cran.tmp2 | sed -e 's/:[[:space:]]spptest//g' | sed -e  's/,//g')
+# sed ''"${line_remove}"'d' export.cran.tmp2 > export.cran.tmp
+# ## Remove coma to last import
+# let "line_remove -= 1"
+# sed ''"${line_remove}"'s/,//' export.cran.tmp > ${TMPPATH}/DESCRIPTION
 
-## Remove spptest from NAMESPACE
-line_remove=$(grep -n "importFrom(\"spptest\"," ${TMPPATH}/NAMESPACE | sed -e 's/:importFrom("spptest", "create_curve_set", "rank_envelope")//g')
-sed ''"${line_remove}"'d' ${TMPPATH}/NAMESPACE > export.cran.tmp
-## Add "is" to methods in NAMESPACE
-sed 's/importFrom("methods", "hasArg"/importFrom("methods", "hasArg", "is"/g' export.cran.tmp > ${TMPPATH}/NAMESPACE
-rm export.cran.tmp
-rm export.cran.tmp2
+# ## Remove spptest from NAMESPACE
+# line_remove=$(grep -n "importFrom(\"spptest\"," ${TMPPATH}/NAMESPACE | sed -e 's/:importFrom("spptest", "create_curve_set", "rank_envelope")//g')
+# sed ''"${line_remove}"'d' ${TMPPATH}/NAMESPACE > export.cran.tmp
+# ## Add "is" to methods in NAMESPACE
+# sed 's/importFrom("methods", "hasArg"/importFrom("methods", "hasArg", "is"/g' export.cran.tmp > ${TMPPATH}/NAMESPACE
+# rm export.cran.tmp
+# rm export.cran.tmp2
 
 ## Compile the package
 cd cran_tmp/

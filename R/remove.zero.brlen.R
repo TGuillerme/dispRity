@@ -1,14 +1,14 @@
 #' @title Remove zero branch length
 #'
-#' @description Remove zero branch lengths on trees by sliding nodes randomly in a postorder traversal based on \code{\link{slide.nodes}}.
+#' @description Remove zero or negative branch lengths on trees by sliding nodes randomly in a postorder traversal based on \code{\link{slide.nodes}}.
 #'
-#' @param tree A \code{"phylo"} object with edge lengths
+#' @param tree A \code{"phylo"} or \code{"multiPhylo"} object with edge lengths
 #' @param slide An optional sliding \code{numeric} values. If left empty, 1\% of the shortest branch length is used.
 #' @param verbose A \code{logical} value indicating whether to be verbose or not.
 #'
 #' @details
 #' The sliding value will be used to slide the nodes up and down to remove zero branch lengths by minimising the amount of branch changes.
-#' The algorithm slides the nodes up and down (when possible) on each node in a recursive way while there is still zero branch lengths.
+#' The algorithm slides the nodes up and down (when possible) on each node in a recursive way while there is still zero or negative branch lengths.
 #' If two recursions produce the same series of zero branches (e.g. by sliding node A towards node B equally so that the distance A:B becomes 0), the sliding value is divided by two until the next slide.
 #' 
 #' @return A \code{"phylo"} object with a postorder edge table and no zero branch lengths.
@@ -34,6 +34,17 @@
 #' plot(tree_no_zero, main = "no zero branch length")
 #' plot(tree_exaggerated, main = "exaggerated slidding")
 #' 
+#' ## Removing negative branch lengths
+#' ## Generating a tree with negative branch length
+#' set.seed(3)
+#' tree_negative <- chronoMPL(rtree(10))
+#' ## Removing the negative branch length (and make it non-zero)
+#' tree_positive <- remove.zero.brlen(tree_negative)
+#' ## Plot the differences
+#' par(mfrow = c(2, 1))
+#' plot(tree_negative, main = "Negative branch lengths")
+#' plot(tree_positive, main = "Positive branch lengths")
+#'
 #' @seealso
 #' \code{\link{slide.nodes}}
 #' 
@@ -44,20 +55,27 @@ remove.zero.brlen <- function(tree, slide, verbose = FALSE) {
     match_call <- match.call()
 
     ## Tree class
-    check.class(tree, "phylo")
+    tree_class <- check.class(tree, c("phylo", "multiPhylo"))
+    
+    ## multiPhylo version
+    if(tree_class == "multiPhylo") {
+        out <- lapply(tree, remove.zero.brlen, slide, verbose)
+        class(out) <- "multiPhylo"
+        return(out)
+    }
 
     ## Reorder in postorder
     tree_bkp <- tree
     tree <- reorder(tree, "postorder")
 
     ## Return the tree if no zero branch lengths
-    if(length(which(tree$edge.length == 0)) == 0) {
+    if(length(which(tree$edge.length <= 0)) == 0) {
         return(tree)
     }
 
     ## Configure sliding
     if(missing(slide)) {
-        slide <- 0.01 * min(tree$edge.length[-which(tree$edge.length == 0)])
+        slide <- 0.01 * min(tree$edge.length[-which(tree$edge.length <= 0)])
     } else {
         check.class(slide, c("numeric", "integer"))
         check.length(slide, 1, " must be a single numeric value.")
@@ -87,16 +105,25 @@ remove.zero.brlen <- function(tree, slide, verbose = FALSE) {
                 direction <- 2
             }
         } else {
-            ## Get a random direction
-            direction <- sample(c(1, 2), 1)
+            ## Is it a negative edge?
+            edge <- which((tree$edge[,1] == node_pair[1]) & (tree$edge[,2] == node_pair[2]))
+            if(tree$edge.length[edge] < 0) {
+                ## Go to the right
+                direction <- 2
+                ## Slide is bigger
+                slide <- slide - tree$edge.length[edge]
+            } else {
+                ## Get a random direction
+                direction <- sample(c(1, 2), 1)
+            }
         }
 
         ## Slide the node
-        tree_slided <- slide.nodes.internal(tree, node_pair[direction], ifelse(direction == 1, -slide, slide))
+        tree_slided <- slide.nodes.internal(tree, node_pair[direction], ifelse(direction == 1, -slide, slide), allow.negative.root = FALSE)
 
         ## Try reversing the slide
         if(is.null(tree_slided) && !any(is.na(node_pair))) {
-            tree_slided <- slide.nodes.internal(tree, node_pair[-direction], ifelse(direction == 1, slide, -slide))
+            tree_slided <- slide.nodes.internal(tree, node_pair[-direction], ifelse(direction == 1, slide, -slide), allow.negative.root = FALSE)
         }
         return(tree_slided)
     }
@@ -105,7 +132,7 @@ remove.zero.brlen <- function(tree, slide, verbose = FALSE) {
     recursive.remove.zero.brlen <- function(tree, slide, max.it, verbose, zero_brlen_tracker) {
 
         ## Get the zero branch length
-        zero_brlen <- which(tree$edge.length == 0)
+        zero_brlen <- which(tree$edge.length <= 0)
 
         ## Get the zero nodes
         zero_nodes <- unique(c(tree$edge[(1:nrow(tree$edge) %in% zero_brlen), 1], tree$edge[(1:nrow(tree$edge) %in% zero_brlen), 2]))
@@ -179,14 +206,14 @@ remove.zero.brlen <- function(tree, slide, verbose = FALSE) {
 
  
     ## Verbose
-    if(verbose) cat(paste0("Changing ", length(which(tree$edge.length == 0)), " branch lengths:"))
+    if(verbose) cat(paste0("Changing ", length(which(tree$edge.length <= 0)), " branch lengths:"))
 
     ## Initialising the tracker
-    zero_brlen_tracker <- list("current" = which(tree$edge.length == 0))
+    zero_brlen_tracker <- list("current" = which(tree$edge.length <= 0))
     ## Placeholder for a max.it option
     max.it <- 1000000
 
-    ## Test
+    ## Remove zeros and negatives
     tree <- recursive.remove.zero.brlen(tree, slide, max.it, verbose, zero_brlen_tracker)
 
     if(verbose) cat("Done.")

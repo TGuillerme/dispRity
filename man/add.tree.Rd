@@ -2,13 +2,13 @@
 % Please edit documentation in R/dispRity.utilities.R
 \name{add.tree}
 \alias{add.tree}
-\alias{get.tree}
 \alias{remove.tree}
-\title{Add, get or remove tree}
+\alias{get.tree}
+\title{Add, remove or get trees (or subtrees)}
 \usage{
-add.tree(data, tree)
+add.tree(data, tree, replace = FALSE)
 
-get.tree(data)
+get.tree(data, subsets = FALSE, to.root = FALSE)
 
 remove.tree(data)
 }
@@ -16,9 +16,18 @@ remove.tree(data)
 \item{data}{A \code{dispRity} object.}
 
 \item{tree}{A \code{phylo} or \code{mutiPhylo} object.}
+
+\item{replace}{Logical, whether to replace any existing tree (\code{TRUE}) or add to it (\code{FALSE}; default).}
+
+\item{subsets}{Either a logical whether to extract the tree for each subset (\code{TRUE}) or not (\code{FALSE}; default) or specific subset names or numbers.}
+
+\item{to.root}{Logical, whether to return the subset tree including the root of the tree (\code{TRUE}) or only containing the elements in the subset (and their most recent common ancestor; \code{FALSE}; default). If \code{data} contains time bins (from \code{\link{chrono.subsets}} with \code{method = "discrete"}), and \code{to.root = FALSE} it returns the subtrees containing only what's in the bin.}
 }
 \description{
-Adding, extracting or removing the tree component from a \code{dispRity} object
+Adding, extracting or removing the tree component from a \code{dispRity} object.
+}
+\details{
+\code{get.tree} allows to extract the trees specific to each subsets.
 }
 \examples{
 ## Loading a dispRity object
@@ -38,10 +47,18 @@ tree_data <- add.tree(tree_data, tree = BeckLee_tree)
 ## Extracting the tree
 get.tree(tree_data) # is a "phylo" object
 
+## Adding the same tree again
+tree_data <- add.tree(tree_data, tree = BeckLee_tree)
+get.tree(tree_data) # is a "multiPhylo" object (2 trees)
+
+## Replacing the two trees by one tree
+tree_data <- add.tree(tree_data, tree = BeckLee_tree, replace = TRUE)
+get.tree(tree_data) # is a "phylo" object
+
 }
 \seealso{
 \code{\link{custom.subsets}}, \code{\link{chrono.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
 }
 \author{
-Thomas Guillerme
+Thomas Guillerme and Jack Hadfield
 }

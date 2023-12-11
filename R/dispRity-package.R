@@ -26,7 +26,7 @@ NULL
 #' }
 #'
 #' @format three matrices and one phylogenetic tree.
-#' @source \url{https://www.royalsocietypublishing.org/doi/abs/10.1098/rspb.2014.1278}
+#' @doi \url{https://doi.org/10.1098/rspb.2014.1278}
 #' @references Beck RMD & Lee MSY. 2014. Ancient dates or accelerated rates?
 #' Morphological clocks and the antiquity of placental mammals.
 #' Proc. R. Soc. B 2014 281 20141278; DOI: 10.1098/rspb.2014.1278

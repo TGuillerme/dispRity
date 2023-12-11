@@ -66,3 +66,36 @@ test_that("MCMCglmm.covars works", {
     expect_equal(length(test), length(MCMCglmm.levels(model_list[[7]])))
     expect_equal(length(test[[1]]), 7)
 })
+
+test_that("MCMCglmm.variance works", {
+    ## One term (scaling works)
+    model_levels <- MCMCglmm.levels(model_list[[1]])
+    expect_true(all(MCMCglmm.variance(model_list[[1]]) == 1))
+    expect_false(all(MCMCglmm.variance(model_list[[1]], scale = FALSE) == 1))
+
+    ## Three residuals
+    test <- MCMCglmm.variance(model_list[[2]], n = 20)
+    expect_equal(dim(test), c(20, 3))
+    expect_equal(colnames(test), MCMCglmm.levels(model_list[[2]]))
+
+    ## One residual one random
+    test <- MCMCglmm.variance(model_list[[3]], sample = 1:20)
+    expect_equal(dim(test), c(20, 2))
+
+    ## 4 terms
+    test <- MCMCglmm.variance(model_list[[4]], levels = c(2,1,4))
+    expect_equal(dim(test), c(1000, 3))
+    expect_equal(colnames(test), MCMCglmm.levels(model_list[[4]])[c(2,1,4)])
+
+    ## 6 terms
+    test <- MCMCglmm.variance(model_list[[5]], n = 2, levels = c("animal:clade_2", "animal:clade_1", "units:clade_1"))
+    expect_equal(dim(test), c(2, 3))
+    expect_equal(colnames(test), MCMCglmm.levels(model_list[[5]])[c(2,1,4)])
+
+    ## Error when wrong level name
+    error <- capture_error(MCMCglmm.variance(model_list[[5]], n = 2, levels = c("animal:clade_2", "animal:clade_1121", "units:clade_1")))
+    expect_equal(error[[1]], "The following level(s): animal:clade_1121 are not found in model_list[[5]].")
+    ## Error when wrong level numbers
+    error <- capture_error(MCMCglmm.variance(model_list[[5]], n = 2, levels = c(12, 1, 58)))
+    expect_equal(error[[1]], "Only 6 levels (terms) are present in model_list[[5]].")   
+})

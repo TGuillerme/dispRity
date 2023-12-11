@@ -137,7 +137,6 @@ test_that("multiple.models work", {
     expect_equal(dim(test$aic.models), c(13, 3))
 })
 
-
 test_that("model.test example works", {
     set.seed(42)
     ## Mammal disparity through time
@@ -172,7 +171,6 @@ test_that("model.test.sim example works", {
     error <- capture_error(model.test.sim(model.test.sim(sim = 10, model = rnorm(10))))
     expect_equal(error[[1]], "model must be either a model name (character) or a dispRity object from model.test().")
 
-
     set.seed(42)
     models <- list("Trend", "BM", "Stasis", "EB")
     model_test_output <- model.test(data, models, time.split = 66, verbose = FALSE)
@@ -198,7 +196,7 @@ test_that("model.test.sim example works", {
     expect_equal(length(model_test_sim_output), 6)
     expect_equal(lapply(model_test_sim_output, length),
                 list("simulation.data" = 2,
-                     "p.value" = 12,
+                     "p.value" = 5,
                      "call" = 5,
                      "nsim" = 1,
                      "subsets" = 25,
@@ -216,7 +214,7 @@ test_that("model.test.sim example works", {
     expect_equal(length(model_test_sim_output), 6)
     expect_equal(lapply(model_test_sim_output, length),
                 list("simulation.data" = 2,
-                     "p.value" = 12,
+                     "p.value" = 5,
                      "call" = 4,
                      "nsim" = 1,
                      "subsets" = 25,
@@ -240,20 +238,19 @@ test_that("model.test.sim example works", {
     expect_null(plot(model_simulation, main = "A simple Brownian motion"))
 })
 
-
 test_that("model.test.wrapper example works", {
     set.seed(42)
     models <- list("BM", "OU", "multi.OU", "Trend")
 
     ## Some errors
-    expect_error(model.test.wrapper(data = data, model = "BIM", fixed.optima = TRUE, time.split = 66, show.p = TRUE, verbose = FALSE, sim = 10))
+    expect_error(model.test.wrapper(data = data, model = "BIM", fixed.optima = TRUE, time.split = 66, show.p = TRUE, verbose = FALSE, sim = 5))
     expect_error(model.test.wrapper(data = data, model = models, fixed.optima = TRUE, time.split = 66, show.p = TRUE, verbose = FALSE, sim = "a"))
-    expect_error(model.test.wrapper(data = "a", model = models, fixed.optima = TRUE, time.split = 66, show.p = TRUE, verbose = FALSE, sim = 10))
-    expect_error(model.test.wrapper(data = data, model = models, fixed.optima = TRUE, time.split = 66, show.p = TRUE, verbose = "yes", sim = 10))
-    expect_error(model.test.wrapper(data = data, model = models, fixed.optima = TRUE, time.split = 66, show.p = TRUE, verbose = FALSE, sim = 10, col.sim = 1))
-    expect_error(model.test.wrapper(data = data, model = models, fixed.optima = TRUE, time.split = 66, show.p = TRUE, verbose = FALSE, sim = 10, cex.p = "a"))
+    expect_error(model.test.wrapper(data = "a", model = models, fixed.optima = TRUE, time.split = 66, show.p = TRUE, verbose = FALSE, sim = 5))
+    expect_error(model.test.wrapper(data = data, model = models, fixed.optima = TRUE, time.split = 66, show.p = TRUE, verbose = "yes", sim = 5))
+    expect_error(model.test.wrapper(data = data, model = models, fixed.optima = TRUE, time.split = 66, show.p = TRUE, verbose = FALSE, sim = 5, col.sim = 1))
+    expect_error(model.test.wrapper(data = data, model = models, fixed.optima = TRUE, time.split = 66, show.p = TRUE, verbose = FALSE, sim = 5, cex.p = "a"))
 
-    test <- model.test.wrapper(data = data, model = models, fixed.optima = TRUE, time.split = 66, show.p = TRUE, verbose = FALSE, sim = -10, legend = TRUE, cex.p = 0.6)
+    test <- model.test.wrapper(data = data, model = models, fixed.optima = TRUE, time.split = 66, show.p = TRUE, verbose = FALSE, sim = -5, legend = TRUE, cex.p = 0.6)
 
     ## Check test
     expect_is(test, "matrix")
@@ -262,10 +259,9 @@ test_that("model.test.wrapper example works", {
     expect_equal(colnames(test), c("aicc", "delta_aicc", "weight_aicc", "log.lik", "param", "ancestral state", "sigma squared", "alpha", "optima.2", "trend", "median p value", "lower p value",  "upper p value"))
 
     ## Testing with a single model
-    test2 <- model.test.wrapper(data = data, model = "BM", fixed.optima = TRUE, time.split = 66, show.p = FALSE, verbose = FALSE, sim = 10)
+    test2 <- model.test.wrapper(data = data, model = "BM", fixed.optima = TRUE, time.split = 66, show.p = FALSE, verbose = FALSE, sim = 5)
     expect_is(test2, "matrix")
     expect_equal(dim(test2), c(1, 10))
     expect_equal(rownames(test2), "")
     expect_equal(colnames(test2), c("aicc", "delta_aicc", "weight_aicc", "log.lik", "param", "ancestral state", "sigma squared", "median p value", "lower p value",  "upper p value"))
-
 })

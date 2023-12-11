@@ -10,6 +10,8 @@
 #' @param arguments Optional \code{list} of arguments to be passed to the distributions functions in the order they appear (\code{default = NULL}, see details).
 #' @param cor.matrix An optional correlation \code{matrix} of size \code{dimensions * dimensions} (\code{default = NULL}, see details).
 #' @param scree An optional proportional \code{numeric} vector for approximating the \code{dimensions} variance (\code{default = NULL}, see details).
+#' @param elements.names Optional, a \code{character} or \code{integer} string for naming the elements in the matrix.
+#' @param replicates Optional, an \code{integer} to replicate the simulations and generating multiple spaces. 
 #'
 #' @details
 #' When passing additional arguments to different distributions, these must be given as a \code{list} to each function in the order they appear.
@@ -45,7 +47,10 @@
 #' space <- space.maker(10000, 3, rnorm, scree = c(0.6, 0.3, 0.1))
 #' ## The resulting screeplot
 #' barplot(apply(space, 2, var))
-#' 
+#'
+#' ## Generate 3 2D normal spaces with rownames 
+#' space.maker(10, 2, rnorm, elements.names = letters[1:10], replicates = 3)
+#'
 #' \dontrun{
 #' require(scatterplot3d)
 #' ## A cube space
@@ -102,9 +107,8 @@
 # scatterplot3d(space, pch = 20)
 
 
-space.maker <- function(elements, dimensions, distribution, arguments = NULL, cor.matrix = NULL, scree = NULL) {
+space.maker <- function(elements, dimensions, distribution, arguments = NULL, cor.matrix = NULL, scree = NULL, elements.names = NULL, replicates = NULL) {
     ## SANITZING
-
     match_call <- match.call()
 
     ## elements
@@ -181,6 +185,20 @@ space.maker <- function(elements, dimensions, distribution, arguments = NULL, co
         # }
     }
 
+    ## element names
+    if(!is.null(elements.names)) {
+        check.class(elements.names, c("character", "integer", "numeric"))
+        check.length(elements.names, elements, msg = " must be the same as the number of elements", errorif = FALSE)
+    }
+
+    ## replicates
+    if(!is.null(replicates)) {
+        check.class(replicates, c("integer", "numeric"))
+        return(replicate(replicates,
+                         space.maker(elements, dimensions, distribution, arguments, cor.matrix, scree, elements.names, replicates = NULL)
+                         , simplify = FALSE))
+    }
+
     ## CREATE THE SPACE
     ## with only one distribution
     if(uni_distribution) {
@@ -232,6 +250,11 @@ space.maker <- function(elements, dimensions, distribution, arguments = NULL, co
         ## Variance corrector
         effective_var <- apply(space, 2, var, na.rm = TRUE)
         space <- space %*% diag(scree)
+    }
+
+    ## Add the row names if needed
+    if(!is.null(elements.names)) {
+        rownames(space) <- elements.names
     }
 
     #output

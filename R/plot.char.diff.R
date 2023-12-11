@@ -153,6 +153,6 @@ plot.char.diff <- function(x, ..., type = "matrix", legend = TRUE, legend.title 
         }
     } else {
         ## Plotting the density profile
-        plot.char.diff.density(matrix, main, legend, col, xlim, ylim, legend.pos, xlab, ylab)
+        do.plot.char.diff.density(matrix, main, legend, col, xlim, ylim, legend.pos, xlab, ylab)
     }
 }

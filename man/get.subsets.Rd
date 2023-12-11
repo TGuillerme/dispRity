@@ -3,11 +3,14 @@
 \name{get.subsets}
 \alias{get.subsets}
 \alias{n.subsets}
+\alias{name.subsets}
 \alias{size.subsets}
 \alias{combine.subsets}
 \title{Extracts or modify subsets from a \code{dispRity} object.}
 \usage{
 n.subsets(data)
+
+name.subsets(data)
 
 size.subsets(data)
 
@@ -34,6 +37,9 @@ data(disparity)
 
 ## How many subsets are in disparity?
 n.subsets(disparity)
+
+## What are the subset names
+name.subsets(disparity)
 
 ## What are the number of elements per subsets?
 size.subsets(disparity)

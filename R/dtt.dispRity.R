@@ -9,7 +9,7 @@
 #' @param model A evolutionary model for the simulations (see \code{geiger::sim.char} - default is \code{"BM"}).
 #' @param alternative The H1 alternative (for calculating the p-value). Can be \code{"two-sided"} (default), \code{"greater"} or \code{"lesser"}; see details.
 #' @param scale.time Optional, whether to scale the time (between 0 and 1; \code{TRUE}, default) or not (\code{FALSE}).
-#' @param ... Any other arguments to be passed to \\code{geiger::dtt}.
+#' @param ... Any other arguments to be passed to \code{geiger::dtt}.
 #' 
 #' @details
 #' See \code{geiger::dtt} for details.

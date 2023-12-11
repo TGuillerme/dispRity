@@ -57,7 +57,7 @@
 #'      concatenate = FALSE, correction = "bonferroni",
 #'      conc.quantiles = c(mean, c(95, 5)))
 #' 
-#' @seealso \code{\link{dispRity}}, \code{\link{null.test}}, \code{\link{bhatt.coeff}}, \code{\link{pair.plot}}, \code{\link{adonis.dispRity}}, \code{\link{randtest.dispRity}} 
+#' @seealso \code{\link{dispRity}}, \code{\link{null.test}}, \code{\link{bhatt.coeff}}, \code{\link{pair.plot}}, \code{\link{adonis.dispRity}}, \code{\link{randtest.dispRity}}, \code{\link{test.dispRity}}
 # \code{\link{sequential.test}}
 #'
 #' @author Thomas Guillerme
@@ -102,6 +102,13 @@ test.dispRity <- function(data, test, comparisons = "pairwise", rarefaction = NU
     if(is.null(data$call$disparity)) {
         stop.call("", "Disparity has not been calculated yet.\nUse the dispRity() function to do so.\n")
     }
+
+    ## Overriding for pgls
+    if(is(test, "function") && as.character(match_call$test)[[1]] == "pgls.dispRity") {
+        ## Attempt to run the pgls
+        return(pgls.dispRity(data = data, ...))
+    }
+
     ## ...and must have more than one subsets
     if(length(data$subsets) == 1){
         stop.call(match_call$data, " must have more than one subset.")

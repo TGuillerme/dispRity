@@ -1,0 +1,275 @@
+---
+title: "Resources for developers"
+author: "Thomas Guillerme"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    fig_width: 12
+    fig_height: 6
+---
+
+If you want to copy, edit or modify the internal code in `dispRity` for your own project or for adding to the package (yay! in both cases) here is a list of resources that could help you understand some parts of the code.
+I have been working on this package since more than 8 years so some parts inevitably ended up like [spaghetti](https://en.wikipedia.org/wiki/Spaghetti_code).
+I am regularly working on streamlining and cleaning this internally (thanks to some [solid unit test](https://github.com/TGuillerme/dispRity/tree/master/tests/testthat)) but it takes some time.
+Here are some resources that can help you (and future me!) with editing this ever growing project.
+
+```{r, echo = FALSE}
+## The data
+data <- read.csv(text =
+"version, date, total, R_code, R_comments, manual_html, C
+1.8, 2023/11, 46811, 20276, 10494, 12063, 404
+1.7, 2022/05, 41192, 18306, 9889, 10180, 404
+1.6, 2021/04, 27565, 15984, 8196, 9642, 280
+1.5, 2020/09, 26311, 14945, 7639, 9435, 280
+1.4, 2020/05, 22927, 13041, 7253, 7963, 280
+1.3, 2018/08, 20921, 6598, 3137, 7778, 131
+1.2, 2018/08, 17756, 10053, 6268, 6028, 131
+1.0, 2018/05, 15068, 8595, 6486, 4849, 124")
+
+## Probable bug with line count from 1.7 (using cloc rather than howlong)
+
+plot(rev(data[, "total"]), ylim = (range(data[, c(3:7)])), type = "l", ylab = "Total number of lines", xlab = "Version number (1.X)")
+lines(rev(data[, "R_code"]), col = "orange")
+lines(rev(data[, "manual_html"]), col = "blue")
+legend("topleft", col = c("black", "orange", "blue"), lty = 1, legend = c("total (inc. comments, C, etc.)", "R (executable only)", "manual"))
+```
+
+# Coding style and naming conventions
+
+In general (there are some small exceptions here and there) I use the following code style:
+ 
+ * objects are named and described with an underscore (e.g. `converted_matrix`, `output_results`, etc.);
+ * functions are named and described with a dot (e.g. `convert.matrix`, `output.results`, etc.);
+ * the indent is four spaces;
+ * I put spaces after a comma (`,`) and around attributors and evaluators  (e.g. ` <- `, ` = `, ` %in% `, ` != `, `if() `, etc...)
+ * curly bracketed definitions (function, loops, ifs, whiles, etc...) are always indented over multiple lines as:
+```
+if(something) {
+    something
+} else {
+    something else
+}
+``` 
+or
+```
+bib <- function(bob) {
+    return("bub")
+}
+```
+Unless they are pseudo `ifelse` like (e.g. `if(verbose) print("that's just one line. No else.")`)
+
+For naming files, up until `v1.8`, I've been writing the user level functions (with the Roxygen manual) in files named as `my.user.level.function.R` and the internal functions in `my.user.level.function_fun.R`.
+This was originally used to track but separate clearly user level and internal level functions.
+Since I am now more relying on the [function index](#function_index), I now put everything in the same `my.user.level.function.R` and clearly label the internal vs. user level functions in it.
+
+## Where to find specific functions? {#function_index}
+
+Each release I update a function index using the [`update.function.index.sh`](https://github.com/TGuillerme/dispRity/blob/master/update.function.index.sh) script.
+You can find the latest index as a searchable .csv file in the [`function.index.csv`](https://github.com/TGuillerme/dispRity/blob/master/function.index.csv) file that contains a of the file names (first column), the lines where function is declared (second column) and the name of that declared function (third column):
+
+file  |  line  |  function
+---|---|---
+Claddis.ordination.R  | 55 | Claddis.ordination
+Claddis.ordination_fun.R | 2 |  convert.to.Claddis
+MCMCglmm.subsets.R | 43 | MCMCglmm.subsets
+MCMCglmm.subsets_fun.R | 2 | get.one.group
+MCMCglmm.subsets_fun.R | 29 | split.term.name
+
+For example here, we know that the `Claddis.ordination` function is declared on line 55 in the `Claddis.ordination.R` file.
+The `convert.to.Claddis` is declared in the 2nd line of the `Claddis.ordination_fun.R` file, etc.
+
+# The `dispRity` object structure {#dispRity_object}
+
+In brief, the `dispRity` object that's at the core of the package contains all the information to perform the different analyses in the package (and plotting, summarising, etc.).
+It mainly contains the data (some `"matrix"` and sometimes some `"phylo"` objects) and then the eventually calculated disparity/dissimilarity metrics.
+The whole object structure is detailed below: 
+
+<details>
+
+<summary>Full `dispRity` object structure (click to unroll)</summary>
+
+```
+object
+    |
+    \---$matrix* = class:"list" (a list containing the orginal matrix/matrices)
+    |   |
+    |   \---[[1]]* = class:"matrix" (the matrix (trait-space))
+    |   |
+    |   \---[[...]] = class:"matrix" (any additional matrices)
+    |
+    |
+    \---$tree* = class:"multiPhylo" (a list containing the attached tree(s) or NULL)
+    |   |
+    |   \---[[1]] = class:"phylo" (the first tree)
+    |   |
+    |   \---[[...]] = class:"phylo" (any additional trees)  
+    |
+    |
+    \---$call* = class:"list" (details of the methods used)
+    |   |
+    |   \---$dispRity.multi = class:"logical"
+    |   |
+    |   \---$subsets = class:"character"
+    |   |
+    |   \---$bootstrap = class:"character"
+    |   |
+    |   \---$dimensions = class:"numeric"
+    |   |
+    |   \---$metric = class:"list" (details about the metric(s) used)
+    |              |
+    |              \---$name = class:"character"
+    |              |
+    |              \---$fun = class:"list" (elements of class "function")
+    |              |
+    |              \---$arg = class:"list"
+    |
+    |
+    \---$subsets* = class:"list" (subsets as a list)
+    |   |
+    |   \---[[1]]* = class:"list" (first item in subsets list)
+    |   |   |
+    |   |   \---$elements* = class:"matrix" (one column matrix containing the elements within the first subset)
+    |   |   |
+    |   |   \---[[2]] = class:"matrix" (matrix containing the bootstrap draws for the unrarefied data)
+    |   |   |
+    |   |   \---[[3]] = class:"matrix" (matrix containing the bootstrap draws for the first rarefaction level)
+    |   |   |
+    |   |   \---[[...]] = class:"matrix" (matrix containing the bootstrap draws for the second rarefaction level etc.)
+    |   |
+    |   \---[[2]] = class:"list" (second item in subsets list)
+    |   |   |
+    |   |   \---$elements* = class:"matrix" (one column matrix containing the elements within the second subset)
+    |   |   |
+    |   |   \---[[2]] = class:"matrix" (matrix containing the bootstrap draws for the unrarefied data)
+    |   |   |
+    |   |   \---[[3]] = class:"matrix" (matrix containing the bootstrap draws for the first rarefaction level)
+    |   |   |
+    |   |   \---[[...]] = class:"matrix" (matrix containing the bootstrap draws for the second rarefaction level etc.)          
+    |   |
+    |   \---[[...]] = class:"list" (the following subsets)
+    |       |
+    |       \---$elements* = class:"matrix" (a one column matrix containing the elements within this subset)
+    |       |
+    |       \---[[...]] = class:"matrix" (the rarefactions)
+    |
+    |
+    \---$covar = class:"list" (a list of subsets containing covar matrices; is the same length as $subsets)
+    |   |
+    |   \---[[1]] = class:"list" (first item in subsets list)
+    |   |   |
+    |   |   \---$VCV = class:"list" (the list of covar matrices)
+    |   |   |   |
+    |   |   |   \[[1]] = class:"matrix" (the first covar matrix)
+    |   |   |   |
+    |   |   |   \[[...]] = class:"matrix" (the subsequent covar matrices)
+    |   |   |
+    |   |   \---$loc = class:"list" (optional, the list of spatial location for the matrices)
+    |   |       |
+    |   |       \[[1]] = class:"numeric" (the coordinates for the location of the first matrix)
+    |   |       |
+    |   |       \[[...]] = class:"numeric" (the coordinates for the location of the subsequent covar matrices)
+    |   |   
+    |   \---[[...]] = class:"list" (the following subsets)
+    |
+    |   
+    \---$disparity
+        |
+        \---[[2]] = class:"list" (the first subsets)
+        |   |
+        |   \---$observed* = class:"numeric" (vector containing the observed disparity within the subsets)
+        |   |
+        |   \---[[2]] = class:"matrix" (matrix containing the bootstrap draws for the unrarefied data)
+        |   |
+        |   \---[[3]] = class:"matrix" (matrix containing the bootstrap draws for the first rarefaction level)
+        |   |
+        |   \---[[...]] = class:"matrix" (matrix containing the bootstrap draws for the second rarefaction level etc.)
+        |
+        \---[[2]] = class:"list" (the first subsets)
+        |   |
+        |   \---$observed* = class:"numeric" (vector containing the observed disparity within the subsets)
+        |   |
+        |   \---[[2]] = class:"matrix" (matrix containing the bootstrap draws for the unrarefied data)
+        |   |
+        |   \---[[3]] = class:"matrix" (matrix containing the bootstrap draws for the first rarefaction level)
+        |   |
+        |   \---[[...]] = class:"matrix" (matrix containing the bootstrap draws for the second rarefaction level etc.)          
+        |
+        \---[[...]] = class:"list" (the following subsets)
+            |
+            \---$observed* = class:"numeric" (the vector containing the observed disparity within this subsets)
+            |
+            \---[[...]] = class:"matrix" (the rarefactions)
+```
+
+The elements marked with an asterisk (\*) are mandatory.
+
+
+</details>
+
+# `dispRity` function internal logic explained
+
+This is how disparity is calculated in `dispRity`.
+The disparity calculations are handled by two main functions `mapply.wrapper` or `lapply.wrapper` depending if the metric is applied between groups or not (respectively). Here we are going to focus on `lapply.wrapper` but `mapply.wrapper` uses the same logic but intakes two lists instead of one.
+
+## The inputs
+
+The `lapply.wrapper` function intakes the following mandatory arguments:
+
+ * `lapply_loop` (`"list"`) that contains the row names to analyse for each subsest (each element of the list is divided into different lists containing the observed rows as a n x 1 matrix and the bootstrapped rows as a n x bootstraps matrix as well as the rarefaction levels (see [`disparity_object.md`](https://github.com/TGuillerme/dispRity/blob/master/disparity_object.md) for details). If disparity was already previously calculated, `lapply_loop` contains disparity values (`"matrix"` or `"array"`) rather than row names.
+ * `metrics_list` (`"list"` of length 3) the list of the three levels of metrics to apply (some levels can be NULL).
+ * `data`  (`"dispRity"`) the data that must contain at least the matrix or the disparity data and the number of dimensions (and also a tree if `metric_is_tree`).
+ * `matrix_decomposition` (`"logical"` of length 1) whether to decompose the matrix (see later)
+ * `verbose` (`"logical"` of length 1) whether to be verbose
+ * `metric_is_tree` (`"logical"` of length 3) whether each metric needs a tree
+ * `...` any arguments to be handled by the functions in `metrics_list`
+
+## The pipeline
+
+These arguments are passed to `lapply.wrapper` (or `mapply.wrapper`) which first toggles the functions to be verbose or not and then handles in turn the following (in a nested way):
+
+### 1 - Passing one subset (e.g. `lapply_loop[[1]]`) to `disparity.bootstraps`
+
+The `disparity.bootstraps` function handles subsets one by one, (e.g. `lapply_loop[[1]][[1]]`, etc...) and calculates disparity on them using the different metrics from `metrics_list`.
+
+This function is composed of two elements: firstly decomposing the matrix if necessary (see point 2 below) and secondly applying each metric depending on there level. The application of each metric is done simply by using an apply loop like `apply(data, margin, metric)` where `data` is already calculated disparity data (either from previous calculations or from decomposing the matrix), `margin` is detected automatically and `metric` comes from `metrics_list` according to the correct level.
+
+### 2 - Wrapping the matrix decomposition for one subset with `decompose.matrix.wrapper`
+
+This part transforms the raw data from `"dispRity"` (i.e. the row IDs from the subset, the requested number of dimensions and the original matrix) into the first requested disparity metric (with the appropriate requested level, e.g. if the metric contains `var`, the matrix decomposition transforms the `"dispRity"` data into a var/covar `"matrix"`). The metric to use to decompose the matrix (the one with the highest level) is detected with the `get.first.metric` function. Then both the `"dispRity"` data and the first metric are passed to `decompose.matrix.wrapper`.
+
+This function basically feeds the number of subsets (i.e. either elements (n x 1) or the bootstraps/rarefaction (n x bootstraps) - see [`disparity_object.md`](#dispRity_object) for details) to the `decompose.matrix` function along with the first metric.
+The wrapper does also a bit of data/format wrangling I'm not going to detail here (and can hopefully be understood reading the code).
+
+### 3 - Decomposing the matrix with `decompose.matrix`
+
+This function intakes:
+
+ * `one_subsets_bootstraps` that is one row from one element of the subset list (e.g. `lapply_loop[[1]][[1]][, 1]`). Effectively, these are the row IDs to be considered when calculating the disparity metric.
+ * `fun` the first disparity metric
+ * `data` the `"dispRity"` object
+ * `nrow` an option for between groups calculation. Is `NULL` when the decomposition is for a normal metric (but is an indicator of the pairs of row to consider if the metric is `between.groups = TRUE`).
+
+And then applies the `decompose` function to each matrix in `data$matrix`. Which simply applies the metric to the matrix in the following format (i.e. `fun(matrix[rows, columns])`).
+
+# Package versions
+
+Version numbering is using the `x.y.z` format with each number designating where we're at in terms of development in that version of the development cycle:
+
+ * `x` is for the core design of the package. This is very unlikely to change since the change from `v0` to `v1` unless the whole core of the `dispRity` function is changed. In a future where me and my collaborators have all the time that exist and no pressures from academia, then this would change when switching to a more efficient version of the core version (I'm looking at you `C`).
+ * `y` is for the big functionality upgrades. This changes every year or so when the package gets a new set of functionalities. For example, handling a new type of data, implementing a new analysis pipeline, etc. The [`NEWS.md` file](https://github.com/TGuillerme/dispRity/blob/master/NEWS.md) ends up tracking these version over the long time (i.e. you don't get the change log for versions `1.7.12` but directly for `1.7` and `1.8`).
+ * `z` us for tracking all the latest updates. This changes when I get time but can be every week! This helps users tracking the latest version, especially when I introduce a small new functionality or a bug fix (and making sure they use now the correct version).
+
+## master branch
+
+The most up to date and complete version is always on the [master branch on GitHub](https://github.com/TGuillerme/dispRity/tree/master).
+This branch has [continuous integration with R CMD check](https://github.com/TGuillerme/dispRity/blob/master/.github/workflows/R-CMD-check.yaml) and [unit testing with codecov](https://github.com/TGuillerme/dispRity/blob/master/.github/workflows/test-coverage.yaml) via github actions.
+
+## release branch
+
+The [release branch on GitHub](https://github.com/TGuillerme/dispRity/tree/release) has also the same github actions as the master but is updated less regularly.
+
+## CRAN release
+
+Finally the CRAN release is updated only for major releases or for critical bug fixes.
+This release does not contain the unit test and the manual to make the export to CRAN smoother and easier (but is based on the github actions from the release branch).
+The exports to CRAN are automatised using the [`export.cran.sh`](https://github.com/TGuillerme/dispRity/blob/master/export.cran.sh).

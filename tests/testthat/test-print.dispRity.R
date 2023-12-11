@@ -118,7 +118,7 @@ test_that("normal printing", {
 
 test_that("randtest printing", {
     set.seed(1)
-    obs_disparity <- dispRity(BeckLee_mat50, metric = ellipse.volume, dimensions = c(1:5))
+    obs_disparity <- dispRity(BeckLee_mat50, metric = ellipsoid.volume, dimensions = c(1:5))
     expect_warning(test <- null.test(obs_disparity, replicates = 100, null.distrib = rnorm))
 
     expect_equal(capture.output(test),
@@ -304,8 +304,18 @@ test_that("print.dispRity with model.test data", {
           "    aicc log.lik param ancestral state sigma squared",
           "BM -31.3   17.92     2           3.099         0.002",
           "",
-          "Rank envelope test",
-          " p-value of the test: 0.3636364 (ties method: midrank)",
-          " p-interval         : (0.09090909, 0.6363636)" 
+          "Rank envelope test:",
+          " p-value of the global test: 0.1818182 (ties method: erl)",
+          " p-interval                : (0, 0.6363636)" 
         ))
+})
+
+test_that("dispRitreats verbose", {
+    ## Testing the placeholder trigger
+    data(disparity)
+    output <- capture_output(print(disparity))
+    expect_equal(output, " ---- dispRity object ---- \n7 continuous (acctran) time subsets for 99 elements in one matrix with 97 dimensions with 1 phylogenetic tree\n     90, 80, 70, 60, 50 ...\nData was bootstrapped 100 times (method:\"full\") and rarefied to 20, 15, 10, 5 elements.\nDisparity was calculated as: c(median, centroids).")
+    disparity$call$dispRitreats <- TRUE
+    output <- capture_output(print(disparity))
+    expect_equal(output, " ---- dispRity object ---- \n7 continuous (acctran) time subsets for 99 elements in one matrix with 97 dimensions with 1 phylogenetic tree\n     90, 80, 70, 60, 50 ...\nData was bootstrapped 100 times (method:\"full\") and rarefied to 20, 15, 10, 5 elements.\nDisparity was calculated as: c(median, centroids).\nDisparity was calculated from treats simulated data.")    
 })

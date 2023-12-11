@@ -172,8 +172,9 @@ The number of bootstrap replicates can be defined using the `bootstraps` option.
 The method can be modified by controlling which bootstrap algorithm to use through the `boot.type` argument.
 Currently two algorithms are implemented:
 
- * `full` where the bootstrapping is entirely stochastic (*n* elements are replaced by any *m* elements drawn from the data)
- * `single` where only one random element is replaced by one other random element for each pseudo-replicate
+ * `"full"` where the bootstrapping is entirely stochastic (*n* elements are replaced by any *m* elements drawn from the data)
+ * `"single"` where only one random element is replaced by one other random element for each pseudo-replicate
+ * `"null"` where every element is resampled across the whole matrix (not just the subsets). I.e. for each subset of *n* elements, this algorithm resamples *n* elements across *ALL* subsets (not just the current one). If only one subset (or none) is used, this does the same as the `"full"` algorithm.
 
 ```{r, eval=TRUE}
 ## Bootstrapping with the single bootstrap method
@@ -496,7 +497,7 @@ Level | Name | Description | Source |
 1 | `disalignment` | The rejection of the centroid of a matrix from the major axis of another (typically an `"as.covar"` metric) | `dispRity` |
 2 | `displacements` | The ratio between the distance from a reference and the distance from the centroid | `dispRity` |
 1 | `edge.length.tree` | The edge lengths of the elements on a tree | `ape` |
-1 | `ellipse.volume`<sup>1</sup> | The volume of the ellipsoid of the space | Donohue _et al._ (2013) |
+1 | `ellipsoid.volume`<sup>1</sup> | The volume of the ellipsoid of the space | Donohue _et al._ (2013) |
 1 | `func.div` | The functional divergence (the ratio of deviation from the centroid) | `dispRity` (similar to [`FD`](https://cran.r-project.org/web/packages/FD/index.html)`::dbFD$FDiv` but without abundance)|
 1 | `func.eve` | The functional evenness (the minimal spanning tree distances evenness) | `dispRity` (similar to [`FD`](https://cran.r-project.org/web/packages/FD/index.html)`::dbFD$FEve` but without abundance)|
 1 | `group.dist` | The distance between two groups | `dispRity` |
@@ -511,6 +512,7 @@ Level | Name | Description | Source |
 2 | `quantiles` | The *n*th quantile range per axis | `dispRity` |
 2 | `radius` | The radius of each dimensions | `dispRity` |
 2 | `ranges` | The range of each dimension | `dispRity` |
+1 | `roundness` | The integral of the ranked scaled eigenvalues of a variance-covariance matrix | `dispRity`
 2 | `span.tree.length` | The minimal spanning tree length | [`vegan`](https://cran.r-project.org/web/packages/vegan/index.html)`::spantree` |
 2 | `variances` | The variance of each dimension | `dispRity` |
 
@@ -519,8 +521,7 @@ It can, however, be fixed to a different value by using the `centroid` argument 
 
 2: This function uses an estimation of the eigenvalue that only works for MDS or PCoA ordinations (*not* PCA).
 
-You can find more informations on the vast variety of metrics that you can use in your analysis in this [preprint](https://www.biorxiv.org/content/10.1101/801571v1).
-<!-- biorXiv preprint -->
+You can find more informations on the vast variety of metrics that you can use in your analysis in this [paper](https://onlinelibrary.wiley.com/doi/10.1002/ece3.6452).
 
 ### Equations and implementations
 Some of the functions described below are implemented in the `dispRity` package and do not require any other packages to calculate ([see implementation here](https://github.com/TGuillerme/dispRity/blob/master/R/dispRity.metric.R)).
@@ -546,7 +547,7 @@ Some of the functions described below are implemented in the `dispRity` package 
 \end{equation}
 
 \begin{equation}
-    ellipse.volume = \frac{\pi^{d/2}}{\Gamma(\frac{d}{2}+1)}\displaystyle\prod_{i=1}^{d} (\lambda_{i}^{0.5})
+    ellipsoid.volume = \frac{\pi^{d/2}}{\Gamma(\frac{d}{2}+1)}\displaystyle\prod_{i=1}^{d} (\lambda_{i}^{0.5})
 \end{equation}
 
 \begin{equation}
@@ -566,6 +567,10 @@ Some of the functions described below are implemented in the `dispRity` package 
 
 \begin{equation}
     ranges = |max(d_i) - min(d_i)|
+\end{equation}
+
+\begin{equation}
+    roundness = \int_{i = 1}^{n}{\frac{\lambda_{i}}{\text{max}(\lambda)}}
 \end{equation}
 
 \begin{equation}
@@ -604,15 +609,15 @@ rownames(dummy_space) <- 1:10
 We will use this simulated space to demonstrate the different metrics.
 
 #### Volumes and surface metrics
-The functions `ellipse.volume`, `convhull.surface`, `convhull.volume` and `n.ball.volume`  all measure the surface or the volume of the ordinated space occupied:
+The functions `ellipsoid.volume`, `convhull.surface`, `convhull.volume` and `n.ball.volume`  all measure the surface or the volume of the ordinated space occupied:
 
 Because there is only one subset (i.e. one matrix) in the dispRity object, the operations below are the equivalent of `metric(dummy_space)` (with rounding).
 
 ```{r}
 ## Calculating the ellipsoid volume
-summary(dispRity(dummy_space, metric = ellipse.volume))
+summary(dispRity(dummy_space, metric = ellipsoid.volume))
 ```
-> WARNING: in such dummy space, this gives the estimation of the ellipsoid volume, not the real ellipsoid volume! See the cautionary note in `?ellipse.volume`.
+> WARNING: in such dummy space, this gives the estimation of the ellipsoid volume, not the real ellipsoid volume! See the cautionary note in `?ellipsoid.volume`.
 
 ```{r}
 ## Calculating the convex hull surface
@@ -943,6 +948,51 @@ summary(dispRity(tree_space, metric  = projections.tree,
                                             tree_space[1, ])))
 ```
 
+#### Roundness
+
+The roundness coefficient (or metric) ranges between 0 and 1 and expresses the distribution of and ellipse' major axis ranging from 1, a totally round ellipse (i.e. a circle) to 0 a totally flat ellipse (i.e. a line). A value of $0.5$ represents a regular ellipse where each major axis is half the size of the previous major axis. A value $> 0.5$ describes a pancake where the major axis distribution is convex (values close to 1 can be pictured in 3D as a cr\`{e}pes with the first two axis being rather big - a circle - and the third axis being particularly thin; values closer to $0.5$ can be pictured as flying saucers). Conversely, a value $< 0.5$ describes a cigar where the major axis distribution is concave (values close to 0 can be pictured in 3D as a spaghetti with the first axis rather big and the two next ones being small; values closer to $0.5$ can be pictured in 3D as a fat cigar).
+
+This is what it looks for example for three simulated variance-covariance matrices in 3D:
+
+```{r, eval = TRUE, echo = FALSE, message = FALSE}
+## Note that the plotting functions requires the ellipse, rgl and VCVtools packages (but not need to load them)
+require("ellipse")
+require("rgl")
+require("VCVtools")
+## To install them
+# install.packages(c("ellipse", "rgl"))
+# devtools::install_github("TGuillerme/VCVtools")
+
+## knitr RGL setup
+# knitr::knit_hooks$set(webgl = hook_webgl)
+options(rgl.useNULL = TRUE) # Suppress the separate window.
+
+## A 3D sphere
+sphere  <- VCVtools::make.VCV(shape = 1, dimensions = 3, min.thick = 0.01)
+pancake <- VCVtools::make.VCV(shape = 0.75, dimensions = 3, min.thick = 0.01)
+cigar   <- VCVtools::make.VCV(shape = 0.25, dimensions = 3, min.thick = 0.01)
+```
+
+```{r, fig.height = 4, fig.width = 4, echo = FALSE}
+# options(rgl.printRglwidget = TRUE)
+VCVtools::plot.VCV(sphere, dimensions = c(1,2,3), col.major.axes = c("orange", "blue", "darkgreen"), main = "Sphere's roundness: 1", lwd.major.axes = 3)
+rglwidget()
+```
+```{r, fig.height = 4, fig.width = 4, echo = FALSE}
+VCVtools::plot.VCV(pancake, dimensions = c(1,2,3), col.major.axes = c("orange", "blue", "darkgreen"), main = "Pancake's roundness: ~0.70", lwd.major.axes = 3)
+rglwidget()
+```
+```{r, fig.height = 4, fig.width = 4, echo = FALSE}
+VCVtools::plot.VCV(cigar, dimensions = c(1,2,3), col.major.axes = c("orange", "blue", "darkgreen"), main = "Cigar's roundness: ~0.25", lwd.major.axes = 3)
+rglwidget()
+```
+```{r, eval = TRUE, fig.height = 4, fig.width = 12, echo = FALSE}
+par(mfrow = c(1,3))
+VCVtools::plot.roundness(sphere, dimensions = c(1,2,3), col.lines = c("orange", "blue", "darkgreen"), main = "Sphere's roundness: 1")
+VCVtools::plot.roundness(pancake, dimensions = c(1,2,3), col.lines = c("orange", "blue", "darkgreen"), main = "Pancake's roundness: ~0.70")
+VCVtools::plot.roundness(cigar, dimensions = c(1,2,3), col.lines = c("orange", "blue", "darkgreen"), main = "Cigar's roundness: ~0.25")
+```
+
 #### Between group metrics {#betweengroupmetricslist}
 
 You can find detailed explanation on how between group metrics work [here](#betweengroupmetricsexplain).
@@ -1079,7 +1129,7 @@ This function allows to test whether a metric picks different changes in dispari
 Basically this is a type of biased data rarefaction (or non-biased for `"random"`) to see how the metric reacts to specific changes in trait space.
 
 ```{r}
-# Creating a 2D uniform space
+## Creating a 2D uniform space
 example_space <- space.maker(300, 2, runif)
 
 ## Testing the product of ranges metric on the example space
@@ -2174,6 +2224,9 @@ Note here that the results are again rather different: with the bound data, the 
 With the unbound data, the slices are done across the three trees and applied to the three matrices (resulting in 9 observations).
 As we've seen before, this is incorrect in this case since the trees don't have the same topology (so the nodes selected by a slice through the second tree are not equivalent to the nodes in the first matrix) but it can be useful if the topology is fixed to integrate both uncertainty in branch length (slicing through different trees) and uncertainty from, say, ancestral states estimations (applying the slices on different matrices).
 
+Note that since the version `1.8` the trees and the matrices don't have to match allowing to run disparity analyses with variable matrices and trees.
+This can be useful when running ancestral states estimations from a tree distribution where not all trees have the same topology.
+
 
 ## Disparity with trees: *dispRitree!* {#dispRitree}
 
@@ -2224,8 +2277,6 @@ plot(sum_edge_length)
 ```
 
 Of course this can be done with multiple trees and be combined with an approach using multiple matrices (see [here](#multi.input))!
-
-
 
 
 ## Disparity of variance-covariance matrices (covar) {#covar}

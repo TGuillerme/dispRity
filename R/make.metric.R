@@ -73,7 +73,7 @@ make.metric <- function(fun, ..., silent = FALSE, check.between.groups = FALSE, 
     matrix_text <- paste0("matrix(rnorm(",data.dim[1],"*",data.dim[2],"), ",data.dim[1], ", ",data.dim[2], ")")
     
     if(covar) {
-        matrix <- list(VCV = matrix, loc = diag(matrix))
+        matrix <- list(VCV = as.matrix(dist(matrix)), loc = diag(matrix))
         matrix_text <- ""
     }
 

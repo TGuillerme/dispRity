@@ -4,34 +4,34 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>References | Morphometric geometric demo: a between group analysis</title>
-  <meta name="description" content="dispRity R package vignette" />
-  <meta name="generator" content="bookdown 0.27 and GitBook 2.6.7" />
+  <title>References | dispRity R package manual</title>
+  <meta name="description" content="References | dispRity R package manual" />
+  <meta name="generator" content="bookdown 0.36 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="References | Morphometric geometric demo: a between group analysis" />
+  <meta property="og:title" content="References | dispRity R package manual" />
   <meta property="og:type" content="book" />
   
-  <meta property="og:description" content="dispRity R package vignette" />
+  <meta property="og:description" content="References | dispRity R package manual" />
   <meta name="github-repo" content="TGuillerme/dispRity" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="References | Morphometric geometric demo: a between group analysis" />
+  <meta name="twitter:title" content="References | dispRity R package manual" />
   
-  <meta name="twitter:description" content="dispRity R package vignette" />
+  <meta name="twitter:description" content="References | dispRity R package manual" />
   
 
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie)" />
 
 
-<meta name="date" content="2022-08-09" />
+<meta name="date" content="2023-12-06" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="morphometric-geometric-demo-a-between-group-analysis.html"/>
-
+<link rel="prev" href="disprity-r-package-manual.html"/>
+<link rel="next" href="references-1.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -53,6 +53,28 @@
 <link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
 <link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
 <script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script src="libs/htmlwidgets-1.6.2/htmlwidgets.js"></script>
+<script src="libs/rglWebGL-binding-1.2.1/rglWebGL.js"></script>
+<link href="libs/rglwidgetClass-1.2.1/rgl.css" rel="stylesheet" />
+<script src="libs/rglwidgetClass-1.2.1/rglClass.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/utils.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/buffer.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/subscenes.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/shaders.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/shadersrc.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/textures.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/projection.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/mouse.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/init.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/pieces.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/draw.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/controls.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/selection.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/rglTimer.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/pretty.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/axes.src.js"></script>
+<script src="libs/rglwidgetClass-1.2.1/animation.src.js"></script>
+<script src="libs/CanvasMatrix4-1.2.1/CanvasMatrix.src.js"></script>
 
 
 <style type="text/css">
@@ -119,6 +141,10 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
 </head>
@@ -250,6 +276,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="6.10" data-path="other-functionalities.html"><a href="other-functionalities.html#slice.tree"><i class="fa fa-check"></i><b>6.10</b> <code>slice.tree</code></a></li>
 <li class="chapter" data-level="6.11" data-path="other-functionalities.html"><a href="other-functionalities.html#slide.nodes-and-remove.zero.brlen"><i class="fa fa-check"></i><b>6.11</b> <code>slide.nodes</code> and <code>remove.zero.brlen</code></a></li>
 <li class="chapter" data-level="6.12" data-path="other-functionalities.html"><a href="other-functionalities.html#tree.age"><i class="fa fa-check"></i><b>6.12</b> <code>tree.age</code></a></li>
+<li class="chapter" data-level="6.13" data-path="other-functionalities.html"><a href="other-functionalities.html#multi.ace"><i class="fa fa-check"></i><b>6.13</b> <code>multi.ace</code></a>
+<ul>
+<li class="chapter" data-level="6.13.1" data-path="other-functionalities.html"><a href="other-functionalities.html#using-different-character-tokens-in-different-situations"><i class="fa fa-check"></i><b>6.13.1</b> Using different character tokens in different situations</a></li>
+<li class="chapter" data-level="6.13.2" data-path="other-functionalities.html"><a href="other-functionalities.html#feeding-the-results-to-char.diff-to-get-distance-matrices"><i class="fa fa-check"></i><b>6.13.2</b> Feeding the results to <code>char.diff</code> to get distance matrices</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="7" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html"><i class="fa fa-check"></i><b>7</b> The guts of the <code>dispRity</code> package</a>
 <ul>
@@ -266,16 +297,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="7.3.4" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#disparity"><i class="fa fa-check"></i><b>7.3.4</b> <code>$disparity</code></a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="8" data-path="ecology-demo.html"><a href="ecology-demo.html"><i class="fa fa-check"></i><b>8</b> Ecology demo</a>
+<li class="chapter" data-level="8" data-path="disprity-ecology-demo.html"><a href="disprity-ecology-demo.html"><i class="fa fa-check"></i><b>8</b> dispRity ecology demo</a>
 <ul>
-<li class="chapter" data-level="8.1" data-path="ecology-demo.html"><a href="ecology-demo.html#data"><i class="fa fa-check"></i><b>8.1</b> Data</a></li>
-<li class="chapter" data-level="8.2" data-path="ecology-demo.html"><a href="ecology-demo.html#classic-analysis"><i class="fa fa-check"></i><b>8.2</b> Classic analysis</a></li>
-<li class="chapter" data-level="8.3" data-path="ecology-demo.html"><a href="ecology-demo.html#a-multidimensional-approach-with-disprity"><i class="fa fa-check"></i><b>8.3</b> A multidimensional approach with <code>dispRity</code></a>
+<li class="chapter" data-level="8.1" data-path="disprity-ecology-demo.html"><a href="disprity-ecology-demo.html#data"><i class="fa fa-check"></i><b>8.1</b> Data</a></li>
+<li class="chapter" data-level="8.2" data-path="disprity-ecology-demo.html"><a href="disprity-ecology-demo.html#classic-analysis"><i class="fa fa-check"></i><b>8.2</b> Classic analysis</a></li>
+<li class="chapter" data-level="8.3" data-path="disprity-ecology-demo.html"><a href="disprity-ecology-demo.html#a-multidimensional-approach-with-disprity"><i class="fa fa-check"></i><b>8.3</b> A multidimensional approach with <code>dispRity</code></a>
 <ul>
-<li class="chapter" data-level="8.3.1" data-path="ecology-demo.html"><a href="ecology-demo.html#bootstrapping-the-data"><i class="fa fa-check"></i><b>8.3.1</b> Bootstrapping the data</a></li>
-<li class="chapter" data-level="8.3.2" data-path="ecology-demo.html"><a href="ecology-demo.html#calculating-disparity"><i class="fa fa-check"></i><b>8.3.2</b> Calculating disparity</a></li>
-<li class="chapter" data-level="8.3.3" data-path="ecology-demo.html"><a href="ecology-demo.html#summarising-the-results-plot"><i class="fa fa-check"></i><b>8.3.3</b> Summarising the results (plot)</a></li>
-<li class="chapter" data-level="8.3.4" data-path="ecology-demo.html"><a href="ecology-demo.html#testing-hypothesis"><i class="fa fa-check"></i><b>8.3.4</b> Testing hypothesis</a></li>
+<li class="chapter" data-level="8.3.1" data-path="disprity-ecology-demo.html"><a href="disprity-ecology-demo.html#bootstrapping-the-data"><i class="fa fa-check"></i><b>8.3.1</b> Bootstrapping the data</a></li>
+<li class="chapter" data-level="8.3.2" data-path="disprity-ecology-demo.html"><a href="disprity-ecology-demo.html#calculating-disparity"><i class="fa fa-check"></i><b>8.3.2</b> Calculating disparity</a></li>
+<li class="chapter" data-level="8.3.3" data-path="disprity-ecology-demo.html"><a href="disprity-ecology-demo.html#summarising-the-results-plot"><i class="fa fa-check"></i><b>8.3.3</b> Summarising the results (plot)</a></li>
+<li class="chapter" data-level="8.3.4" data-path="disprity-ecology-demo.html"><a href="disprity-ecology-demo.html#testing-hypothesis"><i class="fa fa-check"></i><b>8.3.4</b> Testing hypothesis</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="9" data-path="palaeobiology-demo-disparity-through-time-and-within-groups.html"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html"><i class="fa fa-check"></i><b>9</b> Palaeobiology demo: disparity-through-time and within groups</a>
@@ -304,7 +335,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="10.2" data-path="morphometric-geometric-demo-a-between-group-analysis.html"><a href="morphometric-geometric-demo-a-between-group-analysis.html#calculating-disparity-2"><i class="fa fa-check"></i><b>10.2</b> Calculating disparity</a></li>
 <li class="chapter" data-level="10.3" data-path="morphometric-geometric-demo-a-between-group-analysis.html"><a href="morphometric-geometric-demo-a-between-group-analysis.html#analyse-the-results"><i class="fa fa-check"></i><b>10.3</b> Analyse the results</a></li>
 </ul></li>
+<li class="chapter" data-level="11" data-path="disprity-r-package-manual.html"><a href="disprity-r-package-manual.html"><i class="fa fa-check"></i><b>11</b> dispRity R package manual</a></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+<li class="chapter" data-level="12" data-path="references-1.html"><a href="references-1.html"><i class="fa fa-check"></i><b>12</b> References</a></li>
 <li class="divider"></li>
 <li><a href="https://github.com/TGuillerme/dispRity/" target="blank">Project GitHub page</a></li>
 
@@ -317,7 +350,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Morphometric geometric demo: a between group analysis</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">dispRity R package manual</a>
           </h1>
         </div>
 
@@ -327,86 +360,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="references" class="section level1 unnumbered hasAnchor" number="">
 <h1>References<a href="references.html#references" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-
-<div id="refs" class="references hanging-indent">
-<div>
-<p>Aguilera, Antonio, and Ricardo Pérez-Aguila. 2004. “General N-Dimensional Rotations.” <a href="http://wscg.zcu.cz/wscg2004/Papers_2004_Short/N29.pdf">http://wscg.zcu.cz/wscg2004/Papers_2004_Short/N29.pdf</a>.</p>
-</div>
-<div>
-<p>Beck, Robin M, and Michael S Lee. 2014. “Ancient Dates or Accelerated Rates? Morphological Clocks and the Antiquity of Placental Mammals.” <em>Proceedings of the Royal Society B: Biological Sciences</em> 281 (20141278): 1–10. <a href="https://doi.org/10.1098/rspb.2014.1278">https://doi.org/10.1098/rspb.2014.1278</a>.</p>
-</div>
-<div>
-<p>Brazeau, Martin D, Thomas Guillerme, and Martin R Smith. 2018. “An algorithm for Morphological Phylogenetic Analysis with Inapplicable Data.” <em>Systematic Biology</em> 68 (4): 619–31. <a href="https://doi.org/10.1093/sysbio/syy083">https://doi.org/10.1093/sysbio/syy083</a>.</p>
-</div>
-<div>
-<p>Cooper, Natalie, Gavin H. Thomas, Chris Venditti, Andrew Meade, and Rob P. Freckleton. 2016. “A Cautionary Note on the Use of Ornstein Uhlenbeck Models in Macroevolutionary Studies.” <em>Biological Journal of the Linnean Society</em> 118 (1): 64–77. <a href="https://doi.org/10.1111/bij.12701">https://doi.org/10.1111/bij.12701</a>.</p>
-</div>
-<div>
-<p>Dı́az, Sandra, Jens Kattge, Johannes HC Cornelissen, Ian J Wright, Sandra Lavorel, Stéphane Dray, Björn Reu, et al. 2016. “The Global Spectrum of Plant Form and Function.” <em>Nature</em> 529 (7585): 167. <a href="http://dx.doi.org/10.1038/nature16489">http://dx.doi.org/10.1038/nature16489</a>.</p>
-</div>
-<div>
-<p>E., O’Reilly Joseph, Puttick Mark N., Pisani Davide, and Donoghue Philip C. J. n.d. “Probabilistic Methods Surpass Parsimony When Assessing Clade Support in Phylogenetic Analyses of Discrete Morphological Data.” <em>Palaeontology</em> 61 (1): 105–18. <a href="https://doi.org/10.1111/pala.12330">https://doi.org/10.1111/pala.12330</a>.</p>
-</div>
-<div>
-<p>Endler, John A, David A Westcott, Joah R Madden, and Tim Robson. 2005. “Animal Visual Systems and the Evolution of Color Patterns: Sensory Processing Illuminates Signal Evolution.” <em>Evolution</em> 59 (8): 1795–1818.</p>
-</div>
-<div>
-<p>FitzJohn, Richard G. 2012. “Diversitree: Comparative Phylogenetic Analyses of Diversification in R.” <em>Methods in Ecology and Evolution</em> 3 (6): 1084–92. <a href="https://doi.org/10.1111/j.2041-210X.2012.00234.x">https://doi.org/10.1111/j.2041-210X.2012.00234.x</a>.</p>
-</div>
-<div>
-<p>Guillerme, T., and N. Cooper. 2018. “Time for a Rethink: Time Sub-Sampling Methods in Disparity-Through-Time Analyses.” <em>Palaeontology</em> 61 (4): 481–93. <a href="https://doi.org/10.1111/pala.12364">https://doi.org/10.1111/pala.12364</a>.</p>
-</div>
-<div>
-<p>Guillerme, Thomas, and Natalie Cooper. 2016. “Effects of Missing Data on Topological Inference Using a Total Evidence Approach.” <em>Molecular Phylogenetics and Evolution</em> 94, Part A: 146–58. <a href="https://doi.org/http://dx.doi.org/10.1016/j.ympev.2015.08.023">https://doi.org/http://dx.doi.org/10.1016/j.ympev.2015.08.023</a>.</p>
-</div>
-<div>
-<p>Guillerme, Thomas, Natalie Cooper, Stephen L. Brusatte, Katie E. Davis, Andrew L. Jackson, Sylvain Gerber, Anjali Goswami, et al. 2020. “Disparities in the Analysis of Morphological Disparity.” <em>Biology Letters</em> 16 (7): 20200199. <a href="https://doi.org/10.1098/rsbl.2020.0199">https://doi.org/10.1098/rsbl.2020.0199</a>.</p>
-</div>
-<div>
-<p>Guillerme, Thomas, and Kevin Healy. 2014. <em>mulTree: a package for running MCMCglmm analysis on multiple trees</em>. Zenodo. <a href="https://doi.org/10.5281/zenodo.12902">https://doi.org/10.5281/zenodo.12902</a>.</p>
-</div>
-<div>
-<p>Guillerme, Thomas, Mark N Puttick, Ariel E Marcy, and Vera Weisbecker. 2020. “Shifting Spaces: Which Disparity or Dissimilarity Measurement Best Summarize Occupancy in Multidimensional Spaces?” <em>Ecology and Evolution</em>.</p>
-</div>
-<div>
-<p>Hadfield, Jarrod D. 2010a. “MCMC Methods for Multi-Response Generalized Linear Mixed Models: The MCMCglmm R Package.” <em>Journal of Statistical Software</em> 33 (2): 1–22. <a href="https://www.jstatsoft.org/v33/i02/">https://www.jstatsoft.org/v33/i02/</a>.</p>
-</div>
-<div>
-<p>———. 2010b. “MCMC Methods for Multi-Response Generalized Linear Mixed Models: The MCMCglmm R Package.” <em>Journal of Statistical Software</em> 33 (2): 1–22. <a href="https://www.jstatsoft.org/v33/i02/">https://www.jstatsoft.org/v33/i02/</a>.</p>
-</div>
-<div>
-<p>Hasegawa, M., H. Kishino, and T. A. Yano. 1985. “Dating of the Human Ape Splitting by a Molecular Clock of Mitochondrial-DNA.” <em>Journal of Molecular Evolution</em> 22 (2): 160–74.</p>
-</div>
-<div>
-<p>Hunt, Gene. 2006. “Fitting and Comparing Models of Phyletic Evolution: Random Walks and Beyond.” <em>Paleobiology</em> 32 (4): 578–601. <a href="https://doi.org/10.1666/05070.1">https://doi.org/10.1666/05070.1</a>.</p>
-</div>
-<div>
-<p>———. 2012. “Measuring Rates of Phenotypic Evolution and the Inseparability of Tempo and Mode.” <em>Paleobiology</em> 38 (3): 351–73. <a href="https://doi.org/10.1666/11047.1">https://doi.org/10.1666/11047.1</a>.</p>
-</div>
-<div>
-<p>Hunt, Gene, Melanie J Hopkins, and Scott Lidgard. 2015. “Simple Versus Complex Models of Trait Evolution and Stasis as a Response to Environmental Change.” <em>Proceedings of the National Academy of Sciences</em>, 201403662. <a href="https://doi.org/10.1073/pnas.1403662111">https://doi.org/10.1073/pnas.1403662111</a>.</p>
-</div>
-<div>
-<p>Lewis, P. 2001. “A Likelihood Approach to Estimating Phylogeny from Discrete Morphological Character Data.” <em>Systematic Biology</em> 50 (6): 913–25. <a href="https://doi.org/10.1080/106351501753462876">https://doi.org/10.1080/106351501753462876</a>.</p>
-</div>
-<div>
-<p>Murrell, David J. 2018. “A Global Envelope Test to Detect Non-Random Bursts of Trait Evolution.” <em>Methods in Ecology and Evolution</em> 9 (7): 1739–48. <a href="https://doi.org/10.1111/2041-210X.13006">https://doi.org/10.1111/2041-210X.13006</a>.</p>
-</div>
-<div>
-<p>O’Reilly, Joseph E., Mark N. Puttick, Luke Parry, Alastair R. Tanner, James E. Tarver, James Fleming, Davide Pisani, and Philip C. J. Donoghue. 2016. “Bayesian Methods Outperform Parsimony but at the Expense of Precision in the Estimation of Phylogeny from Discrete Morphological Data.” <em>Biology Letters</em> 12 (4). <a href="https://doi.org/10.1098/rsbl.2016.0081">https://doi.org/10.1098/rsbl.2016.0081</a>.</p>
-</div>
-<div>
-<p>Puttick, Mark N, Joseph E O’Reilly, Alastair R Tanner, James F Fleming, James Clark, Lucy Holloway, Jesus Lozano-Fernandez, et al. 2017. “Uncertain-Tree: Discriminating Among Competing Approaches to the Phylogenetic Analysis of Phenotype Data.” <em>Proceedings of the Royal Society B</em> 284 (1846): 20162290. <a href="http://dx.doi.org/10.1098/rspb.2016.2290">http://dx.doi.org/10.1098/rspb.2016.2290</a>.</p>
-</div>
-</div>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="morphometric-geometric-demo-a-between-group-analysis.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-
+<a href="disprity-r-package-manual.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="references-1.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -466,7 +427,7 @@ gitbook.start({
     var script = document.createElement("script");
     script.type = "text/javascript";
     var src = "true";
-    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:")
       if (/^https?:/.test(src))
         src = src.replace(/^https?:/, '');

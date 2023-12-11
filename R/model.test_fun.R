@@ -241,27 +241,28 @@ est.mean <- function(p, data.model.test.in, model.type, optima.level.ou, optima.
         alpha <- p[3]
         optima <- p[c(4, 9, 10)]
 
-       all.splits <- length(split.time)
-       start.split <- split.time[-all.splits] 
-       start.split[-1]  <- start.split[-1] + 1
-       end.split <- split.time[-1]
-       
-       take.away <- start.split[1] - 1
-       start.split <- start.split - take.away
-       end.split <- end.split - take.away
-        
+        all.splits <- length(split.time)
+        start.split <- split.time[-all.splits] 
+        start.split[-1]  <- start.split[-1] + 1
+        end.split <- split.time[-1]
+
+        take.away <- start.split[1] - 1
+        start.split <- start.split - take.away
+        end.split <- end.split - take.away
+
         n.optima <- length(split.time) - 1
           
         ou.mean.fun <- function (anc.state, optima, alpha, time) optima * (1 - exp(-alpha * time)) + anc.state * exp(-alpha * time)
         ou.mean.splits <- sapply(1: n.optima, function(x) ou.mean.fun(anc.state, optima[x], alpha, data.model.test.in$subsets))
                 
         mean.ou <- c()
-        for(x in 1:n.optima) mean.ou <- c(mean.ou, ou.mean.splits[start.split[x] : end.split[x] , x])  
+        for(x in 1:n.optima) {
+            mean.ou <- c(mean.ou, ou.mean.splits[start.split[x] : end.split[x] , x])
+        }  
         return(mean.ou)
     }    
     
     if(model.type == "Stasis")  {
-        
         if(optima.level.stasis == 1) theta <- p[5]
         if(optima.level.stasis  == 2) theta <- p[11]
         if(optima.level.stasis  == 3) theta <- p[12]
@@ -270,22 +271,21 @@ est.mean <- function(p, data.model.test.in, model.type, optima.level.ou, optima.
     }
     
     if(model.type == "Trend")  {
-        
         if(est.anc) {
             anc.state <- p[1]
         } else {
             anc.state <- model.anc
         }        
-            trend.param <- p[7]
-            sample.size <- length(data.model.test.in[[1]])
-            mean.trend <- anc.state + trend.param * data.model.test.in$subsets
-        }
+        trend.param <- p[7]
+        sample.size <- length(data.model.test.in[[1]])
+        mean.trend <- anc.state + trend.param * data.model.test.in$subsets
+        return(mean.trend)
+    }
 }
 
 est.VCV <- function(p, data.model.test, model.type, est.anc=TRUE, model.anc) {
     
     if(model.type == "BM" | model.type == "Trend")  {
-    
         sigma.squared <- p[2]
         VCV <- sigma.squared * outer(data.model.test$subsets, data.model.test$subsets, FUN = pmin)
         diag(VCV) <- diag(VCV) + data.model.test$variance / data.model.test$sample_size
@@ -293,7 +293,6 @@ est.VCV <- function(p, data.model.test, model.type, est.anc=TRUE, model.anc) {
     }
     
     if(model.type == "OU" || model.type == "multi.OU" )  {
-        
         alpha <- p[3]
         sigma.squared <- p[2]
         VCV <- outer(data.model.test$subsets, data.model.test$subsets, function(x, y) abs(x - y))
@@ -306,7 +305,6 @@ est.VCV <- function(p, data.model.test, model.type, est.anc=TRUE, model.anc) {
     }    
 
     if(model.type == "Stasis")  {
-        
         omega <- p[6]
         VCV <- diag(omega + data.model.test$variance / data.model.test$sample_size)
         return(VCV)    
@@ -355,9 +353,7 @@ model.test.lik <- function(model.test_input, model.type.in, time.split, control.
     upper.bounds <- c(NA, 100, 100, NA, NA, 20, 100, -1e-8, NA, NA, NA, NA)
     
     model.output <- stats::optim(par = p, fn = opt.mode,  method = "L", control = control.list, model.type.in = model.type.in, time.split = time.split, data.model.test = model.test_input, lower = lower.bounds, upper = upper.bounds, fixed.optima = fixed.optima)
-    
-    model.type.in
-    
+        
     model.output.pars <- model.output[[1]]
     names(model.output.pars) <- c("ancestral state", "sigma squared", "alpha", "optima.1", "theta.1", "omega", "trend", "eb", "optima.2", "optima.3", "theta.2", "theta.3")
     model.output$par <- get.parameters(model.output.pars, model.type.in, time.split = time.split, fixed.optima = fixed.optima)
@@ -371,21 +367,21 @@ opt.mode <- function(p, model.type.in, time.split, data.model.test, fixed.optima
      
     total.n <- length(data.model.test$subsets)
     sample.time <- 1:total.n
-    split.here.vcv <-c(1, time.split)
-    split.here.2.vcv <-c(time.split - 1, total.n)        
+    split.here.vcv <- c(1, time.split)
+    split.here.2.vcv <- c(time.split - 1, total.n)        
             
     any.model <- which(model.type.in == "multi.OU")
 
-    if(any(any.model, na.rm=T)) {
-            split.here.vcv <- split.here.2.vcv <- NULL
-            ou.mean <- c(1, time.split, length(data.model.test$subsets))
-            split.here.vcv <- c(1, split.here.vcv)
-            split.here.2.vcv <- c(split.here.2.vcv, length(data.model.test$subsets))
-        }
+    if(any(any.model, na.rm = TRUE)) {
+        split.here.vcv <- split.here.2.vcv <- NULL
+        ou.mean <- c(1, time.split, length(data.model.test$subsets))
+        split.here.vcv <- c(1, split.here.vcv)
+        split.here.2.vcv <- c(split.here.2.vcv, length(data.model.test$subsets))
+    }
 
-    total_VCV <- matrix(0, nrow=total.n, ncol=total.n)
+    total_VCV <- matrix(0, nrow = total.n, ncol = total.n)
 
-    total_mean <-  c()
+    total_mean <- c()
     optima.level.ou <- optima.level.stasis <-1
     model.anc <- model.alpha <- NULL
     time.int <- 1
@@ -426,7 +422,7 @@ opt.mode <- function(p, model.type.in, time.split, data.model.test, fixed.optima
                 time.int <- time.x + 1
             }
                 
-    } else {
+        } else {
         
             data.model.test.int <- lapply(data.model.test, function(k) k[sort(sample.time[split.here.vcv[time.x] : (split.here.2.vcv[time.x])] )])    
             
@@ -470,13 +466,13 @@ opt.mode <- function(p, model.type.in, time.split, data.model.test, fixed.optima
                 est.anc <- FALSE
                 time.int <- time.x + 1
             }
-            
+        }
+
+        total_VCV[split.here.vcv[time.x] : (split.here.2.vcv[time.x]), split.here.vcv[time.x] : (split.here.2.vcv[time.x]) ] <- output.vcv
+        total_mean <- c(total_mean, output.mean)
     }
 
-    total_VCV[split.here.vcv[time.x] : (split.here.2.vcv[time.x]), split.here.vcv[time.x] : (split.here.2.vcv[time.x]) ] <- output.vcv
-    total_mean <-  c(total_mean, output.mean)
-    }
-    mnormt::dmnorm(t(data.model.test$central_tendency), mean = total_mean, varcov = total_VCV, log = TRUE)
+    return(mnormt::dmnorm(t(data.model.test$central_tendency), mean = total_mean, varcov = total_VCV, log = TRUE))
 }
 
 
@@ -513,9 +509,25 @@ rank_env_dtt <- function(x, alternative) {
     s1 <- sims[-c(1),]
     r <- as.vector(x$subsets[-c(1)])
     obs <- as.vector(x$central_tendency)[-c(1)]
+
+    ## Get the curve
     c1 <- list("r" = r, "obs" = obs, "sim_m" = s1)
-    c2 <- spptest::create_curve_set(c1)
-    res <- spptest::rank_envelope(c2, alternative = alternative)
+    c2 <- GET::create_curve_set(c1, verbose = FALSE)
+
+    ## Get the alpha (scales with the size of c2, the bigger c2, the smaller alpha)
+    n_sim <- ncol(c2$funcs)
+    if(n_sim <= 10) {
+        alpha <- 0.05*n_sim
+    } else {
+        if(n_sim <= 100) {
+            alpha <- 1/(0.05*n_sim)/4
+        } else {
+            alpha <- 0.05
+        }
+    }
+
+    ## Run the test
+    res <- GET::rank_envelope(c2, alternative = alternative, alpha = alpha)
     return(res) 
 }
 

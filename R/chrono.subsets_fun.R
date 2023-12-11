@@ -117,7 +117,7 @@ make.origin.subsets <- function(data) {
 }
 
 ## cbind with missing data
-cbind.fill <- function(x, y) {
+do.cbind.fill <- function(x, y) {
     ## Check the number of rows
     if(dim(x)[1] == dim(y)[1]) {
         ## Simple cbind
@@ -146,11 +146,11 @@ cbind.fill <- function(x, y) {
 recursive.combine.list <- function(list) {
     if(length(list) == 2) {
         ## Do cbind on the two elements of the list
-        return(mapply(function(x,y) cbind.fill(x$elements, y$elements),
+        return(mapply(function(x,y) do.cbind.fill(x$elements, y$elements),
                       list[[1]], list[[length(list)]], SIMPLIFY = FALSE))
     } else {                
         ## Do cbind on the first and last elements of the list
-        list[[1]] <- mapply(function(x,y) cbind.fill(x$elements, y$elements),
+        list[[1]] <- mapply(function(x,y) do.cbind.fill(x$elements, y$elements),
                             list[[1]], list[[length(list)]], SIMPLIFY = FALSE)
         ## Remove the last element of the list
         list[[length(list)]] <- NULL

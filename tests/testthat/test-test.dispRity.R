@@ -70,7 +70,7 @@ test_that("convert.to.numeric internal fun", {
 
 test_that("convert.to.character internal fun", {
 
-    expect_equal(names.fun(c(1,2,4), list("a"=1, "b"=1, "c"=1, "d"=1)), c("a", "b", "d"))
+    expect_equal(name.fun(c(1,2,4), list("a"=1, "b"=1, "c"=1, "d"=1)), c("a", "b", "d"))
 
     expect_true(
     	is.null(unlist(convert.to.character(1,1)))
@@ -88,7 +88,7 @@ test_that("convert.to.character internal fun", {
 
 test_that("list.to.table internal fun", {
 
-    expect_equal(rep.names("a", 2), c("a", "a"))
+    expect_equal(repeat.names("a", 2), c("a", "a"))
 
     expect_is(
     	list.to.table(list("a"=rnorm(5),"b"=rnorm(5),"c"=rnorm(5)))

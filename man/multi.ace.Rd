@@ -24,7 +24,7 @@ multi.ace(
 
 \item{tree}{A \code{phylo} or \code{mutiPhylo} object (if the \code{tree} argument contains node labels, they will be used to name the output).}
 
-\item{models}{A \code{vector} of models to be passed to \code{\link[castor]{asr_mk_model}}.}
+\item{models}{A \code{vector} of models to be passed to \code{castor::asr_mk_model}.}
 
 \item{threshold}{either \code{logical} for applying a relative threshold (\code{TRUE} - default) or no threshold (\code{FALSE}) or a \code{numeric} value of the threshold (e.g. 0.95). See details.}
 
@@ -38,11 +38,11 @@ multi.ace(
 
 \item{parallel}{\code{logical}, whether to use parallel algorithm (\code{TRUE}) or not (\code{FALSE} - default).}
 
-\item{output}{optional, see Return section below.}
+\item{output}{optional, see Value section below.}
 
-\item{castor.options}{optional, a named list of options to be passed to function called by \code{\link[castor]{asr_mk_model}}.}
+\item{castor.options}{optional, a named list of options to be passed to function called by \code{castor::asr_mk_model}.}
 
-\item{estimation.details}{optional, whether to also return the details for each estimation as returned by \code{\link[castor]{asr_mk_model}}. This argument can be left \code{NULL} (default) or be any combination of the elements returned by \code{\link[castor]{asr_mk_model}} (e.g. \code{c("loglikelihood", "transition_matrix")}).}
+\item{estimation.details}{optional, whether to also return the details for each estimation as returned by \code{castor::asr_mk_model}. This argument can be left \code{NULL} (default) or be any combination of the elements returned by \code{castor::asr_mk_model} (e.g. \code{c("loglikelihood", "transition_matrix")}).}
 }
 \value{
 Returns a \code{"matrix"} or \code{"list"} of ancestral states. By default, the function returns the ancestral states in the same format as the input \code{matrix}. This can be changed using the option \code{output = "matrix"} or \code{"list"} to force the class of the output.
@@ -53,7 +53,7 @@ Fast ancestral states estimations run on multiple trees using the Mk model from 
 }
 \details{
 The \code{models} argument can be a single or a list of transition \code{matrix}, a single or a a vector of built-in model(s) (see below) or a list of both matrices and built-in models:
-The available built-in models in \code{\link[castor]{asr_mk_model}} are:
+The available built-in models in \code{castor::asr_mk_model} are:
 \itemize{
  \item \code{"ER"} for all equal rates
  \item \code{"SYM"} for symmetric rates
@@ -61,7 +61,7 @@ The available built-in models in \code{\link[castor]{asr_mk_model}} are:
  \item \code{"SUEDE"} equal stepwise transitions (e.g. for meristic/counting characters)
  \item \code{"SRD"} different stepwise transitions 
 }
-See directly \code{\link[castor]{asr_mk_model}} for more models.
+See directly \code{castor::asr_mk_model} for more models.
 
 The \code{threshold} option allows to convert ancestral states likelihoods into discrete states. When \code{threshold = FALSE}, the ancestral state estimated is the one with the highest likelihood (or at random if likelihoods are equal). When \code{threshold = TRUE}, the ancestral state estimated are all the ones that are have a scaled likelihood greater than the maximum observed scaled likelihood minus the inverse number of possible states (i.e. \code{select_state >= (max(likelihood) - 1/n_states)}). This option makes the threshold selection depend on the number of states (i.e. if there are more possible states, a lower scaled likelihood for the best state is expected). Finally using a numerical value for the threshold option (e.g. \code{threshold = 0.95}) will simply select only the ancestral states estimates with a scaled likelihood equal or greater than the designated value. This option makes the threshold selection absolute. Regardless, if more than one value is select, the uncertainty token (\code{special.tokens["uncertainty"]}) will be used to separate the states. If no value is selected, the uncertainty token will be use between all observed characters (\code{special.tokens["uncertainty"]}).
 
@@ -75,7 +75,7 @@ The \code{threshold} option allows to convert ancestral states likelihoods into 
 
 Functions in the list must be named following the special token of concern (e.g. \code{missing}), have only \code{x, y} as inputs and a single output a single value (that gets coerced to \code{integer} automatically). For example, the special behaviour for the special token \code{"?"} can be coded as: \code{special.behaviours = list(missing = function(x, y) return(NA)} to make ignore the character for taxa containing \code{"?"}. 
 
-When using the parallel option (either through using \code{parallel = TRUE} by using the number of available cores minus on or manually setting the number of cores - e.g. \code{parallel = 5}), the \code{\link[castor]{asr_mk_model}} function will use the designated number of cores (using the option \code{Nthreads = <requested_number_of_cores>}). Additionally, if the input \code{tree} is a \code{"multiPhylo"} object, the trees will be run in parallel for each number of cores, thus decreasing computation time accordingly (e.g. if 3 cores are requested and \code{tree} contains 12 \code{"phylo"} objects, 4 different \code{"phylo"} objects will be run in parallel on the 3 cores making the calculation around 3 times faster).
+When using the parallel option (either through using \code{parallel = TRUE} by using the number of available cores minus on or manually setting the number of cores - e.g. \code{parallel = 5}), the \code{castor::asr_mk_model} function will use the designated number of cores (using the option \code{Nthreads = <requested_number_of_cores>}). Additionally, if the input \code{tree} is a \code{"multiPhylo"} object, the trees will be run in parallel for each number of cores, thus decreasing computation time accordingly (e.g. if 3 cores are requested and \code{tree} contains 12 \code{"phylo"} objects, 4 different \code{"phylo"} objects will be run in parallel on the 3 cores making the calculation around 3 times faster).
 }
 \examples{
 set.seed(42)
@@ -149,7 +149,7 @@ ancestral_states <- multi.ace(matrix_complex, multiple_trees,
 }
 }
 \seealso{
-\code{\link[castor]{asr_mk_model}}, \code{char.diff}
+\code{castor::asr_mk_model}, \code{char.diff}
 }
 \author{
 Thomas Guillerme

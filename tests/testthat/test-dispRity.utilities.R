@@ -416,7 +416,6 @@ test_that("get.disparity", {
         get.disparity(data, 1, observed = TRUE)
         )
 
-
     test <- get.disparity(data)
     expect_is(
         test
@@ -469,7 +468,6 @@ test_that("get.disparity", {
         names(test)
         ,names(data$subsets)[c(1,5)])
 
-
     ## Test whithout disparity but with distribution
     data <- dispRity(BeckLee_mat99, metric = centroids)
     expect_error(get.disparity(data, observed = FALSE))
@@ -478,8 +476,8 @@ test_that("get.disparity", {
     expect_equal(length(test[[1]]), nrow(BeckLee_mat99))
 })
 
-## rescale.dispRity
-test_that("rescale.dispRity", {
+## scale.dispRity
+test_that("scale.dispRity", {
     data(BeckLee_mat50)
     groups <- as.data.frame(matrix(data = c(rep(1, nrow(BeckLee_mat50)/2), rep(2, nrow(BeckLee_mat50)/2)), nrow = nrow(BeckLee_mat50), ncol = 1, dimnames = list(rownames(BeckLee_mat50))))
     customised_subsets <- custom.subsets(BeckLee_mat50, groups)
@@ -487,31 +485,31 @@ test_that("rescale.dispRity", {
     data <- dispRity(bootstrapped_data, metric = c(sum, centroids))
 
     expect_error(
-        rescale.dispRity(bootstrapped_data)
+        scale.dispRity(bootstrapped_data)
         )
     expect_error(
-        rescale.dispRity(data, scale = "yes")
+        scale.dispRity(data, scale = "yes")
         )
     expect_error(
-        rescale.dispRity(data, center = "yes")
+        scale.dispRity(data, center = "yes")
         )
     expect_error(
-        rescale.dispRity(data, center = c(1,2))
+        scale.dispRity(data, center = c(1,2))
         )
 
     expect_is(
-        rescale.dispRity(data, scale = TRUE)
+        scale.dispRity(data, scale = TRUE)
         ,"dispRity")
     expect_is(
-        rescale.dispRity(data, scale = FALSE)
+        scale.dispRity(data, scale = FALSE)
         ,"dispRity")
     expect_is(
-        rescale.dispRity(data, scale = TRUE, center = TRUE)
+        scale.dispRity(data, scale = TRUE, center = TRUE)
         ,"dispRity")
 
     base <- summary(data)
-    scaled_down <- summary(rescale.dispRity(data, scale = TRUE))
-    scaled_up <- summary(rescale.dispRity(data, scale = 0.1))
+    scaled_down <- summary(scale.dispRity(data, scale = TRUE))
+    scaled_up <- summary(scale.dispRity(data, scale = 0.1))
     expect_lt(
         scaled_down[1,3]
         ,base[1,3])
@@ -705,4 +703,246 @@ test_that("tree utilities works", {
     expect_is(tree, "multiPhylo")
     expect_null(remove.tree(disparitree)$tree[[1]])
     expect_null(remove.tree(disparitree2)$tree[[1]])
+
+    ## Remove and replace trees
+    disparity <- dispRity(BeckLee_mat99, metric = mean)
+    expect_null(disparity$tree[[1]])
+    disparitree <- add.tree(tree = BeckLee_tree, data = disparity)
+    expect_equal(length(disparitree$tree), 1)
+    disparitree <- add.tree(tree = BeckLee_tree, data = disparitree)
+    expect_equal(length(disparitree$tree), 2)
+    disparitree <- add.tree(tree = BeckLee_tree, data = disparitree, replace = TRUE)
+    expect_equal(length(disparitree$tree), 1)
+})
+
+test_that("name.subsets(dispRity)", {
+    data(disparity)
+    expect_equal(name.subsets(disparity), names(disparity$subsets))
+    expect_warning(test <- dispRity(matrix(rnorm(25), 5, 5), metric = mean))
+    expect_null(name.subsets(test)) 
+})
+
+test_that("get.tree with subsets", {
+
+    ## Testing detect edges and get new tree
+    set.seed(1)
+    simple_tree <- rtree(5)
+    simple_tree$edge.length <- rep(1, Nedge(simple_tree))
+    simple_tree$root.time <- 4
+    simple_tree$node.label <- letters[1:4]
+    plot(simple_tree, show.tip.label = FALSE); axisPhylo()
+    nodelabels()
+    nodelabels(simple_tree$node.label, adj = -1, col = "blue")
+    edgelabels()
+    tiplabels()
+    tiplabels(simple_tree$tip.label, adj = -1, col = "blue")
+    abline(v = c(0, 1, 2, 3, 3.8), col = "grey", lty = 2)
+    # dev.new()
+    tree <- simple_tree
+
+    ## Detect edges
+    expect_equal(sort(detect.edges(tree, c(5, 3, 2, 8), to.root = FALSE)), sort(c(6, 5, 4, 3, 8)))
+    expect_equal(sort(detect.edges(tree, c(5, 3, 2, 8), to.root = TRUE)), sort(c(6, 5, 4, 3, 8, 2)))
+    expect_equal(sort(detect.edges(tree, c(9, 6, 1), to.root = FALSE)), sort(c(5,3,2,1)))
+    expect_equal(sort(detect.edges(tree, c(9, 6, 1), to.root = TRUE)), sort(c(5,3,2,1)))
+
+    ## Get new tree
+    test <- get.new.tree(tree = tree, elements = c(5, 3, 2, 8), to.root = TRUE)
+    expect_is(test, "phylo")
+    expect_equal(Ntip(test), 3)
+    expect_equal(Nnode(test), 4)
+    expect_equal(test$tip.label, c("t1", "t3", "t5"))
+    expect_equal(test$node.label, c("a", "b", "c", "d"))
+    # plot(test) ; nodelabels(test$node.label)
+
+    test <- get.new.tree(tree = tree, elements = c(5, 3, 2, 8), to.root = FALSE)
+    expect_is(test, "phylo")
+    expect_equal(Ntip(test), 3)
+    expect_equal(Nnode(test), 3)    
+    expect_equal(test$tip.label, c("t1", "t3", "t5"))
+    expect_equal(test$node.label, c("b", "c", "d"))
+    # plot(test) ; nodelabels(test$node.label)
+
+    test <- get.new.tree(tree = tree, elements = c(5, 9, 2, 8), to.root = FALSE)
+    expect_is(test, "phylo")
+    expect_equal(Ntip(test), 3)
+    expect_equal(Nnode(test), 2)    
+    expect_equal(test$tip.label, c("t1", "d", "t5"))
+    expect_equal(test$node.label, c("b", "c"))
+    # plot(test) ; nodelabels(test$node.label)
+
+    test <- get.new.tree(tree = tree, elements = c(9, 6, 1), to.root = FALSE)
+    expect_is(test, "phylo")
+    expect_equal(Ntip(test), 2)
+    expect_equal(Nnode(test), 3)    
+    expect_equal(test$tip.label, c("t2", "d"))
+    expect_equal(test$node.label, c("a", "b", "c"))
+
+    test <- get.new.tree(tree = tree, elements = c(9, 6, 1), to.root = TRUE)
+    expect_is(test, "phylo")
+    expect_equal(Ntip(test), 2)
+    expect_equal(Nnode(test), 3)    
+    expect_equal(test$tip.label, c("t2", "d"))
+    expect_equal(test$node.label, c("a", "b", "c"))
+
+    test <- get.new.tree(tree = tree, elements = c(4,3), to.root = FALSE)
+    expect_is(test, "phylo")
+    expect_equal(Ntip(test), 2)
+    expect_equal(Nnode(test), 1)    
+    expect_equal(test$tip.label, c("t3", "t4"))
+    expect_equal(test$node.label, c("d"))
+
+    test <- get.new.tree(tree = tree, elements = c(4,3), to.root = TRUE)
+    expect_is(test, "phylo")
+    expect_equal(Ntip(test), 2)
+    expect_equal(Nnode(test), 4)
+    expect_equal(test$tip.label, c("t3", "t4"))
+    expect_equal(test$node.label, c("a", "b", "c", "d"))
+
+    ## Big test
+    set.seed(2)
+    big_tree <- rtree(20)
+    big_tree$node.label <- letters[1:19]
+    big_tree$edge.length <- rep(1, Nedge(big_tree))
+    big_tree$root.time <- max(tree.age(big_tree)$ages)
+    plot(big_tree, show.tip.label = FALSE); axisPhylo()
+    nodelabels(cex = 0.8)
+    nodelabels(big_tree$node.label, adj = -3, col = "blue", cex = 0.8)
+    edgelabels(cex = 0.8)
+    tiplabels(cex = 0.8)
+    tiplabels(big_tree$tip.label, adj = -2, col = "blue", cex = 0.8)
+
+    test <- get.new.tree(tree = big_tree, elements = c(6, 32, 28, 15, 35), to.root = FALSE)
+    expect_is(test, "phylo")
+    expect_equal(Ntip(test), 4)
+    expect_equal(Nnode(test), 10)
+    expect_equal(test$tip.label, c("t6", "l", "o", "t12"))
+    expect_equal(test$node.label, c("b", "c", "d", "e", "f", "h", "i", "j", "m", "n"))
+
+    set.seed(1) ; elements <- sample(1:39, 10)
+    test <- get.new.tree(tree = big_tree, elements = elements, to.root = FALSE)
+    expect_is(test, "phylo")
+    expect_equal(Ntip(test), 5)
+    expect_equal(Nnode(test), 16)
+    expect_equal(test$tip.label, c("t16", "t7", "t15", "t5", "t17"))
+    expect_equal(test$node.label, c("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "l", "m", "n", "o", "p", "q"))
+
+    ## Basic subsets, return the tree per subsets
+    set.seed(1)
+    simple_tree <- rtree(10)
+    simple_tree$edge.length <- rep(1, Nedge(simple_tree))
+    simple_tree$node.label <- letters[1:9]
+    matrix_dumb <- matrix(1, ncol = 1, nrow = 19, dimnames = list(c(simple_tree$tip.label, simple_tree$node.label)))
+    plot(simple_tree)
+    nodelabels(simple_tree$node.label)
+
+    ## Groups
+    groups <- list("clade1" = c("t3", "t2", "t7"),
+                   "clade2" = c("c", "f", "t4"),
+                   "clade3" = c("t10", "a", "t7"),
+                   "clade4" = simple_tree$tip.label)
+
+    data <- custom.subsets(data = matrix_dumb, tree = simple_tree, group = groups)
+
+    ## Just get trees
+    test_norm <- get.tree(data)
+    expect_is(test_norm, "phylo")
+    expect_equal(test_norm$tip.label, simple_tree$tip.label)
+
+    ## Get subsets
+    test <- get.tree(data, subsets = TRUE)
+    expect_is(test, "list")
+    expect_equal(length(test), 4)
+    expect_equal(test$clade1$elements$tip.label, c("t7", "t2", "t3"))
+    expect_equal(test$clade2$elements$tip.label, c("c", "f", "t4"))
+    expect_equal(test$clade3$elements$tip.label, c("t7", "t10"))
+    expect_equal(test$clade4$elements$tip.label, simple_tree$tip.label)
+
+    ## Get subsets
+    test <- get.tree(data, subsets = c(1,2))
+    expect_is(test, "list")
+    expect_equal(length(test), 2)
+    expect_equal(names(test), c("clade1", "clade2"))
+
+    ## Groups and bootstraps
+    data <- boot.matrix(data, 3)
+    test <- get.tree(data, subsets = TRUE)
+    expect_is(test, "list")
+    expect_equal(length(test), 4)
+    expect_equal(test$clade1$elements$tip.label, c("t7", "t2", "t3"))
+    expect_equal(test$clade2$elements$tip.label, c("c", "f", "t4"))
+    expect_equal(test$clade3$elements$tip.label, c("t7", "t10"))
+    expect_equal(test$clade4$elements$tip.label, simple_tree$tip.label)
+
+
+
+
+
+
+    ## Testing slide.node.root
+    set.seed(1)
+    simple_tree <- rtree(5)
+    simple_tree$edge.length <- rep(1, Nedge(simple_tree))
+    simple_tree$root.time <- 4
+    simple_tree$node.label <- letters[1:4]
+    tree <- simple_tree
+    bin_age <- c(2, 1)
+    test <- slide.node.root(bin_age, tree)
+    expect_is(test, "phylo")
+    expect_equal(Ntip(test), 4)
+    expect_equal(test$edge.length[c(1,6)], c(0,0))
+
+    ## Testing the pipeline for discrete bins
+    tree <- simple_tree
+    tree$edge.length[8] <- 1.5
+    matrix_dumb <- matrix(1, ncol = 1, nrow = 9, dimnames = list(c(simple_tree$tip.label, simple_tree$node.label)))
+    time = c(0.5, 1, 2, 3, 3.5)
+    data_bins <- chrono.subsets(matrix_dumb, tree = simple_tree, method = "discrete", time = time, inc.nodes = TRUE)
+
+    ## Getting the trees from data bin
+    test <- get.tree(data_bins, subsets = FALSE)
+    expect_is(test, "phylo")
+    test <- get.tree(data_bins, subsets = TRUE, to.root = FALSE)
+    expect_is(test, "list")
+    expect_equal(length(test), 4)
+    expect_is(test[[2]], "phylo")
+    expect_equal(test[[2]]$edge.length, c(0,0,1,1))
+    test <- get.tree(data_bins, subsets = TRUE, to.root = TRUE)
+    expect_is(test, "list")
+    expect_equal(length(test), 4)
+    expect_is(test[[2]], "phylo")
+    expect_equal(test[[2]]$edge.length, c(1,1,1,1))
+
+    ## Working on a multiPhylo
+    multi_tree <- list(simple_tree, simple_tree)
+    class(multi_tree) <- "multiPhylo"
+    data_bins <- chrono.subsets(matrix_dumb, tree = multi_tree, method = "discrete", time = time, inc.nodes = TRUE)
+    test <- get.tree(data_bins, subsets = FALSE)
+    expect_is(test, "multiPhylo")
+    test <- get.tree(data_bins, subsets = TRUE, to.root = FALSE)
+    expect_is(test, "list")
+    expect_equal(length(test), 4)
+    expect_is(test[[2]], "multiPhylo")
+
+    ## Working on slices
+    data_slices <- chrono.subsets(matrix_dumb, tree = simple_tree, method = "continuous", model = "acctran", time = time, inc.nodes = TRUE)
+    test <- get.tree(data_slices, subsets = TRUE, to.root = TRUE)
+    expect_is(test, "list")
+    expect_equal(length(test), 5)
+    expect_is(test[[2]], "phylo")
+    expect_equal(test[[2]]$edge.length, c(1,1))
+    test <- get.tree(data_slices, subsets = TRUE, to.root = FALSE)
+    expect_is(test, "list")
+    expect_equal(length(test), 5)
+    expect_is(test[[2]], "phylo")
+    expect_equal(test[[2]]$edge.length, c(1,1))
+
+    ## Working on multiPhylo
+    data_slices <- chrono.subsets(matrix_dumb, tree = multi_tree, method = "continuous", model = "equal.split", time = time, inc.nodes = TRUE)
+    test <- get.tree(data_slices, subsets = FALSE)
+    expect_is(test, "multiPhylo")
+    test <- get.tree(data_slices, subsets = TRUE, to.root = FALSE)
+    expect_is(test, "list")
+    expect_equal(length(test), 5)
+    expect_is(test[[2]], "multiPhylo")
 })

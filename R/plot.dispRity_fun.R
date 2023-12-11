@@ -26,7 +26,7 @@ get.plot.params <- function(data, data_params, cent.tend, quantiles, rarefaction
             summarised_data <- summary.dispRity(data, quantiles = quantiles, cent.tend = cent.tend, digits = 5, na.rm = TRUE)
         # }
     } else {
-        summarised_data <- summary.dispRity(data, quantiles = quantiles, cent.tend = cent.tend, digits = 5)
+        summarised_data <- summary.dispRity(data, quantiles = quantiles, cent.tend = cent.tend, digits = 5, na.rm = TRUE)
         ## Making a fake obs column
         colnames(summarised_data)[3] <- "obs"
     }
@@ -311,7 +311,7 @@ get.quantile.col <- function(cent_tend_col, cis, n_quantiles) {
 }
 
 ## Observed points
-plot.observed <- function(plot_params) {
+do.plot.observed <- function(plot_params) {
     if(plot_params$observed_args$observed) {
 
         ## Set the observed arguments
@@ -330,7 +330,7 @@ plot.observed <- function(plot_params) {
 }
 
 ## Plot elements
-plot.elements <- function(plot_params, data_params, type) {
+do.plot.elements <- function(plot_params, data_params, type) {
     ## Elements plots
     add_args <- plot_params$elements_args
     add_args$elements <- NULL
@@ -406,7 +406,7 @@ plot.elements <- function(plot_params, data_params, type) {
 }
 
 ## discrete plotting
-plot.discrete <- function(plot_params, data_params, add, density, type) {
+do.plot.discrete <- function(plot_params, data_params, add, density, type) {
 
     ## Get the shifting argument
     shift <- get.shift(add, plot_params)
@@ -515,7 +515,7 @@ plot.discrete <- function(plot_params, data_params, add, density, type) {
 }
 
 ## continuous plotting
-plot.continuous <- function(plot_params, data_params, add, density) {
+do.plot.continuous <- function(plot_params, data_params, add, density) {
     ## Get the shifting argument
     shift <- get.shift(add, plot_params)
 
@@ -628,7 +628,7 @@ plot.continuous <- function(plot_params, data_params, add, density) {
 }
 
 ## Plot the rarefaction
-plot.rarefaction <- function(plot_params, data_params, data) {
+do.plot.rarefaction <- function(plot_params, data_params, data) {
 
     ## How many rarefaction plots?
     n_plots <- length(data$subsets)
@@ -691,7 +691,7 @@ plot.rarefaction <- function(plot_params, data_params, data) {
 }
 
 ## Plotting a space preview
-plot.preview <- function(data, specific.args, ...) {
+do.plot.preview <- function(data, specific.args, ...) {
 
     dots <- list(...)
 
@@ -876,7 +876,7 @@ plot.preview <- function(data, specific.args, ...) {
 }
 
 ## The following is a modified version of plot.randtest from ade4 v1.4-3
-plot.randtest <- function(plot_data) {
+do.plot.randtest <- function(plot_data) {
     
     ## Extracting the elements
     dots <- plot_data$dots
@@ -939,7 +939,7 @@ plot.randtest <- function(plot_data) {
 }
 
 ## The following is a modified version of dtt plots (from https://github.com/mwpennell/geiger-v2/blob/master/R/disparity.R)
-plot.dtt <- function(data, quantiles, cent.tend, density, ...) {
+do.plot.dtt <- function(data, quantiles, cent.tend, density, ...) {
     dots <- list(...)
 
     plot_args <- dots
@@ -1022,7 +1022,7 @@ plot.dtt <- function(data, quantiles, cent.tend, density, ...) {
 }
 
 ## Plotting model tests results
-plot.model.test <- function(data, ...) {
+do.plot.model.test <- function(data, ...) {
 
     plot_args <- list(...)
     ## Set the default plotting arguments
@@ -1040,7 +1040,7 @@ plot.model.test <- function(data, ...) {
 }
 
 ## Plotting the model simulation results
-plot.model.sim <- function(data, add, density, quantiles, cent.tend, ...) {
+do.plot.model.sim <- function(data, add, density, quantiles, cent.tend, ...) {
 
     dots <- list(...)
 
@@ -1079,11 +1079,13 @@ plot.model.sim <- function(data, add, density, quantiles, cent.tend, ...) {
     options(warn = 0)
 
     ## Plot the simulated data
-    plot.continuous(plot_params, data_params, add = add, density = density)
+    do.plot.continuous(plot_params, data_params, add = add, density = density)
 }
 
 ## Plotting test metrics
-plot.test.metric <- function(data, specific.args, ...) {
+do.plot.test.metric <- function(data, specific.args, ...) {
+
+    # specific.args <- list() ; warning("DEBUG do.plot.test.metric")
 
     ## Adding slopes
     add.slope <- function(model, col) {
@@ -1098,22 +1100,65 @@ plot.test.metric <- function(data, specific.args, ...) {
                    col = col)
         }
     }
+    ## Adding little stars for p-values for people that like that
+    p.stars <- function(x) {
+        if(x < 0.1) {
+            if(x < 0.05) {
+                if(x < 0.01) {
+                    if(x < 0.001) {
+                        return("***")
+                    }
+                    return("**")
+                }
+                return("*")
+            }
+            return(".")
+        }
+        return("")
+    }
     ## Adding fits
     add.fit <- function(model) {
+        has_fit <- has_coeff <- FALSE
         fit_param <- try.get.from.model(model, "r.squared")
-        if(!is.null(fit_param) || length(fit_param) != 0) {
+        coeff_param <- try.get.from.model(model, "coefficient")
 
+        ## Adjust the fitting
+        if(!is.null(fit_param) || length(fit_param) != 0) {
+            has_fit <- TRUE
             if(any(names(fit_param) == "adj.r.squared")) {
                 fit_param <- fit_param$adj.r.squared
                 is_adjusted <- TRUE
             } else {
                 is_adjusted <- FALSE
             }
-
-            return(paste0(ifelse(is_adjusted, "Adj. R^2: ", "R^2: "), unlist(round(fit_param, 3))))
-        } else {
-            return(NA)
+            text_fit <- paste0(ifelse(is_adjusted, "Adj. R^2: ", "R^2: "), unlist(round(fit_param, 3)))
         }
+
+        ## Adjust the coefficient
+        if(!is.null(coeff_param) && is(coeff_param[[1]], "matrix")) {
+            has_coeff <- TRUE
+            slopes_coeffs <- coeff_param[[1]][-1, , drop = FALSE]
+            slopes_estimates <- slopes_coeffs[, "Estimate"]
+            ## Nice rounding
+            slopes_estimates <- round(slopes_estimates, nchar(format(slopes_estimates, scientific = FALSE)) - nchar(sub("0\\.0*", "", format(slopes_estimates, scientific = FALSE))))
+            p_values <- sapply(slopes_coeffs[, "Pr(>|t|)"], p.stars)
+            slopes <- paste0(slopes_estimates, p_values)
+            text_slope <- paste0("Slope: ", slopes)
+        }
+
+        if(has_fit && has_coeff) {
+            return(paste0(text_slope, "; ", text_fit))
+        } else {
+            if(has_fit && !has_coeff) {
+                return(text_fit)
+            } else {
+                if(!has_fit && has_coeff) {
+                    return(text_slope)
+                }
+            }
+        }
+        ## Return nothing
+        return(NA)
     }
 
     ## Detect whether to plot the shift steps or not
@@ -1219,10 +1264,10 @@ plot.test.metric <- function(data, specific.args, ...) {
     if(length(legend_args == 2) && !is.null(names(legend_args[[1]])) && !is.null(names(legend_args[[2]]))) {
         if(names(legend_args[[1]]) == names(legend_args[[2]])) {
             legend_args_1 <- legend_args[[1]]
-            legend_args_2 <- legend_args_2_base <- legend_args[[2]]
+            legend_args_2 <- legend_args[[2]]
         }
     } else {
-        legend_args_1 <- legend_args_2 <- legend_args_2_base <- legend_args
+        legend_args_1 <- legend_args_2 <- legend_args
     }
 
     ## Separating the data
@@ -1285,20 +1330,24 @@ plot.test.metric <- function(data, specific.args, ...) {
                         
             ## Set up the legend arguments
             if(plot_legend) {
-                if(is.null(legend_args_1$x)) {
-                    legend_args_1$x <- "bottomright"
+                leg_args_1 <- legend_args_1
+                if(is.null(leg_args_1$x)) {
+                    leg_args_1$x <- "bottomright"
                 }
-                if(is.null(legend_args_1$legend)) {
-                    legend_args_1$legend <- names(plot_data)
+                if(is.null(leg_args_1$cex)) {
+                    leg_args_1$cex <- 2/3
                 }
-                if(is.null(legend_args_1$pch)) {
-                    legend_args_1$pch <- plot_args$pch
+                if(is.null(leg_args_1$legend)) {
+                    leg_args_1$legend <- names(plot_data)
                 }
-                if(is.null(legend_args_1$col)) {
-                    legend_args_1$col <- col_vector
+                if(is.null(leg_args_1$pch)) {
+                    leg_args_1$pch <- plot_args$pch
+                }
+                if(is.null(leg_args_1$col)) {
+                    leg_args_1$col <- col_vector
                 }
                 ## Plot the legend
-                do.call(legend, legend_args_1)
+                do.call(legend, leg_args_1)
             }
         }
 
@@ -1307,11 +1356,12 @@ plot.test.metric <- function(data, specific.args, ...) {
 
             ## Get the fit of the first model
             fit <- add.fit(model_groups[[one_plot]][[1]])
+            
             ## Slope for the first model
             add.slope(model_groups[[one_plot]][[1]], col = col_vector[1])
 
             ## Get the eventual second fit
-            if(!is.null(model_groups[[one_plot]][[1]])) {
+            if(length(model_groups[[one_plot]]) > 1) {
                 ## Fit for the second model
                 fit <- c(fit, add.fit(model_groups[[one_plot]][[2]]))
                 ## Slope for the second model
@@ -1323,22 +1373,24 @@ plot.test.metric <- function(data, specific.args, ...) {
 
                 ## Set up the legend arguments
                 if(plot_legend) {
-                    if(is.null(legend_args_2$x)) {
-                        legend_args_2$x <- "topright"
+                    leg_args_2 <- legend_args_2
+                    if(is.null(leg_args_2$x)) {
+                        leg_args_2$x <- "topright"
                     }
-                    if(is.null(legend_args_2$legend)) {
-                        legend_args_2$legend <- fit[!na_fit]
+                    if(is.null(leg_args_2$cex)) {
+                        leg_args_2$cex <- 2/3
                     }
-                    if(is.null(legend_args_2$lty)) {
-                        legend_args_2$lty <- c(1,1)[!na_fit]
+                    if(is.null(leg_args_2$legend)) {
+                        leg_args_2$legend <- fit[!na_fit]
                     }
-                    if(is.null(legend_args_2$col)) {
-                        legend_args_2$col <- col_vector[!na_fit]
+                    if(is.null(leg_args_2$lty)) {
+                        leg_args_2$lty <- c(1,1)[!na_fit]
+                    }
+                    if(is.null(leg_args_2$col)) {
+                        leg_args_2$col <- col_vector[!na_fit]
                     }
                     ## Plot the legend
-                    do.call(legend, legend_args_2)
-                    ## Reinitialise the legend
-                    legend_args_2 <- legend_args_2_base
+                    do.call(legend, leg_args_2)
                 }
             }
         }
@@ -1403,7 +1455,7 @@ plot.test.metric <- function(data, specific.args, ...) {
 }
 
 ## Plot axes
-plot.axes <- function(data, ...) {
+do.plot.axes <- function(data, ...) {
 
     ## Magic value for below
     transparency <- 0.5
@@ -1487,7 +1539,7 @@ plot.axes <- function(data, ...) {
 }
 
 ## Plot projections
-plot.projection <- function(data, specific.args, cent.tend, ...) {
+do.plot.projection <- function(data, specific.args, cent.tend, ...) {
 
     dots <- list(...)
 

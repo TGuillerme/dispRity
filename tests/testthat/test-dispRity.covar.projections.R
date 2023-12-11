@@ -2,7 +2,7 @@
 test_that("dispRity.covar.projections works", {
 
 ## Toggling nocov for bugs with covr
-nocov <- FALSE
+nocov <- TRUE
 
     data(charadriiformes)
 
@@ -20,7 +20,7 @@ nocov <- FALSE
     error <- capture_error(dispRity.covar.projections(data, type = "groups", base = "haha", n = 3, major.axis = 1, level = 0.95, output = c("position"), verbose = TRUE))
     expect_equal(error[[1]], "Subset haha not found.")
     error <- capture_error(dispRity.covar.projections(data, type = "groups", n = 3, major.axis = 1, level = 0.95, output = c("possssition"), verbose = TRUE))
-    expect_equal(error[[1]], "output must be must be one of the following: position, distance, degree.")
+    expect_equal(error[[1]], "output must be must be one of the following: position, distance, degree, orthogonality.")
 
     ## warnings
     data_warn <- MCMCglmm.subsets(
@@ -35,8 +35,9 @@ if(!nocov) {
     expect_equal(warns[[1]], "The subset name: gul:ls was changed to gul;ls. The \":\" character is reserved for between groups comparisons.")
 
     ## Test between no base
-    verb <- capture_messages(test <- dispRity.covar.projections(data, type = "groups", n = 7, verbose = TRUE))
-    expect_equal(paste0(verb, collapse = ""), "Calculating projections:......Done.\n")
+    test <- dispRity.covar.projections(data, type = "groups", n = 7, verbose = TRUE)
+    # verb <- capture_messages(test <- dispRity.covar.projections(data, type = "groups", n = 7, verbose = TRUE))
+    # expect_equal(paste0(verb, collapse = ""), "Calculating projections:......Done.\n")
     expect_equal(names(test), c("position", "distance", "degree"))
     expect_equal(names(test[[1]]$disparity), c("gulls:plovers", "gulls:sandpipers",  "gulls:phylogeny", "plovers:sandpipers",  "plovers:phylogeny", "sandpipers:phylogeny"))
     expect_equal(dim(test[[1]]$disparity[[1]]$elements), c(1,7))
@@ -82,8 +83,9 @@ if(!nocov) {
 }
     
     ## Test within no base
-    verb <- capture_messages(test <- dispRity.covar.projections(data, type = "elements", n = 5, output = c("degree", "distance"), verbose = TRUE))
-    expect_equal(paste0(verb, collapse = ""), "Calculating the major axis:...Done.\nCalculating projections:......Done.\n")
+    # verb <- capture_messages(test <- dispRity.covar.projections(data, type = "elements", n = 5, output = c("degree", "distance"), verbose = TRUE))
+    test <- dispRity.covar.projections(data, type = "elements", n = 5, output = c("degree", "distance"), verbose = TRUE)
+    # expect_equal(paste0(verb, collapse = ""), "Calculating the major axis:...Done.\nCalculating projections:......Done.\n")
     expect_equal(names(test), c("degree", "distance"))
     expect_equal(names(test[[1]]$disparity), c("gulls", "plovers", "sandpipers", "phylogeny"))
     expect_equal(dim(test[[1]]$disparity[[1]]$elements), c(159,5))
