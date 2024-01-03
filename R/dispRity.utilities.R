@@ -676,6 +676,7 @@ scale.dispRity <- function(x, center = FALSE, scale = TRUE, ...) {
     }
         
     data <- x
+    rm(x)
     match_call <- match.call()
 
     ## data
@@ -685,7 +686,7 @@ scale.dispRity <- function(x, center = FALSE, scale = TRUE, ...) {
     }
 
     ## Get the whole distribution
-    all_data <- unlist(get.disparity(data))
+    all_data <- unlist(get.disparity(data, concatenate = FALSE))
     if(!is.null(data$call$bootstrap)) {
         all_data <- c(all_data, unlist(get.disparity(data, observed = FALSE)))
     }
@@ -703,7 +704,7 @@ scale.dispRity <- function(x, center = FALSE, scale = TRUE, ...) {
     ## Getting the scale value
     if(is(scale, "logical")) {
         if(scale & use.all) {
-            scale <- max(all_data)
+            scale <- max(all_data, na.rm = TRUE)
         }
     } else {
         check.class(scale, c("numeric", "integer", "logical"))

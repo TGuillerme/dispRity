@@ -1,3 +1,11 @@
+dispRity v1.8.1 (2023-12-15) 
+=========================
+
+### BUG FIXES
+
+ * `scale.dispRity` now correctly ignores `NA`s when scaling. 
+
+
 dispRity v1.8 (2023-12-11) *dispRity.multi*
 =========================
 
