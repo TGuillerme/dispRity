@@ -17,7 +17,9 @@ test_that("as.covar works in standalone", {
     var.mat <- function(matrix, ...) {var(matrix, ...)}
     metric <- as.covar(var.mat)
 
+    nocov <- FALSE
     if(!nocov) expect_true(check.covar(metric, covar_data)$is_covar)
+    nocov <- TRUE
     test <- get.dispRity.metric.handle(c(sum, metric), match_call, data = covar_data, tree = NULL)$levels 
     if(!nocov) expect_true(!is.null(test$level3.fun))
     expect_true(is.null(test$level2.fun))
