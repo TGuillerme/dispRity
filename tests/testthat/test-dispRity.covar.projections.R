@@ -1,9 +1,6 @@
 ## Test
 test_that("dispRity.covar.projections works", {
 
-## Toggling nocov for bugs with covr
-nocov <- TRUE
-
     data(charadriiformes)
 
     data <- MCMCglmm.subsets(
@@ -29,7 +26,6 @@ nocov <- TRUE
                       group         = MCMCglmm.levels(charadriiformes$posteriors)[1:4],
                       rename.groups = c("gul:ls", "plovers", "sandpipers", "phylogeny"))
 
-if(!nocov) {
     ## Warning bad naming
     warns <- capture_warnings(test <- dispRity.covar.projections(data_warn, type = "groups", n = 2, verbose = FALSE))
     expect_equal(warns[[1]], "The subset name: gul:ls was changed to gul;ls. The \":\" character is reserved for between groups comparisons.")
@@ -55,9 +51,7 @@ if(!nocov) {
         expect_equal(dim(sum_test[[i]]), c(6,8))
     }
     expect_null(plot(test, las = 2))
-}
 
-if(!nocov) {
     ## Test between average phylo base
     test <- dispRity.covar.projections(data, type = "groups", sample = mean, base = "phylogeny", output = c("degree", "position"))
     expect_equal(names(test), c("degree", "position"))
@@ -72,15 +66,12 @@ if(!nocov) {
         expect_equal(dim(sum_test[[i]]), c(3,4))
     }
     expect_null(plot(test, las = 2))
-}
 
-if(!nocov) {   
     ## Test between all phylo bases
     test <- dispRity.covar.projections(data, type = "groups", sample = c(1,2,3,4,5), base = "phylogeny")
     expect_equal(names(test), c("position", "distance", "degree"))
     expect_equal(names(test[[1]]$disparity), c("gulls:phylogeny", "plovers:phylogeny", "sandpipers:phylogeny"))
     expect_equal(dim(test[[1]]$disparity[[1]]$elements), c(1,5))
-}
     
     ## Test within no base
     # verb <- capture_messages(test <- dispRity.covar.projections(data, type = "elements", n = 5, output = c("degree", "distance"), verbose = TRUE))
