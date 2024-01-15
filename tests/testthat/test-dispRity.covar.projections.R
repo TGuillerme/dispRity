@@ -25,13 +25,11 @@ test_that("dispRity.covar.projections works", {
                       data          = charadriiformes$data,
                       posteriors    = charadriiformes$posteriors,
                       group         = MCMCglmm.levels(charadriiformes$posteriors)[1:4],
-                      rename.groups = c("gul:ls", "plovers", "sandpipers", "phylogeny"))
-
-    ## Warning bad naming
+                      rename.groups = c("gul:ls", "plovers", "sandpipers", "phylogeny"))    
 if(!nocov) {
+    ## Warning bad naming
     warns <- capture_warnings(test <- dispRity.covar.projections(data_warn, type = "groups", n = 2, verbose = FALSE))
     expect_equal(warns[[1]], "The subset name: gul:ls was changed to gul;ls. The \":\" character is reserved for between groups comparisons.")
-}
 
     ## Test between no base
     test <- dispRity.covar.projections(data, type = "groups", n = 7, verbose = TRUE)
@@ -74,8 +72,9 @@ if(!nocov) {
     test <- dispRity.covar.projections(data, type = "groups", sample = c(1,2,3,4,5), base = "phylogeny")
     expect_equal(names(test), c("position", "distance", "degree"))
     expect_equal(names(test[[1]]$disparity), c("gulls:phylogeny", "plovers:phylogeny", "sandpipers:phylogeny"))
-    expect_equal(dim(test[[1]]$disparity[[1]]$elements), c(1,5))
-    
+    expect_equal(dim(test[[1]]$disparity[[1]]$elements), c(1,5))    
+}
+
     ## Test within no base
     # verb <- capture_messages(test <- dispRity.covar.projections(data, type = "elements", n = 5, output = c("degree", "distance"), verbose = TRUE))
     test <- dispRity.covar.projections(data, type = "elements", n = 5, output = c("degree", "distance"), verbose = TRUE)
