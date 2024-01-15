@@ -193,6 +193,8 @@ as.covar <- function(fun, ..., VCV = TRUE, loc = FALSE) {
                 new_fun <- paste0(c(fun_body[1:2], paste0("    return(fun(", avail_args[1], " = ", avail_args[1], "$VCV, loc = ", avail_args[1], "$loc, ...))"), fun_body[4]), collapse="\n")
             }
 
+            message(new_fun)
+
             body(fun.covar) <- as.expression(parse(text = new_fun))
         }
 
