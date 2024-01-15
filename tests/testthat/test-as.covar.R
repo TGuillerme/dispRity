@@ -66,7 +66,6 @@ test_that("as.covar works in standalone", {
     expect_true(eval.covar(test$level2.fun, null.return = FALSE))
     expect_false(eval.covar(test$level1.fun, null.return = FALSE))
 
-nocov <- TRUE
 if(!nocov) {
     test <- as.covar(stats::var)
     expect_equal(names(formals(test))[[1]], "x")
@@ -82,7 +81,6 @@ if(!nocov) {
     expect_false(eval.covar(test$level2.fun, null.return = FALSE))
     expect_false(eval.covar(test$level1.fun, null.return = FALSE))
 }
-
     metric <- c(as.covar(sum), variances)
     error <- capture_error(get.dispRity.metric.handle(metric, match_call, data = covar_data, tree = NULL))
     expect_equal(error[[1]], "Only the highest dimension-level metric can be set as as.covar().")
