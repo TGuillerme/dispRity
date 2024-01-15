@@ -67,8 +67,8 @@ test_that("as.covar works in standalone", {
     expect_false(eval.covar(test$level1.fun, null.return = FALSE))
 
 nocov <- TRUE
-if(nocov) {
-    tust <- capture_messages(test <- as.covar(stats::var))
+if(!nocov) {
+    test <- as.covar(stats::var)
     expect_equal(names(formals(test))[[1]], "x")
     expect_equal(deparse(body(test))[[3]], "    return(fun(x = x$VCV, ...))")
     expect_true(eval.covar(test))
