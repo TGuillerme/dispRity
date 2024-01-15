@@ -4,7 +4,7 @@
 #' @description Splits the data into a customized subsets list.
 #'
 #' @param data A \code{matrix} or a \code{list} of matrices.
-#' @param group Either a \code{list} of row numbers or names to be used as different groups, a \code{data.frame} with the same \eqn{k} elements as in \code{data} as rownames or a \code{factor} vector. If \code{group} is a \code{phylo} object matching \code{data}, groups are automatically generated as clades (and the tree is attached to the resulting \code{dispRity} object).
+#' @param group Either a \code{list} of row numbers or names to be used as different groups, a \code{data.frame} with the same \eqn{k} elements as in \code{data} as rownames, a \code{factor} or a \code{logical} vector. If \code{group} is a \code{phylo} object matching \code{data}, groups are automatically generated as clades (and the tree is attached to the resulting \code{dispRity} object).
 #' @param tree \code{NULL} (default) or an optional \code{phylo} or \code{multiPhylo} object to be attached to the data.
 #' 
 #' @details
@@ -93,7 +93,7 @@ custom.subsets <- function(data, group, tree = NULL) {
     }
 
     ## Sanitize the group variable
-    group_class <- check.class(group, c("matrix", "data.frame", "list", "phylo", "factor"))
+    group_class <- check.class(group, c("matrix", "data.frame", "list", "phylo", "factor", "logical"))
     if(group_class == "phylo") {
         ## Saving the tree for export
         tree <- group

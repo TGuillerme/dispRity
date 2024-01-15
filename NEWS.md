@@ -1,5 +1,9 @@
-dispRity v1.8.1 (2023-12-15) 
+dispRity v1.8.2 (2024-01-15) 
 =========================
+
+### MINOR IMPROVEMENTS
+
+ * `custom.subsets` can now take a logical vector for 
 
 ### BUG FIXES
 

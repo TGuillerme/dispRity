@@ -1,4 +1,5 @@
 ## Test
+nocov <- TRUE
 #package_coverage(type = "tests", quiet = FALSE, clean = FALSE)
 test_that("as.covar works in standalone", {
 

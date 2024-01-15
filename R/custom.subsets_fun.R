@@ -45,6 +45,12 @@ set.group.list <- function(group, data, group_class) {
         group <- as.data.frame(group)
     }
 
+    ## Logical is set to factor
+    if(group_class[1] == "logical") {
+        group <- as.factor(group)
+        group_class[1] <- "factor"
+    }
+
     ## Switch methods
     return(switch(group_class,
             ## Group is already a list
@@ -56,9 +62,9 @@ set.group.list <- function(group, data, group_class) {
                            unlist(group_list, recursive = FALSE)},
             ## Group is a phylo
             "phylo"      = get.tree.clades(group, data),
+            ## Group is factor
             "factor"     = {group_list <- lapply(as.list(levels(group)), function(lvl, group) which(group == lvl), group = group) ; names(group_list) <- levels(group) ; group_list}
-            )
-        )
+        ))
 }
 
 

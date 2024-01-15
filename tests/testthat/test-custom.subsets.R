@@ -444,3 +444,15 @@ test_that("custom.subsets works with a factor", {
     expect_equal(n.subsets(test), 3)
     expect_equal(size.subsets(test), c("gulls" = 159, "plovers" = 98, "sandpipers" = 102))
 })
+
+test_that("custom.subsets works with a logical", {
+    ## Random 3D dataset with 200 taxa
+    data <- dispRity::space.maker(elements = 200, dimensions = 3, distribution = rnorm)
+    set.seed(1)
+    group <- sample(c(TRUE, FALSE), 200, replace = TRUE)
+
+    ## Creating groups with a logical
+    expect_warning(test <- custom.subsets(data, group = group))
+    expect_equal(name.subsets(test), c("FALSE", "TRUE"))
+    expect_equal(size.subsets(test), c("FALSE" = 98, "TRUE" = 102))
+})
