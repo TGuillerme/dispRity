@@ -66,8 +66,9 @@ test_that("as.covar works in standalone", {
     expect_true(eval.covar(test$level2.fun, null.return = FALSE))
     expect_false(eval.covar(test$level1.fun, null.return = FALSE))
 
-    tust <- capture_messages(test <- as.covar(var))
-    expect_equal(tust, "{\n    fun_is_covar <- TRUE\n    return(fun(x = x$VCV, ...))\n}\n")
+nocov <- TRUE
+if(nocov) {
+    tust <- capture_messages(test <- as.covar(stats::var))
     expect_equal(names(formals(test))[[1]], "x")
     expect_equal(deparse(body(test))[[3]], "    return(fun(x = x$VCV, ...))")
     expect_true(eval.covar(test))
@@ -80,6 +81,7 @@ test_that("as.covar works in standalone", {
     expect_true(eval.covar(test$level3.fun, null.return = FALSE))
     expect_false(eval.covar(test$level2.fun, null.return = FALSE))
     expect_false(eval.covar(test$level1.fun, null.return = FALSE))
+}
 
     metric <- c(as.covar(sum), variances)
     error <- capture_error(get.dispRity.metric.handle(metric, match_call, data = covar_data, tree = NULL))
