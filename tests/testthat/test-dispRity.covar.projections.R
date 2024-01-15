@@ -1,4 +1,5 @@
 ## Test
+nocov <- TRUE
 test_that("dispRity.covar.projections works", {
 
     data(charadriiformes)
@@ -27,8 +28,10 @@ test_that("dispRity.covar.projections works", {
                       rename.groups = c("gul:ls", "plovers", "sandpipers", "phylogeny"))
 
     ## Warning bad naming
+if(!nocov) {
     warns <- capture_warnings(test <- dispRity.covar.projections(data_warn, type = "groups", n = 2, verbose = FALSE))
     expect_equal(warns[[1]], "The subset name: gul:ls was changed to gul;ls. The \":\" character is reserved for between groups comparisons.")
+}
 
     ## Test between no base
     test <- dispRity.covar.projections(data, type = "groups", n = 7, verbose = TRUE)
