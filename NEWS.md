@@ -1,9 +1,21 @@
-dispRity v1.8.2 (2024-01-15) 
+dispRity v1.8.3 (2024-01-18) 
 =========================
+
+### NEW FEATURES
+ * Redesigned `multi.ace` to be more modular and handle both continuous and/or discrete characters.
+  - [ ] `models` arg now takes character names + complex list (for `ape::ace`)
+  - [ ] `models` selection is now done after sorting the characters (for default: discrete = ER, continuous = BM/REML)
+  - [ ] add explanations of new `models` argument in the doc
+  - [ ] change `castor.options` to `options` in general (with a named list: `list(castor = ..., ape = ...)`)
+  - [ ] new internal function for running `ape::ace`
+  - [ ] combine results more smartly
+  - [ ] `estimation.details` can now take arguments from both `castor` and `ape`
+  - [ ] new output `dispRity` format
+  - [ ] also update manual 
 
 ### MINOR IMPROVEMENTS
 
- * `custom.subsets` can now take a logical vector for 
+ * `custom.subsets` can now take a logical vector for the `group` argument
 
 ### BUG FIXES
 
