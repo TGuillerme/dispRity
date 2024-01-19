@@ -1,3 +1,27 @@
+## Set default arguments for continuous models
+set.continuous.args.ace <- function(method, model, scaled, kappa, corStruct) {
+    continuous_args <- list(type = "continuous")
+    continuous_args$model <- ifelse(missing(model), "BM", model)
+    continuous_args$scaled <- ifelse(missing(scaled), TRUE, scaled)
+    continuous_args$kappa <- ifelse(missing(kappa), 1, kappa)
+    if(missing(corStruct)) {
+        continuous_args$corStruct <- NULL
+    } else {
+        continuous_args$corStruct <- corStruct
+    }
+    return(continuous_args)
+}
+## Set default arguments for continuous models with "models" as input (= method or model)
+set.continuous.args.ace.models <- function(models, n) {
+    if(models == "BM" || models == "REML") {
+        ## Set everything default
+        return(replicate(n, set.continuous.args.ace(), simplify = FALSE))
+    } else {
+        return(replicate(n, set.continuous.args.ace(method = models), simplify = FALSE))
+    }
+}
+
+
 ## Finding or adding node labels
 get.node.labels <- function(tree) {
     if(is.null(tree$node.label)) {
@@ -105,16 +129,16 @@ castor.ace <- function(castor_args) {
         details <- NULL
     }
 
-#     stop("DEBUG multi.ace_fun::castor.ace")
+    # stop("DEBUG multi.ace_fun::castor.ace")
 
-# asr_mk_model( tree = castor_args$tree, 
-#               tip_states = castor_args$tip_states, 
-#               Nstates = castor_args$Nstates, 
-#               tip_priors = castor_args$tip_priors, 
-#               rate_model = castor_args$rate_model, 
-#               Ntrials = castor_args$Ntrials, 
-#               check_input =castor_args$check_input, 
-#               Nthreads = castor_args$Nthreads)
+    # asr_mk_model( tree = castor_args$tree, 
+    #               tip_states = castor_args$tip_states, 
+    #               Nstates = castor_args$Nstates, 
+    #               tip_priors = castor_args$tip_priors, 
+    #               rate_model = castor_args$rate_model, 
+    #               Ntrials = castor_args$Ntrials, 
+    #               check_input =castor_args$check_input, 
+    #               Nthreads = castor_args$Nthreads)
 
 
     ## Increase the number of trials if unsuccessful
