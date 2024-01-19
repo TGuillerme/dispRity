@@ -412,3 +412,33 @@ test_that("multi.ace works", {
     # expect_is(results$details[[2]]$loglikelihood[[1]], "numeric")
 
 })
+
+test_that("multi.ace works with continuous and mix", {
+
+    ## The tree
+    tree <- rcoal(15)
+    tree <- makeNodeLabel(tree)
+    ## The matrix
+    data <- space.maker(elements = 15, dimensions = 5, distribution = rnorm, elements.name = tree$tip.label)
+
+    ## Run the multi.ace on the continuous data
+    test <- multi.ace(data = data, tree = tree, output = "combined.matrix")
+
+    ## Works well for continuous
+    expect_is(test, "matrix")
+    expect_equal(dim(test), c(15+14, 5))
+    expect_equal(sort(rownames(test)), sort(c(tree$tip.label, tree$node.label)))
+    expect_equal(unique(apply(test, 2, class)), "numeric")
+
+    ## Mixed characters
+    data <- as.data.frame(data)
+    data <- cbind(data, "new_char" = as.character(sample(1:2, 15, replace = TRUE)))
+    data <- cbind(data, "new_char2" = as.character(sample(1:2, 15, replace = TRUE)))
+
+    ## Works well for mixed characters
+    test <- multi.ace(data = data, tree = tree, output = "combined.matrix")
+    expect_is(test, "data.frame")
+    expect_equal(dim(test), c(15+14, 6))
+    expect_equal(sort(rownames(test)), sort(c(tree$tip.label, tree$node.label)))
+    expect_equal(unique(apply(test, 2, class)), c("numeric", "character"))
+})
