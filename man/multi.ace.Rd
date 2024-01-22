@@ -7,7 +7,7 @@
 multi.ace(
   data,
   tree,
-  models = "ER",
+  models,
   threshold = TRUE,
   special.tokens,
   special.behaviours,
@@ -15,7 +15,7 @@ multi.ace(
   verbose = FALSE,
   parallel = FALSE,
   output,
-  castor.options,
+  options.args,
   estimation.details = NULL
 )
 }
@@ -40,7 +40,7 @@ multi.ace(
 
 \item{output}{optional, see Value section below.}
 
-\item{castor.options}{optional, a named list of options to be passed to function called by \code{castor::asr_mk_model}.}
+\item{options.args}{optional, a named list of options to be passed to function called by \code{castor::asr_mk_model}.}
 
 \item{estimation.details}{optional, whether to also return the details for each estimation as returned by \code{castor::asr_mk_model}. This argument can be left \code{NULL} (default) or be any combination of the elements returned by \code{castor::asr_mk_model} (e.g. \code{c("loglikelihood", "transition_matrix")}).}
 }

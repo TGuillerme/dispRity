@@ -209,7 +209,6 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
         ## Use an absolute threshold
         threshold.type <- "absolute"
     }
-
     
     ## brlen multiplier
     if(!missing(brlen.multiplier)) {
@@ -421,6 +420,7 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
         characters_continuous <- apply(matrix_continuous, 2, list)
         if(verbose) cat(".")
     }
+    if(verbose) cat("Done.\n")
 
     #########
     ## Handle the models for each character
@@ -536,7 +536,7 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
 
     ## options.args
     warning("TODO: change castor options to just options (parsed to castor or ape)")
-                warning("TODO: multi.ace. ape options are: CI, ")
+    warning("TODO: multi.ace. ape options are: CI, ")
 
 
     if(missing(options.args)) {
@@ -640,11 +640,9 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
         #         verbose <- TRUE
         #     }
         # }
-
-
     } else {
         ## Make the functions verbose
-        cat("Running ancestral states estimations:\n")
+        if(verbose) cat("Running ancestral states estimations:\n")
 
         ## Run the continuous characters
         if(do_continuous) {
@@ -741,7 +739,6 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
 
     ## Handle details
     warning("TODO: handle details")
-
 
     ## Results out
     if(is.null(estimation.details)) {

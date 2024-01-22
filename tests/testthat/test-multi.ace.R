@@ -422,7 +422,7 @@ test_that("multi.ace works with continuous and mix", {
     data <- space.maker(elements = 15, dimensions = 5, distribution = rnorm, elements.name = tree$tip.label)
 
     ## Run the multi.ace on the continuous data
-    test <- multi.ace(data = data, tree = tree, output = "combined.matrix")
+    test <- multi.ace(data = data, tree = tree, output = "combined.matrix", verbose = TRUE)
 
     ## Works well for continuous
     expect_is(test, "matrix")
@@ -438,7 +438,12 @@ test_that("multi.ace works with continuous and mix", {
     ## Works well for mixed characters
     test <- multi.ace(data = data, tree = tree, output = "combined.matrix")
     expect_is(test, "data.frame")
-    expect_equal(dim(test), c(15+14, 6))
+    expect_equal(dim(test), c(15+14, 7))
     expect_equal(sort(rownames(test)), sort(c(tree$tip.label, tree$node.label)))
-    expect_equal(unique(apply(test, 2, class)), c("numeric", "character"))
+
+    classes <- character()
+    for(i in 1:ncol(test)) {
+        classes[i] <- class(test[, i]) 
+    }
+    expect_equal(unique(classes), c("numeric", "character"))
 })

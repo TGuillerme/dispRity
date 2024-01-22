@@ -312,4 +312,4 @@ make.list <- function(results) {
     ## Make into a list
     return(unlist(apply(results, 1, list), recursive = FALSE))
 }
-## Make the dispRity object out of the results
+## Make the dispRity object out of the results (only for continuous)
