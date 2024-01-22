@@ -17,7 +17,7 @@
 #' @param verbose \code{logical}, whether to be verbose (\code{TRUE}) or not (\code{FALSE} - default).
 #' @param parallel \code{logical}, whether to use parallel algorithm (\code{TRUE}) or not (\code{FALSE} - default).
 #' @param output optional, see Value section below.
-#' @param castor.options optional, a named list of options to be passed to function called by \code{castor::asr_mk_model}.
+#' @param options.args optional, a named list of options to be passed to function called by \code{castor::asr_mk_model}.
 #' @param estimation.details optional, whether to also return the details for each estimation as returned by \code{castor::asr_mk_model}. This argument can be left \code{NULL} (default) or be any combination of the elements returned by \code{castor::asr_mk_model} (e.g. \code{c("loglikelihood", "transition_matrix")}).
 #' 
 #' @details
@@ -152,7 +152,7 @@
 #' @author Thomas Guillerme
 #' @export
 
-multi.ace <- function(data, tree, models = "ER", threshold = TRUE, special.tokens, special.behaviours, brlen.multiplier, verbose = FALSE, parallel = FALSE, output, castor.options, estimation.details = NULL) {
+multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, special.behaviours, brlen.multiplier, verbose = FALSE, parallel = FALSE, output, options.args, estimation.details = NULL) {
 
     match_call <- match.call()
 
@@ -319,6 +319,7 @@ multi.ace <- function(data, tree, models = "ER", threshold = TRUE, special.token
     }
 
     ## Handle the tokens
+    # special.tokens <- character(); special.behaviours <- list() ; warning("DEBUG: multi.ace")
     if(do_discrete) {
         ## Special tokens
         if(missing(special.tokens)) {
@@ -422,9 +423,9 @@ multi.ace <- function(data, tree, models = "ER", threshold = TRUE, special.token
     }
     
     ## Handle the continuous characters
-    if(do_continous) {
+    if(do_continuous) {
         ## Make the continuous characters as lists
-        characters_continuous <- unlist(apply(matrix_continuous, 2, list), recursive = FALSE)
+        characters_continuous <- apply(matrix_continuous, 2, list)
         if(verbose) cat(".")
     }
 
@@ -437,7 +438,7 @@ multi.ace <- function(data, tree, models = "ER", threshold = TRUE, special.token
         if(do_discrete) {
             models_discrete <- replicate(n_characters_discrete, "ER", simplify = FALSE)
         }
-        if(do_continous) {
+        if(do_continuous) {
             models_continuous <- replicate(n_characters_continuous, set.continuous.args.ace(), simplify = FALSE)
         }
     } else {
@@ -486,27 +487,11 @@ multi.ace <- function(data, tree, models = "ER", threshold = TRUE, special.token
                     }
                 }
             }
-
-            ##TODO
-            ## Check the length and if they match the available models and type of characters
-
-            ## Check the different models
-            available_models_discrete <- c("ER", "SYM", "ARD", "SUEDE", "SRD")
-            available_models_continuous <- c("BM", "REML", "ML", "pic")
-
-
-            if(do_discrete) {
-                models_discrete <- as.list(models[discrete_char_ID])
-            }
-            if(do_continous) {
-                ## Make the models list using set.continuous.args.ace
-                models_continuous <-
-            }
         }
 
         ## Models is a transition matrix (discrete only)
         if(models_class == "matrix") {
-            if(do_continous) {
+            if(do_continuous) {
                 stop("Transition matrices can be used as models only for discrete characters.")
             } else {
                 models_discrete <- replicate(n_characters_discrete, models, simplify = FALSE)
@@ -524,7 +509,7 @@ multi.ace <- function(data, tree, models = "ER", threshold = TRUE, special.token
                     models_discrete <- replicate(n_characters_discrete, models, simplify = FALSE)
                 }
                 ## Set the models for continuous
-                if(do_continous) {
+                if(do_continuous) {
                     models_continuous <- replicate(n_characters_continuous, do.call(set.continuous.args.ace, models), simplify = FALSE)
                 }
             }
@@ -535,7 +520,7 @@ multi.ace <- function(data, tree, models = "ER", threshold = TRUE, special.token
             if(do_discrete) {
                 models_discrete <- models[discrete_char_ID]
             }
-            if(do_continous) {
+            if(do_continuous) {
                 models_continuous <- models[continuous_char_ID]
                 ## Format correctly
                 models_continuous <- lapply(models_continuous, function(x) do.call(set.continuous.args.ace, x))
@@ -552,13 +537,6 @@ multi.ace <- function(data, tree, models = "ER", threshold = TRUE, special.token
 
 
 
-
-
-
-
-
-
-
     #########
     ##
     ## Handle the options
@@ -570,25 +548,19 @@ multi.ace <- function(data, tree, models = "ER", threshold = TRUE, special.token
 
 
 
-
-
-
-
-
-
-    ## castor.options
+    ## options.args
     warning("TODO: change castor options to just options (parsed to castor or ape)")
                 warning("TODO: multi.ace. ape options are: CI, ")
 
 
-    if(missing(castor.options)) {
+    if(missing(options.args)) {
         ## No options
-        castor.options <- NULL
+        options.args <- NULL
     } else {
         ## must be list with names
-        check.class(castor.options, "list")
-        if(is.null(names(castor.options))) {
-            stop("castor.options must be a named list of options for castor::asr_mk_model().", call. = FALSE)
+        check.class(options.args, "list")
+        if(is.null(names(options.args))) {
+            stop("options.args must be a named list of options for castor::asr_mk_model().", call. = FALSE)
         }
     }
 
@@ -596,169 +568,171 @@ multi.ace <- function(data, tree, models = "ER", threshold = TRUE, special.token
 
 
 
+    #########
+    ##
+    ## set the arguments for calls
+    ##
+    #########
 
-
-
-
- 
-
-    ## Setting up discrete characters
-    tree_args_list_discrete <- tree_args_list_continous <- NULL
-
-    ## Running discrete characters
-    if(do_discrete) {
-       
-
-        ## Set up the arguments for one tree
-        args_list <- mapply(make.args, characters_tables, characters_states, models,
-                            MoreArgs = list(castor.options, cores, estimation.details), SIMPLIFY = FALSE)
-
-        ## Add up the tree arguments
-        add.tree <- function(tree, args_list) {
-            return(lapply(args_list, function(arg, tree) c(arg, tree = list(tree)), tree))
-        }
-        tree_args_list <- lapply(tree, add.tree, args_list)
-    
-        if(verbose) cat("Done.\n")
-
-        if(do_parallel) {
-            ## Remove verbose
-            if(verbose) {
-                cat(paste0("Running the estimation for ", length(tree), " tree", ifelse(length(tree) > 1, "s ", " "), "using ", cores, " core", ifelse(cores == 1, "...", "s...")))
-                was_verbose <- TRUE
-                verbose <- FALSE
-            } else {
-                was_verbose <- FALSE
-            }
-
-            ## Set up the cluster
-            cluster <- parallel::makeCluster(cores)
-
-            ## Get the current environment
-            current_env <- environment()
-            ## Get the export lists
-            export_arguments_list <- c("tree_args_list",
-                                       "special.tokens",
-                                       "invariants",
-                                       "threshold.type",
-                                       "threshold",
-                                       "verbose",
-                                       "characters_states",
-                                       "invariant_characters_states")
-            export_functions_list <- c("one.tree.ace",
-                                       "castor.ace",
-                                       "tree.data.update",
-                                       "add.state.names",
-                                       "translate.likelihood")
-
-            ## Export from this environment
-            parallel::clusterExport(cluster, c(export_arguments_list, export_functions_list), envir = current_env)
-
-            ## Call the cluster
-            results_out <- parLapply(cl = cluster, tree_args_list, one.tree.ace, special.tokens, invariants, characters_states, threshold.type, threshold, invariant_characters_states, verbose)
-
-            ## Stop the cluster
-            parallel::stopCluster(cluster)
-
-            ## Reactivate the verbose
-            if(was_verbose) {
-                cat("Done.")
-                verbose <- TRUE
-            }
-        } else {
-            ## Running the ACE for each tree
-            results_out <- lapply(tree_args_list, one.tree.ace, special.tokens, invariants, characters_states, threshold.type, threshold, invariant_characters_states, verbose)
-        }
-        ## Separating results and details
-        details_out_discrete <- lapply(results_out, `[[`, 2)
-        results_out_discrete <- lapply(results_out, `[[`, 1)
-    }
-
-
-
-    ## Running continuous characters
-    if(do_continous) {
-
-        models
-        tree
-        data
-        #TODO: set up the code for continuous characters (model and shit)
-        warning("TODO: multi.ace")
-
-
-        ## Set the model list (should be handled above - when selecting the models)
-        character_models <- list("char1" = list(method = "REML",
-                                        model  = "BM",
-                                        scaled = TRUE),
-                         "char2" = list(method = "REML",
-                                        model  = "BM",
-                                        scaled = TRUE),
-                         "char3" = list(method = "REML",
-                                        model  = "BM",
-                                        scaled = TRUE),
-                         "char4" = list(method = "REML",
-                                        model  = "BM",
-                                        scaled = TRUE),
-                         "char5" = list(method = "REML",
-                                        model  = "BM",
-                                        scaled = TRUE))
-
-        ## Set the characters as a list (should be handled above - when splitting discrete characters)
-        characters <- apply(data, 2, list)
-
+    ## Setting the continuous characters call
+    if(do_continuous) {
         ## Create the character arguments
-        character_args <- mapply(function(character, ace.args) return(c(x = character, ace.args)), characters, character_models, SIMPLIFY = FALSE)
+        character_continuous_args <- mapply(function(character, ace.args) return(c(x = character, ace.args)), characters_continuous, models_continuous, SIMPLIFY = FALSE)
 
         ## Create the character and tree arguments
-        tree_character_args <- list()
+        tree_character_continuous_args <- list()
         for(one_tree in 1:length(tree)) {
-            tree_character_args[[one_tree]] <- lapply(character_args, function(character, tree) {character$phy <- tree; return(character)}, tree[[one_tree]])
+            tree_character_continuous_args[[one_tree]] <- lapply(character_continuous_args, function(character, tree) {character$phy <- tree; return(character)}, tree[[one_tree]])
+        }
+    }
+    ## Setting the discrete characters call
+    if(do_discrete) {
+        ## Set up the arguments for one tree
+        character_discrete_args <- mapply(make.args, characters_tables, characters_states, models_discrete, SIMPLIFY = FALSE)
+
+        ## Create the character and tree arguments
+        tree_character_discrete_args <- list()
+        for(one_tree in 1:length(tree)) {
+            tree_character_discrete_args[[one_tree]] <- lapply(character_discrete_args, function(character, tree) {character$tree <- tree; return(character)}, tree[[one_tree]])
+        }
+    }
+
+
+
+    #########
+    ##
+    ## run the calls
+    ##
+    #########
+
+    if(do_parallel) {
+        ## Do parallel!
+        # if(do_parallel) {
+        #     ## Remove verbose
+        #     if(verbose) {
+        #         cat(paste0("Running the estimation for ", length(tree), " tree", ifelse(length(tree) > 1, "s ", " "), "using ", cores, " core", ifelse(cores == 1, "...", "s...")))
+        #         was_verbose <- TRUE
+        #         verbose <- FALSE
+        #     } else {
+        #         was_verbose <- FALSE
+        #     }
+
+        #     ## Set up the cluster
+        #     cluster <- parallel::makeCluster(cores)
+
+        #     ## Get the current environment
+        #     current_env <- environment()
+        #     ## Get the export lists
+        #     export_arguments_list <- c("tree_args_list",
+        #                                "special.tokens",
+        #                                "invariants",
+        #                                "threshold.type",
+        #                                "threshold",
+        #                                "verbose",
+        #                                "characters_states",
+        #                                "invariant_characters_states")
+        #     export_functions_list <- c("one.tree.ace",
+        #                                "castor.ace",
+        #                                "tree.data.update",
+        #                                "add.state.names",
+        #                                "translate.likelihood")
+
+        #     ## Export from this environment
+        #     parallel::clusterExport(cluster, c(export_arguments_list, export_functions_list), envir = current_env)
+
+        #     ## Call the cluster
+        #     results_out <- parLapply(cl = cluster, tree_args_list, one.tree.ace, special.tokens, invariants, characters_states, threshold.type, threshold, invariant_characters_states, verbose)
+
+        #     ## Stop the cluster
+        #     parallel::stopCluster(cluster)
+
+        #     ## Reactivate the verbose
+        #     if(was_verbose) {
+        #         cat("Done.")
+        #         verbose <- TRUE
+        #     }
+        # }
+
+
+    } else {
+        ## Make the functions verbose
+        if(verbose) {
+            fun_discrete <- function(...) {
+                cat(".")
+                return(castor::asr_mk_model(...))
+            }
+            fun_continuous <- function(...) {
+                cat(".")
+                return(ape::ace(...))
+            }
+        } else {
+            fun_discrete <- castor::asr_mk_model
+            fun_continuous <- ape::ace
         }
 
-        ## Run all the ace
-        raw_estimates <- lapply(tree_character_args, lapply, function(x) do.call(what = ape::ace, args = x))
-        ## Remove the ugly call
-        raw_estimates <- lapply(raw_estimates, lapply, function(x) {x$call <- "ape::ace"; return(x)})
-
+        ## Run the continuous characters
+        if(do_continuous) {
+            ## Run all the ace
+            continuous_estimates <- lapply(tree_character_continuous_args, lapply, function(x) do.call(fun_continuous, x))
+            ## Remove the ugly call
+            continuous_estimates <- lapply(continuous_estimates, lapply, function(x) {x$call <- "ape::ace"; return(x)})
+            ## Add node labels
+            # TODO: to be removed if ape update
+            add.nodes <- function(obj, phy) {
+                ## Adding node labels to $ace and $CI95 (if available)
+                options(warn = -1)
+                names <- as.integer(names(obj$ace))
+                options(warn = 0)
+                if(!is.null(phy$node.label) && !is.na(names[1])) {
+                    ordered_node_labels <- phy$node.label[c(as.integer(names(obj$ace))- Ntip(phy))]
+                    names(obj$ace) <- ordered_node_labels
+                    if(!is.null(obj$CI95)) {
+                        rownames(obj$CI95) <- ordered_node_labels
+                    }
+                }
+                return(obj)
+            }
+            for(one_tree in 1:length(tree)) {
+                continuous_estimates[[one_tree]] <- lapply(continuous_estimates[[one_tree]], add.nodes, phy = tree[[one_tree]])
+            }
+        }
+        ## Run the discrete characters
+        if(do_discrete) {
+            ## Run all the ace
+            discrete_estimates <- lapply(tree_character_discrete_args, lapply, function(x) do.call(fun_discrete, x))
+        }
+        if(verbose) cat("Done.\n")
     }
 
+    #########
+    ##
+    ## handle the outputs
+    ##
+    #########
 
-    ## Standardise the whole procedure to:
-    #1- characters are sorted in two categories
-    #2- characters in each category get their models sorted
-    #3- characters from both categories get their trees attributed
-    #4- characters and tree are run with do.call
-
-    estimates_continuous <- estimates_discrete <- NULL
-    if(do_continous) {
-        ## Run all the ace
-        estimates_continuous <- lapply(tree_character_args_continuous, lapply, function(x) do.call(what = ape::ace, args = x))
-        ## Remove the ugly call
-        estimates_continuous <- lapply(estimates_continuous, lapply, function(x) {x$call <- "ape::ace"; return(x)})
+    ## Handle the continuous characters
+    if(do_continuous) {
+        ## Get the results in a matrix format
+        results_continuous <- lapply(lapply(continuous_estimates, lapply, `[[`, "ace"), function(x) do.call(cbind, x))
+        ## Get the details for continuous
+        details_continuous <- NULL 
+        #TODO: add details for continuous
     }
+
     if(do_discrete) {
-        ## Run all the castor
-        estimates_discrete <- lapply(tree_character_args_continuous, lapply, function(x) do.call(what = castor::asr_mk_model, args = x))
-        ## Remove the ugly call
-        estimates_discrete <- lapply(estimates_discrete, lapply, function(x) {x$call <- "ape::ace"; return(x)})
+        ## Get the results in a matrix format
+        results_discrete <- NULL
+
+        ## Apply the threshold method
+
+        ## Add invariant characters
+
+        ## Get the details
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-    ## Reorder the results
-    #TODO: reorder the results using continuous_char_ID and discrete_char_ID: like
-    details_out <- details_out[c(continuous_char_ID, discrete_char_ID)]
-    results_out <- results_out[c(continuous_char_ID, discrete_char_ID)]
+    ## Reorder the output results and details
+    # details_out <- details_out[c(continuous_char_ID, discrete_char_ID)]
+    # results_out <- results_out[c(continuous_char_ID, discrete_char_ID)]
     warning("TODO: multi.ace")
 
     ## Output a matrix

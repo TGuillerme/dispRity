@@ -71,17 +71,23 @@ convert.char.table <- function(character, character_states) {
 }
 
 ## Set up the characters arguments for one tree
-make.args <- function(character, character_states, model, castor.options, cores, estimation.details) {
+make.args <- function(character, character_states, model, castor.options = NULL, cores = NULL, estimation.details = NULL) {
     ## Get the list of arguments
     castor_args <- list(tip_states = NULL,
                         Nstates = length(character_states),
                         rate_model = model,
                         tip_priors = character,
                         check_input = FALSE,
-                        Ntrials = 1,
-                        Nthreads = cores,
-                        details = estimation.details)
+                        Ntrials = 1)
     ## Add options
+    if(!is.null(cores)) {
+        castor_args$Nthreads <- cores
+    } else {
+        castor_args$Nthreads <- 1
+    }
+    if(!is.null(estimation.details)) {
+        castor_args$details <- estimation.details
+    }
     if(!is.null(castor.options)) {
         castor.options <- c(castor_args, castor.options)
     }

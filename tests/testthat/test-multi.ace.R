@@ -414,7 +414,7 @@ test_that("multi.ace works", {
 })
 
 test_that("multi.ace works with continuous and mix", {
-
+    set.seed(1)
     ## The tree
     tree <- rcoal(15)
     tree <- makeNodeLabel(tree)

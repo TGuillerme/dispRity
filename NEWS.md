@@ -3,8 +3,10 @@ dispRity v1.8.3 (2024-01-18)
 
 ### NEW FEATURES
  * Redesigned `multi.ace` to be more modular and handle both continuous and/or discrete characters.
+  - inc. changed default `models` argument from `"ER"` to `"ER"` or `"BM"` depending on the character types.
+  - inc. change `"castor.options"` to the more generic `"options.args"`
   - [ ] `models` arg now takes character names + complex list (for `ape::ace`)
-  - [ ] `models` selection is now done after sorting the characters (for default: discrete = ER, continuous = BM/REML)
+  - [x] `models` selection is now done after sorting the characters (for default: discrete = ER, continuous = BM/REML)
   - [ ] add explanations of new `models` argument in the doc
   - [ ] change `castor.options` to `options` in general (with a named list: `list(castor = ..., ape = ...)`)
   - [ ] new internal function for running `ape::ace`
