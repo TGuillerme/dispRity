@@ -215,7 +215,7 @@ translate.likelihood <- function(character, threshold, select.states, special.to
 one.tree.ace <- function(args_list, special.tokens, invariants, characters_states, threshold.type, threshold, invariant_characters_states, verbose) {
 
     if(verbose) body(castor.ace)[[2]] <- substitute(cat("."))
-    if(verbose) cat("Running ancestral states estimations:\n")
+    # if(verbose) cat("Running ancestral states estimations:\n")
     ancestral_estimations <- lapply(args_list, castor.ace)
     ancestral_estimations <- mapply(add.state.names, ancestral_estimations, characters_states, SIMPLIFY = FALSE)
 
@@ -269,7 +269,7 @@ one.tree.ace <- function(args_list, special.tokens, invariants, characters_state
 
     ## Replace NAs
     replace.NA <- function(character, characters_states, special.tokens) {
-        return(unname(sapply(character, function(x) ifelse(x[[1]] == "NA", paste0(characters_states, collapse = sub("\\\\", "", special.tokens["uncertainty"])), x))))
+        return(sapply(character, function(x) ifelse(x[[1]] == "NA", paste0(characters_states, collapse = sub("\\\\", "", special.tokens["uncertainty"])), x)))
     }
     ancestral_states <- mapply(replace.NA, ancestral_states, characters_states, MoreArgs = list(special.tokens = special.tokens), SIMPLIFY = FALSE)
 
@@ -286,6 +286,17 @@ one.tree.ace <- function(args_list, special.tokens, invariants, characters_state
         estimations_details_out <- NULL
     }
 
-    if(verbose) cat(" Done.\n")
+    # if(verbose) cat(" Done.\n")
     return(list(results = ancestral_states, details = estimations_details_out))
+}
+
+## Bind the continuous and discrete characters and reorder them
+bind.characters <- function(continuous, discrete, order) {
+    bound <- cbind(as.data.frame(continuous), as.data.frame(discrete))
+    ## Get the new character IDs
+    cont_names <- colnames(continuous)
+    disc_names <- colnames(discrete)
+    ## Reorder the characters to match the input order
+    ordering <- matrix(c(1:ncol(bound), c(order$continuous, order$discrete)), ncol = 2, byrow = FALSE, dimnames = list(c(cont_names, disc_names), c("out", "in")))
+    return(bound[, names(sort(ordering[, 2, drop = TRUE]))])
 }

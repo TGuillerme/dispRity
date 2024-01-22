@@ -656,22 +656,21 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
 
     } else {
         ## Make the functions verbose
-        if(verbose) {
-            fun_discrete <- function(...) {
-                cat(".")
-                return(castor::asr_mk_model(...))
-            }
-            fun_continuous <- function(...) {
-                cat(".")
-                return(ape::ace(...))
-            }
-        } else {
-            fun_discrete <- castor::asr_mk_model
-            fun_continuous <- ape::ace
-        }
+        cat("Running ancestral states estimations:\n")
 
         ## Run the continuous characters
         if(do_continuous) {
+
+            ## Set verbose fun
+            if(verbose) {
+                fun_continuous <- function(...) {
+                    cat(".")
+                    return(ape::ace(...))
+                }
+            } else {
+                fun_continuous <- ape::ace
+            }
+
             ## Run all the ace
             continuous_estimates <- lapply(tree_character_continuous_args, lapply, function(x) do.call(fun_continuous, x))
             ## Remove the ugly call
@@ -698,8 +697,8 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
         }
         ## Run the discrete characters
         if(do_discrete) {
-            ## Run all the ace
-            discrete_estimates <- lapply(tree_character_discrete_args, lapply, function(x) do.call(fun_discrete, x))
+            ## Run all the ace for discrete
+            discrete_estimates <- lapply(tree_character_discrete_args, one.tree.ace, special.tokens, invariants, characters_states, threshold.type, threshold, invariant_characters_states, verbose)
         }
         if(verbose) cat("Done.\n")
     }
@@ -721,19 +720,34 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
 
     if(do_discrete) {
         ## Get the results in a matrix format
-        results_discrete <- NULL
-
-        ## Apply the threshold method
-
-        ## Add invariant characters
+        results_discrete <- lapply(lapply(discrete_estimates, `[[`, 1), function(x) do.call(cbind, x))
 
         ## Get the details
+        details_discrete <- lapply(discrete_estimates, `[[`, 2)
+        #TODO: add details for discrete
+
     }
+
 
     ## Reorder the output results and details
     # details_out <- details_out[c(continuous_char_ID, discrete_char_ID)]
     # results_out <- results_out[c(continuous_char_ID, discrete_char_ID)]
     warning("TODO: multi.ace")
+
+
+
+    ## Handle output
+    ## Combine the traits
+    if(do_discrete && do_continuous) {
+        ## Combine the traits
+        results_out <- mapply(bind.characters, results_continuous, results_discrete,
+            MoreArgs = list(order = list("continuous" = continuous_char_ID, "discrete" = discrete_char_ID)),
+            SIMPLIFY = FALSE)
+    }
+
+    ## Choose the output type:
+    warning("TODO")
+
 
     ## Output a matrix
     make.matrix <- function(results) {
@@ -764,6 +778,10 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
     #TODO: set up "dispRity" output
     #TODO: make sure node.labels available in output
     warning("DEBUG: multi.ace")
+
+
+    ## Handle details
+
 
     ## Results out
     if(is.null(estimation.details)) {
