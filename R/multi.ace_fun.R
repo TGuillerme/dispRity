@@ -300,3 +300,16 @@ bind.characters <- function(continuous, discrete, order) {
     ordering <- matrix(c(1:ncol(bound), c(order$continuous, order$discrete)), ncol = 2, byrow = FALSE, dimnames = list(c(cont_names, disc_names), c("out", "in")))
     return(bound[, names(sort(ordering[, 2, drop = TRUE]))])
 }
+
+
+
+## Combine the ace matrix with the tips
+add.tips <- function(ace, matrix) {
+    return(rbind(matrix, ace))
+}
+## Output a list from a matrix
+make.list <- function(results) {
+    ## Make into a list
+    return(unlist(apply(results, 1, list), recursive = FALSE))
+}
+## Make the dispRity object out of the results

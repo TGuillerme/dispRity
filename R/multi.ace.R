@@ -189,10 +189,6 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
     class(tree) <- "multiPhylo"
     node_labels <- lapply(node_labels, `[[`, 2)
 
-
-
-
-
     #########
     ##
     ## Handle the other options (threshold, brlen, verbose, parallel, output, estimation.details)
@@ -263,26 +259,6 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
         cores <- parallel
     }
 
-    ## output
-    if(missing(output)) {
-        output <- class(matrix)[1]
-    } else {
-        check.class(output, "character")
-        available_methods <- c("matrix", "list", "combined", "combined.list", "combined.matrix")#, "dispRity")
-        check.method(output, available_methods, "output option")
-        ## Combined
-        if(output == "combined") {
-            output <- paste(output, class(matrix)[1], sep = ".")
-        }
-    }
-
-    ## Check the estimation details
-    if(!is.null(estimation.details)) {
-        ## The return args from castor::asr_mk_model (1.6.6)
-        return_args <- c("success", "Nstates", "transition_matrix", "loglikelihood", "ancestral_likelihoods")
-        check.method(estimation.details, return_args, msg = "estimation.details")
-    }
-
     #########
     ## Handle the characters
     #########
@@ -316,6 +292,23 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
         n_characters_discrete <- sum(!character_is_continuous)
         do_discrete <- TRUE
         discrete_char_ID <- which(!character_is_continuous)
+    }
+
+    ## output
+    if(missing(output)) {
+        output <- class(matrix)[1]
+    } else {
+        check.class(output, "character")
+        available_methods <- c("matrix", "list", "combined", "combined.list", "combined.matrix", "dispRity")
+        check.method(output, available_methods, "output option")
+        ## Combined
+        if(output == "combined") {
+            output <- paste(output, class(matrix)[1], sep = ".")
+        }
+        ## Check dispRity
+        if(output == "dispRity" && do_discrete) {
+            stop("Only ancestral state estimations for continuous characters can be converted into a dispRity object.\nSelect an other output method.")
+        }
     }
 
     ## Handle the tokens
@@ -534,18 +527,11 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
         }
     }
 
-
-
-
     #########
     ##
     ## Handle the options
     ##
     #########
-
-
-
-
 
 
     ## options.args
@@ -564,9 +550,12 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
         }
     }
 
-
-
-
+    ## Check the estimation details
+    if(!is.null(estimation.details)) {
+        ## The return args from castor::asr_mk_model (1.6.6)
+        return_args <- c("success", "Nstates", "transition_matrix", "loglikelihood", "ancestral_likelihoods")
+        check.method(estimation.details, return_args, msg = "estimation.details")
+    }
 
     #########
     ##
@@ -597,8 +586,6 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
         }
     }
 
-
-
     #########
     ##
     ## run the calls
@@ -606,6 +593,7 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
     #########
 
     if(do_parallel) {
+        stop("TODO: do parallel multi.ace")
         ## Do parallel!
         # if(do_parallel) {
         #     ## Remove verbose
@@ -725,16 +713,7 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
         ## Get the details
         details_discrete <- lapply(discrete_estimates, `[[`, 2)
         #TODO: add details for discrete
-
     }
-
-
-    ## Reorder the output results and details
-    # details_out <- details_out[c(continuous_char_ID, discrete_char_ID)]
-    # results_out <- results_out[c(continuous_char_ID, discrete_char_ID)]
-    warning("TODO: multi.ace")
-
-
 
     ## Handle output
     ## Combine the traits
@@ -744,43 +723,24 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
             MoreArgs = list(order = list("continuous" = continuous_char_ID, "discrete" = discrete_char_ID)),
             SIMPLIFY = FALSE)
     }
-
-    ## Choose the output type:
-    warning("TODO")
-
-
-    ## Output a matrix
-    make.matrix <- function(results) {
-        return(lapply(results, function(data) do.call(cbind, data)))
+    if(do_discrete && !do_continuous) {
+        results_out <- results_discrete
     }
-    ## Combine the ace matrix with the tips
-    add.tips <- function(ace, matrix) {
-        return(rbind(matrix, ace))
+    if(do_continuous && !do_discrete) {
+        results_out <- results_continuous
     }
-    ## Output a list from a matrix
-    make.list <- function(results) {
-        ## Make into a list
-        return(unlist(apply(results, 1, list), recursive = FALSE))
-    }
-
-    ## Make the basic output matrix
-    output_matrix <- make.matrix(results_out)
     
     ## Handle output
     output_return <- switch(output,
-        matrix          = output_matrix,
-        list            = lapply(output_matrix, make.list),
-        combined.matrix = lapply(output_matrix, add.tips, matrix = matrix),
-        combined.list   = lapply(lapply(output_matrix, add.tips, matrix = matrix), make.list)#
-        #dispRity        = return(list("tips" = matrix, "nodes" = output_matrix))
+        matrix          = results_out,
+        list            = lapply(results_out, make.list),
+        combined.matrix = lapply(results_out, add.tips, matrix = matrix),
+        combined.list   = lapply(lapply(results_out, add.tips, matrix = matrix), make.list),
+        dispRity        = make.dispRity(data = lapply(results_out, add.tips, matrix = matrix), tree = tree)
         )
 
-    #TODO: set up "dispRity" output
-    #TODO: make sure node.labels available in output
-    warning("DEBUG: multi.ace")
-
-
     ## Handle details
+    warning("TODO: handle details")
 
 
     ## Results out
