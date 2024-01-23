@@ -107,11 +107,11 @@ reduce.space <- function(space, type, remove, parameters, tuning, verbose = FALS
                 if(remove < 100) {
                     remove <- remove/100
                 } else {
-                    stop("remove must be a probability or a percentage.")
+                    stop("remove must be a probability or a percentage.", call. = FALSE)
                 }
             }
         } else {
-            stop("remove must be a probability or a percentage.")
+            stop("remove must be a probability or a percentage.", call. = FALSE)
         }
 
         ## Straight returns if remove = 0 or 1

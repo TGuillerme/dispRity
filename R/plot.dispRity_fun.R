@@ -1574,7 +1574,7 @@ do.plot.projection <- function(data, specific.args, cent.tend, ...) {
 
         ## Get the central tendencies
         if(!all(specific.args$correlation.plot %in% names(data)) && length(specific.args$correlation.plot) != 2) {
-            stop(paste0("correlation.plot argument must contain 2 elements from data (data contains: ", paste(names(data), collapse = ", "), ")."))
+            stop(paste0("correlation.plot argument must contain 2 elements from data (data contains: ", paste(names(data), collapse = ", "), ")."), call. = FALSE)
         }
 
         ## Remove the phylogeny part (if exists)

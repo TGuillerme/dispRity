@@ -268,7 +268,7 @@ decompose.VCV <- function(one_subsets_bootstrap, fun, data, use_array, use_tree 
             #fun(data$covar[[one_subsets_bootstrap[1]]][[1]], data$covar[[one_subsets_bootstrap[2]]][[2]])
         }
     } else {
-        stop("Impossible to use tree metric in dispRity with covar (yet!).")
+        stop("Impossible to use tree metric in dispRity with covar (yet!).", call. = FALSE)
     }
 }
 

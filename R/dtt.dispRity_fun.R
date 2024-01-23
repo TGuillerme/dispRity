@@ -66,7 +66,7 @@ geiger.dtt.dispRity <- function(phy, data, metric, relative){
         ## By array
 
         if(length(dim(td$data)) != 3){
-            stop("Error in data: must be a matrix or a array of matrix (length(dim(data)) must be equal to 2 or 3).")
+            stop("Error in data: must be a matrix or a array of matrix (length(dim(data)) must be equal to 2 or 3).", call. = FALSE)
         }
 
         ## Looping through the array
@@ -161,7 +161,7 @@ geiger.sim.char <- function(phy, par, nsim = 1, model = c("BM", "speciational", 
     nbranches<-nrow(phy$edge)
     nspecies<-Ntip(phy)
     
-    if(length(root)>1) stop("'root' should be a single value")
+    if(length(root)>1) stop("'root' should be a single value", call. = FALSE)
     
     if(model%in%c("BM", "speciational")) {
 
@@ -190,7 +190,7 @@ geiger.sim.char <- function(phy, par, nsim = 1, model = c("BM", "speciational", 
         }
         for(j in 1:nchar) {
             m=model.matrix[[j]]
-            if(!root%in%c(1:nrow(m))) stop(paste("'root' must be a character state from 1 to ", nrow(m), sep=""))
+            if(!root%in%c(1:nrow(m))) stop(paste("'root' must be a character state from 1 to ", nrow(m), sep=""), call. = FALSE)
             p=lapply(el, function(l) matexpo(m*l))
             
             for(k in 1:nsim) {
@@ -221,16 +221,16 @@ geiger.make.modelmatrix <- function(m, model=c("BM", "speciational", "discrete")
             for(j in 1:length(m)){
                 #.check.Qmatrix
                 m=unique(dim(m[[j]]))
-                if(length(m)>1) stop("'Q' must be a square matrix")
+                if(length(m)>1) stop("'Q' must be a square matrix", call. = FALSE)
                 didx=1 + 0L:(m - 1L) * (m + 1)
-                if(!all(abs(rowSums(m[[j]]))<0.000001)) stop("rows of 'Q' must sum to zero")
-                if(!all(m[[j]][didx]<=0)) stop("diagonal elements of 'Q' should be negative")
-                if(!all(m[[j]][-didx]>=0)) stop("off-diagonal elements of 'Q' should be positive")
+                if(!all(abs(rowSums(m[[j]]))<0.000001)) stop("rows of 'Q' must sum to zero", call. = FALSE)
+                if(!all(m[[j]][didx]<=0)) stop("diagonal elements of 'Q' should be negative", call. = FALSE)
+                if(!all(m[[j]][-didx]>=0)) stop("off-diagonal elements of 'Q' should be positive", call. = FALSE)
             }
         }
     } else {
-        if(is.numeric(m)) m=as.matrix(m) else stop("Supply 'm' as a matrix of rates")
-        if(any(diag(m)<0)) stop("'m' appears to have negative variance component(s)")
+        if(is.numeric(m)) m=as.matrix(m) else stop("Supply 'm' as a matrix of rates", call. = FALSE)
+        if(any(diag(m)<0)) stop("'m' appears to have negative variance component(s)", call. = FALSE)
     }
     return(m)
 }

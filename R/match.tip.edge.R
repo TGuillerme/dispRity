@@ -58,7 +58,7 @@ match.tip.edge <- function(vector, phylo, replace.na, use.parsimony = TRUE) {
     ## TODO: check number of nodes as well
     if(length(vector) != Ntip(phylo)[1]) {
         if(length(vector) != Ntip(phylo)[1]+Nnode(phylo)[1]) {
-            stop(paste0("The input vector must of the same length as the number of tips (", Ntip(phylo)[1], ") or tips and nodes (", Ntip(phylo)[1]+Nnode(phylo)[1] ,") in phylo."))
+            stop(paste0("The input vector must of the same length as the number of tips (", Ntip(phylo)[1], ") or tips and nodes (", Ntip(phylo)[1]+Nnode(phylo)[1] ,") in phylo."), call. = FALSE)
         }
     }
     if(length(vector) == Ntip(phylo)[1]+Nnode(phylo)[1]) {

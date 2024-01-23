@@ -445,7 +445,7 @@ chrono.subsets <- function(data, tree = NULL, method, time, model, inc.nodes = F
         check.class(bind.data, "logical")
     } else {
         if(bind.data) {
-            stop(paste0("Impossible to bind the data to the trees since the number of matrices (", length(data), ") is not equal to the number of trees (", length(tree), ")."))
+            stop(paste0("Impossible to bind the data to the trees since the number of matrices (", length(data), ") is not equal to the number of trees (", length(tree), ")."), call. = FALSE)
         }
     }
 

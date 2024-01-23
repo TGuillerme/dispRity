@@ -179,7 +179,7 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
     ## Check the tree and data
     cleaned_data <- clean.data(matrix, tree)
     if(!is.na(cleaned_data$dropped_tips) || !is.na(cleaned_data$dropped_rows)) {
-        stop(paste0("Some names in the data or the tree(s) are not matching.\nYou can use dispRity::clean.data(", as.expression(match_call$data), ", ", as.expression(match_call$tree), ") to find out more."))
+        stop(paste0("Some names in the data or the tree(s) are not matching.\nYou can use dispRity::clean.data(", as.expression(match_call$data), ", ", as.expression(match_call$tree), ") to find out more."), call. = FALSE)
     }
 
     ## Find the node labels (and eventually add them to the trees)
@@ -306,7 +306,7 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
         }
         ## Check dispRity
         if(output == "dispRity" && do_discrete) {
-            stop("Only ancestral state estimations for continuous characters can be converted into a dispRity object.\nSelect an other output method.")
+            stop("Only ancestral state estimations for continuous characters can be converted into a dispRity object.\nSelect an other output method.", call. = FALSE)
         }
     }
 
@@ -338,12 +338,12 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
         ## Checking for the reserved character
         reserved <- c("\\@", "@") %in% special.tokens
         if(any(reserved)) {
-            stop("special.tokens cannot contain the character '@' since it is reserved for the dispRity::char.diff function.")
+            stop("special.tokens cannot contain the character '@' since it is reserved for the dispRity::char.diff function.", call. = FALSE)
         }
 
         ## Checking whether the special.tokens are unique
         if(length(unique(special.tokens)) != length(special.tokens)) {
-            stop("special.tokens cannot contain duplicated tokens.")
+            stop("special.tokens cannot contain duplicated tokens.", call. = FALSE)
         }
 
         ## If any special token is NA, convert them as "N.A" temporarily
@@ -455,25 +455,25 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
                     models_continuous <- set.continuous.args.ace.models(models, n = n_characters_continuous)
                 }
                 if(do_discrete && do_continuous) {
-                    stop("Only one model is specified but both discrete and continuous characters are detected.")
+                    stop("Only one model is specified but both discrete and continuous characters are detected.", call. = FALSE)
                 }
             } else {
                 ## Vector of models
                 if(length(models) != n_characters) {
-                    stop(paste0("Incorrect number of models specified: ", length(models), " models for ", n_characters, " characters."))
+                    stop(paste0("Incorrect number of models specified: ", length(models), " models for ", n_characters, " characters."), call. = FALSE)
                 } else {
                     check.method(models, c(available_models_discrete, available_models_continuous), msg = "models applied to characters")
                     ## Check models per character types
                     ## Discrete
                     if(sum(models %in% available_models_discrete) != n_characters_discrete) {
-                        stop(paste0("Incorrect number of models specified: ", sum(models %in% available_models_discrete), " models for ", n_characters, " discrete characters."))
+                        stop(paste0("Incorrect number of models specified: ", sum(models %in% available_models_discrete), " models for ", n_characters, " discrete characters."), call. = FALSE)
                     } else {
                         ## Discrete models (valid)
                         models_discrete <- as.list(models[models %in% available_models_discrete])
                     }
                     ## Continuous
                     if(sum(models %in% available_models_continuous) != n_characters_continuous) {
-                        stop(paste0("Incorrect number of models specified: ", sum(models %in% available_models_continuous), " models for ", n_characters, " continuous characters."))
+                        stop(paste0("Incorrect number of models specified: ", sum(models %in% available_models_continuous), " models for ", n_characters, " continuous characters."), call. = FALSE)
                     } else {
                         ## Continuous models (valid)
                         models_continuous <- sapply(models[models %in% available_models_continuous], set.continuous.args.ace.models, n = 1)
@@ -485,7 +485,7 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
         ## Models is a transition matrix (discrete only)
         if(models_class == "matrix") {
             if(do_continuous) {
-                stop("Transition matrices can be used as models only for discrete characters.")
+                stop("Transition matrices can be used as models only for discrete characters.", call. = FALSE)
             } else {
                 models_discrete <- replicate(n_characters_discrete, models, simplify = FALSE)
             }
@@ -495,7 +495,7 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
         if(models_class == "list") {
             if(length(models) == 1) {
                 if(do_discrete && do_continuous) {
-                    stop("Only one model is specified but both discrete and continuous characters are detected.")
+                    stop("Only one model is specified but both discrete and continuous characters are detected.", call. = FALSE)
                 }
                 ## Set the models for discrete
                 if(do_discrete) {
@@ -532,18 +532,20 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
     ## Handle the options
     ##
     #########
-
-    ## options.args
-    warning("TODO: change castor options to just options (parsed to castor or ape)")
-
     if(missing(options.args)) {
         ## No options
         options.args <- NULL
     } else {
         ## must be list with names
         check.class(options.args, "list")
+        options_error <- "options.args must be an unambiguous named list of options for castor::asr_mk_model() or ape::ace()."
+        ## Check the available names
+        options_avail <- c(names(formals(castor::asr_mk_model)), names(formals(ape::ace)))
+
+
+
         if(is.null(names(options.args))) {
-            stop("options.args must be a named list of options for castor::asr_mk_model().", call. = FALSE)
+            stop(options_error, call. = FALSE)
         }
     }
 

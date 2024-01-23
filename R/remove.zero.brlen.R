@@ -87,7 +87,7 @@ remove.zero.brlen <- function(tree, slide, verbose = FALSE) {
     if(any(connect_to_tip <- root_edges[,2] <= Ntip(tree))) {
         ## Check if that branch length is zero
         if(tree_bkp$edge.length[bad_edge <- which(root_edges[connect_to_tip,1] == tree_bkp$edge[,1])[connect_to_tip]] == 0) {
-                stop(paste0("The root of the tree is connecting to a tip with a zero branch length: neither can be slid. You can try moving the tip manually by assigning a value to the following edge:\n    ", as.expression(match_call$tree), "$edge.length[",bad_edge ,"] <- your_value"))
+                stop(paste0("The root of the tree is connecting to a tip with a zero branch length: neither can be slid. You can try moving the tip manually by assigning a value to the following edge:\n    ", as.expression(match_call$tree), "$edge.length[",bad_edge ,"] <- your_value"), call. = FALSE)
         }
     }
 

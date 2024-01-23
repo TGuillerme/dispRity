@@ -124,7 +124,7 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
     if(matrix_class == "list") {
         ## Check length
         if(length(matrix) != 2) {
-            stop(paste0("When matrix argument is a list, it must contain only two elements.\nYou can convert ", as.expression(match_call$matrix), " to a matrix using:\n", as.expression(match_call$matrix), " <- do.call(rbind, ", as.expression(match_call$matrix), ")"))
+            stop(paste0("When matrix argument is a list, it must contain only two elements.\nYou can convert ", as.expression(match_call$matrix), " to a matrix using:\n", as.expression(match_call$matrix), " <- do.call(rbind, ", as.expression(match_call$matrix), ")"), call. = FALSE)
         }
 
         ## Convert into a matrix
@@ -141,7 +141,7 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
     ## Checking for the reserved character
     reserved <- grep("\\@", matrix)
     if(length(reserved) > 0) {
-        stop("The matrix cannot contain the character '@' since it is reserved for the dispRity::char.diff function.")
+        stop("The matrix cannot contain the character '@' since it is reserved for the dispRity::char.diff function.", call. = FALSE)
     }
 
     ## Method is hamming by default
@@ -174,12 +174,12 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
     ## Checking for the reserved character
     reserved <- c("\\@", "@") %in% special.tokens
     if(any(reserved)) {
-        stop("special.tokens cannot contain the character '@' since it is reserved for the dispRity::char.diff function.")
+        stop("special.tokens cannot contain the character '@' since it is reserved for the dispRity::char.diff function.", call. = FALSE)
     }
 
     ## Checking whether the special.tokens are unique
     if(length(unique(special.tokens)) != length(special.tokens)) {
-        stop("special.tokens cannot contain duplicated tokens.")
+        stop("special.tokens cannot contain duplicated tokens.", call. = FALSE)
     }
 
     ## If any special token is NA, convert them as "N.A" temporarily
@@ -221,7 +221,7 @@ char.diff <- function(matrix, method = "hamming", translate = TRUE, special.toke
         check.class(correction, "function")
         test_correction <- make.metric(correction, silent = TRUE)$type
         if(!is.null(test_correction) && test_correction == "error") {
-            stop("Incorrect correction function.")
+            stop("Incorrect correction function.", call. = FALSE)
         }
     }
 

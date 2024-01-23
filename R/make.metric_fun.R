@@ -11,6 +11,6 @@ check.metric <- function(metric) {
             return("class.metric")
         }
     } else {
-        stop("Invalid metric.")
+        stop("Invalid metric.", call. = FALSE)
     }
 }

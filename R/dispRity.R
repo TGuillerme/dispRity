@@ -342,7 +342,7 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
         ## Serial is a list, check if it contains the right information (pairs of things that exist)
         pairs <- unique(unlist(lapply(between.groups, length))) 
         if(length(pairs) > 1 || pairs != 2 || max(unlist(between.groups)) > length(data$subsets)) {
-            stop("The provided list of groups (between.groups) must be a list of pairs of subsets in the data.")
+            stop("The provided list of groups (between.groups) must be a list of pairs of subsets in the data.", call. = FALSE)
         }
         list_of_pairs <- between.groups
         is_between.groups <- TRUE
