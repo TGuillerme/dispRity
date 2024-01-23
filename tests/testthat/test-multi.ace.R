@@ -23,7 +23,6 @@ test_that("multi.ace works", {
                         parallel = FALSE,
                         output = "list")
  
-
     error <- capture_error(multi.ace(data = "matrix_complex",
                             tree = tree_test, 
                             models = "ER", 
@@ -144,7 +143,6 @@ test_that("multi.ace works", {
                             output = "something"))
     expect_equal(error[[1]], "output option must be one of the following: matrix, list, combined, combined.list, combined.matrix, dispRity.")
 
-
     error <- capture_error(multi.ace(data = matrix_complex,
                             tree = tree_test, 
                             models = "ER", 
@@ -223,7 +221,7 @@ test_that("multi.ace works", {
                         verbose = FALSE,
                         parallel = FALSE,
                         output = "list"))
-    expect_equal(error[[1]], "models should be list of characters or/and matrices of length 10.")
+    expect_equal(error[[1]], "models list must be the same length as the number of characters (10).")
 
     ## Castor options works well
     error <- capture_error(results <- multi.ace(data = list_matrix,
@@ -231,8 +229,8 @@ test_that("multi.ace works", {
                         verbose = FALSE,
                         parallel = FALSE,
                         output = "list",
-                        castor.options = list(2)))
-    expect_equal(error[[1]], "castor.options must be a named list of options for castor::asr_mk_model().")
+                        options.args = list(2)))
+    expect_equal(error[[1]], "options.args must be an unambiguous named list of options for castor::asr_mk_model() or ape::ace().")
 
     ## Threshold works well
     results <- multi.ace(data = list_matrix,
@@ -315,7 +313,6 @@ test_that("multi.ace works", {
     expect_is(ancestral_states[[1]], "matrix")
     expect_equal(dim(ancestral_states[[1]]), c(11, 10))
 
-
     ## Parallel works
     # expect_is(multi.ace(matrix_test, tree_test, parallel = TRUE), "list")
     # test_verbose <- capture.output(test <- multi.ace(matrix_test, tree_test, parallel = 2, verbose = TRUE))
@@ -385,10 +382,7 @@ test_that("multi.ace works", {
                             estimation.details = c("loglikelihood", "transition_matrix")))
     expect_equal(test,
               c("Preparing the data:.....Done." ,
-                "Running ancestral states estimations:" ,
-                ".......... Done.",
-                "Running ancestral states estimations:" ,
-                ".......... Done."))
+                "Running ancestral states estimations:....................Done."))
 
     # set.seed(3)
     # test <- capture.output(results <- multi.ace(data = matrix_complex,
@@ -422,7 +416,7 @@ test_that("multi.ace works with continuous and mix", {
     data <- space.maker(elements = 15, dimensions = 5, distribution = rnorm, elements.name = tree$tip.label)
 
     ## Run the multi.ace on the continuous data
-    test <- multi.ace(data = data, tree = tree, output = "combined.matrix", verbose = TRUE)
+    expect_warning(test <- multi.ace(data = data, tree = tree, output = "combined.matrix", verbose = TRUE))
 
     ## Works well for continuous
     expect_is(test, "matrix")
@@ -436,11 +430,10 @@ test_that("multi.ace works with continuous and mix", {
     data <- cbind(data, "new_char2" = as.character(sample(1:2, 15, replace = TRUE)))
 
     ## Works well for mixed characters
-    test <- multi.ace(data = data, tree = tree, output = "combined.matrix")
+    expect_warning(test <- multi.ace(data = data, tree = tree, output = "combined.matrix"))
     expect_is(test, "data.frame")
     expect_equal(dim(test), c(15+14, 7))
     expect_equal(sort(rownames(test)), sort(c(tree$tip.label, tree$node.label)))
-
     classes <- character()
     for(i in 1:ncol(test)) {
         classes[i] <- class(test[, i]) 

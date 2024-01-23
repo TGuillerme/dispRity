@@ -390,8 +390,14 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
             has_invariants <- TRUE
 
             ## Stop if they are only invariant characters
-            if(length(invariants) == n_characters_discrete) {
-                warning(match_call$data, " contains only invariant discrete characters.")
+            if(do_continuous) {
+                if(length(invariants) == n_characters_discrete) {
+                    warning(match_call$data, " contains only invariant discrete characters.")
+                }
+            } else {
+                if(length(invariants) == n_characters_discrete) {
+                    stop.call(call = match_call$data, " contains only invariant characters.")
+                }
             }
 
             ## Remove the characters
@@ -534,18 +540,29 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
     #########
     if(missing(options.args)) {
         ## No options
-        options.args <- NULL
+        options.ace <- options.castor <- options.args <- NULL
     } else {
         ## must be list with names
         check.class(options.args, "list")
         options_error <- "options.args must be an unambiguous named list of options for castor::asr_mk_model() or ape::ace()."
         ## Check the available names
         options_avail <- c(names(formals(castor::asr_mk_model)), names(formals(ape::ace)))
-
-
-
-        if(is.null(names(options.args))) {
+        if(is.null(names(options.args)) || !all(names(options.args) %in% options_avail)) {
             stop(options_error, call. = FALSE)
+        }
+        ## Sort the options
+        options.ace <- options.castor <- NULL
+        if(do_continuous) {
+            options.ace <- options.args[names(options.args) %in% names(formals(ape::ace))]
+            if(length(options.ace) == 0) {
+                options.ace <- NULL
+            }
+        }
+        if(do_discrete) {
+            options.castor <- options.args[names(options.args) %in% names(formals(castor::asr_mk_model))]
+            if(length(options.castor) == 0) {
+                options.castor <- NULL
+            }
         }
     }
 
@@ -577,7 +594,7 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
     ## Setting the continuous characters call
     if(do_continuous) {
         ## Create the character arguments
-        character_continuous_args <- mapply(function(character, ace.args) return(c(x = character, ace.args)), characters_continuous, models_continuous, SIMPLIFY = FALSE)
+        character_continuous_args <- mapply(function(character, ace.args, options = NULL) return(c(x = character, ace.args, options)), characters_continuous, models_continuous, MoreArgs = list(options = options.ace), SIMPLIFY = FALSE)
 
         ## Create the character and tree arguments
         tree_character_continuous_args <- list()
@@ -596,7 +613,7 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
         }
 
         ## Set up the arguments for one tree
-        character_discrete_args <- mapply(make.args, characters_tables, characters_states, models_discrete, MoreArgs = list(estimation.details = details_out), SIMPLIFY = FALSE)
+        character_discrete_args <- mapply(make.args, characters_tables, characters_states, models_discrete, MoreArgs = list(estimation.details = details_out, castor.options = options.castor), SIMPLIFY = FALSE)
 
         ## Create the character and tree arguments
         tree_character_discrete_args <- list()
@@ -661,7 +678,7 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
         # }
     } else {
         ## Make the functions verbose
-        if(verbose) cat("Running ancestral states estimations:\n")
+        if(verbose) cat("Running ancestral states estimations:")
 
         ## Run the continuous characters
         if(do_continuous) {
@@ -776,9 +793,6 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
         combined.list   = lapply(lapply(results_out, add.tips, matrix = matrix), make.list),
         dispRity        = make.dispRity(data = lapply(results_out, add.tips, matrix = matrix), tree = tree)
         )
-
-    ## Handle details
-    warning("TODO: handle details")
 
     ## Results out
     if(is.null(estimation.details)) {
