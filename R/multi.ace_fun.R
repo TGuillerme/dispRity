@@ -300,6 +300,22 @@ bind.characters <- function(continuous, discrete, order) {
     ordering <- matrix(c(1:ncol(bound), c(order$continuous, order$discrete)), ncol = 2, byrow = FALSE, dimnames = list(c(cont_names, disc_names), c("out", "in")))
     return(bound[, names(sort(ordering[, 2, drop = TRUE]))])
 }
+## Bind the continuous and discrete details and reorder them
+bind.details <- function(continuous, discrete, order) {
+    ## Reorder the details out per characters
+    if(length(length(discrete[[1]])) > 1) {
+        discrete_details <- list()
+        for(one_char in 1:length(discrete[[1]])) {
+            discrete_details[[one_char]] <- lapply(discrete, `[[`, 1)    
+        }
+        if(!is.null(discrete[[1]])) {
+            names(discrete_details) <- names(discrete[[1]])
+        }
+    }
+    ## Bind the two lists
+    return(c(continuous, discrete_details)[c(order$continuous, order$discrete)])
+}
+
 
 
 

@@ -34,7 +34,7 @@ test_that("multi.ace works", {
                             verbose = FALSE,
                             parallel = FALSE,
                             output = "list"))
-    expect_equal(error[[1]], "matrix must be of class matrix or list.")
+    expect_equal(error[[1]], "matrix must be of class matrix or list or data.frame.")
 
     error <- capture_error(multi.ace(data = matrix_complex,
                             tree = "tree_test", 
@@ -58,7 +58,7 @@ test_that("multi.ace works", {
                             verbose = FALSE,
                             parallel = FALSE,
                             output = "list"))
-    expect_equal(error[[1]], "models must be of class character or matrix or list.")
+    expect_equal(error[[1]], "models must be of class character or list or matrix.")
     
     error <- capture_error(multi.ace(data = matrix_complex,
                             tree = tree_test, 
@@ -142,7 +142,7 @@ test_that("multi.ace works", {
                             verbose = FALSE,
                             parallel = FALSE,
                             output = "something"))
-    expect_equal(error[[1]], "output option must be one of the following: matrix, list, combined, combined.list, combined.matrix.")
+    expect_equal(error[[1]], "output option must be one of the following: matrix, list, combined, combined.list, combined.matrix, dispRity.")
 
 
     error <- capture_error(multi.ace(data = matrix_complex,

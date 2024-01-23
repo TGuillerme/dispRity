@@ -18,7 +18,7 @@
 #' @param parallel \code{logical}, whether to use parallel algorithm (\code{TRUE}) or not (\code{FALSE} - default).
 #' @param output optional, see Value section below.
 #' @param options.args optional, a named list of options to be passed to function called by \code{castor::asr_mk_model}.
-#' @param estimation.details optional, whether to also return the details for each estimation as returned by \code{castor::asr_mk_model}. This argument can be left \code{NULL} (default) or be any combination of the elements returned by \code{castor::asr_mk_model} (e.g. \code{c("loglikelihood", "transition_matrix")}).
+#' @param estimation.details optional, whether to also return the details for each estimation as returned by \code{castor::asr_mk_model} or \code{ape::ace}. This argument can be left \code{NULL} (default) or be any combination of the elements returned by \code{castor::asr_mk_model} or \code{ape::ace} (e.g. \code{c("loglikelihood", "transition_matrix", "CI95")}).
 #' 
 #' @details
 #' 
@@ -533,11 +533,8 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
     ##
     #########
 
-
     ## options.args
     warning("TODO: change castor options to just options (parsed to castor or ape)")
-    warning("TODO: multi.ace. ape options are: CI, ")
-
 
     if(missing(options.args)) {
         ## No options
@@ -553,7 +550,19 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
     ## Check the estimation details
     if(!is.null(estimation.details)) {
         ## The return args from castor::asr_mk_model (1.6.6)
-        return_args <- c("success", "Nstates", "transition_matrix", "loglikelihood", "ancestral_likelihoods")
+        return_args_discrete <- c("success", "Nstates", "transition_matrix", "loglikelihood", "ancestral_likelihoods")
+        return_args_continuous <- c("CI95", "sigma2", "loglik")
+        if(do_discrete && do_continuous) {
+            return_args <- c(return_args_discrete, return_args_continuous)
+        } else {
+            if(do_discrete) {
+                return_args <- return_args_discrete
+            }
+            if(do_continuous) {
+                return_args <- return_args_continuous
+            }
+        }
+        ## Check the requested details
         check.method(estimation.details, return_args, msg = "estimation.details")
     }
 
@@ -576,8 +585,16 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
     }
     ## Setting the discrete characters call
     if(do_discrete) {
+
+        ## Set the details to return (if any)
+        if(any(return_args_discrete %in% estimation.details)) {
+            details_out <- return_args_discrete[return_args_discrete %in% estimation.details]
+        } else {
+            details_out <- NULL
+        }
+
         ## Set up the arguments for one tree
-        character_discrete_args <- mapply(make.args, characters_tables, characters_states, models_discrete, SIMPLIFY = FALSE)
+        character_discrete_args <- mapply(make.args, characters_tables, characters_states, models_discrete, MoreArgs = list(estimation.details = details_out), SIMPLIFY = FALSE)
 
         ## Create the character and tree arguments
         tree_character_discrete_args <- list()
@@ -699,9 +716,17 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
     if(do_continuous) {
         ## Get the results in a matrix format
         results_continuous <- lapply(lapply(continuous_estimates, lapply, `[[`, "ace"), function(x) do.call(cbind, x))
+        
         ## Get the details for continuous
-        details_continuous <- NULL 
-        #TODO: add details for continuous
+        if(any(return_args_continuous %in% estimation.details)) {
+            ## Get which details to grep
+            details_out <- return_args_continuous[return_args_continuous %in% estimation.details]
+
+            ## Get the details
+            details_continuous <- lapply(continuous_estimates, lapply, function(x, details_out) return(x[details_out]), details_out)
+        } else {
+            details_continuous <- NULL
+        }
     }
 
     if(do_discrete) {
@@ -710,7 +735,6 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
 
         ## Get the details
         details_discrete <- lapply(discrete_estimates, `[[`, 2)
-        #TODO: add details for discrete
     }
 
     ## Handle output
@@ -720,12 +744,26 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
         results_out <- mapply(bind.characters, results_continuous, results_discrete,
             MoreArgs = list(order = list("continuous" = continuous_char_ID, "discrete" = discrete_char_ID)),
             SIMPLIFY = FALSE)
+        ## Return the details per characters
+        if(is.null(details_continuous)) {
+            ## Make a list of nulls
+            details_continuous <- replicate(length(tree), lapply(as.list(1:n_characters_continuous), function(x) return(NULL)), simplify = FALSE)
+        }
+        if(is.null(details_discrete[[1]])) {
+            ## Make a list of nulls
+            details_discrete <- replicate(length(tree), lapply(as.list(1:n_characters_discrete), function(x) return(NULL)), simplify = FALSE)
+        }
+        details_out <- mapply(bind.details, details_continuous, details_discrete,
+            MoreArgs = list(order = list("continuous" = continuous_char_ID, "discrete" = discrete_char_ID)),
+            SIMPLIFY = FALSE)
     }
     if(do_discrete && !do_continuous) {
         results_out <- results_discrete
+        details_out <- details_discrete
     }
     if(do_continuous && !do_discrete) {
         results_out <- results_continuous
+        details_out <- details_continuous
     }
     
     ## Handle output
