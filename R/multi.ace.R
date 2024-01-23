@@ -583,6 +583,8 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
         }
         ## Check the requested details
         check.method(estimation.details, return_args, msg = "estimation.details")
+    } else {
+        return_args_discrete <- return_args_continuous <- NULL
     }
 
     #########

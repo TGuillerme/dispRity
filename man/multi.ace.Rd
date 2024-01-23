@@ -42,7 +42,7 @@ multi.ace(
 
 \item{options.args}{optional, a named list of options to be passed to function called by \code{castor::asr_mk_model}.}
 
-\item{estimation.details}{optional, whether to also return the details for each estimation as returned by \code{castor::asr_mk_model}. This argument can be left \code{NULL} (default) or be any combination of the elements returned by \code{castor::asr_mk_model} (e.g. \code{c("loglikelihood", "transition_matrix")}).}
+\item{estimation.details}{optional, whether to also return the details for each estimation as returned by \code{castor::asr_mk_model} or \code{ape::ace}. This argument can be left \code{NULL} (default) or be any combination of the elements returned by \code{castor::asr_mk_model} or \code{ape::ace} (e.g. \code{c("loglikelihood", "transition_matrix", "CI95")}).}
 }
 \value{
 Returns a \code{"matrix"} or \code{"list"} of ancestral states. By default, the function returns the ancestral states in the same format as the input \code{matrix}. This can be changed using the option \code{output = "matrix"} or \code{"list"} to force the class of the output.

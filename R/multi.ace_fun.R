@@ -311,9 +311,10 @@ bind.details <- function(continuous, discrete, order) {
         if(!is.null(discrete[[1]])) {
             names(discrete_details) <- names(discrete[[1]])
         }
+        discrete <- discrete_details
     }
     ## Bind the two lists
-    return(c(continuous, discrete_details)[c(order$continuous, order$discrete)])
+    return(c(continuous, discrete)[c(order$continuous, order$discrete)])
 }
 
 

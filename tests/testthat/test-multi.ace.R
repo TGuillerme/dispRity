@@ -416,7 +416,7 @@ test_that("multi.ace works with continuous and mix", {
     data <- space.maker(elements = 15, dimensions = 5, distribution = rnorm, elements.name = tree$tip.label)
 
     ## Run the multi.ace on the continuous data
-    expect_warning(test <- multi.ace(data = data, tree = tree, output = "combined.matrix", verbose = TRUE))
+    expect_warning(test <- multi.ace(data = data, tree = tree, output = "combined.matrix", verbose = FALSE))
 
     ## Works well for continuous
     expect_is(test, "matrix")
