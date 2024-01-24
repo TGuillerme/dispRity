@@ -144,7 +144,7 @@ slice.tree_parent.node <- function(tree, tip) {
     parent_node <- tree$node.label[parent_edge-Ntip(tree)]
     #error if not working
     if (length(parent_node) != 1) {
-        stop('No parent node found!')
+        stop("No parent node found!", call. = FALSE)
     }
     return(parent_node)
 }

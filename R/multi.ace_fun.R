@@ -1,3 +1,27 @@
+## Set default arguments for continuous models
+set.continuous.args.ace <- function(method, model, scaled, kappa, corStruct) {
+    continuous_args <- list(type = "continuous")
+    continuous_args$model <- ifelse(missing(model), "BM", model)
+    continuous_args$scaled <- ifelse(missing(scaled), TRUE, scaled)
+    continuous_args$kappa <- ifelse(missing(kappa), 1, kappa)
+    if(missing(corStruct)) {
+        continuous_args$corStruct <- NULL
+    } else {
+        continuous_args$corStruct <- corStruct
+    }
+    return(continuous_args)
+}
+## Set default arguments for continuous models with "models" as input (= method or model)
+set.continuous.args.ace.models <- function(models, n) {
+    if(models == "BM" || models == "REML") {
+        ## Set everything default
+        return(replicate(n, set.continuous.args.ace(), simplify = FALSE))
+    } else {
+        return(replicate(n, set.continuous.args.ace(method = models), simplify = FALSE))
+    }
+}
+
+
 ## Finding or adding node labels
 get.node.labels <- function(tree) {
     if(is.null(tree$node.label)) {
@@ -47,17 +71,23 @@ convert.char.table <- function(character, character_states) {
 }
 
 ## Set up the characters arguments for one tree
-make.args <- function(character, character_states, model, castor.options, cores, estimation.details) {
+make.args <- function(character, character_states, model, castor.options = NULL, cores = NULL, estimation.details = NULL) {
     ## Get the list of arguments
     castor_args <- list(tip_states = NULL,
                         Nstates = length(character_states),
                         rate_model = model,
                         tip_priors = character,
                         check_input = FALSE,
-                        Ntrials = 1,
-                        Nthreads = cores,
-                        details = estimation.details)
+                        Ntrials = 1)
     ## Add options
+    if(!is.null(cores)) {
+        castor_args$Nthreads <- cores
+    } else {
+        castor_args$Nthreads <- 1
+    }
+    if(!is.null(estimation.details)) {
+        castor_args$details <- estimation.details
+    }
     if(!is.null(castor.options)) {
         castor.options <- c(castor_args, castor.options)
     }
@@ -105,16 +135,16 @@ castor.ace <- function(castor_args) {
         details <- NULL
     }
 
-#     stop("DEBUG multi.ace_fun::castor.ace")
+    # stop("DEBUG multi.ace_fun::castor.ace")
 
-# asr_mk_model( tree = castor_args$tree, 
-#               tip_states = castor_args$tip_states, 
-#               Nstates = castor_args$Nstates, 
-#               tip_priors = castor_args$tip_priors, 
-#               rate_model = castor_args$rate_model, 
-#               Ntrials = castor_args$Ntrials, 
-#               check_input =castor_args$check_input, 
-#               Nthreads = castor_args$Nthreads)
+    # asr_mk_model( tree = castor_args$tree, 
+    #               tip_states = castor_args$tip_states, 
+    #               Nstates = castor_args$Nstates, 
+    #               tip_priors = castor_args$tip_priors, 
+    #               rate_model = castor_args$rate_model, 
+    #               Ntrials = castor_args$Ntrials, 
+    #               check_input =castor_args$check_input, 
+    #               Nthreads = castor_args$Nthreads)
 
 
     ## Increase the number of trials if unsuccessful
@@ -185,7 +215,7 @@ translate.likelihood <- function(character, threshold, select.states, special.to
 one.tree.ace <- function(args_list, special.tokens, invariants, characters_states, threshold.type, threshold, invariant_characters_states, verbose) {
 
     if(verbose) body(castor.ace)[[2]] <- substitute(cat("."))
-    if(verbose) cat("Running ancestral states estimations:\n")
+    # if(verbose) cat("Running ancestral states estimations:\n")
     ancestral_estimations <- lapply(args_list, castor.ace)
     ancestral_estimations <- mapply(add.state.names, ancestral_estimations, characters_states, SIMPLIFY = FALSE)
 
@@ -239,7 +269,7 @@ one.tree.ace <- function(args_list, special.tokens, invariants, characters_state
 
     ## Replace NAs
     replace.NA <- function(character, characters_states, special.tokens) {
-        return(unname(sapply(character, function(x) ifelse(x[[1]] == "NA", paste0(characters_states, collapse = sub("\\\\", "", special.tokens["uncertainty"])), x))))
+        return(sapply(character, function(x) ifelse(x[[1]] == "NA", paste0(characters_states, collapse = sub("\\\\", "", special.tokens["uncertainty"])), x)))
     }
     ancestral_states <- mapply(replace.NA, ancestral_states, characters_states, MoreArgs = list(special.tokens = special.tokens), SIMPLIFY = FALSE)
 
@@ -256,6 +286,47 @@ one.tree.ace <- function(args_list, special.tokens, invariants, characters_state
         estimations_details_out <- NULL
     }
 
-    if(verbose) cat(" Done.\n")
+    # if(verbose) cat(" Done.\n")
     return(list(results = ancestral_states, details = estimations_details_out))
 }
+
+## Bind the continuous and discrete characters and reorder them
+bind.characters <- function(continuous, discrete, order) {
+    bound <- cbind(as.data.frame(continuous), as.data.frame(discrete))
+    ## Get the new character IDs
+    cont_names <- colnames(continuous)
+    disc_names <- colnames(discrete)
+    ## Reorder the characters to match the input order
+    ordering <- matrix(c(1:ncol(bound), c(order$continuous, order$discrete)), ncol = 2, byrow = FALSE, dimnames = list(c(cont_names, disc_names), c("out", "in")))
+    return(bound[, names(sort(ordering[, 2, drop = TRUE]))])
+}
+## Bind the continuous and discrete details and reorder them
+bind.details <- function(continuous, discrete, order) {
+    ## Reorder the details out per characters
+    if(length(length(discrete[[1]])) > 1) {
+        discrete_details <- list()
+        for(one_char in 1:length(discrete[[1]])) {
+            discrete_details[[one_char]] <- lapply(discrete, `[[`, 1)    
+        }
+        if(!is.null(discrete[[1]])) {
+            names(discrete_details) <- names(discrete[[1]])
+        }
+        discrete <- discrete_details
+    }
+    ## Bind the two lists
+    return(c(continuous, discrete)[c(order$continuous, order$discrete)])
+}
+
+
+
+
+## Combine the ace matrix with the tips
+add.tips <- function(ace, matrix) {
+    return(rbind(matrix, ace))
+}
+## Output a list from a matrix
+make.list <- function(results) {
+    ## Make into a list
+    return(unlist(apply(results, 1, list), recursive = FALSE))
+}
+## Make the dispRity object out of the results (only for continuous)

@@ -1116,7 +1116,7 @@ projections.tree <- function(matrix, tree, type = c("root","ancestor"), referenc
     }
     ## Sanitizing (to avoid obscure error message!)
     if(any(is_null <- unlist(lapply(from_to, is.null)))) {
-        stop(paste0("The following type argument is not recognised in projections.tree: ", paste0(type[is_null], collapse = ", ")))
+        stop(paste0("The following type argument is not recognised in projections.tree: ", paste0(type[is_null], collapse = ", ")), call. = FALSE)
     }
 
     if(all(invariables)) {

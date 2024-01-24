@@ -516,7 +516,7 @@ tree.age(tree, order = "present")
 
 ## `multi.ace`
 
-This function allows to run the `ape::ace` function (ancestral characters estimations) on multiple trees.
+This function allows to run ancestral characters estimations on multiple trees.
 In it's most basic structure (e.g. using all default arguments) this function is using a mix of `ape::ace` and `castor::asr_mk_model` depending on the data and the situation and is generally faster than both functions when applied to a list of trees.
 However, this function provides also some more complex and modular functionalities, especially appropriate when using discrete morphological character data.
 
@@ -636,7 +636,7 @@ For example, you can use different models for each character via the `models` ar
 
 ### Feeding the results to `char.diff` to get distance matrices
 
-Finally, after running your ancestral states estimations, it is not uncommon to then use these resulting data to calculate the distances between taxa and then ordinate the results to measure disparity.
+After running your ancestral states estimations, it is not uncommon to then use these resulting data to calculate the distances between taxa and then ordinate the results to measure disparity.
 You can do that using the `char.diff` function [described above](#char.diff) but instead of measuring the distances between characters (columns) you can measure the distances between species (rows).
 You might notice that this function uses the same modular token and behaviour descriptions.
 That makes sense because they're using the same core C functions implemented in dispRity that greatly speed up distance calculations.
@@ -659,3 +659,64 @@ distances <- lapply(ancestral_states, char.diff, method = "mord", by.col = FALSE
 ```
 
 And we now have a list of distances matrices with ancestral states estimated!
+
+### Running ancestral states estimations for continuous characters
+
+You can also run `multi.ace` on continuous characters.
+The function detects any continuous characters as being of class `"numeric"` and runs them using the `ape::ace` function.
+
+```{r}
+set.seed(1)
+## Creating three coalescent trees
+my_trees <- replicate(3, rcoal(15), simplify = FALSE)
+## Adding node labels
+my_trees <- lapply(my_trees, makeNodeLabel)
+## Making into a multiPhylo object
+class(my_trees) <- "multiPhylo"
+
+## Creating a matrix of continuous characters
+data <- space.maker(elements = 15, dimensions = 5, distribution = rnorm,
+                    elements.name = my_trees[[1]]$tip.label)
+```
+
+With such data and trees you can easily run the `multi.ace` estimations. 
+By default, the estimations use the default arguments from `ape::ace`, knowingly a Brownian Motion (`model = "BM"`) with the REML method (`method = "REML"`; this method "first estimates the ancestral value at the root (aka, the phylogenetic mean), then the variance of the Brownian motion process is estimated by optimizing the residual log-likelihood" - from `?ape::ace`).
+
+```{r}
+## Running multi.ace on continuous data
+my_ancestral_states <- multi.ace(data, my_trees)
+## We end up with three matrices of node states estimates
+str(my_ancestral_states)
+```
+
+This results in three matrices with ancestral states for the nodes.
+When using continuous characters, however, you can output the results directly as a `dispRity` object that allows visualisation and other normal dispRity pipeline:
+
+```{r}
+## Running multi.ace on continuous data
+my_ancestral_states <- multi.ace(data, my_trees, output = "dispRity")
+## We end up with three matrices of node states estimates
+plot(my_ancestral_states)
+```
+
+You can also mix continuous and discrete characters together.
+By default the `multi.ace` detects which character is of which type and applies the correct estimations based on that.
+However you can always specify models or other details character per characters.
+
+
+```{r}
+## Adding two discrete characters
+data <- as.data.frame(data)
+data <- cbind(data, "new_char" = as.character(sample(1:2, 15, replace = TRUE)))
+data <- cbind(data, "new_char2" = as.character(sample(1:2, 15, replace = TRUE)))
+
+## Setting up different models for each characters
+## BM for all 5 continuous characters
+## and ER and ARD for the two discrete ones
+my_models <- c(rep("BM", 5), "ER", "ARD")
+
+## Running the estimation with the specified models
+my_ancestral_states <- multi.ace(data, my_trees, models = my_models)
+```
+
+Of course all the options discussed in the first part above also can apply here!

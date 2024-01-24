@@ -144,7 +144,7 @@ test.metric <- function(data, metric, ..., shifts, shift.options, model, replica
         ## Check the arguments
         arguments <- names(formals(model))
         if(length(arguments) > 1 || arguments != "data") {
-            stop("model function argument can only take \"data\" as an argument.")
+            stop("model function argument can only take \"data\" as an argument.", call. = FALSE)
         }
     }
 

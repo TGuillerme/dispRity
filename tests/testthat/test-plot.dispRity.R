@@ -416,3 +416,18 @@ test_that("preview works with fuzzy matrices and trees", {
   expect_null(plot(data, specific.args = list(tree = TRUE)))
   expect_null(plot(data, specific.args = list(matrix = 1, tree = 1)))
 })
+
+test_that("get.center.scale.range gives the correct scales", {
+    set.seed(1)
+    ## X bigger
+    xrange <- range(rnorm(10))
+    yrange <- range(runif(10))
+    test <- get.center.scale.range(xrange, yrange)
+    expect_gt(diff(xrange), diff(yrange))
+    expect_equal(diff(test$xlim), diff(test$ylim))
+
+    yrange <- range(runif(10, max = 100))
+    test <- get.center.scale.range(xrange, yrange)
+    expect_lt(diff(xrange), diff(yrange))
+    expect_equal(diff(test$xlim), diff(test$ylim))
+})
