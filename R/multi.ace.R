@@ -4,19 +4,14 @@
 #'
 #' @param data A \code{matrix}, \code{data.frame} or \code{list} with the characters for each taxa.
 #' @param tree A \code{phylo} or \code{mutiPhylo} object (if the \code{tree} argument contains node labels, they will be used to name the output).
-#' @param models A \code{vector} of models to be passed to \code{castor::asr_mk_model}.
-
-
-#TODO: add info about continuous characters
-
-
+#' @param models A \code{character} vector, unambiguous named \code{list} or \code{matrix} to be passed as model arguments to \code{castor::asr_mk_model} or \code{ape::ace} (see details).
 #' @param threshold either \code{logical} for applying a relative threshold (\code{TRUE} - default) or no threshold (\code{FALSE}) or a \code{numeric} value of the threshold (e.g. 0.95). See details.
 #' @param special.tokens optional, a named \code{vector} of special tokens to be passed to \code{\link[base]{grep}} (make sure to protect the character with \code{"\\\\"}). By default \code{special.tokens <- c(missing = "\\\\?", inapplicable = "\\\\-", polymorphism = "\\\\&", uncertainty = "\\\\/")}. Note that \code{NA} values are not compared and that the symbol "@" is reserved and cannot be used.
 #' @param special.behaviours optional, a \code{list} of one or more functions for a special behaviour for \code{special.tokens}. See details.
 #' @param brlen.multiplier optional, a vector of branch length modifiers (e.g. to convert time branch length in changes branch length) or a list of vectors (the same length as \code{tree}).
 #' @param verbose \code{logical}, whether to be verbose (\code{TRUE}) or not (\code{FALSE} - default).
-#' @param parallel \code{logical}, whether to use parallel algorithm (\code{TRUE}) or not (\code{FALSE} - default).
-#' @param output optional, see Value section below.
+#' @param parallel Either a \code{logical}, whether to use parallel algorithm (\code{TRUE}) or not (\code{FALSE} - default); or directly an \code{integer} indicating the number of cores to use (note that if \code{parallel = 1}, one core will be used but the parallel integration will still be called).
+#' @param output optional, see \code{Value} section below.
 #' @param options.args optional, a named list of options to be passed to function called by \code{castor::asr_mk_model}.
 #' @param estimation.details optional, whether to also return the details for each estimation as returned by \code{castor::asr_mk_model} or \code{ape::ace}. This argument can be left \code{NULL} (default) or be any combination of the elements returned by \code{castor::asr_mk_model} or \code{ape::ace} (e.g. \code{c("loglikelihood", "transition_matrix", "CI95")}).
 #' 
@@ -66,14 +61,8 @@
 #' @return
 #' Returns a \code{"matrix"} or \code{"list"} of ancestral states. By default, the function returns the ancestral states in the same format as the input \code{matrix}. This can be changed using the option \code{output = "matrix"} or \code{"list"} to force the class of the output.
 #' To output the combined ancestral states and input, you can use \code{"combined"} (using the input format) or \code{"combined.matrix"} or \code{"combined.list"}.
+#' If using continuous characters only, you can use the output option \code{"dispRity"} to directly output a usable \code{dispRity} object with all trees and all the data (estimated and input).
 #' \emph{NOTE} that if the input data had multiple character types (continuous and discrete) and that \code{"matrix"} or \code{"combined.matrix"} output is requested, the function returns a \code{"data.frame"}.
-
-
-#TODO: add dispRity format
-
-
-
-# To output the light version to be passed to \code{dispRity} functions (a list of two elements: 1) the input \code{matrix} and 2) a list of ancestral states matrices) you can use \code{output = "dispRity"}.
 #' 
 #' @examples
 #' set.seed(42)
@@ -308,6 +297,10 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
         if(output == "dispRity" && do_discrete) {
             stop("Only ancestral state estimations for continuous characters can be converted into a dispRity object.\nSelect an other output method.", call. = FALSE)
         }
+    }
+    ## Set data.frame output to matrix
+    if(output == "data.frame") {
+        output <- "matrix"
     }
 
     ## Handle the tokens
@@ -603,6 +596,16 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
         for(one_tree in 1:length(tree)) {
             tree_character_continuous_args[[one_tree]] <- lapply(character_continuous_args, function(character, tree) {character$phy <- tree; return(character)}, tree[[one_tree]])
         }
+        ## Set verbose fun
+        if(verbose) {
+            fun_continuous <- function(...) {
+                cat(".")
+                return(ape::ace(...))
+            }
+        } else {
+            fun_continuous <- ape::ace
+        }
+
     }
     ## Setting the discrete characters call
     if(do_discrete) {
@@ -631,70 +634,90 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
     #########
 
     if(do_parallel) {
-        stop("TODO: do parallel multi.ace")
-        ## Do parallel!
-        # if(do_parallel) {
-        #     ## Remove verbose
-        #     if(verbose) {
-        #         cat(paste0("Running the estimation for ", length(tree), " tree", ifelse(length(tree) > 1, "s ", " "), "using ", cores, " core", ifelse(cores == 1, "...", "s...")))
-        #         was_verbose <- TRUE
-        #         verbose <- FALSE
-        #     } else {
-        #         was_verbose <- FALSE
-        #     }
+        ## Remove verbose
+        if(verbose) {
+            cat(paste0("Running the estimation for ", length(tree), " tree", ifelse(length(tree) > 1, "s ", " "), "using ", cores, " core", ifelse(cores == 1, "...", "s...")))
+            was_verbose <- TRUE
+            verbose <- FALSE
+        } else {
+            was_verbose <- FALSE
+        }
 
-        #     ## Set up the cluster
-        #     cluster <- parallel::makeCluster(cores)
+        ## Set up the cluster
+        cluster <- parallel::makeCluster(cores)
 
-        #     ## Get the current environment
-        #     current_env <- environment()
-        #     ## Get the export lists
-        #     export_arguments_list <- c("tree_args_list",
-        #                                "special.tokens",
-        #                                "invariants",
-        #                                "threshold.type",
-        #                                "threshold",
-        #                                "verbose",
-        #                                "characters_states",
-        #                                "invariant_characters_states")
-        #     export_functions_list <- c("one.tree.ace",
-        #                                "castor.ace",
-        #                                "tree.data.update",
-        #                                "add.state.names",
-        #                                "translate.likelihood")
+        ## Get the current environment
+        current_env <- environment()
 
-        #     ## Export from this environment
-        #     parallel::clusterExport(cluster, c(export_arguments_list, export_functions_list), envir = current_env)
+        export_arguments_list <- export_functions_list <- character()
 
-        #     ## Call the cluster
-        #     results_out <- parLapply(cl = cluster, tree_args_list, one.tree.ace, special.tokens, invariants, characters_states, threshold.type, threshold, invariant_characters_states, verbose)
+        if(do_discrete) {
+            ## Get the export lists
+            export_arguments_list <- c("tree_character_discrete_args",
+                                       "special.tokens",
+                                       "invariants",
+                                       "threshold.type",
+                                       "threshold",
+                                       "verbose",
+                                       "characters_states",
+                                       "invariant_characters_states")
+            export_functions_list <- c("one.tree.ace",
+                                       "castor.ace",
+                                       "tree.data.update",
+                                       "add.state.names",
+                                       "translate.likelihood")
+        }
+        if(do_continuous) {
+            export_arguments_list <- c(export_arguments_list, "tree_character_continuous_args")
+            export_functions_list <- c(export_functions_list, "fun_continuous")
+        }
 
-        #     ## Stop the cluster
-        #     parallel::stopCluster(cluster)
+        ## Export from this environment
+        parallel::clusterExport(cluster, c(export_arguments_list, export_functions_list), envir = current_env)
 
-        #     ## Reactivate the verbose
-        #     if(was_verbose) {
-        #         cat("Done.")
-        #         verbose <- TRUE
-        #     }
-        # }
+        ## Call the cluster
+        if(do_discrete) {
+            discrete_estimates <- parLapply(cl = cluster, tree_character_discrete_args, one.tree.ace, special.tokens, invariants, characters_states, threshold.type, threshold, invariant_characters_states, verbose)
+        }
+        if(do_continuous) {
+            continuous_estimates <- parLapply(cl = cluster, tree_character_continuous_args, lapply, function(x) do.call(fun_continuous, x))
+            ## Remove the ugly call
+            continuous_estimates <- lapply(continuous_estimates, lapply, function(x) {x$call <- "ape::ace"; return(x)})
+            ## Add node labels
+            # TODO: to be removed if ape update
+            add.nodes <- function(obj, phy) {
+                ## Adding node labels to $ace and $CI95 (if available)
+                options(warn = -1)
+                names <- as.integer(names(obj$ace))
+                options(warn = 0)
+                if(!is.null(phy$node.label) && !is.na(names[1])) {
+                    ordered_node_labels <- phy$node.label[c(as.integer(names(obj$ace))- Ntip(phy))]
+                    names(obj$ace) <- ordered_node_labels
+                    if(!is.null(obj$CI95)) {
+                        rownames(obj$CI95) <- ordered_node_labels
+                    }
+                }
+                return(obj)
+            }
+            for(one_tree in 1:length(tree)) {
+                continuous_estimates[[one_tree]] <- lapply(continuous_estimates[[one_tree]], add.nodes, phy = tree[[one_tree]])
+            }
+        }
+
+        ## Stop the cluster
+        parallel::stopCluster(cluster)
+
+        ## Reactivate the verbose
+        if(was_verbose) {
+            cat("Done.")
+            verbose <- TRUE
+        }
     } else {
         ## Make the functions verbose
         if(verbose) cat("Running ancestral states estimations:")
 
         ## Run the continuous characters
         if(do_continuous) {
-
-            ## Set verbose fun
-            if(verbose) {
-                fun_continuous <- function(...) {
-                    cat(".")
-                    return(ape::ace(...))
-                }
-            } else {
-                fun_continuous <- ape::ace
-            }
-
             ## Run all the ace
             continuous_estimates <- lapply(tree_character_continuous_args, lapply, function(x) do.call(fun_continuous, x))
             ## Remove the ugly call

@@ -314,10 +314,10 @@ test_that("multi.ace works", {
     expect_equal(dim(ancestral_states[[1]]), c(11, 10))
 
     ## Parallel works
-    # expect_is(multi.ace(matrix_test, tree_test, parallel = TRUE), "list")
-    # test_verbose <- capture.output(test <- multi.ace(matrix_test, tree_test, parallel = 2, verbose = TRUE))
-    # expect_is(test, "list")
-    # expect_equal(test_verbose, c("Preparing the data:.....Done.", "Running the estimation for 2 trees using 2 cores...Done."))
+    expect_is(multi.ace(matrix_test, tree_test, parallel = 1), "list")
+    test_verbose <- capture.output(test <- multi.ace(matrix_test, tree_test, parallel = 2, verbose = TRUE))
+    expect_is(test, "list")
+    expect_equal(test_verbose, c("Preparing the data:.....Done.", "Running the estimation for 2 trees using 2 cores...Done."))
 
     ## Examples work
     set.seed(42)
@@ -434,6 +434,17 @@ test_that("multi.ace works with continuous and mix", {
     expect_is(test, "data.frame")
     expect_equal(dim(test), c(15+14, 7))
     expect_equal(sort(rownames(test)), sort(c(tree$tip.label, tree$node.label)))
+    classes <- character()
+    for(i in 1:ncol(test)) {
+        classes[i] <- class(test[, i]) 
+    }
+    expect_equal(unique(classes), c("numeric", "character"))
+
+    ## Works for parallel
+    test <- multi.ace(data = data, tree = tree, parallel = 1)
+    expect_is(test, "data.frame")
+    expect_equal(dim(test), c(14, 7))
+    expect_equal(sort(rownames(test)), sort(c(tree$node.label)))
     classes <- character()
     for(i in 1:ncol(test)) {
         classes[i] <- class(test[, i]) 
