@@ -25,7 +25,7 @@ set.continuous.args.ace.models <- function(models, n) {
 ## Finding or adding node labels
 get.node.labels <- function(tree) {
     if(is.null(tree$node.label)) {
-        tree$node.label <- seq((Ntip(tree)+1):(Ntip(tree)+Nnode(tree)))
+        tree <- makeNodeLabel(tree, prefix = "n")
         return(list(tree, tree$node.label))
     } else {
         return(list(tree, tree$node.label))

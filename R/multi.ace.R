@@ -281,6 +281,11 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
         do_discrete <- TRUE
         discrete_char_ID <- which(!character_is_continuous)
     }
+    ## Correct input class if all continuous
+    if(do_continuous && !do_discrete && input_class == "data.frame") {
+        matrix <- as.matrix(matrix)
+        input_class <- "matrix"
+    }
 
     ## output
     if(missing(output)) {
