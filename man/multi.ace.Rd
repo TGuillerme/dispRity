@@ -24,7 +24,7 @@ multi.ace(
 
 \item{tree}{A \code{phylo} or \code{mutiPhylo} object (if the \code{tree} argument contains node labels, they will be used to name the output).}
 
-\item{models}{A \code{vector} of models to be passed to \code{castor::asr_mk_model}.}
+\item{models}{A \code{character} vector, unambiguous named \code{list} or \code{matrix} to be passed as model arguments to \code{castor::asr_mk_model} or \code{ape::ace} (see details).}
 
 \item{threshold}{either \code{logical} for applying a relative threshold (\code{TRUE} - default) or no threshold (\code{FALSE}) or a \code{numeric} value of the threshold (e.g. 0.95). See details.}
 
@@ -36,9 +36,9 @@ multi.ace(
 
 \item{verbose}{\code{logical}, whether to be verbose (\code{TRUE}) or not (\code{FALSE} - default).}
 
-\item{parallel}{\code{logical}, whether to use parallel algorithm (\code{TRUE}) or not (\code{FALSE} - default).}
+\item{parallel}{Either a \code{logical}, whether to use parallel algorithm (\code{TRUE}) or not (\code{FALSE} - default); or directly an \code{integer} indicating the number of cores to use (note that if \code{parallel = 1}, one core will be used but the parallel integration will still be called).}
 
-\item{output}{optional, see Value section below.}
+\item{output}{optional, see \code{Value} section below.}
 
 \item{options.args}{optional, a named list of options to be passed to function called by \code{castor::asr_mk_model}.}
 
@@ -47,6 +47,7 @@ multi.ace(
 \value{
 Returns a \code{"matrix"} or \code{"list"} of ancestral states. By default, the function returns the ancestral states in the same format as the input \code{matrix}. This can be changed using the option \code{output = "matrix"} or \code{"list"} to force the class of the output.
 To output the combined ancestral states and input, you can use \code{"combined"} (using the input format) or \code{"combined.matrix"} or \code{"combined.list"}.
+If using continuous characters only, you can use the output option \code{"dispRity"} to directly output a usable \code{dispRity} object with all trees and all the data (estimated and input).
 \emph{NOTE} that if the input data had multiple character types (continuous and discrete) and that \code{"matrix"} or \code{"combined.matrix"} output is requested, the function returns a \code{"data.frame"}.
 }
 \description{
