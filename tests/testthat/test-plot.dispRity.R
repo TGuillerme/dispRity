@@ -417,7 +417,7 @@ test_that("preview works with fuzzy matrices and trees", {
   expect_null(plot(data, specific.args = list(matrix = 1, tree = 1)))
 })
 
-test_that("get.center.scale.range gives the correct scales" {
+test_that("get.center.scale.range gives the correct scales", {
     set.seed(1)
     ## X bigger
     xrange <- range(rnorm(10))
