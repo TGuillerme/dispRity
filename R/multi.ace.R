@@ -464,18 +464,22 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
                     check.method(models, c(available_models_discrete, available_models_continuous), msg = "models applied to characters")
                     ## Check models per character types
                     ## Discrete
-                    if(sum(models %in% available_models_discrete) != n_characters_discrete) {
-                        stop(paste0("Incorrect number of models specified: ", sum(models %in% available_models_discrete), " models for ", n_characters, " discrete characters."), call. = FALSE)
-                    } else {
-                        ## Discrete models (valid)
-                        models_discrete <- as.list(models[models %in% available_models_discrete])
+                    if(do_discrete) {
+                        if(sum(models %in% available_models_discrete) != n_characters_discrete) {
+                            stop(paste0("Incorrect number of models specified: ", sum(models %in% available_models_discrete), " models for ", n_characters, " discrete characters."), call. = FALSE)
+                        } else {
+                            ## Discrete models (valid)
+                            models_discrete <- as.list(models[models %in% available_models_discrete])
+                        }
                     }
                     ## Continuous
-                    if(sum(models %in% available_models_continuous) != n_characters_continuous) {
-                        stop(paste0("Incorrect number of models specified: ", sum(models %in% available_models_continuous), " models for ", n_characters, " continuous characters."), call. = FALSE)
-                    } else {
-                        ## Continuous models (valid)
-                        models_continuous <- sapply(models[models %in% available_models_continuous], set.continuous.args.ace.models, n = 1)
+                    if(do_continuous) {
+                        if(sum(models %in% available_models_continuous) != n_characters_continuous) {
+                            stop(paste0("Incorrect number of models specified: ", sum(models %in% available_models_continuous), " models for ", n_characters, " continuous characters."), call. = FALSE)
+                        } else {
+                            ## Continuous models (valid)
+                            models_continuous <- sapply(models[models %in% available_models_continuous], set.continuous.args.ace.models, n = 1)
+                        }
                     }
                 }
             }
@@ -525,7 +529,6 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
             models_discrete <- models_discrete[-invariants]
         }
     }
-
     #########
     ##
     ## Handle the options
