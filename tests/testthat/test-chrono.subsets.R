@@ -844,3 +844,18 @@ test_that("tree Sanitizing works", {
     error <- capture_error(chrono.subsets(BeckLee_mat50, BeckLee_tree_wrong, method = "discrete", time = 5, inc.nodes = FALSE))
     expect_equal(error[[1]], "The data is not matching the tree labels (you can use ?clean.data to match both data and tree).")    
 })
+
+test_that("automatic time binning by size works", {
+    ## Sanitizing
+    ## Error when no tree
+    ## Error when wrong format for time
+    ## Error when size is too big
+
+    ## Works with a single tree and data
+
+    ## Works with a tree distribution and a single data
+
+    ## Works with a single tree and a data distribution
+
+    ## Works with multiple trees and multiple data
+})

@@ -6,7 +6,7 @@
 #' @param data A \code{matrix} or a \code{list} of matrices.
 #' @param tree \code{NULL} (default) or an optional \code{phylo} or \code{multiPhylo} object matching the data and with a \code{root.time} element. This argument can be left missing if \code{method = "discrete"} and all elements are present in the optional \code{FADLAD} argument.
 #' @param method The time subsampling method: either \code{"discrete"} (or \code{"d"}) or \code{"continuous"} (or \code{"c"}).
-#' @param time Either a single \code{integer} for the number of discrete or continuous samples or a \code{vector} containing the age of each sample.
+#' @param time Either a single \code{integer} for the number of discrete or continuous samples; a \code{vector} containing the age of each sample; or, if \code{method = "discrete"} a character in the format \code{"n.elements"} where n is the minimum number of elements per bin (see details). 
 #' @param model One of the following models: \code{"acctran"}, \code{"deltran"}, \code{"random"}, \code{"proximity"}, \code{"equal.split"} or \code{"gradual.split"}. Is ignored if \code{method = "discrete"}.
 #' @param inc.nodes A \code{logical} value indicating whether nodes should be included in the time subsets. Is ignored if \code{method = "continuous"}.
 #' @param FADLAD \code{NULL} (default) or an optional \code{data.frame} or \code{list} of \code{data.frame}s containing the first and last occurrence data.
@@ -36,6 +36,8 @@
 #'      }
 #' }
 #' N.B. \code{"equal.split"} and \code{"gradual.split"} differ from the punctuated models by outputting a node/tip probability table rather than simply the node and the tip selected. In other words, when bootstrapping using \code{\link{boot.matrix}}, the two former models will properly integrate the probability to the bootstrap procedure (i.e. different tips/nodes can be drawn) and the two latter models will only use the one node/tip determined by the model before the bootstrapping.
+#'
+#' If \code{method = "discrete"}, the \code{time} argument can be set to be a minimum number of elements per bin. For example if you need time bins with at least 15 elements in them, you can use \code{time = "15.elements"}. The algorithm will then start from the root and try to split the data in order to contain that number of elements. This results in non-equal time bins and the last time bin contains usually more than the number of required elements (e.g. if the tree is ultrametric, the last time bin contains all the living tips).
 #'
 #' @references
 #' Guillerme T. & Cooper N. \bold{2018}. Time for a rethink: time sub-sampling methods in disparity-through-time analyses. Palaeontology. DOI: 10.1111/pala.12364.
@@ -312,7 +314,20 @@ chrono.subsets <- function(data, tree = NULL, method, time, model, inc.nodes = F
 
     ## TIME
     ## time must be numeric or integer
-    silent <- check.class(time, c("numeric", "integer"))
+    time_class <- check.class(time, c("numeric", "integer", "character"))
+    if(time_class == "character" && method != "discrete" && (!is.null(data$tree) || !is.missing(tree))) {
+        stop("time can only be in the format n.elements if method is set to discrete and a tree is provided.", call. = FALSE)
+    } else {
+        if(grep(".element", time) < 1) {
+            stop("time argument for discrete bins with a minimum number of elements should be in the format \"n.elements\" where n is the number of elements (e.g. \"15.elements\" for 15 elements per bin)")
+        }
+        ## Get the time size
+        size <- as.numeric(strsplit(time, ".element")[[1]][1])
+        ## Get the time bins
+        time <- get.bin.elements.size(tree, size, continuous.boundaries = TRUE, return.boundaries = TRUE)
+    }
+
+
     ## If time is a single value create the time vector by sampling evenly from just after the tree root time (1%) to the present
     if(length(time) == 1) {
         ## time must be at least three if discrete

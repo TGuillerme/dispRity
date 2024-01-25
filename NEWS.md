@@ -1,8 +1,9 @@
-dispRity v1.8.3 (2024-01-24) 
+dispRity v1.8.4 (2024-01-25) 
 =========================
 
 ### NEW FEATURES
  * Redesigned `multi.ace` to be more modular and handle both continuous and/or discrete characters. Changes include a **change in argument name** from `castor.options` to the generic `options.args` (the options can be provided the same way as before though); and a **change in default arguments** for `models` which can now be left missing (previously was `"ER"`) and applies `"ER"` and `"BM"` for respectively discrete and continuous characters by default.
+ * `chrono.subsets` now have an option to create discrete bins that contain a minimum set number of elements.
 
 ### MINOR IMPROVEMENTS
 

@@ -300,3 +300,72 @@ match.tree.data <- function(elements, tree, data) {
     return(elements)
 }
 
+
+
+#' tree a tree with nodelabels
+#' size the size of the bins to go through
+#' continuous.boundaries logical, whether to connect the boundaries (TRUE) or not (FALSE)
+#' return.boundaries logical, returns a vector of boundaries
+#' return.elements logical, returns a list of elements
+get.bin.elements.size <- function(tree, size, continuous.boundaries = TRUE, return.boundaries = TRUE, return.elements = TRUE) {
+    ## Sanitizing:
+    if(size > (Ntip(tree)+Nnode(tree))/2) {
+        stop("Not enough elements in the tree to create to subsets with the requested size (", size, ").", call. = FALSE)
+    }
+    ## size is bigger than Ntips+Nnodes/2 (at least two bins should be available!)
+
+    ## Get the tree ages
+    tree_ages <- tree.age(tree)
+    ## Sort them through time
+    tree_ages <- tree_ages[order(tree_ages$ages, decreasing = TRUE), ]
+
+    ## Get the youngest ages
+    min_age <- min(tree_ages$age)
+    tree_ages_loop <- tree_ages
+    ## Loop through each bin
+    bin_elements <- list()
+    while(nrow(tree_ages_loop) > group_size) {
+        ## Get the first n elements
+        selected <- tree_ages_loop[1:group_size, ]
+
+        ## Check the bin age bounds
+        if(min_age %in% selected$ages) {
+            ## Select everything with this age
+            to_remove <- unique(c(1:group_size, which(tree_ages_loop$ages == min_age)))
+            selected <- tree_ages_loop[to_remove, ]
+        } else {
+            to_remove <- 1:group_size
+        }
+
+        ## Get the elements per bin and the bin boundaries
+        bin_elements[[length(bin_elements)+1]] <- selected$elements
+        names(bin_elements)[length(bin_elements)] <- paste(rev(range(selected$ages)), collapse = " - ")
+        tree_ages_loop <- tree_ages_loop[-c(to_remove), ]
+    }
+
+    ## Make the bins limits connect
+    if(continuous.boundaries) {
+        boundaries <- lapply(strsplit(names(bin_elements), split = " - "), as.numeric)
+        for(one_bound in 2:length(boundaries)) {
+            ## Get the boundary limits
+            limit <- mean(c(boundaries[[one_bound]][1], boundaries[[one_bound-1]][2]))
+            ## Replace the boundaries by the limit
+            boundaries[[one_bound]][1] <- boundaries[[one_bound-1]][2] <- limit
+        }
+        ## Rename the boundaries
+        names(bin_elements) <- unlist(lapply(boundaries, paste, collapse = " - "))
+    }
+
+    output <- list()
+    if(return.boundaries) {
+        output$time <- unique(unlist(lapply(strsplit(names(bin_elements), split = " - "), as.numeric)))
+    }
+    if(return.elements) {
+        output$elements <- bin_elements
+    }
+    if(length(output) == 1) {
+        return(output[[1]])
+    } else {
+        return(output)
+    }
+}
