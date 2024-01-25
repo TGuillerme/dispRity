@@ -11,8 +11,14 @@
 #' ## A random tree with no root.time
 #' my_tree <- rtree(10)
 #' my_tree$root.time # is NULL
-#'
+#' ## Adding a root time
+#' my_tree <- set.root.time(my_tree)
+#' my_tree$root.time # is not NULL
+#' ## Rewrite the root time with a different present
+#' my_tree <- set.root.time(my_tree, present = 10)
+#' my_tree$root.time # is older
 #' 
+
 set.root.time <- function(tree, present = 0) {
     ## Check input
     input_class <- check.class(tree, c("phylo", "multiPhylo", "dispRity"))
