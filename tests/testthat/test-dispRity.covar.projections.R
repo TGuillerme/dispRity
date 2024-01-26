@@ -75,13 +75,20 @@ if(!nocov) {
     expect_equal(dim(test[[1]]$disparity[[1]]$elements), c(1,5))    
 }
 
+    ## Test with no sub-sampling (no n)
+    data <- MCMCglmm.subsets(
+                      data          = charadriiformes$data,
+                      posteriors    = charadriiformes$posteriors,
+                      group         = MCMCglmm.levels(charadriiformes$posteriors)[1:4],
+                      rename.groups = c("gulls", "plovers", "sandpipers", "phylogeny"), n = 10)
+
     ## Test within no base
     # verb <- capture_messages(test <- dispRity.covar.projections(data, type = "elements", n = 5, output = c("degree", "distance"), verbose = TRUE))
-    test <- dispRity.covar.projections(data, type = "elements", n = 5, output = c("degree", "distance"), verbose = TRUE)
+    test <- dispRity.covar.projections(data, type = "elements", output = c("degree", "distance"), verbose = TRUE)
     # expect_equal(paste0(verb, collapse = ""), "Calculating the major axis:...Done.\nCalculating projections:......Done.\n")
     expect_equal(names(test), c("degree", "distance"))
     expect_equal(names(test[[1]]$disparity), c("gulls", "plovers", "sandpipers", "phylogeny"))
-    expect_equal(dim(test[[1]]$disparity[[1]]$elements), c(159,5))
+    expect_equal(dim(test[[1]]$disparity[[1]]$elements), c(159,10))
     ## Correct output format (dispRity) 
     for(i in 1:2) {
         expect_equal(dim(summary(test[[i]])), c(4,7))
@@ -105,19 +112,4 @@ if(!nocov) {
     for(i in 1:length(test[[1]]$disparity)) {
         expect_equal(dim(test[[1]]$disparity[[i]]$elements), c(unname(size.subsets(data)[i]),1))
     }
-
-    ## Test with no sub-sampling (no n)
-    data <- MCMCglmm.subsets(
-                      data          = charadriiformes$data,
-                      posteriors    = charadriiformes$posteriors,
-                      group         = MCMCglmm.levels(charadriiformes$posteriors)[1:4],
-                      rename.groups = c("gulls", "plovers", "sandpipers", "phylogeny"), n = 10)
-
-    ## Test within no base
-    # verb <- capture_messages(test <- dispRity.covar.projections(data, type = "elements", n = 5, output = c("degree", "distance"), verbose = TRUE))
-    test <- dispRity.covar.projections(data, type = "groups", output = c("degree", "distance"), verbose = TRUE)
-    # expect_equal(paste0(verb, collapse = ""), "Calculating the major axis:...Done.\nCalculating projections:......Done.\n")
-    expect_equal(names(test), c("degree", "distance"))
-    expect_equal(names(test[[1]]$disparity), c("gulls:plovers", "gulls:sandpipers", "gulls:phylogeny", "plovers:sandpipers", "plovers:phylogeny", "sandpipers:phylogeny"))
-
 })
