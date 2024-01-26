@@ -1,4 +1,19 @@
 #context("multi.ace")
+test_that("model internals works", {
+
+    ## with corStruc
+    test <- set.continuous.args.ace(method = "pic", model = "BM", scaled = 1, kappa = 2, corStruct = 3)
+    expect_is(test, "list")
+    expect_equal(names(test), c("type", "model", "scaled","kappa", "corStruct"))
+
+    ## with models = "BM"
+    ## with methods = "pic"
+    test <- set.continuous.args.ace.models(models = "pic", n = 1)
+    expect_is(test, "list")
+    expect_equal(names(test[[1]]),  c("type", "model", "scaled","kappa"))
+    expect_error(check.model.class(one_model = "ah", available_models = available_models_continuous))
+    expect_equal(check.model.class(one_model = 1, available_models = available_models_continuous), "numeric")
+})
 
 ## Test
 test_that("multi.ace works", {
@@ -450,4 +465,13 @@ test_that("multi.ace works with continuous and mix", {
         classes[i] <- class(test[, i]) 
     }
     expect_equal(unique(classes), c("numeric", "character"))
+
+    ## Works with invariant characters and absolute threshold model
+    data <- cbind(data, "invar1" = as.character(rep(1, 15, replace = TRUE)))
+    data <- cbind(data, "invar2" = as.character(rep(2, 15,  replace = TRUE)))
+    expect_warning(test <- multi.ace(data = data, tree = tree, threshold = 0.75))
+    expect_is(test, "data.frame")
+    expect_equal(dim(test), c(14,9))
 })
+
+

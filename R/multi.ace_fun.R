@@ -294,8 +294,13 @@ one.tree.ace <- function(args_list, special.tokens, invariants, characters_state
 bind.characters <- function(continuous, discrete, order) {
     bound <- cbind(as.data.frame(continuous), as.data.frame(discrete))
     ## Get the new character IDs
-    cont_names <- colnames(continuous)
-    disc_names <- colnames(discrete)
+    cont_names <- colnames(bound)[1:ncol(continuous)]
+    disc_names <- colnames(bound)[-c(1:ncol(continuous))]
+    ## Rename discrete if they have the names in common
+    if(any(disc_names %in% cont_names)) {
+        disc_names <- paste0("c", disc_names)
+        colnames(bound)[-c(1:ncol(continuous))] <- disc_names
+    }
     ## Reorder the characters to match the input order
     ordering <- matrix(c(1:ncol(bound), c(order$continuous, order$discrete)), ncol = 2, byrow = FALSE, dimnames = list(c(cont_names, disc_names), c("out", "in")))
     return(bound[, names(sort(ordering[, 2, drop = TRUE]))])

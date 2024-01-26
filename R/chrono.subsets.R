@@ -215,7 +215,7 @@ chrono.subsets <- function(data, tree = NULL, method, time, model, inc.nodes = F
 
                     tree <- lapply(tree, stretch.tree, root = max(root_time))
                     class(tree) <- "multiPhylo"
-                    warning(paste0("Differing root times in ", as.expression(match_call$tree), ". The $root.time for all tree has been set to the maximum (oldest) root time: ", max(root_time), " by stretching the root edge."))
+                    warning(paste0("Differing root times in ", as.expression(match_call$tree), ". The $root.time for all tree has been set to the maximum (oldest) root time: ", round(max(root_time), 3), " by stretching the root edge."))
                 }
             }
         } else {

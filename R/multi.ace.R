@@ -385,6 +385,7 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
 
         ## Handle invariant characters
         if(length(invariants) > 0) {
+            invariants_ID <- discrete_char_ID[invariants]
             has_invariants <- TRUE
 
             ## Stop if they are only invariant characters
@@ -405,8 +406,10 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
             characters_states <- characters_states[-invariants]
 
             ## Tell the user
-            warning(paste0("The character", ifelse(length(invariants) > 1, "s", "") , " ", paste0(invariants, collapse = ", "), ifelse(length(invariants) > 1, " are", " is"), " invariant (using the current special behaviours for special characters) and", ifelse(length(invariants) > 1, " are", " is"), " simply duplicated for each node."), call. = FALSE)
+            invar_IDs <- paste0(invariants_ID, collapse = ", ")
+            warning(paste0("The character", ifelse(length(invariants) > 1, "s", "") , " ", invar_IDs, ifelse(length(invariants) > 1, " are", " is"), " invariant (using the current special behaviours for special characters) and", ifelse(length(invariants) > 1, " are", " is"), " simply duplicated for each node."), call. = FALSE)
         } else {
+            invariants_ID <- integer()
             has_invariants <- FALSE
             invariant_characters_states <- NULL
         }
@@ -534,6 +537,9 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
             models_discrete <- models_discrete[-invariants]
         }
     }
+    if(do_discrete && has_invariants) {
+        models_discrete <- models_discrete[-invariants]
+    }
     #########
     ##
     ## Handle the options
@@ -613,7 +619,6 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
         } else {
             fun_continuous <- ape::ace
         }
-
     }
     ## Setting the discrete characters call
     if(do_discrete) {
@@ -794,7 +799,7 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
     if(do_discrete && do_continuous) {
         ## Combine the traits
         results_out <- mapply(bind.characters, results_continuous, results_discrete,
-            MoreArgs = list(order = list("continuous" = continuous_char_ID, "discrete" = discrete_char_ID)),
+            MoreArgs = list(order = list("continuous" = continuous_char_ID, "discrete" = unique(c(discrete_char_ID, invariants_ID)))),
             SIMPLIFY = FALSE)
         ## Return the details per characters
         if(is.null(details_continuous)) {
@@ -806,7 +811,7 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
             details_discrete <- replicate(length(tree), lapply(as.list(1:n_characters_discrete), function(x) return(NULL)), simplify = FALSE)
         }
         details_out <- mapply(bind.details, details_continuous, details_discrete,
-            MoreArgs = list(order = list("continuous" = continuous_char_ID, "discrete" = discrete_char_ID)),
+            MoreArgs = list(order = list("continuous" = continuous_char_ID, "discrete" = unique(c(discrete_char_ID, invariants_ID)))),
             SIMPLIFY = FALSE)
     }
     if(do_discrete && !do_continuous) {
