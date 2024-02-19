@@ -405,6 +405,45 @@ selected$dim.list
 ## but both groups need 22 and 23 axes
 ```
 
+## `set.root.time`
+
+This function can be used to easily add a `$root.time` element to `"phylo"` or `"multiPhylo"` objects.
+This `$root.time` element is used by `dispRity` and several packages (e.g. `Claddis` and `paleotree`) to scale the branch length units of a tree allowing them to be usually expressed in million of years (Mya).
+
+For example, on a standard random tree, no `$root.time` exist so the edge lengths are not expressed in any specific unit:
+
+```{r}
+## A random tree with no root.time
+my_tree <- rtree(10)
+my_tree$root.time # is NULL
+```
+
+You can add a root time by either manually setting it:
+
+```{r}
+## Adding an arbitrary root time
+my_tree_arbitrary <- my_tree
+## Setting the age of the root to 42
+my_tree_arbitrary$root.time <- 42
+```
+
+Or by calculating it automatically from the cumulated branch length information (making the youngest tip age 0 and the oldest the total age/depth of the tree)
+
+```{r}
+## Calculating the root time from the present
+my_tree_aged <- my_tree 
+my_tree_aged <- set.root.time(my_tree)
+```
+
+If you want the youngest tip to not be of age 0, you can define an arbitrary age for it and recalculate the age of the root from there using the `present` argument (say the youngest tip is 42 Mya old):
+
+```{r}
+## Caculating the root time from 42 Mya 
+my_tree_age <- set.root.time(my_tree, present = 42)
+```
+
+This function also works with a distribution of trees (`"multiPhylo"`).
+
 ## `slice.tree`
 
 This function is a modification of the `paleotree::timeSliceTree` function that allows to make slices through a phylogenetic tree.
