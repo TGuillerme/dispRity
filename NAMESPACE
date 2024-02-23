@@ -109,6 +109,7 @@ export(get.covar)
 export(n.subsets)
 export(make.dispRity)
 export(name.subsets)
+export(remove.dispRity)
 export(rescale.dispRity) # alias for scale
 export(scale.dispRity)
 export(size.subsets)

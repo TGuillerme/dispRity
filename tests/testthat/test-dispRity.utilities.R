@@ -946,3 +946,58 @@ test_that("get.tree with subsets", {
     expect_equal(length(test), 5)
     expect_is(test[[2]], "multiPhylo")
 })
+
+test_that("remove.dispRity works", {
+
+    ## Testing the mini chains pipeline
+    load("covar_model_list.rda")
+    load("covar_char_data.rda")
+    load("covar_tree_data.rda")
+    data(disparity)
+    with_covar <- MCMCglmm.subsets(data = covar_char_data, posteriors = covar_model_list[[1]])
+
+    ## Wrong remove
+    error <- capture_error(remove.dispRity(disparity, what = "data"))
+    expect_equal(error[[1]], "The what argument must be one of the following: subsets, bootstraps, covar, tree, disparity.")
+
+    ## Remove the subsets
+    expect_false(is.null(disparity$subsets))
+    test <- remove.dispRity(disparity, what = "subsets")
+    expect_true(is.null(test$subsets))
+    expect_null(test$call$subsets)
+    expect_null(test$call$bootstrap)
+    expect_null(test$disparity)
+    expect_null(test$call$disparity)
+
+    ## Remove the bootstraps
+    expect_false(is.null(disparity$call$bootstrap))
+    expect_equal(length(disparity$subsets[[1]]), 5)
+    expect_equal(length(disparity$disparity[[1]]), 5)
+    test <- remove.dispRity(disparity, what = "bootstraps")
+    expect_equal(length(test$subsets[[1]]), 1)
+    expect_equal(length(test$disparity[[1]]), 1)
+    expect_null(test$call$bootstrap)
+
+    ## Remove the covar
+    expect_false(is.null(with_covar$covar))
+    test <- remove.dispRity(with_covar, what = "covar")
+    expect_true(is.null(test$subsets))
+    expect_null(test$call$subsets)
+    expect_true(is.null(test$covar))
+    expect_null(test$call$bootstrap)
+
+    ## Remove the tree
+    expect_false(is.null(disparity$tree))
+    test <- remove.dispRity(disparity, what = "tree")
+    expect_true(is.null(test$tree))
+
+    ## Remove the disparity
+    expect_false(is.null(disparity$disparity))
+    test <- remove.dispRity(disparity, what = "disparity")
+    expect_true(is.null(test$disparity))
+    expect_null(test$call$disparity)
+
+    ## Remove everything
+    test <- remove.dispRity(disparity, what = c("subsets", "bootstraps", "covar", "tree", "disparity"))
+    expect_equal(names(test), c("matrix", "call"))
+})

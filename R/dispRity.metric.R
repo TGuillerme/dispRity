@@ -669,7 +669,6 @@ get.slope.significant <- function(X, base_angle) {
     return(ifelse(summary(model)[[4]][[8]] < 0.05, model$coefficients[[2]], 0))
 }
 get.slope.nonsignificant <- function(X, base_angle) {
-
     lm(base_angle ~ X)$coefficients[[2]]
 }
 ## Angles measurements
