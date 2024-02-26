@@ -987,9 +987,9 @@ test_that("remove.dispRity works", {
     expect_null(test$call$bootstrap)
 
     ## Remove the tree
-    expect_false(is.null(disparity$tree))
+    expect_false(is.null(disparity$tree[[1]]))
     test <- remove.dispRity(disparity, what = "tree")
-    expect_true(is.null(test$tree))
+    expect_true(is.null(test$tree[[1]]))
 
     ## Remove the disparity
     expect_false(is.null(disparity$disparity))
@@ -999,5 +999,5 @@ test_that("remove.dispRity works", {
 
     ## Remove everything
     test <- remove.dispRity(disparity, what = c("subsets", "bootstraps", "covar", "tree", "disparity"))
-    expect_equal(names(test), c("matrix", "call"))
+    expect_equal(names(test), c("matrix", "call", "tree"))
 })

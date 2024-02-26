@@ -121,6 +121,7 @@ remove.dispRity <- function(data, what) {
     if("covar" %in% what && !is.null(data$covar)) {
         data$covar <- NULL
         data$call$bootstrap <- NULL
+        data$call$subsets <- "customised" 
         if(length(data$subsets) == 1) {
             data$subsets <- NULL
             data$call$subsets <- NULL
@@ -160,6 +161,12 @@ remove.dispRity <- function(data, what) {
         data$disparity <- NULL
         data$call$disparity <- NULL
     }
+
+    ## Add a null tree if missing
+    if(!("tree" %in% names(data))) {
+        data$tree <- list(NULL)
+    }
+
     return(data)
 }
 

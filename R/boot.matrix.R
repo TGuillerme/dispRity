@@ -124,7 +124,8 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions 
         if(is.null(data_names)) {
             stop.call(match_call$data, " must be either a matrix or an output from the chrono.subsets or custom.subsets functions.")
         } else {
-            if(data_names[[1]] != "matrix" | data_names[[2]] != "tree" | data_names[[3]] != "call" | data_names[[4]] != "subsets") {
+            if(!all(data_names %in% c("matrix", "tree", "call", "subsets"))) {
+            # if(data_names[[1]] != "matrix" | data_names[[2]] != "tree" | data_names[[3]] != "call" | data_names[[4]] != "subsets") {
                 stop.call(match_call$data, "must be either a matrix or an output from the chrono.subsets or custom.subsets functions.")
             }
         }
