@@ -153,7 +153,6 @@ remove.dispRity <- function(data, what) {
     ## Remove the tree
     if("tree" %in% what && !is.null(data$tree)) {
         data <- remove.tree(data)
-        data$tree <- NULL
     }
 
     ## Remove the disparity
