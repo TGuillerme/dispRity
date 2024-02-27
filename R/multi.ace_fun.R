@@ -271,7 +271,7 @@ one.tree.ace <- function(args_list, special.tokens, invariants, characters_state
     replace.NA <- function(character, characters_states, special.tokens) {
         return(sapply(character, function(x) ifelse(x[[1]] == "NA", paste0(characters_states, collapse = sub("\\\\", "", special.tokens["uncertainty"])), x)))
     }
-    ancestral_states <- mapply(replace.NA, ancestral_states, characters_states, MoreArgs = list(special.tokens = special.tokens), SIMPLIFY = FALSE)
+    ancestral_states[-invariants] <- mapply(replace.NA, ancestral_states[-invariants], characters_states, MoreArgs = list(special.tokens = special.tokens), SIMPLIFY = FALSE)
 
     ## Sort the details list
     if(!is.null(args_list[[1]]$details)) {

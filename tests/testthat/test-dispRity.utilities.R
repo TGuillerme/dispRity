@@ -999,5 +999,5 @@ test_that("remove.dispRity works", {
 
     ## Remove everything
     test <- remove.dispRity(disparity, what = c("subsets", "bootstraps", "covar", "tree", "disparity"))
-    expect_equal(names(test), c("matrix", "call", "tree"))
+    expect_equal(names(test), c("matrix", "tree", "call"))
 })

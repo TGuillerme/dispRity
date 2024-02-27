@@ -473,5 +473,3 @@ test_that("multi.ace works with continuous and mix", {
     expect_is(test, "data.frame")
     expect_equal(dim(test), c(14,9))
 })
-
-

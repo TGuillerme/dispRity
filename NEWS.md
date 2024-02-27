@@ -1,4 +1,4 @@
-dispRity v1.8.5 (2024-02-23) 
+dispRity v1.8.6 (2024-02-27) 
 =========================
 
 ### NEW FEATURES
@@ -17,6 +17,7 @@ dispRity v1.8.5 (2024-02-23)
 ### BUG FIXES
 
  * `scale.dispRity` now correctly ignores `NA`s when scaling.
+ * `multi.ace` now correctly handles invariant characters when looking for NAs.
  <!-- * `dispRity` objects with a `$covar` component are not interpreted as bootstrapped by `boot.matrix` anymore.
     TODO: when detecting bootstraps (boot.matrix*) distinguish between bootstrap[[1]] %in% c("single", "full") VS. "covar" -->
 
