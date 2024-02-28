@@ -330,7 +330,12 @@ slide.node.root <- function(bin_age, tree) {
 get.interval.subtrees <- function(one_tree, bin_ages, to.root) {
     ## Slice the right sides of the trees
     slice.one.tree <- function(age, tree) {
-        slice.tree(tree, age[2], model = "acctran", keep.all.ancestors = TRUE)
+        if(age[2] != 0) {
+            slice.tree(tree, age[2], model = "acctran", keep.all.ancestors = TRUE)
+        } else {
+            ## If age = 0, simply return the tree (keep everything and then compress branch lengths)
+            return(tree)
+        }
     }
     subset_subtrees <- lapply(bin_ages, slice.one.tree, one_tree) # TODO need fix for multiphylo
 
