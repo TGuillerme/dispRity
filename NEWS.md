@@ -6,6 +6,9 @@ dispRity v1.8.6 (2024-02-27)
  * *New utility function* `set.root.time` to add a root time to a tree (`"phylo"`), list of trees (`"multiPhylo"`) or `dispRity` object with trees.
  * *New utility function* `remove.dispRity` to cleanly remove specific parts of a `"dispRity"` object.
  <!-- Add to manual -->
+ <!-- TODO: make a MCMCglmm related standalone vignette -->
+ <!-- TODO: make a morpho disparity (Claddis) standalone vignette -->
+
 
 ### MINOR IMPROVEMENTS
 
