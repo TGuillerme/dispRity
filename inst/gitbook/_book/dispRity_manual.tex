@@ -113,7 +113,7 @@
 
 \title{dispRity R package manual}
 \author{Thomas Guillerme (\href{mailto:guillert@tcd.ie}{\nolinkurl{guillert@tcd.ie}})}
-\date{2023-12-06}
+\date{2024-03-08}
 
 \begin{document}
 \maketitle
@@ -2855,7 +2855,7 @@ This is what it looks for example for three simulated variance-covariance matric
 ## snapshots
 \end{verbatim}
 
-\includegraphics[width=4in]{../../../../../../tmp/RtmpuRA2JU/file80cb6a29f05b}
+\includegraphics[width=4in]{../../../../../../tmp/Rtmp1snN3p/file17f44d79dfdf}
 
 \begin{verbatim}
 ## Warning in snapshot3d(scene = x, width = width, height = height): webshot =
@@ -2868,7 +2868,7 @@ This is what it looks for example for three simulated variance-covariance matric
 ## snapshots
 \end{verbatim}
 
-\includegraphics[width=4in]{../../../../../../tmp/RtmpuRA2JU/file80cb29a4e334}
+\includegraphics[width=4in]{../../../../../../tmp/Rtmp1snN3p/file17f43605eec1}
 
 \begin{verbatim}
 ## Warning in snapshot3d(scene = x, width = width, height = height): webshot =
@@ -2881,7 +2881,7 @@ This is what it looks for example for three simulated variance-covariance matric
 ## snapshots
 \end{verbatim}
 
-\includegraphics[width=4in]{../../../../../../tmp/RtmpuRA2JU/file80cb4a93cfcb}
+\includegraphics[width=4in]{../../../../../../tmp/Rtmp1snN3p/file17f46de61347}
 \includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-69-1.pdf}
 
 \hypertarget{betweengroupmetricslist}{%
@@ -6711,6 +6711,58 @@ If you've used the function if you've already done some grouping in your dispari
 \end{Highlighting}
 \end{Shaded}
 
+\hypertarget{set.root.time}{%
+\section{\texorpdfstring{\texttt{set.root.time}}{set.root.time}}\label{set.root.time}}
+
+This function can be used to easily add a \texttt{\$root.time} element to \texttt{"phylo"} or \texttt{"multiPhylo"} objects.
+This \texttt{\$root.time} element is used by \texttt{dispRity} and several packages (e.g.~\texttt{Claddis} and \texttt{paleotree}) to scale the branch length units of a tree allowing them to be usually expressed in million of years (Mya).
+
+For example, on a standard random tree, no \texttt{\$root.time} exist so the edge lengths are not expressed in any specific unit:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#\# A random tree with no root.time}
+\NormalTok{my\_tree \textless{}{-}}\StringTok{ }\KeywordTok{rtree}\NormalTok{(}\DecValTok{10}\NormalTok{)}
+\NormalTok{my\_tree}\OperatorTok{$}\NormalTok{root.time }\CommentTok{\# is NULL}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## NULL
+\end{verbatim}
+
+You can add a root time by either manually setting it:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#\# Adding an arbitrary root time}
+\NormalTok{my\_tree\_arbitrary \textless{}{-}}\StringTok{ }\NormalTok{my\_tree}
+\CommentTok{\#\# Setting the age of the root to 42}
+\NormalTok{my\_tree\_arbitrary}\OperatorTok{$}\NormalTok{root.time \textless{}{-}}\StringTok{ }\DecValTok{42}
+\end{Highlighting}
+\end{Shaded}
+
+Or by calculating it automatically from the cumulated branch length information (making the youngest tip age 0 and the oldest the total age/depth of the tree)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#\# Calculating the root time from the present}
+\NormalTok{my\_tree\_aged \textless{}{-}}\StringTok{ }\NormalTok{my\_tree }
+\NormalTok{my\_tree\_aged \textless{}{-}}\StringTok{ }\KeywordTok{set.root.time}\NormalTok{(my\_tree)}
+\end{Highlighting}
+\end{Shaded}
+
+If you want the youngest tip to not be of age 0, you can define an arbitrary age for it and recalculate the age of the root from there using the \texttt{present} argument (say the youngest tip is 42 Mya old):
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#\# Caculating the root time from 42 Mya }
+\NormalTok{my\_tree\_age \textless{}{-}}\StringTok{ }\KeywordTok{set.root.time}\NormalTok{(my\_tree, }\DataTypeTok{present =} \DecValTok{42}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+This function also works with a distribution of trees (\texttt{"multiPhylo"}).
+
 \hypertarget{slice.tree}{%
 \section{\texorpdfstring{\texttt{slice.tree}}{slice.tree}}\label{slice.tree}}
 
@@ -6742,7 +6794,7 @@ The function works by using at least a tree, a slice age and a model:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-173-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-177-1.pdf}
 
 \hypertarget{slide.nodes-and-remove.zero.brlen}{%
 \section{\texorpdfstring{\texttt{slide.nodes} and \texttt{remove.zero.brlen}}{slide.nodes and remove.zero.brlen}}\label{slide.nodes-and-remove.zero.brlen}}
@@ -6773,7 +6825,7 @@ You can move the node ``down'' (towards the roots) using a negative value.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-174-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-178-1.pdf}
 
 The \texttt{remove.zero.brlen} is a ``clever'' wrapping function that uses the \texttt{slide.nodes} function to stochastically remove zero branch lengths across a whole tree.
 This function will slide nodes up or down in successive postorder traversals (i.e.~going down the tree clade by clade) in order to minimise the number of nodes to slide while making sure there are no silly negative branch lengths produced!
@@ -6833,7 +6885,7 @@ By default it is trying to slide the nodes using 1\% of the minimum branch lengt
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-175-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-179-1.pdf}
 
 \hypertarget{tree.age}{%
 \section{\texorpdfstring{\texttt{tree.age}}{tree.age}}\label{tree.age}}
@@ -6850,26 +6902,26 @@ This function allows to quickly calculate the ages of each tips and nodes presen
 \end{Shaded}
 
 \begin{verbatim}
-##     ages elements
-## 1  0.707       t7
-## 2  0.142       t2
-## 3  0.000       t3
-## 4  1.467       t8
-## 5  1.366       t1
-## 6  1.895       t5
-## 7  1.536       t6
-## 8  1.456       t9
-## 9  0.815      t10
-## 10 2.343       t4
-## 11 3.011       11
-## 12 2.631       12
-## 13 1.854       13
-## 14 0.919       14
-## 15 0.267       15
-## 16 2.618       16
-## 17 2.235       17
-## 18 2.136       18
-## 19 1.642       19
+##      ages elements
+## 1  0.7068       t7
+## 2  0.1417       t2
+## 3  0.0000       t3
+## 4  1.4675       t8
+## 5  1.3656       t1
+## 6  1.8949       t5
+## 7  1.5360       t6
+## 8  1.4558       t9
+## 9  0.8147      t10
+## 10 2.3426       t4
+## 11 3.0111       11
+## 12 2.6310       12
+## 13 1.8536       13
+## 14 0.9189       14
+## 15 0.2672       15
+## 16 2.6177       16
+## 17 2.2353       17
+## 18 2.1356       18
+## 19 1.6420       19
 \end{verbatim}
 
 It also allows to set the age of the root of the tree:
@@ -6882,26 +6934,26 @@ It also allows to set the age of the root of the tree:
 \end{Shaded}
 
 \begin{verbatim}
-##       ages elements
-## 1   23.472       t7
-## 2    4.705       t2
-## 3    0.000       t3
-## 4   48.736       t8
-## 5   45.352       t1
-## 6   62.931       t5
-## 7   51.012       t6
-## 8   48.349       t9
-## 9   27.055      t10
-## 10  77.800       t4
-## 11 100.000       11
-## 12  87.379       12
-## 13  61.559       13
-## 14  30.517       14
-## 15   8.875       15
-## 16  86.934       16
-## 17  74.235       17
-## 18  70.924       18
-## 19  54.533       19
+##        ages elements
+## 1   23.4717       t7
+## 2    4.7048       t2
+## 3    0.0000       t3
+## 4   48.7362       t8
+## 5   45.3517       t1
+## 6   62.9315       t5
+## 7   51.0119       t6
+## 8   48.3486       t9
+## 9   27.0554      t10
+## 10  77.7998       t4
+## 11 100.0000       11
+## 12  87.3788       12
+## 13  61.5593       13
+## 14  30.5171       14
+## 15   8.8746       15
+## 16  86.9341       16
+## 17  74.2347       17
+## 18  70.9239       18
+## 19  54.5330       19
 \end{verbatim}
 
 Usually tree age is calculated from the present to the past (e.g.~in million years ago) but it is possible to reverse it using the \texttt{order\ =\ present} option:
@@ -6914,32 +6966,32 @@ Usually tree age is calculated from the present to the past (e.g.~in million yea
 \end{Shaded}
 
 \begin{verbatim}
-##     ages elements
-## 1  2.304       t7
-## 2  2.869       t2
-## 3  3.011       t3
-## 4  1.544       t8
-## 5  1.646       t1
-## 6  1.116       t5
-## 7  1.475       t6
-## 8  1.555       t9
-## 9  2.196      t10
-## 10 0.668       t4
-## 11 0.000       11
-## 12 0.380       12
-## 13 1.157       13
-## 14 2.092       14
-## 15 2.744       15
-## 16 0.393       16
-## 17 0.776       17
-## 18 0.876       18
-## 19 1.369       19
+##      ages elements
+## 1  2.3043       t7
+## 2  2.8694       t2
+## 3  3.0111       t3
+## 4  1.5436       t8
+## 5  1.6455       t1
+## 6  1.1162       t5
+## 7  1.4751       t6
+## 8  1.5553       t9
+## 9  2.1964      t10
+## 10 0.6685       t4
+## 11 0.0000       11
+## 12 0.3800       12
+## 13 1.1575       13
+## 14 2.0922       14
+## 15 2.7439       15
+## 16 0.3934       16
+## 17 0.7758       17
+## 18 0.8755       18
+## 19 1.3690       19
 \end{verbatim}
 
 \hypertarget{multi.ace}{%
 \section{\texorpdfstring{\texttt{multi.ace}}{multi.ace}}\label{multi.ace}}
 
-This function allows to run the \texttt{ape::ace} function (ancestral characters estimations) on multiple trees.
+This function allows to run ancestral characters estimations on multiple trees.
 In it's most basic structure (e.g.~using all default arguments) this function is using a mix of \texttt{ape::ace} and \texttt{castor::asr\_mk\_model} depending on the data and the situation and is generally faster than both functions when applied to a list of trees.
 However, this function provides also some more complex and modular functionalities, especially appropriate when using discrete morphological character data.
 
@@ -7097,72 +7149,13 @@ We can then use these token description along with our complex matrix and our li
 \end{verbatim}
 
 \begin{verbatim}
-## Warning: The characters 39 are invariant (using the current special behaviours
-## for special characters) and are simply duplicated for each node.
+## Warning: The character 39 is invariant (using the current special behaviours
+## for special characters) and is simply duplicated for each node.
 \end{verbatim}
 
 \begin{verbatim}
 ## ..Done.
-## Running ancestral states estimations:
-## .................................................
-\end{verbatim}
-
-\begin{verbatim}
-## Warning in mapply(replace.NA, ancestral_states, characters_states, MoreArgs =
-## list(special.tokens = special.tokens), : longer argument not a multiple of
-## length of shorter
-\end{verbatim}
-
-\begin{verbatim}
-##  Done.
-## Running ancestral states estimations:
-## .................................................
-\end{verbatim}
-
-\begin{verbatim}
-## Warning in mapply(replace.NA, ancestral_states, characters_states, MoreArgs =
-## list(special.tokens = special.tokens), : longer argument not a multiple of
-## length of shorter
-\end{verbatim}
-
-\begin{verbatim}
-##  Done.
-## Running ancestral states estimations:
-## .................................................
-\end{verbatim}
-
-\begin{verbatim}
-## Warning in mapply(replace.NA, ancestral_states, characters_states, MoreArgs =
-## list(special.tokens = special.tokens), : longer argument not a multiple of
-## length of shorter
-\end{verbatim}
-
-\begin{verbatim}
-##  Done.
-## Running ancestral states estimations:
-## .................................................
-\end{verbatim}
-
-\begin{verbatim}
-## Warning in mapply(replace.NA, ancestral_states, characters_states, MoreArgs =
-## list(special.tokens = special.tokens), : longer argument not a multiple of
-## length of shorter
-\end{verbatim}
-
-\begin{verbatim}
-##  Done.
-## Running ancestral states estimations:
-## .................................................
-\end{verbatim}
-
-\begin{verbatim}
-## Warning in mapply(replace.NA, ancestral_states, characters_states, MoreArgs =
-## list(special.tokens = special.tokens), : longer argument not a multiple of
-## length of shorter
-\end{verbatim}
-
-\begin{verbatim}
-##  Done.
+## Running ancestral states estimations:.....................................................................................................................................................................................................................................................Done.
 \end{verbatim}
 
 \begin{Shaded}
@@ -7174,16 +7167,16 @@ We can then use these token description along with our complex matrix and our li
 \end{Shaded}
 
 \begin{verbatim}
-##       [,1] [,2]  [,3]  [,4] [,5]  [,6]    [,7]  [,8] [,9] [,10]
-##  [1,] "1"  "1"   "1"   "1"  "1"   "0/1/2" "1"   "0"  "0"  "1"  
-##  [2,] "1"  "1"   "1"   "1"  "0/1" "0/1/2" "0/1" "0"  "0"  "1"  
-##  [3,] "1"  "1"   "1"   "1"  "0/1" "0/1/2" "0"   "0"  "0"  "1"  
-##  [4,] "1"  "1"   "1"   "1"  "0"   "0/1/2" "1"   "1"  "0"  "1"  
-##  [5,] "1"  "1"   "1"   "1"  "1"   "0/1/2" "1"   "0"  "0"  "1"  
-##  [6,] "1"  "1"   "1"   "1"  "1"   "0/1/2" "1"   "0"  "0"  "1"  
-##  [7,] "0"  "0/1" "0/1" "0"  "1"   "1"     "1"   "0"  "0"  "0/1"
-##  [8,] "0"  "0"   "0"   "0"  "1"   "0/1/2" "0"   "0"  "1"  "0"  
-##  [9,] "0"  "0"   "0"   "0"  "1"   "1"     "0"   "0"  "1"  "0"
+##    [,1] [,2]  [,3]  [,4] [,5]  [,6]    [,7]  [,8] [,9] [,10]
+## n1 "1"  "1"   "1"   "1"  "1"   "0/1/2" "1"   "0"  "0"  "1"  
+## n2 "1"  "1"   "1"   "1"  "0/1" "0/1/2" "0/1" "0"  "0"  "1"  
+## n3 "1"  "1"   "1"   "1"  "0/1" "0/1/2" "0"   "0"  "0"  "1"  
+## n4 "1"  "1"   "1"   "1"  "0"   "0/1/2" "1"   "1"  "0"  "1"  
+## n5 "1"  "1"   "1"   "1"  "1"   "0/1/2" "1"   "0"  "0"  "1"  
+## n6 "1"  "1"   "1"   "1"  "1"   "0/1/2" "1"   "0"  "0"  "1"  
+## n7 "0"  "0/1" "0/1" "0"  "1"   "1"     "1"   "0"  "0"  "0/1"
+## n8 "0"  "0"   "0"   "0"  "1"   "0/1/2" "0"   "0"  "1"  "0"  
+## n9 "0"  "0"   "0"   "0"  "1"   "1"     "0"   "0"  "1"  "0"
 \end{verbatim}
 
 Note that there are many different options that are not covered here.
@@ -7192,7 +7185,7 @@ For example, you can use different models for each character via the \texttt{mod
 \hypertarget{feeding-the-results-to-char.diff-to-get-distance-matrices}{%
 \subsection{\texorpdfstring{Feeding the results to \texttt{char.diff} to get distance matrices}{Feeding the results to char.diff to get distance matrices}}\label{feeding-the-results-to-char.diff-to-get-distance-matrices}}
 
-Finally, after running your ancestral states estimations, it is not uncommon to then use these resulting data to calculate the distances between taxa and then ordinate the results to measure disparity.
+After running your ancestral states estimations, it is not uncommon to then use these resulting data to calculate the distances between taxa and then ordinate the results to measure disparity.
 You can do that using the \texttt{char.diff} function \protect\hyperlink{char.diff}{described above} but instead of measuring the distances between characters (columns) you can measure the distances between species (rows).
 You might notice that this function uses the same modular token and behaviour descriptions.
 That makes sense because they're using the same core C functions implemented in dispRity that greatly speed up distance calculations.
@@ -7214,72 +7207,13 @@ That makes sense because they're using the same core C functions implemented in 
 \end{verbatim}
 
 \begin{verbatim}
-## Warning: The characters 39 are invariant (using the current special behaviours
-## for special characters) and are simply duplicated for each node.
+## Warning: The character 39 is invariant (using the current special behaviours
+## for special characters) and is simply duplicated for each node.
 \end{verbatim}
 
 \begin{verbatim}
 ## ..Done.
-## Running ancestral states estimations:
-## .................................................
-\end{verbatim}
-
-\begin{verbatim}
-## Warning in mapply(replace.NA, ancestral_states, characters_states, MoreArgs =
-## list(special.tokens = special.tokens), : longer argument not a multiple of
-## length of shorter
-\end{verbatim}
-
-\begin{verbatim}
-##  Done.
-## Running ancestral states estimations:
-## .................................................
-\end{verbatim}
-
-\begin{verbatim}
-## Warning in mapply(replace.NA, ancestral_states, characters_states, MoreArgs =
-## list(special.tokens = special.tokens), : longer argument not a multiple of
-## length of shorter
-\end{verbatim}
-
-\begin{verbatim}
-##  Done.
-## Running ancestral states estimations:
-## .................................................
-\end{verbatim}
-
-\begin{verbatim}
-## Warning in mapply(replace.NA, ancestral_states, characters_states, MoreArgs =
-## list(special.tokens = special.tokens), : longer argument not a multiple of
-## length of shorter
-\end{verbatim}
-
-\begin{verbatim}
-##  Done.
-## Running ancestral states estimations:
-## .................................................
-\end{verbatim}
-
-\begin{verbatim}
-## Warning in mapply(replace.NA, ancestral_states, characters_states, MoreArgs =
-## list(special.tokens = special.tokens), : longer argument not a multiple of
-## length of shorter
-\end{verbatim}
-
-\begin{verbatim}
-##  Done.
-## Running ancestral states estimations:
-## .................................................
-\end{verbatim}
-
-\begin{verbatim}
-## Warning in mapply(replace.NA, ancestral_states, characters_states, MoreArgs =
-## list(special.tokens = special.tokens), : longer argument not a multiple of
-## length of shorter
-\end{verbatim}
-
-\begin{verbatim}
-##  Done.
+## Running ancestral states estimations:.....................................................................................................................................................................................................................................................Done.
 \end{verbatim}
 
 We can then feed these matrices directly to \texttt{char.diff}, say for calculating the ``MORD'' distance:
@@ -7292,6 +7226,187 @@ We can then feed these matrices directly to \texttt{char.diff}, say for calculat
 \end{Shaded}
 
 And we now have a list of distances matrices with ancestral states estimated!
+
+\hypertarget{running-ancestral-states-estimations-for-continuous-characters}{%
+\subsection{Running ancestral states estimations for continuous characters}\label{running-ancestral-states-estimations-for-continuous-characters}}
+
+You can also run \texttt{multi.ace} on continuous characters.
+The function detects any continuous characters as being of class \texttt{"numeric"} and runs them using the \texttt{ape::ace} function.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
+\CommentTok{\#\# Creating three coalescent trees}
+\NormalTok{my\_trees \textless{}{-}}\StringTok{ }\KeywordTok{replicate}\NormalTok{(}\DecValTok{3}\NormalTok{, }\KeywordTok{rcoal}\NormalTok{(}\DecValTok{15}\NormalTok{), }\DataTypeTok{simplify =} \OtherTok{FALSE}\NormalTok{)}
+\CommentTok{\#\# Adding node labels}
+\NormalTok{my\_trees \textless{}{-}}\StringTok{ }\KeywordTok{lapply}\NormalTok{(my\_trees, makeNodeLabel)}
+\CommentTok{\#\# Making into a multiPhylo object}
+\KeywordTok{class}\NormalTok{(my\_trees) \textless{}{-}}\StringTok{ "multiPhylo"}
+
+\CommentTok{\#\# Creating a matrix of continuous characters}
+\NormalTok{data \textless{}{-}}\StringTok{ }\KeywordTok{space.maker}\NormalTok{(}\DataTypeTok{elements =} \DecValTok{15}\NormalTok{, }\DataTypeTok{dimensions =} \DecValTok{5}\NormalTok{, }\DataTypeTok{distribution =}\NormalTok{ rnorm,}
+                    \DataTypeTok{elements.name =}\NormalTok{ my\_trees[[}\DecValTok{1}\NormalTok{]]}\OperatorTok{$}\NormalTok{tip.label)}
+\end{Highlighting}
+\end{Shaded}
+
+With such data and trees you can easily run the \texttt{multi.ace} estimations.
+By default, the estimations use the default arguments from \texttt{ape::ace}, knowingly a Brownian Motion (\texttt{model\ =\ "BM"}) with the REML method (\texttt{method\ =\ "REML"}; this method ``first estimates the ancestral value at the root (aka, the phylogenetic mean), then the variance of the Brownian motion process is estimated by optimizing the residual log-likelihood'' - from \texttt{?ape::ace}).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#\# Running multi.ace on continuous data}
+\NormalTok{my\_ancestral\_states \textless{}{-}}\StringTok{ }\KeywordTok{multi.ace}\NormalTok{(data, my\_trees)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning in sqrt(1/out$hessian): NaNs produced
+
+## Warning in sqrt(1/out$hessian): NaNs produced
+
+## Warning in sqrt(1/out$hessian): NaNs produced
+
+## Warning in sqrt(1/out$hessian): NaNs produced
+
+## Warning in sqrt(1/out$hessian): NaNs produced
+
+## Warning in sqrt(1/out$hessian): NaNs produced
+
+## Warning in sqrt(1/out$hessian): NaNs produced
+
+## Warning in sqrt(1/out$hessian): NaNs produced
+
+## Warning in sqrt(1/out$hessian): NaNs produced
+
+## Warning in sqrt(1/out$hessian): NaNs produced
+
+## Warning in sqrt(1/out$hessian): NaNs produced
+
+## Warning in sqrt(1/out$hessian): NaNs produced
+
+## Warning in sqrt(1/out$hessian): NaNs produced
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#\# We end up with three matrices of node states estimates}
+\KeywordTok{str}\NormalTok{(my\_ancestral\_states)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## List of 3
+##  $ : num [1:14, 1:5] -0.191 -0.155 -0.227 -0.17 0.138 ...
+##   ..- attr(*, "dimnames")=List of 2
+##   .. ..$ : chr [1:14] "Node1" "Node2" "Node3" "Node4" ...
+##   .. ..$ : NULL
+##  $ : num [1:14, 1:5] -0.385 -0.552 -0.445 -0.435 -0.478 ...
+##   ..- attr(*, "dimnames")=List of 2
+##   .. ..$ : chr [1:14] "Node1" "Node2" "Node3" "Node4" ...
+##   .. ..$ : NULL
+##  $ : num [1:14, 1:5] -0.3866 -0.2232 -0.0592 -0.7246 -0.2253 ...
+##   ..- attr(*, "dimnames")=List of 2
+##   .. ..$ : chr [1:14] "Node1" "Node2" "Node3" "Node4" ...
+##   .. ..$ : NULL
+\end{verbatim}
+
+This results in three matrices with ancestral states for the nodes.
+When using continuous characters, however, you can output the results directly as a \texttt{dispRity} object that allows visualisation and other normal dispRity pipeline:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#\# Running multi.ace on continuous data}
+\NormalTok{my\_ancestral\_states \textless{}{-}}\StringTok{ }\KeywordTok{multi.ace}\NormalTok{(data, my\_trees, }\DataTypeTok{output =} \StringTok{"dispRity"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning in sqrt(1/out$hessian): NaNs produced
+
+## Warning in sqrt(1/out$hessian): NaNs produced
+
+## Warning in sqrt(1/out$hessian): NaNs produced
+
+## Warning in sqrt(1/out$hessian): NaNs produced
+
+## Warning in sqrt(1/out$hessian): NaNs produced
+
+## Warning in sqrt(1/out$hessian): NaNs produced
+
+## Warning in sqrt(1/out$hessian): NaNs produced
+
+## Warning in sqrt(1/out$hessian): NaNs produced
+
+## Warning in sqrt(1/out$hessian): NaNs produced
+
+## Warning in sqrt(1/out$hessian): NaNs produced
+
+## Warning in sqrt(1/out$hessian): NaNs produced
+
+## Warning in sqrt(1/out$hessian): NaNs produced
+
+## Warning in sqrt(1/out$hessian): NaNs produced
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#\# We end up with three matrices of node states estimates}
+\KeywordTok{plot}\NormalTok{(my\_ancestral\_states)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-194-1.pdf}
+
+You can also mix continuous and discrete characters together.
+By default the \texttt{multi.ace} detects which character is of which type and applies the correct estimations based on that.
+However you can always specify models or other details character per characters.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#\# Adding two discrete characters}
+\NormalTok{data \textless{}{-}}\StringTok{ }\KeywordTok{as.data.frame}\NormalTok{(data)}
+\NormalTok{data \textless{}{-}}\StringTok{ }\KeywordTok{cbind}\NormalTok{(data, }\StringTok{"new\_char"}\NormalTok{ =}\StringTok{ }\KeywordTok{as.character}\NormalTok{(}\KeywordTok{sample}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{2}\NormalTok{, }\DecValTok{15}\NormalTok{, }\DataTypeTok{replace =} \OtherTok{TRUE}\NormalTok{)))}
+\NormalTok{data \textless{}{-}}\StringTok{ }\KeywordTok{cbind}\NormalTok{(data, }\StringTok{"new\_char2"}\NormalTok{ =}\StringTok{ }\KeywordTok{as.character}\NormalTok{(}\KeywordTok{sample}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{2}\NormalTok{, }\DecValTok{15}\NormalTok{, }\DataTypeTok{replace =} \OtherTok{TRUE}\NormalTok{)))}
+
+\CommentTok{\#\# Setting up different models for each characters}
+\CommentTok{\#\# BM for all 5 continuous characters}
+\CommentTok{\#\# and ER and ARD for the two discrete ones}
+\NormalTok{my\_models \textless{}{-}}\StringTok{ }\KeywordTok{c}\NormalTok{(}\KeywordTok{rep}\NormalTok{(}\StringTok{"BM"}\NormalTok{, }\DecValTok{5}\NormalTok{), }\StringTok{"ER"}\NormalTok{, }\StringTok{"ARD"}\NormalTok{)}
+
+\CommentTok{\#\# Running the estimation with the specified models}
+\NormalTok{my\_ancestral\_states \textless{}{-}}\StringTok{ }\KeywordTok{multi.ace}\NormalTok{(data, my\_trees, }\DataTypeTok{models =}\NormalTok{ my\_models)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning in sqrt(1/out$hessian): NaNs produced
+
+## Warning in sqrt(1/out$hessian): NaNs produced
+
+## Warning in sqrt(1/out$hessian): NaNs produced
+
+## Warning in sqrt(1/out$hessian): NaNs produced
+
+## Warning in sqrt(1/out$hessian): NaNs produced
+
+## Warning in sqrt(1/out$hessian): NaNs produced
+
+## Warning in sqrt(1/out$hessian): NaNs produced
+
+## Warning in sqrt(1/out$hessian): NaNs produced
+
+## Warning in sqrt(1/out$hessian): NaNs produced
+
+## Warning in sqrt(1/out$hessian): NaNs produced
+
+## Warning in sqrt(1/out$hessian): NaNs produced
+
+## Warning in sqrt(1/out$hessian): NaNs produced
+
+## Warning in sqrt(1/out$hessian): NaNs produced
+\end{verbatim}
+
+Of course all the options discussed in the first part above also can apply here!
 
 \hypertarget{the-guts-of-the-disprity-package}{%
 \chapter{\texorpdfstring{The guts of the \texttt{dispRity} package}{The guts of the dispRity package}}\label{the-guts-of-the-disprity-package}}
@@ -7655,7 +7770,7 @@ For example, if we have three time bins like in the example below we have three 
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-202-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-210-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -7683,7 +7798,7 @@ But we can also extract the subtrees containing only branch lengths for the actu
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-203-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-211-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -7702,13 +7817,13 @@ This can be useful for example for calculating the branch lengths in each bin:
 
 \begin{verbatim}
 ## $`120 - 100`
-## [1] 189.2799
+## [1] 189.2802
 ## 
 ## $`100 - 80`
 ## [1] 341.7199
 ## 
 ## $`80 - 60`
-## [1] 426.7493
+## [1] 426.7492
 \end{verbatim}
 
 \hypertarget{disprity-object}{%
@@ -7938,7 +8053,7 @@ A classical way to represent this ordinated data would be to use two dimensional
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-208-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-216-1.pdf}
 
 This shows the distribution of the different species in the petal-space along the two first axis of variation.
 This is a pretty standard way to visualise the multidimensional space and further analysis might be necessary to test wether the groups are different such as a linear discriminant analysis (LDA).
@@ -7954,7 +8069,7 @@ If we look at the two other axis we see a totally different result:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-209-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-217-1.pdf}
 
 Additionally, these two represented dimensions do not represent a biological reality \emph{per se}; i.e.~the values on the first dimension do not represent a continuous trait (e.g.~petal length), instead they just represent the ordinations of correlations between the data and some factors.
 
@@ -8051,9 +8166,9 @@ First we can summarise the data in a table by simply using \texttt{summary}:
 
 \begin{verbatim}
 ##      subsets  n   obs bs.median  2.5%   25%   75% 97.5%
-## 1     setosa 50 0.421     0.432 0.370 0.408 0.454 0.501
-## 2 versicolor 50 0.693     0.656 0.511 0.619 0.697 0.770
-## 3  virginica 50 0.785     0.747 0.580 0.674 0.806 0.936
+## 1     setosa 50 0.421     0.432 0.363 0.409 0.456 0.502
+## 2 versicolor 50 0.693     0.662 0.563 0.618 0.702 0.781
+## 3  virginica 50 0.785     0.719 0.548 0.652 0.786 0.902
 \end{verbatim}
 
 We can also plot the results in a similar way:
@@ -8068,7 +8183,7 @@ We can also plot the results in a similar way:
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-214-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-222-1.pdf}
 
 Now contrary to simply plotting the two first axis of the PCA where we saw that the species have a different position in the two first petal-space, we can now also see that they occupy this space clearly differently!
 
@@ -8120,27 +8235,27 @@ Finally we can test our hypothesis that we guessed from the disparity plot (that
 \begin{verbatim}
 ## [[1]]
 ##                        statistic: t
-## setosa : versicolor      -29.998366
-## setosa : virginica       -30.465933
-## versicolor : virginica    -7.498179
+## setosa : versicolor       -33.37334
+## setosa : virginica        -28.36656
+## versicolor : virginica     -5.24564
 ## 
 ## [[2]]
 ##                        parameter: df
-## setosa : versicolor         149.8429
-## setosa : virginica          124.4227
-## versicolor : virginica      175.4758
+## setosa : versicolor         166.2319
+## setosa : virginica          127.7601
+## versicolor : virginica      164.6248
 ## 
 ## [[3]]
 ##                             p.value
-## setosa : versicolor    9.579095e-65
-## setosa : virginica     4.625567e-59
-## versicolor : virginica 9.247421e-12
+## setosa : versicolor    4.126944e-75
+## setosa : virginica     1.637347e-56
+## versicolor : virginica 1.420552e-06
 ## 
 ## [[4]]
 ##                             stderr
-## setosa : versicolor    0.007378905
-## setosa : virginica     0.010103449
-## versicolor : virginica 0.011530255
+## setosa : versicolor    0.006875869
+## setosa : virginica     0.010145340
+## versicolor : virginica 0.011117360
 \end{verbatim}
 
 We can now see that there is a significant difference in petal-space occupancy between all species of iris.
@@ -8160,7 +8275,7 @@ Using a MCMC permutation test we can simulate a petal-space with specific proper
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-216-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-224-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -8171,7 +8286,7 @@ Using a MCMC permutation test we can simulate a petal-space with specific proper
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-217-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-225-1.pdf}
 
 In both cases we can see that our petal-space is not entirely normal or uniform.
 This is expected because of the simplicity of these parameters.
@@ -8258,7 +8373,7 @@ The ordinated matrix will represent our full morphospace, i.e.~all the mammalian
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-218-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-226-1.pdf}
 
 \begin{quote}
 You can have an even nicer looking tree if you use the \texttt{strap} package!
@@ -8271,7 +8386,7 @@ You can have an even nicer looking tree if you use the \texttt{strap} package!
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-219-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-227-1.pdf}
 
 \hypertarget{setting-up-your-own-data}{%
 \subsection{Setting up your own data}\label{setting-up-your-own-data}}
@@ -8550,7 +8665,7 @@ For example here, let see if the sum of variances picks up changes in size but n
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-226-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-234-1.pdf}
 
 We see that changes in the inner size (see \citet{moms} for more details) is actually picked up by the sum of variances but not random changes or outer changes. Which is a good thing!
 
@@ -8621,7 +8736,7 @@ For that we can use the \texttt{plot} S3 function to plot the \texttt{dispRity} 
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-229-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-237-1.pdf}
 
 Nice. The curves look pretty similar.
 
@@ -8804,7 +8919,7 @@ This automatically generates a \texttt{dispRity} object with the information of 
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-234-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-242-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -8880,7 +8995,7 @@ We can visualise the results using the \texttt{plot} function on the resulting d
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-238-1.pdf}
+\includegraphics{dispRity_manual_files/figure-latex/unnamed-chunk-246-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
