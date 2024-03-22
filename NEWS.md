@@ -1,4 +1,4 @@
-dispRity v1.8.7 (2024-02-28) 
+dispRity v1.8.8 (2024-03-22) 
 =========================
 
 ### NEW FEATURES
@@ -9,6 +9,8 @@ dispRity v1.8.7 (2024-02-28)
  <!-- TODO: make a MCMCglmm related standalone vignette -->
  <!-- TODO: make a morpho disparity (Claddis) standalone vignette -->
 
+ * New interface for the `BAT` package with new generic metric function `BAT.metric`. This function allows to use any metric from the `BAT` function as a metric for `dispRity` using the synthax: `dispRity(data, metric = BAT.metric, BAT.fun = "name", ...)`
+ * New utility function: `dispRity.BAT` for converting some parts of `dispRity` objects into `BAT` arguments.
 
 ### MINOR IMPROVEMENTS
 
