@@ -653,7 +653,7 @@ default_behaviour <- list(missing      <- function(x,y) y,
 ## Treating polymorphisms as all values present:
                           polymorphism <- function(x,y) strsplit(x, split = "\\&")[[1]],
 ## Treating uncertainties as all values present (like polymorphisms):
-                          uncertanity  <- function(x,y) strsplit(x, split = "\\&")[[1]])
+                          uncertanity  <- function(x,y) strsplit(x, split = "\\/")[[1]])
 ```
 
 We can then use these token description along with our complex matrix and our list of trees to run the ancestral states estimations as follows:
