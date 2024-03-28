@@ -13,8 +13,8 @@
 #' @return
 #' \itemize{
 #'      \item \code{comm}
-#'      \item \code{}
-#'      \item \code{}
+#'      \item \code{tree}
+#'      \item \code{traits}
 #' }
 #' 
 #' @examples
@@ -22,6 +22,65 @@
 ## Converts a dispRity object into BAT arguments
 dispRity.BAT <- function(data, subsets, matrix, tree) {
 
+    ## Check if data is dispRity
+    check.class(data, "dispRity")
+
+    comm <- tree <- traits <- NULL
+
+    ## Check if matrix exists
+    if(!missing(matrix)) {
+        matrix <- get.matrix(data, matrix = matrix)        
+    } else {
+        matrix <- data$matrix[[1]]
+    }
+
+    ## Check if the data has subsets
+    if(length(data$subsets) != 0) {
+        ## Use subsets if not missing
+        if(!missing(subsets)) {
+            data <- get.subsets(data, subsets)
+        }
+        ## Convert the subsets into the comm table
+        comm <- matrix(0, nrow = n.subsets(data), ncol = nrow(matrix))
+        rownames(comm) <- name.subsets(data)
+        ## Fill up the comm table
+        for(one_subset in 1:nrow(comm)) {
+            ## Select the elements (can be probabilistic)
+            elements <- data$subsets[[one_subset]]$elements
+            if(ncol(elements) > 1) {
+                elements <- apply(elements, 1, function(x) sample(x[c(1,2)], size = 1, prob = c(x[3], 1-x[3])))
+            } else {
+                elements <- elements[,1]
+            }
+            ## Se the elements in the comm matrix
+            comm[one_subset, elements] <- 1
+        }
+    } else {
+        ## No subsets
+        comm <- matrix(1, nrow = 1, ncol = nrow(matrix))
+    }
+    colnames(comm) <- rownames(matrix)
+
+    ## Check if the tree exist
+    if(!is.null(data$tree[[1]])) {
+        if(!missing(tree)) {
+            if(missing(subsets)) {
+                subsets <- FALSE
+            }
+            ## Get the tree
+            tree <- get.tree(data, subsets = subsets)
+            ## If the tree is multiPhylo get the first one + warning
+            if(is(tree, "multiPhylo")) {
+                tree <- tree[[1]]
+                warning("data contained a distribution of tree. Only the first tree is used.")
+            }
+        }
+    }
+
+    ## Return everything
+    return(list(comm   = comm,
+                tree   = tree,
+                traits = matrix))
 }
 
 ## Transforms the trait matrix into a community one

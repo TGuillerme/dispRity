@@ -3,7 +3,6 @@
 #' @description An interface to use metrics from the \code{BAT} package in \code{dispRity}
 #'
 #' @param matrix A data matrix.
-#' @param tree Optional, a dendrogram or a matrix.
 #' @param BAT.fun The name of the metric or directly it's function.
 #' @param ... Any optional arguments to be passed to \code{BAT.metric}
 #'
@@ -54,7 +53,7 @@
 #' @seealso \code{\link{dispRity}}, \code{\link{custom.subsets}}
 #' 
 #' @author Thomas Guillerme
-BAT.metric <- function(matrix, tree, BAT.fun, ...) {
+BAT.metric <- function(matrix, BAT.fun, ...) {
     
     #SANITIZNG
 
@@ -74,15 +73,15 @@ BAT.metric <- function(matrix, tree, BAT.fun, ...) {
         BAT.fun <- eval(str2lang(paste0("BAT::", BAT.fun)))
     }
 
-    ## Handeling tree
-    tree_arg <- NULL
-    if(missing(tree)) {
-        ## Check if data has a tree (this is done by dispRity at a higher level)
-    } else {
-        ## Check how the tree needs to be handled by BAT
-        check.class(tree, c("phylo", "hclust"))
-        tree_arg <- tree
-    }
+    # ## Handeling tree
+    # dots <- list(...)
+    # tree_arg <- NULL
+    # if(any(names(dots) %in% "tree")) {
+    #     tree <- dots$tree
+    #     ## Check how the tree needs to be handled by BAT
+    #     check.class(tree, c("phylo", "hclust"))
+    #     tree_arg <- tree   
+    # }
 
     ## Check if the function needs a tree
     dendro_tree_arg <- names(formals(BAT.fun))[2]
@@ -93,12 +92,12 @@ BAT.metric <- function(matrix, tree, BAT.fun, ...) {
     comm_arg <- make.BAT.comm(matrix)
 
     ## Handle BAT args
-    if(!is.null(tree_arg)) {
-        BAT_args <- list(comm = comm_arg, second = tree_arg, ...)
-        names(BAT_args)[2] <- dendro_tree_arg
-    } else {
+    # if(!is.null(tree_arg)) {
+    #     BAT_args <- list(comm = comm_arg, second = tree_arg, ...)
+    #     names(BAT_args)[2] <- dendro_tree_arg
+    # } else {
         BAT_args <- list(comm = comm_arg, ...)
-    }
+    # }
 
     ## Run the fun!
     return(do.call(BAT.fun, BAT_args)[[1]])

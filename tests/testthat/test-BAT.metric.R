@@ -19,14 +19,14 @@ test_that("standalone works (just copying BAT functions)", {
     error <- capture_error(BAT.metric(dummy_matrix, BAT.fun = "BAT::alpha"))
     expect_equal(error[[1]], "BAT.fun must be a function or must be one of the following: alpha.")
     # wrong tree
-    error <- capture_error(BAT.metric(dummy_matrix, BAT.fun = BAT::alpha, tree = "dendro"))
-    expect_equal(error[[1]], "tree must be of class phylo or hclust.")
+    # error <- capture_error(BAT.metric(dummy_matrix, BAT.fun = BAT::alpha, tree = "dendro"))
+    # expect_equal(error[[1]], "tree must be of class phylo or hclust.")
 
     ## Expected dispRity tests
     expect_equal(BAT.metric(dummy_matrix, BAT.fun = BAT::alpha), 10)
     expect_equal(BAT.metric(dummy_matrix, BAT.fun = "alpha"), 10)
-    expect_equal_round(BAT.metric(dummy_matrix, tree = dendro, BAT.fun = BAT::alpha), 33.26329, digits = 5)
-    expect_equal_round(BAT.metric(dummy_matrix, tree = dendro, BAT.fun = "alpha"), 33.26329, digits = 5)
+    expect_equal_round(BAT.metric(dummy_matrix, BAT.fun = BAT::alpha, tree = dendro), 33.26329, digits = 5)
+    expect_equal_round(BAT.metric(dummy_matrix, BAT.fun = "alpha", tree = dendro), 33.26329, digits = 5)
 })
 
 test_that("dispRity pipeline workable", {
@@ -34,71 +34,75 @@ test_that("dispRity pipeline workable", {
     eco_data <- demo_data$jones
     
     ## BAT test
-    lapply(eco_data, make.BAT.comm)
-
+    data <- dispRity.BAT(eco_data)
+    test <- BAT::alpha(data$comm)
+    expect_equal(c(test), c(24, 24))
 
     ## Apply the alpha diversity on these subsets
+    alpha_diversity <- dispRity(eco_data, metric = BAT.metric, BAT.fun = BAT::alpha)
+    expect_equal(c(summary(alpha_diversity)$obs), c(24, 24))
     alpha_diversity <- dispRity(eco_data, metric = BAT.metric, BAT.fun = "alpha")
-    summary(alpha_diversity)
+    expect_equal(c(summary(alpha_diversity)$obs), c(24, 24))
+
 })
 
-test_that("works for more complex ones", {
+# test_that("works for more complex ones", {
 
-    ## Trees
-    tree <- hclust(dist(data$matrix[[1]]), method = "average") 
-    BAT::alpha(t(comm), tree)
-    BAT::dispersion(t(comm), tree)
-    BAT::evenness(t(comm), tree))
+#     ## Trees
+#     tree <- hclust(dist(data$matrix[[1]]), method = "average") 
+#     BAT::alpha(t(comm), tree)
+#     BAT::dispersion(t(comm), tree)
+#     BAT::evenness(t(comm), tree))
 
-    ## Kernels
-    hypervolume <- BAT::kernel.build(comm = t(presence), trait = traits))
-    richness   <- BAT::kernel.alpha(comm=hypervolume )))
-    dispersion <- BAT::kernel.dispersion(comm = hypervolume)))
-    regularity <- BAT::kernel.evenness(comm = hypervolume)))
+#     ## Kernels
+#     hypervolume <- BAT::kernel.build(comm = t(presence), trait = traits))
+#     richness   <- BAT::kernel.alpha(comm=hypervolume )))
+#     dispersion <- BAT::kernel.dispersion(comm = hypervolume)))
+#     regularity <- BAT::kernel.evenness(comm = hypervolume)))
 
-    ## Hulls
-    hull <- BAT::hull.build(comm = t(presence), trait = traits))
-    results <- BAT::hull.alpha(hull))
-})
-
-
+#     ## Hulls
+#     hull <- BAT::hull.build(comm = t(presence), trait = traits))
+#     results <- BAT::hull.alpha(hull))
+# })
 
 
-alpha <- function(comm, tree, raref = 0, runs = 100){
 
-  #convert traits to a tree if needed
-  if(!missing(tree) && (is.matrix(tree) || is.data.frame(tree) || is.vector(tree)))
-    tree = tree.build(tree)
+
+# alpha <- function(comm, tree, raref = 0, runs = 100){
+
+#   #convert traits to a tree if needed
+#   if(!missing(tree) && (is.matrix(tree) || is.data.frame(tree) || is.vector(tree)))
+#     tree = tree.build(tree)
   
-  #first organize the data
-  if(!missing(tree)){
-    cleanData = clean(comm, tree)
-    comm = cleanData[[1]]
-    tree = cleanData[[2]]
-  }
+#   #first organize the data
+#   if(!missing(tree)){
+#     cleanData = clean(comm, tree)
+#     comm = cleanData[[1]]
+#     tree = cleanData[[2]]
+#   }
   
-  #now let's go for what matters
-  nComm <- nrow(comm)
-  if(raref < 1){                        # no rarefaction if 0 or negative
-    results <- matrix(0, nComm, 1)
-    for (s in 1:nComm){
-      results[s,1] <- sobs(comm[s,, drop=FALSE], tree)
-    }
-    rownames(results) <- rownames(comm)
-    colnames(results) <- "Richness"
-    return (results)
-  }
-  if (raref == 1)
-    raref <- nMin(comm)             # rarefy by minimum n among all communities
-  results <- matrix(0, nComm, 6)
-  for (s in 1:nComm){
-    res <- c()
-    for (r in 1:runs){
-      res <- c(res,sobs(rrarefy(comm[s,], raref), tree))
-    }
-    results[s,] <- c(mean(res), quantile(res, 0.5), min(res), quantile(res, 0.025), quantile(res, 0.975), max(res))
-  }
-  rownames(results) <- rownames(comm)
-  colnames(results) <- c("Mean", "Median", "Min", "LowerCL", "UpperCL", "Max")
-  return (results)
-}
+#   #now let's go for what matters
+#   nComm <- nrow(comm)
+#   if(raref < 1){                        # no rarefaction if 0 or negative
+#     results <- matrix(0, nComm, 1)
+#     for (s in 1:nComm){
+#       results[s,1] <- sobs(comm[s,, drop=FALSE], tree)
+#     }
+#     rownames(results) <- rownames(comm)
+#     colnames(results) <- "Richness"
+#     return (results)
+#   }
+#   if (raref == 1)
+#     raref <- nMin(comm)             # rarefy by minimum n among all communities
+#   results <- matrix(0, nComm, 6)
+#   for (s in 1:nComm){
+#     res <- c()
+#     for (r in 1:runs){
+#       res <- c(res,sobs(rrarefy(comm[s,], raref), tree))
+#     }
+#     results[s,] <- c(mean(res), quantile(res, 0.5), min(res), quantile(res, 0.025), quantile(res, 0.975), max(res))
+#   }
+#   rownames(results) <- rownames(comm)
+#   colnames(results) <- c("Mean", "Median", "Min", "LowerCL", "UpperCL", "Max")
+#   return (results)
+# }
