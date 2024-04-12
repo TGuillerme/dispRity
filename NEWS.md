@@ -1,4 +1,4 @@
-dispRity v1.8.7 (2024-02-28) 
+dispRity v1.8.8 (2024-04-12) 
 =========================
 
 ### NEW FEATURES
@@ -15,6 +15,7 @@ dispRity v1.8.7 (2024-02-28)
  * `custom.subsets` can now take a logical vector for the `group` argument.
  * `plot` functions doing scatter plot now centers them without changing the scale of both axes.
  * **changed default argument** for `tree.age`: the number of digits output by `tree.age` is now changed from 3 to 4 by default.
+ * the random starting parameters in `reduce.space` are now drawn from the input data distribution which speeds up the function significantly.
  <!-- Make roundness work for non-VCV matrices (specify the axis function, e.g. variances or quantiles) -->
 
 ### BUG FIXES

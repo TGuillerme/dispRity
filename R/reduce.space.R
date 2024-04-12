@@ -193,7 +193,7 @@ reduce.space <- function(space, type, remove, parameters, tuning, verbose = FALS
                 parameters$centre <- apply(space, 2, max)
             } 
             if(is.null(parameters$radius)) {
-                parameters$radius <- 1
+                parameters$radius <- mean(dist(space))
             }
             ## Parameter to optimise
             parameters$optimise <- parameters$radius
@@ -208,7 +208,7 @@ reduce.space <- function(space, type, remove, parameters, tuning, verbose = FALS
                 parameters$distance <- as.matrix(dist(space))
             }
             if(is.null(parameters$diameter)) {
-                parameters$diameter <- 0.5
+                parameters$diameter <- min(dist(space))
             }  
             ## Parameter to optimise
             parameters$optimise <- parameters$diameter
@@ -244,7 +244,8 @@ reduce.space <- function(space, type, remove, parameters, tuning, verbose = FALS
 
         ## Get out of the corner case of all being TRUE or FALSE
         if(all(to_remove$remove) || all(!to_remove$remove)) {
-            args$parameters$optimise <- runif(1)
+            distances <- range(dist(space))
+            args$parameters$optimise <- runif(1, min = min(distances), max = max(distances))
             to_remove <- list(remove = do.call(fun, args))
         }
 
