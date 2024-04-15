@@ -170,10 +170,29 @@ test_that("reduce.space works", {
 
 test_that("reduce.space position in 8D?", {
     ## Harder removal
+    set.seed(1)
     space <- matrix(rnorm(200*8), ncol = 8)
     rownames(space) <- 1:200
     remove <- 0.4
     ## Testing the removal
     test <- reduce.space(space, type = "position", remove = remove[1])
     expect_equal(sum(test), 80)
+
+    ##
+    # simulated_data <- treats::treats(
+    #         bd.params = list(speciation = 1),
+    #         stop.rule = list(max.living = 200),
+    #         traits    = treats::make.traits(process = treats::BM.process, n = 8))
+    # space <- simulated_data$data[rownames(simulated_data$data) %in% simulated_data$tree$tip.label, ]
+
+    ## Multiple removals
+    set.seed(1)
+    removes <- c(0.2, 0.4, 0.6, 0.8)
+    test <- list()
+    test[[1]] <- reduce.space(space, type = "position", remove = removes[[1]])
+    test[[2]] <- reduce.space(space, type = "position", remove = removes[[2]])
+    test[[3]] <- reduce.space(space, type = "position", remove = removes[[3]])
+    test[[4]] <- reduce.space(space, type = "position", remove = removes[[4]])
+    expect_equal(unlist(lapply(test, sum)), c(40, 80, 119, 161))
+
 })

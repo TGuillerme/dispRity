@@ -133,6 +133,9 @@ reduce.space <- function(space, type, remove, parameters, tuning, verbose = FALS
         }
     }
 
+    ## Get the space distances
+    distances <- dist(space)
+
     ## Tolerance
     if(missing(tuning)) {
         tuning <- list()
@@ -149,7 +152,7 @@ reduce.space <- function(space, type, remove, parameters, tuning, verbose = FALS
         tuning$tol <- 0.01
     }
     if(is.null(tuning$inc.steps)) {
-        tuning$inc.steps <- 2
+        tuning$inc.steps <- 2 # mean(distances)
     }
 
     ## verbose and optim
@@ -193,7 +196,7 @@ reduce.space <- function(space, type, remove, parameters, tuning, verbose = FALS
                 parameters$centre <- apply(space, 2, max)
             } 
             if(is.null(parameters$radius)) {
-                parameters$radius <- mean(dist(space))
+                parameters$radius <- mean(distances)
             }
             ## Parameter to optimise
             parameters$optimise <- parameters$radius
@@ -205,10 +208,10 @@ reduce.space <- function(space, type, remove, parameters, tuning, verbose = FALS
             fun <- run.density.removal
             ## Parameters
             if(is.null(parameters$distance)) {
-                parameters$distance <- as.matrix(dist(space))
+                parameters$distance <- as.matrix(distances)
             }
             if(is.null(parameters$diameter)) {
-                parameters$diameter <- min(dist(space))
+                parameters$diameter <- min(distances)
             }  
             ## Parameter to optimise
             parameters$optimise <- parameters$diameter
@@ -250,16 +253,19 @@ reduce.space <- function(space, type, remove, parameters, tuning, verbose = FALS
         }
 
         ## Optimise
+        if(verbose) cat("Run parameter optimisation:")
+
         to_remove <- optimise.results(to_remove$remove, fun = fun, remove = remove, args = args, tuning = tuning, verbose = verbose, space = space, return.optim = return.optim)
 
         ## Try 25 more times if necessary
         counter <- 0
         while(all(to_remove$remove) || all(!to_remove$remove) && counter != 26) {
-            args$parameters$optimise <- runif(1)
+            args$parameters$optimise <- runif(1, min = min(distances), max = max(distances))
             to_remove <- list(remove = do.call(fun, args))
             to_remove <- optimise.results(to_remove$remove, fun = fun, remove = remove, args = args, tuning = tuning, verbose = verbose, space = space, return.optim = return.optim)
             counter <- counter + 1
         }
+        if(verbose) cat("Done.\n")
     }
 
     if(!return.optim) {
