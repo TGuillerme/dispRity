@@ -35,4 +35,24 @@ test_that("match.tip.edge works", {
     expect_is(edge_colors, "list")
     expect_equal(length(edge_colors), 3)
     expect_equal(edge_colors[[1]], c(NA, "red", "red", "red", NA, NA, "red", "blue", "blue", NA, NA, NA, "red", "red", "red", NA, "red", "blue", "red", "red", "red", "red", "red", NA, NA, "blue", NA, "blue", "red", NA, NA, NA, "blue", "red", NA, "red", "blue", "blue"))
+
+    ## To the root + works with tips/node labels
+    data(bird.orders)
+    vector <- sort(bird.orders$tip.label)[4:9]
+
+#'
+## Matching the tips and nodes colours to the root
+
+#'
+## Setting the tip values to grey for all orders
+tip_values <- rep("grey", Ntip(bird.orders))
+## Setting them to black for the orders starting with a C
+orders_with_a_C <- bird.orders$tip.label %in% sort(bird.orders$tip.label)[4:9]
+tip_values[orders_with_a_C] <- "black" 
+## Colour the edges
+edge_colors <- match.tip.edge(tip_values, bird.orders, replace.na = "grey")
+
+plot(bird.orders, edge.color = match.tip.edge(tip_values, bird.orders, replace.na = "grey", to.root = TRUE))
+
+
 })
