@@ -9,7 +9,6 @@ dispRity v1.8.8 (2024-04-15)
  <!-- TODO: make a MCMCglmm related standalone vignette -->
  <!-- TODO: make a morpho disparity (Claddis) standalone vignette -->
 
-
 ### MINOR IMPROVEMENTS
 
  * `custom.subsets` can now take a logical vector for the `group` argument.
@@ -17,6 +16,7 @@ dispRity v1.8.8 (2024-04-15)
  * **changed default argument** for `tree.age`: the number of digits output by `tree.age` is now changed from 3 to 4 by default.
  * the random starting parameters in `reduce.space` are now drawn from the input data distribution which speeds up the function significantly.
  <!-- Make roundness work for non-VCV matrices (specify the axis function, e.g. variances or quantiles) -->
+ <!-- Update match.tip.edges -->
 
 ### BUG FIXES
 
