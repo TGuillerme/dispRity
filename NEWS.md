@@ -18,6 +18,7 @@ dispRity v1.8.8 (2024-03-22)
  * `plot` functions doing scatter plot now centers them without changing the scale of both axes.
  * **changed default argument** for `tree.age`: the number of digits output by `tree.age` is now changed from 3 to 4 by default.
  <!-- Make roundness work for non-VCV matrices (specify the axis function, e.g. variances or quantiles) -->
+ <!-- Update match.tip.edge -->
 
 ### BUG FIXES
 
