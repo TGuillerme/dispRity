@@ -9,7 +9,7 @@
 #' @param to.root logical, if \code{vector} is a list of tips and nodes, whether to colour internal edges all the way to the root (\code{TRUE}) or not (\code{FALSE} - default).
 #'  
 #' @returns
-#' If the input \code{vector} is a vector of variables, the function returns a vector of variables equal to the number of edges in the tree (or a list of vectors if the \code{phylo} input is of class \code{"multiPhylo"}). Else it returns a \code{logical} vector for which edges are selected (\code{TRUE}) or not (\code{FALSE}).
+#' If the input \code{vector} is a vector of variables, the function returns a vector of variables equal to the number of edges in the tree (or a list of vectors if the \code{phylo} input is of class \code{"multiPhylo"}). Else it returns an \code{integer} vector for the selected edges.
 #' 
 #' @examples
 #' ## A random tree
@@ -41,14 +41,20 @@
 #' ## Matching the tips and nodes colours to the root
 #' data(bird.orders)
 #'
-#' ## Setting the tip values to grey for all orders
-#' tip_values <- rep("grey", Ntip(bird.orders))
-#' ## Setting them to black for the orders starting with a C
-#' orders_with_a_C <- bird.orders$tip.label %in% sort(bird.orders$tip.label)[4:9]
-#' tip_values[orders_with_a_C] <- "black" 
-#' ## Colour the edges
-#' edge_colors <- match.tip.edge(tip_values, bird.orders, replace.na = "grey")
-#' plot(bird.orders, edge.color = edge_colors)
+#' ## Getting the bird orders starting with a "C"
+#' some_orders <- sort(bird.orders$tip.label)[4:9]
+#'
+#' ## Get the edges linking these orders
+#' edges_of_interest <- match.tip.edge(vector = some_orders,
+#'                                     phylo  = bird.orders)
+#'
+#' ## Create a colour vector for all edges
+#' all_edges <- rep("grey", Nedge(bird.orders))
+#' ## Replacing the edges of interest by another colour
+#' all_edges[edges_of_interest] <- "black"
+#'
+#' ## Plot the results
+#' plot(bird.orders, edge.color = all_edges)
 #'
 #' @author Thomas Guillerme
 #' @export
@@ -102,6 +108,8 @@ match.tip.edge <- function(vector, phylo, replace.na, use.parsimony = TRUE, to.r
         ## Don't use parsimony if node info is available
         use.parsimony <- FALSE
     }
+    check.class(to.root, "logical")
+    check.class(use.parsimony, "logical")
 
     ## Get the edge table
     edge_table <- phylo$edge
@@ -172,14 +180,32 @@ match.tip.edge <- function(vector, phylo, replace.na, use.parsimony = TRUE, to.r
         ## Get the vector of edges
         edge_vector <- rep(FALSE, Nedge(phylo))
 
-        ## TODO: add MRCA
+        ## Get the mrca
+        if(!to.root) {
+            target_mrca <- getMRCA(phylo, vector)
+        } else {
+            ## mrca is the root of the tree
+            target_mrca <- Ntip(phylo) + 1
+        }
 
-        ## SELECT EVERYTHING WITH PARSIMONY
-
-        ## Detect the edges leading to the IDs
-        slected_edges <- edge_table[, 2] %in% vector
-
-
+        ## Connect each tip to the mrca
+        connect.tip.to.mrca <- function(tip, edge_table, target_mrca) {
+            ## Store the edges values
+            edges <- integer()
+            ## Find the edge connecting to the tip
+            tip_edge <- which(edge_table[,2] == tip)
+            ## Save the edge
+            edges <- c(edges, tip_edge)
+            ## Loop through the edges until reaching the mrca_edges
+            while(!(target_mrca %in% edge_table[tip_edge, ])) {
+                ## Go down the tree
+                tip <- edge_table[tip_edge, 1]
+                tip_edge <- which(edge_table[,2] == tip)
+                edges <- c(edges, tip_edge)
+            }
+            return(edges)
+        }
+        edge_vector <- unique(unlist(sapply(vector, connect.tip.to.mrca, edge_table, target_mrca)))
     }
 
     ## Done

@@ -14,7 +14,9 @@ test_that("match.tip.edge works", {
     error <- capture_error(match.tip.edge(tip_values, wrong_multiphylo))
     expect_equal(error[[1]], "The trees from wrong_multiphylo must have the same number of tips.")
     error <- capture_error(match.tip.edge(tip_values, rtree(5)))
-    expect_equal(error[[1]], "The input vector must of the same length as the number of tips (5) or tips and nodes (9) in phylo.")
+    expect_equal(error[[1]], "The input vector must of the same length as the number of tips (5) or tips and nodes (9) in phylo. Or it must be a vector of node or tips IDs or names.")
+    error <- capture_error(match.tip.edge(tip_values, tree, use.parsimony = "ya"))
+    expect_equal(error[[1]], "use.parsimony must be of class logical.")
 
     ## NA replaces
     edge_colors <- match.tip.edge(tip_values, tree)
@@ -38,21 +40,18 @@ test_that("match.tip.edge works", {
 
     ## To the root + works with tips/node labels
     data(bird.orders)
-    vector <- sort(bird.orders$tip.label)[4:9]
+    ## Getting the bird orders starting with a "C"
+    some_orders <- sort(bird.orders$tip.label)[4:9]
 
-#'
-## Matching the tips and nodes colours to the root
+    ## Errors
+        edges_of_interest <- match.tip.edge(vector = some_orders, phylo  = bird.orders)
+    error <- capture_error(match.tip.edge(vector = some_orders, phylo  = bird.orders, to.root = "ya"))
+    expect_equal(error[[1]], "to.root must be of class logical.")
 
-#'
-## Setting the tip values to grey for all orders
-tip_values <- rep("grey", Ntip(bird.orders))
-## Setting them to black for the orders starting with a C
-orders_with_a_C <- bird.orders$tip.label %in% sort(bird.orders$tip.label)[4:9]
-tip_values[orders_with_a_C] <- "black" 
-## Colour the edges
-edge_colors <- match.tip.edge(tip_values, bird.orders, replace.na = "grey")
-
-plot(bird.orders, edge.color = match.tip.edge(tip_values, bird.orders, replace.na = "grey", to.root = TRUE))
-
-
+    ## Get the edges linking these orders
+    edges_of_interest <- match.tip.edge(vector = some_orders, phylo  = bird.orders)
+    expect_equal(edges_of_interest, c(7, 6, 5, 1, 23, 21, 17, 15, 14, 12, 10, 25, 24, 27, 26, 40, 39, 38, 30, 28, 43, 41))
+    ## Works the same if to.root (in this case)
+    edges_of_interest <- match.tip.edge(vector = some_orders, phylo  = bird.orders, to.root = TRUE)
+    expect_equal(edges_of_interest, c(7, 6, 5, 1, 23, 21, 17, 15, 14, 12, 10, 25, 24, 27, 26, 40, 39, 38, 30, 28, 43, 41))
 })
