@@ -8,8 +8,8 @@ test_that("as.covar works in standalone", {
     ## Creating a dispRity
     data(charadriiformes)
     covar_data <- MCMCglmm.subsets(data       = charadriiformes$data,
-                                   posteriors = charadriiformes$posteriors)    
-
+                                   posteriors = charadriiformes$posteriors)
+    
     ## Testing the handling
     match_call <- list()
 
