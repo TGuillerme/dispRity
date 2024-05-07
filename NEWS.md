@@ -1,4 +1,4 @@
-dispRity v1.8.8 (2024-03-22) 
+dispRity v1.8.9 (2024-05-06) 
 =========================
 
 ### NEW FEATURES
@@ -8,7 +8,6 @@ dispRity v1.8.8 (2024-03-22)
  <!-- Add to manual -->
  <!-- TODO: make a MCMCglmm related standalone vignette -->
  <!-- TODO: make a morpho disparity (Claddis) standalone vignette -->
-
  * New interface for the `BAT` package with new generic metric function `BAT.metric`. This function allows to use any metric from the `BAT` function as a metric for `dispRity` using the synthax: `dispRity(data, metric = BAT.metric, BAT.fun = "name", ...)`
  * New utility function: `dispRity.BAT` for converting some parts of `dispRity` objects into `BAT` arguments.
 
@@ -17,15 +16,15 @@ dispRity v1.8.8 (2024-03-22)
  * `custom.subsets` can now take a logical vector for the `group` argument.
  * `plot` functions doing scatter plot now centers them without changing the scale of both axes.
  * **changed default argument** for `tree.age`: the number of digits output by `tree.age` is now changed from 3 to 4 by default.
+ * the random starting parameters in `reduce.space` are now drawn from the input data distribution which speeds up the function significantly.
+ * `match.tip.edges` can now just work for colouring edges connecting a vector of tips.
  <!-- Make roundness work for non-VCV matrices (specify the axis function, e.g. variances or quantiles) -->
- <!-- Update match.tip.edge -->
 
 ### BUG FIXES
 
  * `scale.dispRity` now correctly ignores `NA`s when scaling.
  * `multi.ace` now correctly handles invariant characters when looking for NAs.
- <!-- * `dispRity` objects with a `$covar` component are not interpreted as bootstrapped by `boot.matrix` anymore.
-    TODO: when detecting bootstraps (boot.matrix*) distinguish between bootstrap[[1]] %in% c("single", "full") VS. "covar" -->
+ * `dispRity` objects with a `$covar` component are not interpreted as bootstrapped by `boot.matrix` anymore.
 
 dispRity v1.8 (2023-12-11) *dispRity.multi*
 =========================

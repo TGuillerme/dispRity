@@ -112,7 +112,7 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions 
         data <- make.dispRity(data = data)
     } else {
         ## Must not already been bootstrapped
-        if(!is.null(data$call$bootstrap)) {
+        if(!is.null(data$call$bootstrap) && data$call$bootstrap[[2]] != "covar") {
             stop.call(msg.pre = "", match_call$data, msg = " was already bootstrapped.")
         }
 
