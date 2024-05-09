@@ -44,6 +44,7 @@ reduce.space.one.type <- function(type, data, steps, shift.options, verbose) {
 
     ## Run the reductions
     to_remove <- lapply(add.steps.to.args(make.reduce.space.args(data[[1]], type, shift.options), c(0, steps)), function(args, fun) do.call(fun, args), fun = reduce.space.call)
+    # to_remove <- lapply(to_remove, unname)
 
     ## Make it look fancy
     if(type != "random") {
