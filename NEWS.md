@@ -23,6 +23,7 @@ dispRity v1.8.9 (2024-05-06)
  * `scale.dispRity` now correctly ignores `NA`s when scaling.
  * `multi.ace` now correctly handles invariant characters when looking for NAs.
  * `dispRity` objects with a `$covar` component are not interpreted as bootstrapped by `boot.matrix` anymore.
+<!-- Remove bug in macos tags from tests -->
 
 dispRity v1.8 (2023-12-11) *dispRity.multi*
 =========================
