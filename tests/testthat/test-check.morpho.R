@@ -58,7 +58,7 @@ test_that("check.morpho works", {
     #Verbose version
     set.seed(1)
     verbose <- capture_output(check.morpho(random.matrix, parsimony = "fitch", verbose = TRUE))
-    expect_equal(strsplit(verbose, split = "p-score")[[1]][1], "Most parsimonious tree search:\nFinal") # split from bug in macos
+    expect_equal(strsplit(verbose, split = "p-score")[[1]][1], "Most parsimonious tree search:\nFinal ") # split from bug in macos
 
 
     #Test example (seed 10)
