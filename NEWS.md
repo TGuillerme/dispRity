@@ -1,4 +1,4 @@
-dispRity v1.8.9 (2024-05-06) 
+dispRity v1.8.10 (2024-05-22) 
 =========================
 
 ### NEW FEATURES
@@ -8,8 +8,10 @@ dispRity v1.8.9 (2024-05-06)
  <!-- Add to manual -->
  <!-- TODO: make a MCMCglmm related standalone vignette -->
  <!-- TODO: make a morpho disparity (Claddis) standalone vignette -->
+ <!-- TODO: New argument to the `boot.matrix` function: `boot.dimensions` for bootstrapping the rows of the matrix as well (can be either `"full"` or `"single"`).  -->
  * New interface for the `BAT` package with new generic metric function `BAT.metric`. This function allows to use any metric from the `BAT` function as a metric for `dispRity` using the synthax: `dispRity(data, metric = BAT.metric, BAT.fun = "name", ...)`
  * New utility function: `dispRity.BAT` for converting some parts of `dispRity` objects into `BAT` arguments.
+    <!-- TODO: handle more internal bits like tree automatically -->
 
 ### MINOR IMPROVEMENTS
 
@@ -18,6 +20,7 @@ dispRity v1.8.9 (2024-05-06)
  * **changed default argument** for `tree.age`: the number of digits output by `tree.age` is now changed from 3 to 4 by default.
  * the random starting parameters in `reduce.space` are now drawn from the input data distribution which speeds up the function significantly.
  * `match.tip.edges` can now just work for colouring edges connecting a vector of tips.
+ * remove deprecated internal requirements in `boot.matrix`.
  <!-- Make roundness work for non-VCV matrices (specify the axis function, e.g. variances or quantiles) -->
 
 ### BUG FIXES
