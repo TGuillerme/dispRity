@@ -18,15 +18,12 @@ test_that("standalone works (just copying BAT functions)", {
     # wrong fun
     error <- capture_error(BAT.metric(dummy_matrix, BAT.fun = "BAT::alpha"))
     expect_equal(error[[1]], "BAT.fun must be a function or must be one of the following: alpha.")
-    # wrong tree
-    # error <- capture_error(BAT.metric(dummy_matrix, BAT.fun = BAT::alpha, tree = "dendro"))
-    # expect_equal(error[[1]], "tree must be of class phylo or hclust.")
 
     ## Expected dispRity tests
     expect_equal(BAT.metric(dummy_matrix, BAT.fun = BAT::alpha), 10)
     expect_equal(BAT.metric(dummy_matrix, BAT.fun = "alpha"), 10)
-    expect_equal_round(BAT.metric(dummy_matrix, BAT.fun = BAT::alpha, tree = dendro), 33.26329, digits = 5)
-    expect_equal_round(BAT.metric(dummy_matrix, BAT.fun = "alpha", tree = dendro), 33.26329, digits = 5)
+    expect_equal_round(BAT.metric(dummy_matrix, BAT.fun = BAT::alpha, BAT.args = list(tree = dendro)), 33.26329, digits = 5)
+    expect_equal_round(BAT.metric(dummy_matrix, BAT.fun = "alpha", BAT.args = list(tree = dendro)), 33.26329, digits = 5)
 })
 
 test_that("dispRity pipeline workable", {
@@ -43,27 +40,60 @@ test_that("dispRity pipeline workable", {
     expect_equal(c(summary(alpha_diversity)$obs), c(24, 24))
     alpha_diversity <- dispRity(eco_data, metric = BAT.metric, BAT.fun = "alpha")
     expect_equal(c(summary(alpha_diversity)$obs), c(24, 24))
-
 })
 
-# test_that("works for more complex ones", {
+test_that("works for more complex ones", {
 
-#     ## Trees
-#     tree <- hclust(dist(data$matrix[[1]]), method = "average") 
-#     BAT::alpha(t(comm), tree)
-#     BAT::dispersion(t(comm), tree)
-#     BAT::evenness(t(comm), tree))
+    data(demo_data)
+    eco_data <- demo_data$jones
+    data <- dispRity.BAT(eco_data)
+    comm <- make.BAT.comm(data$traits)
 
-#     ## Kernels
-#     hypervolume <- BAT::kernel.build(comm = t(presence), trait = traits))
-#     richness   <- BAT::kernel.alpha(comm=hypervolume )))
-#     dispersion <- BAT::kernel.dispersion(comm = hypervolume)))
-#     regularity <- BAT::kernel.evenness(comm = hypervolume)))
+    ## Trees
+    tree <- hclust(dist(data$traits), method = "average") 
+    tree_alpha      <- BAT::alpha(data$comm, tree)
+    tree_dispersion <- BAT::dispersion(data$comm, tree)
+    tree_evenness   <- BAT::evenness(data$comm, tree)
 
-#     ## Hulls
-#     hull <- BAT::hull.build(comm = t(presence), trait = traits))
-#     results <- BAT::hull.alpha(hull))
-# })
+
+    #TG: PROBLEM HERE:
+        # dispRity does: subsets then applies de metrics (so the options are applied to all)
+        # BAT does: metric + option (applied to all) and then subsets.
+    test <- dispRity.BAT(eco_data)
+    test$tree <- hclust(dist(test$traits), method = "average")
+    BAT::alpha(test$comm, tree = test$tree)
+    # TG: SOLUTION HERE?
+        # Create a comm with all the bootstraps and subsets > feed it to BAT.metric() > output the results in a handalable way
+
+    tust <- dispRity.BAT(boot.matrix(eco_data, bootstraps = 7))
+
+
+    test <- BAT.metric(data$traits, BAT.fun = alpha, BAT.args = list(tree = tree))
+    expect_equal(c(test), c(BAT::alpha(comm, tree)))
+    test <- dispRity(eco_data, metric = BAT.metric, BAT.fun = BAT::alpha, BAT.args = list(tree = tree))
+    expect_equal(c(summary(test)$obs), c(tree_alpha))
+
+    test <- BAT.metric(data$traits, BAT.fun = dispersion, BAT.args = list(tree = tree))
+    expect_equal(c(test), c(BAT::dispersion(comm, tree)))
+    test <- dispRity(eco_data, metric = BAT.metric, BAT.fun = dispersion, BAT.args = list(tree = tree))
+    expect_equal(c(summary(test)$obs), c(tree_dispersion))
+
+    test <- BAT.metric(data$traits, BAT.fun = evenness, BAT.args = list(tree = tree))
+    expect_equal(c(test), c(BAT::evenness(comm, tree)))
+    test <- dispRity(eco_data, metric = BAT.metric, BAT.fun = evenness, BAT.args = list(tree = tree))
+    expect_equal(c(summary(test)$obs), c(tree_evenness))
+
+    # ## Kernels
+    # hypervolume <- BAT::kernel.build(comm = t(presence), trait = traits))
+
+    # richness   <- BAT::kernel.alpha(comm=hypervolume)))
+    # dispersion <- BAT::kernel.dispersion(comm = hypervolume)))
+    # regularity <- BAT::kernel.evenness(comm = hypervolume)))
+
+    # ## Hulls
+    # hull <-    BAT::hull.build(comm = t(presence), trait = traits))
+    # results <- BAT::hull.alpha(hull))
+})
 
 
 
