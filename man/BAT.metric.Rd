@@ -4,14 +4,14 @@
 \alias{BAT.metric}
 \title{Using metrics from the BAT package.}
 \usage{
-BAT.metric(matrix, BAT.fun, ...)
+BAT.metric(matrix, BAT.fun, BAT.args = NULL)
 }
 \arguments{
 \item{matrix}{A data matrix.}
 
 \item{BAT.fun}{The name of the metric or directly it's function.}
 
-\item{...}{Any optional arguments to be passed to \code{BAT.metric}}
+\item{BAT.args}{Any named optional arguments to be passed to \code{BAT.metric} (default is \code{NULL})}
 }
 \description{
 An interface to use metrics from the \code{BAT} package in \code{dispRity}
@@ -20,27 +20,24 @@ An interface to use metrics from the \code{BAT} package in \code{dispRity}
 This function is an interface between the \code{dispRity} and B\code{BAT}AT package allowing to use a \code{BAT} function in the \code{dispRity} pipeline.
 By default the function uses the \code{dispRity.metric} format:
 
-\code{metric_value <- BAT.metric(matrix, BAT.fun = BAT::alpha, ...)}
+\code{metric_value <- BAT.metric(matrix, BAT.fun = BAT::alpha)}
 
 or
 
-\code{metric_value <- BAT.metric(matrix, BAT.fun = "alpha", ...)} 
+\code{metric_value <- BAT.metric(matrix, BAT.fun = "alpha")} 
 
-With any optional argument being handled normally.
+or
+
+\code{metric_value <- BAT.metric(matrix, BAT.fun = alpha)} 
+
+With any optional argument being handled normally through \code{BAT.args}.
+
 However, most commonly, the function can be used in the context of the \code{dispRity} pipeline as follows:
 
-\code{my_disparity <- dispRity(my_data, metric = BAT.metric, BAT.fun = BAT::alpha, ...)}
+\code{my_disparity <- dispRity(my_data, metric = BAT.metric, BAT.fun = BAT::alpha)}
 
-or
-
-\code{metric_value <- dispRity(my_data, metric = BAT.metric, BAT.fun = "alpha", ...)} 
-
-The default argument \code{tree} is handled differently depending on the context:
-\itemize{
-     \item if...
-     \item if...
-     \item if...
-}
+\emph{NOTE} that if the \code{dispRity} object contains a \code{$tree} element. It is recycled to the BAT metric if available as an optional argument.
+You can override this behaviour by providing your own tree (e.g. using \code{BAT.args = list(tree = my_tree)}) or by removing the tree from your input data (e.g. using \code{remove.tree(my_data)}).
 }
 \examples{
 ## Base example:
@@ -59,6 +56,7 @@ eco_data
 ## Apply the alpha diversity on these subsets
 alpha_diversity <- dispRity(eco_data, metric = BAT.metric, BAT.fun = "alpha")
 summary(alpha_diversity)
+
 }
 \seealso{
 \code{\link{dispRity}}, \code{\link{custom.subsets}}
