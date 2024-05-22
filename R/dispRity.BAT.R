@@ -12,9 +12,9 @@
 #'
 #' @return
 #' \itemize{
-#'      \item \code{comm}
-#'      \item \code{tree}
-#'      \item \code{traits}
+#'      \item \code{comm}: a \code{matrix} of presence/absence (\code{0, 1}) sorting the subsets by rows and the elements by columns that can be passed as the \code{comm} argument to \code{BAT} functions. If the \code{data} contains no subsets, the matrix is matrix full of 1 with one row and a number of columns corresponding to the number of elements in \code{data}.
+#'      \item \code{traits}: a \code{matrix} that is the traitspace with elements as rows and dimensions as columns.
+#'      \item \code{tree}: either \code{NULL} if the \code{data} contains no tree or a \code{phylo} or \code{multiPhylo} object from \code{data}.
 #' }
 #' 
 #' @examples
