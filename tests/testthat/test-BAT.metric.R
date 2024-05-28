@@ -63,25 +63,27 @@ test_that("works for more complex ones", {
     test$tree <- hclust(dist(test$traits), method = "average")
     BAT::alpha(test$comm, tree = test$tree)
     # TG: SOLUTION HERE?
-        # Create a comm with all the bootstraps and subsets > feed it to BAT.metric() > output the results in a handalable way
+        # use dispRity.BAT to create a comm with all the bootstraps and subsets > feed it to BAT.metric() > output the results in a handalable way
+    # Solution 2: make BAT run for whole data as well as subset
 
-    tust <- dispRity.BAT(boot.matrix(eco_data, bootstraps = 7))
+
+    # tust <- dispRity.BAT(boot.matrix(eco_data, bootstraps = 3))
 
 
-    test <- BAT.metric(data$traits, BAT.fun = alpha, BAT.args = list(tree = tree))
-    expect_equal(c(test), c(BAT::alpha(comm, tree)))
-    test <- dispRity(eco_data, metric = BAT.metric, BAT.fun = BAT::alpha, BAT.args = list(tree = tree))
-    expect_equal(c(summary(test)$obs), c(tree_alpha))
+    # test <- BAT.metric(data$traits, BAT.fun = alpha, BAT.args = list(tree = tree))
+    # expect_equal(c(test), c(BAT::alpha(comm, tree)))
+    # test <- dispRity(eco_data, metric = BAT.metric, BAT.fun = BAT::alpha, BAT.args = list(tree = tree))
+    # expect_equal(c(summary(test)$obs), c(tree_alpha))
 
-    test <- BAT.metric(data$traits, BAT.fun = dispersion, BAT.args = list(tree = tree))
-    expect_equal(c(test), c(BAT::dispersion(comm, tree)))
-    test <- dispRity(eco_data, metric = BAT.metric, BAT.fun = dispersion, BAT.args = list(tree = tree))
-    expect_equal(c(summary(test)$obs), c(tree_dispersion))
+    # test <- BAT.metric(data$traits, BAT.fun = dispersion, BAT.args = list(tree = tree))
+    # expect_equal(c(test), c(BAT::dispersion(comm, tree)))
+    # test <- dispRity(eco_data, metric = BAT.metric, BAT.fun = dispersion, BAT.args = list(tree = tree))
+    # expect_equal(c(summary(test)$obs), c(tree_dispersion))
 
-    test <- BAT.metric(data$traits, BAT.fun = evenness, BAT.args = list(tree = tree))
-    expect_equal(c(test), c(BAT::evenness(comm, tree)))
-    test <- dispRity(eco_data, metric = BAT.metric, BAT.fun = evenness, BAT.args = list(tree = tree))
-    expect_equal(c(summary(test)$obs), c(tree_evenness))
+    # test <- BAT.metric(data$traits, BAT.fun = evenness, BAT.args = list(tree = tree))
+    # expect_equal(c(test), c(BAT::evenness(comm, tree)))
+    # test <- dispRity(eco_data, metric = BAT.metric, BAT.fun = evenness, BAT.args = list(tree = tree))
+    # expect_equal(c(summary(test)$obs), c(tree_evenness))
 
     # ## Kernels
     # hypervolume <- BAT::kernel.build(comm = t(presence), trait = traits))

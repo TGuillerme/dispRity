@@ -472,6 +472,20 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
     ## Running the multiple matrix mode
     # if(is_bound || length(data$matrix) > 1) {
 
+
+    # ## Running BAT.metrics
+    # if(match_call$metric[[1]] == "BAT.metric") {
+    #     ## Convert the data
+    #     batted_data <- dispRity.BAT(data)
+    #     ## Run the metric
+    #     disparities <- BAT.metric(batted_data, BAT.fun = BAT.fun, ...)
+
+    #     ## Lapply_loop holder
+    #     lapply_loop <- NULL
+    # }
+
+
+
     if(any( 
           c(## Data is bound to a tree
             is_bound,
