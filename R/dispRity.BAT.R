@@ -18,13 +18,33 @@
 #' }
 #' 
 #' @examples
-#' ## Base example:
+#' ## Basic example
+#' data(demo_data)
+#' BAT_data <- dispRity.BAT(demo_data$jones)
+#' ## The community table
+#' BAT_data$comm
+#'
+#' ## Complex example
+#' data(disparity)
+#' ## The community table for complex data
+#' ## (including 100 bootstraps for 4 rarefaction levels for 7 subsets
+#' ## plus the 7 raw subsets for 99 elements = 2807*99)
+#' dim(dispRity.BAT(disparity)$comm)
+#'
 ## Converts a dispRity object into BAT arguments
 dispRity.BAT <- function(data, subsets, matrix, tree) {
 
     ## Check if data is dispRity
     check.class(data, "dispRity")
+    ## Check if is subseted
+    is_subseted <- length(data$subsets) != 0
+    ## If so check if probabilistic
+    is_proba <- FALSE
+    if(is_subseted) {
+        is_proba <- !is.na(data$call$subsets[2]) && grepl("split", data$call$subsets[2])
+    }
 
+    ## Placeholders
     comm <- tree <- traits <- NULL
 
     ## Check if matrix exists
@@ -35,25 +55,29 @@ dispRity.BAT <- function(data, subsets, matrix, tree) {
     }
 
     ## Check if the data has subsets
-    if(length(data$subsets) != 0) {
+    if(is_subseted) {
         ## Use subsets if not missing
         if(!missing(subsets)) {
             data <- get.subsets(data, subsets)
         }
-        ## Convert the subsets into the comm table
-        comm <- matrix(0, nrow = n.subsets(data), ncol = nrow(matrix))
-        rownames(comm) <- name.subsets(data)
-        ## Fill up the comm table
-        for(one_subset in 1:nrow(comm)) {
-            ## Select the elements (can be probabilistic)
-            elements <- data$subsets[[one_subset]]$elements
-            if(ncol(elements) > 1) {
-                elements <- apply(elements, 1, function(x) sample(x[c(1,2)], size = 1, prob = c(x[3], 1-x[3])))
-            } else {
-                elements <- elements[,1]
+       
+        ## Populate the comms table
+        comm <- do.call(rbind, unlist(lapply(data$subsets, lapply, make.a.subset.comm, matrix = matrix, is_proba = is_proba), recursive = FALSE))
+
+        ## Get the table elements
+        subset_names <- name.subsets(data)
+        
+        ## If table had only elements name them as the subsets
+        if(nrow(comm) == length(subset_names)) {
+            rownames(comm) <- subset_names
+        } else {
+            ## Specify the bootstraps and rarefactions
+            names <- lapply(data$subsets, lapply, get.comm.names, matrix = matrix)
+            rownames <- character()
+            for(one_group in 1:length(names)) {
+               rownames <- c(rownames, paste0(subset_names[one_group], ".", unname(unlist(names[[one_group]]))))
             }
-            ## Se the elements in the comm matrix
-            comm[one_subset, elements] <- 1
+            rownames(comm) <- rownames
         }
     } else {
         ## No subsets
@@ -91,3 +115,44 @@ make.BAT.comm <- function(matrix, data) {
         return(matrix(as.integer(rownames(data) %in% rownames(matrix)), nrow = 1, ncol = nrow(data)))
     }
 }
+
+## Collapse a bootstrap probability
+collapse.proba <- function(proba_table) {
+    ## Empty collapse table
+    collapsed_matrix <- matrix(nrow = nrow(proba_table), ncol = 0)
+    ## Collapse the probabilities
+    while(ncol(proba_table) >= 3 && ((ncol(proba_table) %% 3) == 0)) {
+        sub_table <- proba_table[, 1:3]
+        collapsed_matrix <- cbind(collapsed_matrix, apply(sub_table, 1, function(x) sample(x[c(1,2)], size = 1, prob = c(x[3], 1-x[3]))))
+        proba_table <- proba_table[, -c(1:3), drop = FALSE]
+    }
+    return(collapsed_matrix)
+}
+
+## Make a comm row out of a subset
+make.a.subset.comm <- function(one_subset, matrix, is_proba = FALSE) {
+    ## Get the elements
+    if(is_proba) {
+        elements <- collapse.proba(one_subset)
+    } else {
+        elements <- one_subset[,, drop = FALSE]
+    }
+
+    ## Empty community matrix
+    comm_subset <- matrix(0, ncol = ncol(elements), nrow = nrow(matrix))
+
+    ## Fill the community matrix
+    for(i in 1:ncol(comm_subset)) {
+        comm_subset[elements[,i],i] <- 1
+    } 
+    return(t(comm_subset))
+}
+## Get the comm names (bootstraps or rarefactions)
+get.comm.names <- function(one_subset, matrix) {
+    if(ncol(one_subset) == 1) {
+        return("elements")
+    } else {
+        return(paste0("bootstrap.", nrow(one_subset), ".", 1:ncol(one_subset)))
+    }
+}
+

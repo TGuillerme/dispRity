@@ -29,5 +29,17 @@ Converts a \code{dispRity} object into \code{BAT} package arguments.
 Converts the content of a \code{dispRity} object into a list of arguments that can be used by \code{BAT} functions.
 }
 \examples{
-## Base example:
+## Basic example
+data(demo_data)
+BAT_data <- dispRity.BAT(demo_data$jones)
+## The community table
+BAT_data$comm
+
+## Complex example
+data(disparity)
+## The community table for complex data
+## (including 100 bootstraps for 4 rarefaction levels for 7 subsets
+## plus the 7 raw subsets for 99 elements = 2807*99)
+dim(dispRity.BAT(disparity)$comm)
+
 }

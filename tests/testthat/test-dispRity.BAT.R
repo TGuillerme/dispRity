@@ -36,6 +36,31 @@ test_that("dispRity.BAT works", {
     expect_is(out, "list")
     expect_equal(names(out), c("comm", "tree", "traits"))
     expect_equal(dim(out$traits), c(99,97))
-    expect_equal(dim(out$comm), c(7,99))
+    expect_equal(dim(out$comm), c(2807,99))
     expect_is(out$tree, "phylo")
+})
+
+
+test_that("dispRity.BAT works with bootstraps", {
+    ## Test convert simple
+    data(demo_data)
+    data <- boot.matrix(demo_data$jones, bootstraps = 3, rarefaction = c(24,12))
+    out <- dispRity.BAT(data)
+    expect_equal(names(out), c("comm", "tree", "traits"))
+    expect_equal(dim(out$traits), c(48,47))
+    expect_equal(dim(out$comm), c(14,48))
+    expect_equal(rownames(out$comm)[c(1,7,2,8,6,14)], c("aspen.elements", "aspen.bootstrap.12.3", "aspen.bootstrap.24.1", "grassland.elements", "aspen.bootstrap.12.2", "grassland.bootstrap.12.3"))
+    expect_true(is.null(out$tree))
+
+    ## Works with probabilistic bootstraps
+    data(BeckLee_mat99)
+    data(BeckLee_ages)
+    data(BeckLee_tree)
+    data <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", time = c(120, 100, 80, 60, 40 , 20, 0), model = "gradual.split", inc.nodes = TRUE, FADLAD = BeckLee_ages, verbose = FALSE, t0 = FALSE)
+    out <- dispRity.BAT(data)
+    expect_equal(names(out), c("comm", "tree", "traits"))
+    expect_equal(dim(out$traits), c(99,97))
+    expect_equal(dim(out$comm), c(7,99))
+    expect_equal(rownames(out$comm), as.character(seq(from = 120, to = 0, by = -20)))
+    expect_equal(unique(c(out$comm)), c(0,1))
 })
