@@ -30,6 +30,11 @@ test_that("dispRity.BAT works", {
     expect_equal(dim(out$comm), c(2,48))
     expect_true(is.null(out$tree))
 
+    out <- dispRity.BAT(eco_data, inc.all = TRUE)
+    expect_equal(dim(out$traits), c(48,47))
+    expect_equal(dim(out$comm), c(3,48))
+    expect_true(is.null(out$tree))
+
     ## Test convert complex
     data(disparity)
     out <- dispRity.BAT(disparity)

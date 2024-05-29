@@ -6,13 +6,14 @@
 #' @param subsets Optional, some specific subsets to extract (see \code{\link{get.subsets}}).
 #' @param matrix Optional, some specific matrices to extract (see \code{\link{get.matrix}}).
 #' @param tree Optional, some specific trees to extract (see \code{\link{get.tree}}).
+#' @param inc.all logical, whether to also add a group containing all elements (\code{TRUE}) or not (\code{FALSE}; default).
 #'
 #' @details
 #' Converts the content of a \code{dispRity} object into a list of arguments that can be used by \code{BAT} functions.
 #'
 #' @return
 #' \itemize{
-#'      \item \code{comm}: a \code{matrix} of presence/absence (\code{0, 1}) sorting the subsets by rows and the elements by columns that can be passed as the \code{comm} argument to \code{BAT} functions. If the \code{data} contains no subsets, the matrix is matrix full of 1 with one row and a number of columns corresponding to the number of elements in \code{data}.
+#'      \item \code{comm}: a \code{matrix} of presence/absence (\code{0, 1}) sorting the subsets by rows and the elements by columns that can be passed as the \code{comm} argument to \code{BAT} functions. If the \code{data} contains no subsets, the matrix is matrix full of 1 with one row and a number of columns corresponding to the number of elements in \code{data}. If \code{inc.all = TRUE} and \code{data} does not contain a subset with all data, an additional subset with all data is used.
 #'      \item \code{traits}: a \code{matrix} that is the traitspace with elements as rows and dimensions as columns.
 #'      \item \code{tree}: either \code{NULL} if the \code{data} contains no tree or a \code{phylo} or \code{multiPhylo} object from \code{data}.
 #' }
@@ -32,7 +33,7 @@
 #' dim(dispRity.BAT(disparity)$comm)
 #'
 ## Converts a dispRity object into BAT arguments
-dispRity.BAT <- function(data, subsets, matrix, tree) {
+dispRity.BAT <- function(data, subsets, matrix, tree, inc.all = FALSE) {
 
     ## Check if data is dispRity
     check.class(data, "dispRity")
@@ -78,6 +79,11 @@ dispRity.BAT <- function(data, subsets, matrix, tree) {
                rownames <- c(rownames, paste0(subset_names[one_group], ".", unname(unlist(names[[one_group]]))))
             }
             rownames(comm) <- rownames
+        }
+        ## Inc all if no entire subset is in the data
+        if(inc.all && !any(apply(comm, 1, function(x) all(x == 1)))) {
+            comm <- rbind(comm, matrix(1, nrow = 1, ncol = nrow(matrix)))
+            rownames(comm)[nrow(comm)] <- "all"
         }
     } else {
         ## No subsets
