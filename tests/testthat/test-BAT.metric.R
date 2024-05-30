@@ -14,7 +14,7 @@ test_that("standalone works (just copying BAT functions)", {
     ## Expected dispRity errors
     # wrong matrix
     error <- capture_error(BAT.metric("dummy_matrix", BAT.fun = BAT::alpha))
-    expect_equal(error[[1]], "matrix must be of class matrix.")
+    expect_equal(error[[1]], "matrix must be of class matrix or list.")
     # wrong fun
     error <- capture_error(BAT.metric(dummy_matrix, BAT.fun = "BAT::alpha"))
     expect_equal(error[[1]], "BAT.fun must be a function or must be one of the following: alpha.")
@@ -55,48 +55,42 @@ test_that("works for more complex ones", {
     tree_dispersion <- BAT::dispersion(data$comm, tree)
     tree_evenness   <- BAT::evenness(data$comm, tree)
 
+    test <- BAT.metric(data$traits, BAT.fun = BAT::alpha, BAT.args = list(tree = tree))
+    expect_equal(c(test), c(BAT::alpha(comm, tree)))
+    test <- dispRity(eco_data, metric = BAT.metric, BAT.fun = BAT::alpha, BAT.args = list(tree = tree))
+    expect_equal_round(c(summary(test)$obs), c(tree_alpha), digits = 2)
 
-    #TG: PROBLEM HERE:
-        # dispRity does: subsets then applies de metrics (so the options are applied to all)
-        # BAT does: metric + option (applied to all) and then subsets.
-    test <- dispRity.BAT(eco_data)
-    test$tree <- hclust(dist(test$traits), method = "average")
-    BAT::alpha(test$comm, tree = test$tree)
-    # TG: SOLUTION HERE?
-        # use dispRity.BAT to create a comm with all the bootstraps and subsets > feed it to BAT.metric() > output the results in a handalable way
-    # Solution 2: make BAT run for whole data as well as subset
+    test <- BAT.metric(data$traits, BAT.fun = BAT::dispersion, BAT.args = list(tree = tree))
+    expect_equal(c(test), c(BAT::dispersion(comm, tree)))
+    test <- dispRity(eco_data, metric = BAT.metric, BAT.fun = BAT::dispersion, BAT.args = list(tree = tree))
+    expect_equal_round(c(summary(test)$obs), c(tree_dispersion), digits = 2)
 
+    test <- BAT.metric(data$traits, BAT.fun = BAT::evenness, BAT.args = list(tree = tree))
+    expect_equal(c(test), c(BAT::evenness(comm, tree)))
+    test <- dispRity(eco_data, metric = BAT.metric, BAT.fun = BAT::evenness, BAT.args = list(tree = tree))
+    expect_equal_round(c(summary(test)$obs), c(tree_evenness), digits = 2)
 
-    # tust <- dispRity.BAT(boot.matrix(eco_data, bootstraps = 3))
-
-
-    # test <- BAT.metric(data$traits, BAT.fun = alpha, BAT.args = list(tree = tree))
-    # expect_equal(c(test), c(BAT::alpha(comm, tree)))
-    # test <- dispRity(eco_data, metric = BAT.metric, BAT.fun = BAT::alpha, BAT.args = list(tree = tree))
-    # expect_equal(c(summary(test)$obs), c(tree_alpha))
-
-    # test <- BAT.metric(data$traits, BAT.fun = dispersion, BAT.args = list(tree = tree))
-    # expect_equal(c(test), c(BAT::dispersion(comm, tree)))
-    # test <- dispRity(eco_data, metric = BAT.metric, BAT.fun = dispersion, BAT.args = list(tree = tree))
-    # expect_equal(c(summary(test)$obs), c(tree_dispersion))
-
-    # test <- BAT.metric(data$traits, BAT.fun = evenness, BAT.args = list(tree = tree))
-    # expect_equal(c(test), c(BAT::evenness(comm, tree)))
-    # test <- dispRity(eco_data, metric = BAT.metric, BAT.fun = evenness, BAT.args = list(tree = tree))
-    # expect_equal(c(summary(test)$obs), c(tree_evenness))
-
-    # ## Kernels
-    # hypervolume <- BAT::kernel.build(comm = t(presence), trait = traits))
-
-    # richness   <- BAT::kernel.alpha(comm=hypervolume)))
-    # dispersion <- BAT::kernel.dispersion(comm = hypervolume)))
-    # regularity <- BAT::kernel.evenness(comm = hypervolume)))
+    ## Kernels
+    hypervolume <- BAT::kernel.build(comm = data$comm, trait = traits)
+    richness    <- BAT::kernel.alpha(comm = hypervolume))
+    dispersion  <- BAT::kernel.dispersion(comm = hypervolume))
+    regularity  <- BAT::kernel.evenness(comm = hypervolume))
 
     # ## Hulls
     # hull <-    BAT::hull.build(comm = t(presence), trait = traits))
     # results <- BAT::hull.alpha(hull))
 })
 
+
+test_that("works with bootstraps", {
+
+
+    data(demo_data)
+    data <- boot.matrix(demo_data$jones, bootstraps = 3, rarefaction = c(24,12))
+  
+
+
+})
 
 
 

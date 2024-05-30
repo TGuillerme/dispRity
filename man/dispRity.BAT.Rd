@@ -4,7 +4,7 @@
 \alias{dispRity.BAT}
 \title{Converts \code{dispRity} to \code{BAT}.}
 \usage{
-dispRity.BAT(data, subsets, matrix, tree)
+dispRity.BAT(data, subsets, matrix, tree, inc.all = FALSE)
 }
 \arguments{
 \item{data}{A \code{matrix}, \code{data.frame} or \code{dispRity} object.}
@@ -14,10 +14,12 @@ dispRity.BAT(data, subsets, matrix, tree)
 \item{matrix}{Optional, some specific matrices to extract (see \code{\link{get.matrix}}).}
 
 \item{tree}{Optional, some specific trees to extract (see \code{\link{get.tree}}).}
+
+\item{inc.all}{logical, whether to also add a group containing all elements (\code{TRUE}) or not (\code{FALSE}; default).}
 }
 \value{
 \itemize{
-     \item \code{comm}: a \code{matrix} of presence/absence (\code{0, 1}) sorting the subsets by rows and the elements by columns that can be passed as the \code{comm} argument to \code{BAT} functions. If the \code{data} contains no subsets, the matrix is matrix full of 1 with one row and a number of columns corresponding to the number of elements in \code{data}.
+     \item \code{comm}: a \code{matrix} of presence/absence (\code{0, 1}) sorting the subsets by rows and the elements by columns that can be passed as the \code{comm} argument to \code{BAT} functions. If the \code{data} contains no subsets, the matrix is matrix full of 1 with one row and a number of columns corresponding to the number of elements in \code{data}. If \code{inc.all = TRUE} and \code{data} does not contain a subset with all data, an additional subset with all data is used.
      \item \code{traits}: a \code{matrix} that is the traitspace with elements as rows and dimensions as columns.
      \item \code{tree}: either \code{NULL} if the \code{data} contains no tree or a \code{phylo} or \code{multiPhylo} object from \code{data}.
 }

@@ -106,10 +106,10 @@ BAT.metric <- function(matrix, BAT.fun, BAT.args = NULL, return.raw = FALSE) {
     BAT_args$comm <- comm_arg
 
     ## Add the tree or traits (if not overriden by ...)
-    if(has_BAT_tree_args && !(names(BAT_args) %in% "tree") && input_is_comm) {
+    if(has_BAT_tree_args && !("tree" %in% names(BAT_args)) && input_is_comm) {
         BAT_args$tree <- matrix$tree
     }
-    if(has_BAT_trait_args && !(names(BAT_args) %in% "traits") && input_is_comm) {
+    if(has_BAT_trait_args && !("traits" %in% names(BAT_args)) && input_is_comm) {
         BAT_args$traits <- matrix$traits
     }
     

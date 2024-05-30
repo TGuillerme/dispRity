@@ -4,14 +4,16 @@
 \alias{BAT.metric}
 \title{Using metrics from the BAT package.}
 \usage{
-BAT.metric(matrix, BAT.fun, BAT.args = NULL)
+BAT.metric(matrix, BAT.fun, BAT.args = NULL, return.raw = FALSE)
 }
 \arguments{
-\item{matrix}{A data matrix.}
+\item{matrix}{A data matrix or a \code{BAT} structure data list (containing \code{"comm"}, \code{"tree"}, \code{"traits"}).}
 
 \item{BAT.fun}{The name of the metric or directly it's function.}
 
 \item{BAT.args}{Any named optional arguments to be passed to \code{BAT.metric} (default is \code{NULL})}
+
+\item{return.all}{Whether to return the raw BAT results (\code{TRUE}) or not (\code{FALSE}; default)}
 }
 \description{
 An interface to use metrics from the \code{BAT} package in \code{dispRity}

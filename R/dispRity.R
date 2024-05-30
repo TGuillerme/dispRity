@@ -469,61 +469,74 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
 
     if(verbose) message("Calculating disparity", appendLF = FALSE)
 
-    ## Running the multiple matrix mode
-    # if(is_bound || length(data$matrix) > 1) {
+    ## Running BAT.metrics with complex options (subsets)
+    if(match_call$metric == "BAT.metric" && !is.null(match_call$BAT.args) && !is.null(data$subsets)) {
+        ## Convert the data
+        batted_data <- dispRity.BAT(data, inc.all = FALSE) # maybe add inc.all?
+        ## Run the metric
+        disparities <- BAT.metric(batted_data, ..., return.raw = TRUE)
+        # disparities <- BAT.metric(batted_data, BAT.fun = BAT.fun, return.raw = TRUE, BAT.args = dots$BAT.args) ; warning("DEBUG")
 
+        ## Transform the output into a disparity list
+        subsets_names <- name.subsets(data)
 
-    # ## Running BAT.metrics
-    # if(match_call$metric[[1]] == "BAT.metric") {
-    #     ## Convert the data
-    #     batted_data <- dispRity.BAT(data)
-    #     ## Run the metric
-    #     disparities <- BAT.metric(batted_data, BAT.fun = BAT.fun, ...)
+        ## Get the elements
+        disparity <- lapply_loop
+        if(nrow(disparities) == length(subsets_names)) {
+            ## Is not bootstrapped
+            for(one_subset in subset_names) {
+                disparity[[one_subset]]$elements <- matrix(nrow = 1, disparities[one_subset, ])
+            }
+        } else {
+            ## Is bootstrapped
+            for(one_subset in subset_names) {
+                disparity[[one_subset]] <- format.results.subsets(disparity[[one_subset]], disparities, one_subset) 
+            }
+        }
 
-    #     ## Lapply_loop holder
-    #     lapply_loop <- NULL
-    # }
-
-
-
-    if(any( 
-          c(## Data is bound to a tree
-            is_bound,
-            ## Data has multiple matrices and the metric needs matrix decomp
-            length(data$matrix) > 1 && matrix_decomposition && (is.null(data$call$subsets["trees"]) || is.na(data$call$subsets["trees"])),
-            ## Data has multiple trees and the metric needs a tree
-            length(data$tree) > 1 && any(metric_has_tree)
-          )
-        )) {
-
-        ## Make the lapply loops
-        n_trees <- ifelse((is.null(data$call$subsets["trees"]) || is.na(data$call$subsets["trees"])), 1, as.numeric(data$call$subsets["trees"]))
-        ## Splitting the lapply loop for bound trees 
-        lapply_loops <- lapply_loop.split(lapply_loop, n_trees)
-
-        ## Make the matrix list
-        splitted_data <- bound.data.split(data)
-
-        splitted_data[[1]]$call$dimensions
-
-        ## mapply this
-        disparities <- mapply(mapply.wrapper, lapply_loops, splitted_data, 
-                            MoreArgs = list(metrics_list, matrix_decomposition, verbose, metric_has_tree, ...),
-                            SIMPLIFY = FALSE)
-        # disparities <- mapply(mapply.wrapper, lapply_loops, splitted_data, MoreArgs = list(metrics_list, matrix_decomposition, verbose, metric_has_tree), SIMPLIFY = FALSE) ; warning("DEBUG dispRity")
-        
-        ## Reformat to normal disparity object
-        disparity <- unlist(lapply(as.list(1:ifelse(is.null(data$call$subsets["trees"]), n_trees, length(disparities[[1]]))),
-                                  function(X, disp) recursive.merge(lapply(disp, `[[`, X)), disparities),
-                            recursive = FALSE)
-        names(disparity) <- names(disparities[[1]])
+        ## Clean RAM
+        rm(disparities)
     } else {
-        ## Normal disparity lapply
-        disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, metric_has_tree, ...)
-        #TG: check out the file disparity_internal_logic.md (located on the root of the package) for explanation about the logic in this lapply
 
-        ## If multiple matrices, split the resulting output into columns
+        ## Other disparity formats
+        if(any( 
+              c(## Data is bound to a tree
+                is_bound,
+                ## Data has multiple matrices and the metric needs matrix decomp
+                length(data$matrix) > 1 && matrix_decomposition && (is.null(data$call$subsets["trees"]) || is.na(data$call$subsets["trees"])),
+                ## Data has multiple trees and the metric needs a tree
+                length(data$tree) > 1 && any(metric_has_tree)
+              )
+            )) {
 
+            ## Make the lapply loops
+            n_trees <- ifelse((is.null(data$call$subsets["trees"]) || is.na(data$call$subsets["trees"])), 1, as.numeric(data$call$subsets["trees"]))
+            ## Splitting the lapply loop for bound trees 
+            lapply_loops <- lapply_loop.split(lapply_loop, n_trees)
+
+            ## Make the matrix list
+            splitted_data <- bound.data.split(data)
+
+            splitted_data[[1]]$call$dimensions
+
+            ## mapply this
+            disparities <- mapply(mapply.wrapper, lapply_loops, splitted_data, 
+                                MoreArgs = list(metrics_list, matrix_decomposition, verbose, metric_has_tree, ...),
+                                SIMPLIFY = FALSE)
+            # disparities <- mapply(mapply.wrapper, lapply_loops, splitted_data, MoreArgs = list(metrics_list, matrix_decomposition, verbose, metric_has_tree), SIMPLIFY = FALSE) ; warning("DEBUG dispRity")
+            
+            ## Reformat to normal disparity object
+            disparity <- unlist(lapply(as.list(1:ifelse(is.null(data$call$subsets["trees"]), n_trees, length(disparities[[1]]))),
+                                      function(X, disp) recursive.merge(lapply(disp, `[[`, X)), disparities),
+                                recursive = FALSE)
+            names(disparity) <- names(disparities[[1]])
+        } else {
+            ## Normal disparity lapply
+            disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, metric_has_tree, ...)
+            #TG: check out the file disparity_internal_logic.md (located on the root of the package) for explanation about the logic in this lapply
+
+            ## If multiple matrices, split the resulting output into columns
+        }
     }
 
     # }

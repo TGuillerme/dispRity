@@ -463,3 +463,25 @@ combine.pairs <- function(pairs, lapply_data) {
 #     )
 # }
 
+## Transform BAT results into dispRity format
+format.results.subsets <- function(one_subset_lapply, disparities, one_subset) {
+    ## Get the results
+    results <- disparities[grepl(one_subset, rownames(disparities)), , drop = FALSE]
+    rownames(results) <- unlist(lapply(strsplit(rownames(results), split = paste0(one_subset, ".")), `[[`, 2))
+
+    ## Get the elements
+    one_subset_lapply$elements <- matrix(nrow = 1, results["elements", ])
+    results <- results[-1,, drop = FALSE]
+    ## Get the following elements
+    length_per_bootstraps <- lapply(one_subset_lapply, ncol)[-1]
+
+    ## Split the rest of the results
+    counter <- 0
+    while(length(length_per_bootstraps) > 0) {
+        counter <- counter + 1
+        one_subset_lapply[[1+counter]] <- matrix(results[1:length_per_bootstraps[[1]]], nrow = 1)
+        results <- results[-c(1:length_per_bootstraps[[1]]),, drop = FALSE]
+        length_per_bootstraps[[1]] <- NULL
+    }
+    return(one_subset_lapply)
+}
