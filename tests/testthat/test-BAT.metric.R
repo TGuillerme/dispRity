@@ -71,7 +71,7 @@ test_that("works for more complex ones", {
     expect_equal_round(c(summary(test)$obs), c(tree_evenness), digits = 2)
 
     ## Kernels
-    hypervolume <- BAT::kernel.build(comm = data$comm, trait = traits)
+    hypervolume <- BAT::kernel.build(comm = data$comm, trait = data$traits)
     richness    <- BAT::kernel.alpha(comm = hypervolume))
     dispersion  <- BAT::kernel.dispersion(comm = hypervolume))
     regularity  <- BAT::kernel.evenness(comm = hypervolume))
