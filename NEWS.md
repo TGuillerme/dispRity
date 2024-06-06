@@ -9,9 +9,6 @@ dispRity v1.8.11 (2024-06-06)
  <!-- TODO: make a MCMCglmm related standalone vignette -->
  <!-- TODO: make a morpho disparity (Claddis) standalone vignette -->
  <!-- TODO: New argument to the `boot.matrix` function: `boot.dimensions` for bootstrapping the rows of the matrix as well (can be either `"full"` or `"single"`).  -->
-<!--  * New interface for the `BAT` package with new generic metric function `BAT.metric`. This function allows to use any metric from the `BAT` function as a metric for `dispRity` using the synthax: `dispRity(data, metric = BAT.metric, BAT.fun = "name", ...)`
- * New utility function: `dispRity.BAT` for converting some parts of `dispRity` objects into `BAT` arguments.
- -->    <!-- TODO: handle bootstraps automatically -->
  * *New metric*: `count.neighbours` to count the number of neighbours for each elements within a certain radius (thanks to Rob MacDonald for the suggestion).
     <!-- TODO: also add to manual -->
 
