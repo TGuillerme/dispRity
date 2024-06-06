@@ -469,34 +469,34 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
 
     if(verbose) message("Calculating disparity", appendLF = FALSE)
 
-    ## Running BAT.metrics with complex options (subsets)
-    # if(match_call$metric == "BAT.metric" && !is.null(match_call$BAT.args) && !is.null(data$subsets)) {
-    #     ## Convert the data
-    #     batted_data <- dispRity.BAT(data, inc.all = FALSE) # maybe add inc.all?
-    #     ## Run the metric
-    #     disparities <- BAT.metric(batted_data, ..., return.raw = TRUE)
-    #     # disparities <- BAT.metric(batted_data, BAT.fun = BAT.fun, return.raw = TRUE, BAT.args = dots$BAT.args) ; warning("DEBUG")
+    # Running BAT.metrics with complex options (subsets)
+    if(match_call$metric == "BAT.metric" && !is.null(match_call$BAT.args) && !is.null(data$subsets)) {
+        ## Convert the data
+        batted_data <- dispRity.BAT(data, inc.all = FALSE) # maybe add inc.all?
+        ## Run the metric
+        disparities <- BAT.metric(batted_data, ..., return.raw = TRUE)
+        # disparities <- BAT.metric(batted_data, BAT.fun = BAT.fun, return.raw = TRUE, BAT.args = dots$BAT.args) ; warning("DEBUG")
 
-    #     ## Transform the output into a disparity list
-    #     subsets_names <- name.subsets(data)
+        ## Transform the output into a disparity list
+        subsets_names <- name.subsets(data)
 
-    #     ## Get the elements
-    #     disparity <- lapply_loop
-    #     if(nrow(disparities) == length(subsets_names)) {
-    #         ## Is not bootstrapped
-    #         for(one_subset in subset_names) {
-    #             disparity[[one_subset]]$elements <- matrix(nrow = 1, disparities[one_subset, ])
-    #         }
-    #     } else {
-    #         ## Is bootstrapped
-    #         for(one_subset in subset_names) {
-    #             disparity[[one_subset]] <- format.results.subsets(disparity[[one_subset]], disparities, one_subset) 
-    #         }
-    #     }
+        ## Get the elements
+        disparity <- lapply_loop
+        if(nrow(disparities) == length(subsets_names)) {
+            ## Is not bootstrapped
+            for(one_subset in subset_names) {
+                disparity[[one_subset]]$elements <- matrix(nrow = 1, disparities[one_subset, ])
+            }
+        } else {
+            ## Is bootstrapped
+            for(one_subset in subset_names) {
+                disparity[[one_subset]] <- format.results.subsets(disparity[[one_subset]], disparities, one_subset) 
+            }
+        }
 
-    #     ## Clean RAM
-    #     rm(disparities)
-    # } else {
+        ## Clean RAM
+        rm(disparities)
+    } else {
 
         ## Other disparity formats
         if(any( 
@@ -537,7 +537,7 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
 
             ## If multiple matrices, split the resulting output into columns
         }
-    # }
+    }
 
     # }
     ## Free the loop memory
