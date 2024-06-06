@@ -234,6 +234,22 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
         return(dispRity.multi.merge(data, output, match_call))
     }
 
+    ## Dimensions
+    if(!is.null(dimensions)) {
+        ## Else must be a single numeric value (proportional)
+        check.class(dimensions, c("numeric", "integer"), " must be a proportional threshold value.")
+        if(length(dimensions) == 1) {
+            if(dimensions < 0) {
+                stop.call("", "Number of dimensions cannot be less than 0.")
+            }
+            if(dimensions < 1) dimensions <- 1:round(dimensions * ncol(data$matrix[[1]]))
+        } 
+        if(any(dimensions > ncol(data$matrix[[1]]))) {
+            stop.call("", "Number of dimensions cannot be more than the number of columns in the matrix.")
+        }
+        data$call$dimensions <- dimensions
+    }
+
     ## Get the metric list
     metrics_list <- get.dispRity.metric.handle(metric, match_call, data = data, tree = tree, ...)
     # metrics_list <- get.dispRity.metric.handle(metric, match_call, data = data, tree = NULL)
@@ -282,22 +298,6 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
 
     ## Check if the subsets contains probabilities or not
     has_probabilities <- ifelse(length(grep("\\.split", data$call$subsets)) == 0, FALSE, TRUE)
-
-    ## Dimensions
-    if(!is.null(dimensions)) {
-        ## Else must be a single numeric value (proportional)
-        check.class(dimensions, c("numeric", "integer"), " must be a proportional threshold value.")
-        if(length(dimensions) == 1) {
-            if(dimensions < 0) {
-                stop.call("", "Number of dimensions cannot be less than 0.")
-            }
-            if(dimensions < 1) dimensions <- 1:round(dimensions * ncol(data$matrix[[1]]))
-        } 
-        if(any(dimensions > ncol(data$matrix[[1]]))) {
-            stop.call("", "Number of dimensions cannot be more than the number of columns in the matrix.")
-        }
-        data$call$dimensions <- dimensions
-    }
 
     ## VERBOSE
     check.class(verbose, "logical")

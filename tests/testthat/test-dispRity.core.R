@@ -454,7 +454,6 @@ test_that("dispRity deals with probabilities subsets", {
     data(BeckLee_mat99)
     data(BeckLee_ages)
     data(BeckLee_tree)
-    
 
     data1 <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", time = c(100, 60), model = "gradual.split", inc.nodes = TRUE, BeckLee_ages, verbose = FALSE, t0 = FALSE)
     data2 <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", time = c(100, 60), model = "proximity", inc.nodes = TRUE, BeckLee_ages, verbose = FALSE, t0 = FALSE)

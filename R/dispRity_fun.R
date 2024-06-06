@@ -9,11 +9,13 @@ check.covar <- function(metric, data) {
             dim_out <- rep(length(data$call$dimensions), 2)
         }
     } else {
-        ##TODO: This should be streamlined. data$matrix must always be a list!
-        if(is(data$matrix, "list")) {
-            dim_out <- dim(data$matrix[[1]])
-        } else {
-            dim_out <- dim(data$matrix)
+        dim_out <- dim(data$matrix[[1]])
+        ## Check if there is a smaller dataset available
+        # if(!is.null(data$subsets)) {
+        #     dim_out[1] <- max(size.subsets(data))
+        # }
+        if(!is.null(data$call$dimensions)) {
+            dim_out[2] <- length(data$call$dimensions)
         }
     }
 

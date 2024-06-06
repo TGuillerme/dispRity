@@ -127,7 +127,7 @@ test_that("randtest printing", {
         "", "Based on 100 replicates", 
         "Simulated p-value: 0.07920792 ", "Alternative hypothesis: two-sided ", 
         "", "    Std.Obs Expectation    Variance ",
-        "  -1.842882    5.338100    8.313070 "))
+        "  -1.747348    4.976530    8.031281 "))
 
   
     ## Running the test on multiple subsets (may take some time!)
@@ -155,7 +155,7 @@ test_that("randtest printing", {
         "Alternative hypothesis: two-sided "  ,
         ""                                    ,
         "    Std.Obs Expectation    Variance ",
-        " -34.623901   47.841400    1.744226 ",
+        " -32.757510   47.847500    1.949166 ",
         ""                                    ,
         "$V1.2"                               ,
         "Monte-Carlo test"                    ,
@@ -168,7 +168,7 @@ test_that("randtest printing", {
         "Alternative hypothesis: two-sided "  ,
         ""                                    ,
         "    Std.Obs Expectation    Variance ",
-        " -33.531312   48.068600    1.860014 ",
+        "  -33.76072    48.22930     1.84774 ",
         ""                                    ,
         "$V1.3"                               ,
         "Monte-Carlo test"                    ,
@@ -181,7 +181,7 @@ test_that("randtest printing", {
         "Alternative hypothesis: two-sided "  ,
         ""                                    ,
         "    Std.Obs Expectation    Variance ",
-        " -35.684854   48.116700    1.634665 ",
+        " -32.643250   48.010800    1.944426 ",
         ""                                    ,
         "$V1.4"                               ,
         "Monte-Carlo test"                    ,
@@ -194,7 +194,7 @@ test_that("randtest printing", {
         "Alternative hypothesis: two-sided "  ,
         ""                                    ,
         "    Std.Obs Expectation    Variance ",
-        " -32.322690   48.021700    1.976796 ",
+        " -32.035871   48.119200    2.020995 ",
         ""
         )
     )

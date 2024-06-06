@@ -20,6 +20,7 @@ dispRity v1.8.11 (2024-06-06)
  * the random starting parameters in `reduce.space` are now drawn from the input data distribution which speeds up the function significantly.
  * `match.tip.edges` can now just work for colouring edges connecting a vector of tips.
  * remove deprecated internal requirements in `boot.matrix`.
+ * improved RAM management for `make.metric` (now uses the largest requestable subset rather than the whole data for testing).
  <!-- Make roundness work for non-VCV matrices (specify the axis function, e.g. variances or quantiles) -->
 
 ### BUG FIXES
