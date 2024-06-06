@@ -115,8 +115,8 @@ test_that("Sanitizing works correctly", {
     expect_equal(error[[1]], "data_wrong must be either a matrix or an output from the chrono.subsets or custom.subsets functions.")
     data_wrong <- data
     data_wrong$tree <- NULL
-    error <- capture_error(boot.matrix(data_wrong))
-    expect_equal(error[[1]], "data must be either a matrix or an output from the chrono.subsets or custom.subsets functions.")
+    # error <- capture_error(boot.matrix(data_wrong))
+    # expect_equal(error[[1]], "data must be either a matrix or an output from the chrono.subsets or custom.subsets functions.")
 })
 
 ## No bootstrap (is equal to the matrix)

@@ -1,5 +1,5 @@
 #' @name dispRity.metric
-#' @aliases dimension.level3.fun dimension.level2.fun dimension.level1.fun between.groups.fun variances ranges centroids mode.val ellipsoid.volume ellipse.volume edge.length.tree convhull.surface convhull.volume diagonal ancestral.dist pairwise.dist span.tree.length n.ball.volume radius neighbours displacements quantiles func.eve func.div angles deviations group.dist point.dist projections projections.tree projections.between disalignment roundness
+#' @aliases dimension.level3.fun dimension.level2.fun dimension.level1.fun between.groups.fun variances ranges centroids mode.val ellipsoid.volume ellipse.volume edge.length.tree convhull.surface convhull.volume diagonal ancestral.dist pairwise.dist span.tree.length n.ball.volume radius neighbours displacements quantiles func.eve func.div angles deviations group.dist point.dist projections projections.tree projections.between disalignment roundness count.neighbours
 #' @title Disparity metrics
 #'
 #' @description Different implemented disparity metrics.
@@ -61,7 +61,9 @@
 #' 
 #'   \item \code{centroids}: calculates the distance between each row and the centroid of the matrix (Laliberte 2010). This function can take an optional arguments \code{centroid} for defining the centroid (if missing (default), the centroid of the matrix is used). This argument can be either a subset of coordinates matching the matrix's dimensions (e.g. \code{c(0, 1, 2)} for a matrix with three columns) or a single value to be the coordinates of the centroid (e.g. \code{centroid = 0} will set the centroid coordinates to \code{c(0, 0, 0)} for a three dimensional matrix). NOTE: distance is calculated as \code{"euclidean"} by default, this can be changed using the \code{method} argument.
 #'
-#' \item \code{deviations}: calculates the minimal Euclidean distance between each element in and the hyperplane (or line if 2D, or a plane if 3D). You can specify equation of hyperplane of \emph{d} dimensions in the \eqn{intercept + ax + by + ... + nd = 0} format. For example the line \eqn{y = 3x + 1} should be entered as \code{c(1, 3, -1)} or the plane \eqn{x + 2y - 3z = 44} as \code{c(44, 1, 2, -3)}. If missing the \code{hyperplane} (default) is calculated using a least square regression using a gaussian \code{\link[stats]{glm}}. Extra arguments can be passed to \code{\link[stats]{glm}} through \code{...}. When estimating the hyperplane, you can use the option \code{significant} to only consider significant slopes (\code{TRUE}) or not (\code{FALSE} - default).
+#'  \item \code{count.neighbours}: counts the number of other elements neigbhouring each element within a certain radius. This function can take the optional arguments \code{radius} that is the radius for counting the neighbours. This can be either missing (by default this is half the longest distance), a function to calculate the distance taking \code{x} as the sole argument (e.g. \code{sd} or \code{function(x) sum(x, na.rm = TRUE)/length(x)}) or a \code{numeric} or \code{integer} value. The other option is \code{relative} to make the counts relative to the number of elements (\code{relative = TRUE}; default) or not (\code{relative = FALSE}). NOTE: distance is calculated as \code{"euclidean"} by default, this can be changed using the \code{method} argument. 
+#'
+#'   \item \code{deviations}: calculates the minimal Euclidean distance between each element in and the hyperplane (or line if 2D, or a plane if 3D). You can specify equation of hyperplane of \emph{d} dimensions in the \eqn{intercept + ax + by + ... + nd = 0} format. For example the line \eqn{y = 3x + 1} should be entered as \code{c(1, 3, -1)} or the plane \eqn{x + 2y - 3z = 44} as \code{c(44, 1, 2, -3)}. If missing the \code{hyperplane} (default) is calculated using a least square regression using a gaussian \code{\link[stats]{glm}}. Extra arguments can be passed to \code{\link[stats]{glm}} through \code{...}. When estimating the hyperplane, you can use the option \code{significant} to only consider significant slopes (\code{TRUE}) or not (\code{FALSE} - default).
 #'   \item \code{displacements}: calculates the ratio between the distance to the centroid (see \code{centroids} above) and the distance from a reference (by default the origin of the space). The reference can be changed through the \code{reference} argument. NOTE: distance is calculated as \code{"euclidean"} by default, this can be changed using the \code{method} argument.
 #' 
 #'   \item \code{edge.length.tree}: calculates the edge length from a given tree for each elements present in the matrix. Each edge length is either measured between the element and the root of the tree (\code{to.root = TRUE} ; default) or between the element and its last ancestor (\code{to.root = FALSE}))
@@ -174,7 +176,15 @@
 #' ## convhull.volume
 #' ## Convex hull volume of a matrix
 #' convhull.volume(thinner_matrix)
-#' 
+#'
+#' ## count.neigbhours
+#' ## Counting the number of neighbours within a radius of half the traitspace
+#' count.neighbours(dummy_matrix)
+#' ## The absolute number of neighbours within a radius of 3
+#' count.neighbours(dummy_matrix, radius = 3, relative = FALSE)
+#' ## The relative number of neighbours within a radius of one standard deviation
+#' count.neighbours(dummy_matrix, radius = sd, relative = FALSE)
+#'
 #' ## deviations
 #' ## The deviations from the least square hyperplane
 #' deviations(dummy_matrix)
@@ -378,6 +388,7 @@ dimension.level2.fun <- function(matrix, ...) {
     cat("\n?ancestral.dist")
     cat("\n?angles")
     cat("\n?centroids")
+    cat("\n?count.neighbours")
     cat("\n?deviations")
     cat("\n?displacements")
     cat("\n?edge.length.tree")
@@ -416,7 +427,6 @@ between.groups.fun <- function(matrix, matrix2, ...) {
 
 ## kth root scaling
 k.root <- function(data, dimensions){
-
     return(data^(1/dimensions))
 }
 
@@ -449,12 +459,10 @@ quantiles <- function(matrix, quantile = 95, k.root = FALSE, ...) {
 
 ## Euclidean distance from the centroid
 fun.dist.euclidean <- function(row, centroid) {
-
     return(sqrt(sum((row-centroid)^2)))
 }
 ## Manhattan distance from the centroid
 fun.dist.manhattan <- function(row, centroid) {
-
     return(sum(abs(row-centroid)))
 }
 
@@ -475,7 +483,6 @@ select.method <- function(method) {
 
 ## Calculating the distance from centroid
 centroids <- function(matrix, centroid, method = "euclidean", ...) {
-
     ## Select the fun distance
     fun.dist <- select.method(method)
 
@@ -516,7 +523,6 @@ mode.val <- function(matrix, ...){
 
 ## Calculate the ellipse volume of matrix
 ellipsoid.volume <- function(matrix, method, ...) {
-
     ## Initialising the variables
     ncol_matrix <- ncol(matrix)
 
@@ -1148,3 +1154,25 @@ roundness <- function(matrix, vcv = TRUE) {
     return(sum(diff(x)*zoo::rollmean(y, 2)))
 }
 
+## Counting the neighbours within a radius
+count.neighbours <- function(matrix, radius, relative = TRUE, method = "euclidean") {
+    ## Check if the matrix is a distance matrix first
+    distances <- as.matrix(check.dist.matrix(matrix, method = method)[[1]])
+    ## Set the radius to half the distances
+    if(missing(radius)) {
+        radius <- max(distances)/2
+    } else {
+        radius_class <- check.class(radius, c("numeric", "integer", "function"))
+        if(radius_class == "function") {
+            radius <- radius(distances)
+        }
+    }
+    ## For each row count how many distances are < radius (minus one is for the diagonal that's = 0)
+    counts <- apply(distances, 1, function(one_row, radius) sum(one_row <= radius), radius = radius) - 1
+    ## Return the counts
+    if(relative) {
+        return(unname(counts/ncol(distances)))
+    } else {
+        return(unname(counts))
+    }
+}

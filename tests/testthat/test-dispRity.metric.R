@@ -4,7 +4,7 @@
 
 test_that("dimension generic", {
     expect_equal(capture_output(dimension.level3.fun()), "No implemented Dimension level 3 functions implemented in dispRity!\nYou can create your own by using: ?make.metric")
-    expect_equal(capture_output(dimension.level2.fun()), "Dimension level 2 functions implemented in dispRity:\n?ancestral.dist\n?angles\n?centroids\n?deviations\n?displacements\n?edge.length.tree\n?neighbours\n?pairwise.dist\n?point.dist\n?projections\n?projections.tree\n?ranges\n?radius\n?variances\n?span.tree.length")
+    expect_equal(capture_output(dimension.level2.fun()), "Dimension level 2 functions implemented in dispRity:\n?ancestral.dist\n?angles\n?centroids\n?count.neighbours\n?deviations\n?displacements\n?edge.length.tree\n?neighbours\n?pairwise.dist\n?point.dist\n?projections\n?projections.tree\n?ranges\n?radius\n?variances\n?span.tree.length")
     expect_equal(capture_output(dimension.level1.fun()), "Dimension level 1 functions implemented in dispRity:\n?convhull.surface\n?convhull.volume\n?diagonal\n?ellipsoid.volume\n?func.div\n?func.eve\n?group.dist\n?mode.val\n?n.ball.volume\n?roundness")
     expect_equal(capture_output(between.groups.fun()), "Between groups functions implemented in dispRity:\n?disalignment # level 1\n?group.dist # level 1\n?point.dist # level 2\n?projections.between # level 2")
 })
@@ -952,4 +952,23 @@ test_that("roudness works", {
     expect_equal_round(test, 0.1776007)
     test <- roundness(var(dummy_matrix), vcv = FALSE)
     expect_equal_round(test, 0.1776007)
+})
+
+
+test_that("count.neighbours works", {
+    set.seed(1)
+    dummy_matrix <- matrix(rnorm(50), 5, 10)
+    test <- count.neighbours(dummy_matrix)
+    expect_equal(test, c(0.2,0.6,0.2,0,0.2))
+    test <- count.neighbours(dummy_matrix, relative = FALSE)
+    expect_equal(test, c(1,3,1,0,1))
+    test <- count.neighbours(dummy_matrix, radius = 1, relative = FALSE)
+    expect_equal(test, c(0,0,0,0,0))
+    test <- count.neighbours(dummy_matrix, radius = max, relative = FALSE)
+    expect_equal(test, c(4,4,4,4,4))
+    min.no.zero <- function(x) {
+       min(x[-which(x == 0)])
+    }
+    test <- count.neighbours(dummy_matrix, radius = min.no.zero , relative = FALSE)
+    expect_equal(test, c(0,1,0,0,1))
 })

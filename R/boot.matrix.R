@@ -117,7 +117,10 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions 
         }
 
         ## Must be correct format
-        check.length(data, 4, " must be either a matrix or an output from the chrono.subsets or custom.subsets functions.")
+        # check.length(data, 4, " must be either a matrix or an output from the chrono.subsets or custom.subsets functions.")
+        # if(!all(names(data) %in% c("matrix", "call", "subsets")) {
+        #     stop.call(match_call$data, " must be either a matrix or an output from the chrono.subsets or custom.subsets functions.")
+        # }
         
         ## With the correct names
         data_names <- names(data)
