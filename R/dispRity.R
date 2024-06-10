@@ -252,7 +252,8 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
 
     ## Get the metric list
     metrics_list <- get.dispRity.metric.handle(metric, match_call, data = data, tree = tree, ...)
-    # metrics_list <- get.dispRity.metric.handle(metric, match_call, data = data, tree = NULL)
+    # metrics_list <- get.dispRity.metric.handle(metric, match_call, data = data, tree = NULL); warning("DEBUG: dispRity")
+    RAM_help <- metrics_list$RAM.help   
     metric_is_between.groups <- unlist(metrics_list$between.groups)
     metric_has_tree <- unlist(metrics_list$tree)
     metrics_list <- metrics_list$levels
@@ -534,6 +535,9 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
             ## Normal disparity lapply
             disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, metric_has_tree, ...)
             #TG: check out the file disparity_internal_logic.md (located on the root of the package) for explanation about the logic in this lapply
+
+            # warning("DEBUG: dispRity")
+            # disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, metric_has_tree, RAM_help,...)
 
             ## If multiple matrices, split the resulting output into columns
         }
