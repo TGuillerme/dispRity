@@ -5,12 +5,7 @@ dispRity v1.8.11 (2024-06-06)
  * Redesigned `multi.ace` to be more modular and handle both continuous and/or discrete characters. Changes include a **change in argument name** from `castor.options` to the generic `options.args` (the options can be provided the same way as before though); and a **change in default arguments** for `models` which can now be left missing (previously was `"ER"`) and applies `"ER"` and `"BM"` for respectively discrete and continuous characters by default.
  * *New utility function* `set.root.time` to add a root time to a tree (`"phylo"`), list of trees (`"multiPhylo"`) or `dispRity` object with trees.
  * *New utility function* `remove.dispRity` to cleanly remove specific parts of a `"dispRity"` object.
- <!-- Add to manual -->
- <!-- TODO: make a MCMCglmm related standalone vignette -->
- <!-- TODO: make a morpho disparity (Claddis) standalone vignette -->
- <!-- TODO: New argument to the `boot.matrix` function: `boot.dimensions` for bootstrapping the rows of the matrix as well (can be either `"full"` or `"single"`).  -->
  * *New metric*: `count.neighbours` to count the number of neighbours for each elements within a certain radius (thanks to Rob MacDonald for the suggestion).
-    <!-- TODO: also add to manual -->
 
 ### MINOR IMPROVEMENTS
 
@@ -21,14 +16,12 @@ dispRity v1.8.11 (2024-06-06)
  * `match.tip.edges` can now just work for colouring edges connecting a vector of tips.
  * remove deprecated internal requirements in `boot.matrix`.
  * improved RAM management for `make.metric` (now uses the largest requestable subset rather than the whole data for testing).
- <!-- Make roundness work for non-VCV matrices (specify the axis function, e.g. variances or quantiles) -->
 
 ### BUG FIXES
 
  * `scale.dispRity` now correctly ignores `NA`s when scaling.
  * `multi.ace` now correctly handles invariant characters when looking for NAs.
  * `dispRity` objects with a `$covar` component are not interpreted as bootstrapped by `boot.matrix` anymore.
-<!-- Remove bug in macos tags from tests -->
 
 dispRity v1.8 (2023-12-11) *dispRity.multi*
 =========================
