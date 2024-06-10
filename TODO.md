@@ -25,6 +25,14 @@
  - [ ] test
  - [ ] update all the `dispRity` functions that have a `check.dist.matrix` function to use a helper
 
+
+## Potential BAT.fun if works with RAM.help
+
+ * New interface for the `BAT` package with new generic metric function `BAT.metric`. This function allows to use any metric from the `BAT` function as a metric for `dispRity` using the synthax: `dispRity(data, metric = BAT.metric, BAT.fun = "name", ...)`
+ * New utility function: `dispRity.BAT` for converting some parts of `dispRity` objects into `BAT` arguments.
+ - [ ] documentation
+ - [ ] test
+
 ## Vignettes and manual
 
  - [ ] make a MCMCglmm related standalone vignette
