@@ -24,7 +24,12 @@
  - [ ] documentation
  - [ ] test
  - [ ] update all the `dispRity` functions that have a `check.dist.matrix` function to use a helper
-
+  neighbours
+  span.tree.length
+  pairwise.dist
+  func.eve
+  count.neighbours
+  - [ ] do speed test for ego boost
 
 ## Potential BAT.fun if works with RAM.help
 

@@ -61,9 +61,9 @@ test_that("Output is correct", {
         make.metric(lapply)
         )
 
-    expect_equal(make.metric(mean, silent=TRUE), list(type = "level1", tree = FALSE))
-    expect_equal(make.metric(ranges, silent=TRUE), list(type = "level2", tree = FALSE))
-    expect_equal(make.metric(var, silent=TRUE), list(type = "level3", tree = FALSE))
+    expect_equal(make.metric(mean, silent=TRUE), list(type = "level1", tree = FALSE, RAM.help = NULL))
+    expect_equal(make.metric(ranges, silent=TRUE), list(type = "level2", tree = FALSE, RAM.help = NULL))
+    expect_equal(make.metric(var, silent=TRUE), list(type = "level3", tree = FALSE, RAM.help = NULL))
     expect_equal(
         make.metric(function(x)mean(var(x)), silent=TRUE)$type, "level1"
         )
@@ -105,21 +105,21 @@ test_that("Output is correct", {
     between.groups.metric2 <- function(matrix, matrix2, option = TRUE) return(c(1,2,3,4))
 
     expect_equal(make.metric(between.groups.metric, silent = TRUE)$type, "level1")
-    expect_equal(make.metric(between.groups.metric, silent = TRUE, check.between.groups = TRUE), list("type" = "level1", "between.groups" = TRUE, "tree" = FALSE))
+    expect_equal(make.metric(between.groups.metric, silent = TRUE, check.between.groups = TRUE), list("type" = "level1", "between.groups" = TRUE, "tree" = FALSE, "RAM.help" = NULL))
     expect_equal(make.metric(between.groups.metric2, option = FALSE, silent = TRUE)$type, "level2")
-    expect_equal(make.metric(between.groups.metric2, option = "bla", silent = TRUE, check.between.groups = TRUE), list("type" = "level2", "between.groups" = TRUE, "tree" = FALSE))
-    expect_equal(make.metric(mean, silent = TRUE, check.between.groups = TRUE), list("type" = "level1", "between.groups" = FALSE, "tree" = FALSE))
+    expect_equal(make.metric(between.groups.metric2, option = "bla", silent = TRUE, check.between.groups = TRUE), list("type" = "level2", "between.groups" = TRUE, "tree" = FALSE, "RAM.help" = NULL))
+    expect_equal(make.metric(mean, silent = TRUE, check.between.groups = TRUE), list("type" = "level1", "between.groups" = FALSE, "tree" = FALSE, "RAM.help" = NULL))
 
     ## Metrics with tree or phy argument
     between.groups.metric <- function(matrix, matrix2, tree = TRUE) return(c(1,2,3,4))
     between.groups.metric2 <- function(matrix, matrix2, phy = TRUE) return(c(1,2,3,4))
     normal.metric <- function(matrix, tree) return(42)
     normal.metric2 <- function(matrix, phy) return(42)
-    expect_equal(make.metric(normal.metric, tree = rtree(5), silent = TRUE), list(type = "level1", tree = TRUE))
-    expect_equal(make.metric(normal.metric2, phy = rtree(5), silent = TRUE), list(type = "level1", tree = FALSE))
-    expect_equal(make.metric(between.groups.metric, tree = rtree(5), silent = TRUE, check.between.groups = TRUE), list("type" = "level2", "between.groups" = TRUE, tree = TRUE))
-    expect_equal(make.metric(between.groups.metric2, phy = rtree(5), silent = TRUE, check.between.groups = TRUE), list("type" = "level2", "between.groups" = TRUE, tree = FALSE))
-    expect_equal(make.metric(normal.metric, silent = TRUE), list(type = "level1", tree = TRUE))
-    expect_equal(make.metric(normal.metric2, silent = TRUE), list(type = "level1", tree = FALSE))
+    expect_equal(make.metric(normal.metric, tree = rtree(5), silent = TRUE), list(type = "level1", tree = TRUE, "RAM.help" = NULL))
+    expect_equal(make.metric(normal.metric2, phy = rtree(5), silent = TRUE), list(type = "level1", tree = FALSE, "RAM.help" = NULL))
+    expect_equal(make.metric(between.groups.metric, tree = rtree(5), silent = TRUE, check.between.groups = TRUE), list("type" = "level2", "between.groups" = TRUE, tree = TRUE, "RAM.help" = NULL))
+    expect_equal(make.metric(between.groups.metric2, phy = rtree(5), silent = TRUE, check.between.groups = TRUE), list("type" = "level2", "between.groups" = TRUE, tree = FALSE, "RAM.help" = NULL))
+    expect_equal(make.metric(normal.metric, silent = TRUE), list(type = "level1", tree = TRUE, "RAM.help" = NULL))
+    expect_equal(make.metric(normal.metric2, silent = TRUE), list(type = "level1", tree = FALSE, "RAM.help" = NULL))
     
 })

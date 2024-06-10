@@ -9,6 +9,7 @@
 #' @param data.dim optional, two \code{numeric} values for the dimensions of the matrix to run the test function testing. If missing, a default 5 rows by 4 columns matrix is used.
 #' @param tree optional, a \code{phylo} object.
 #' @param covar \code{logical}, whether to treat the metric as applied the a \code{data$covar} component (\code{TRUE}) or not (\code{FALSE}; default).
+#' @param get.help \code{logical}, whether to also output the \code{RAM.helper} if the metric has a \code{RAM.help} argument (\code{TRUE}) or not (\code{FALSE}; default).
 #'
 #' @details
 #' This function tests:
@@ -51,7 +52,7 @@
 #' @seealso \code{\link{dispRity}}, \code{\link{dispRity.metric}}.
 #'
 #' @author Thomas Guillerme
-make.metric <- function(fun, ..., silent = FALSE, check.between.groups = FALSE, data.dim, tree = NULL, covar = FALSE) {
+make.metric <- function(fun, ..., silent = FALSE, check.between.groups = FALSE, data.dim, tree = NULL, covar = FALSE, get.help = FALSE) {
     ## Sanitizing
     ## fun
     check.class(fun, c("function", "standardGeneric"), report = 1)
@@ -61,26 +62,6 @@ make.metric <- function(fun, ..., silent = FALSE, check.between.groups = FALSE, 
     ## Getting the function name
     match_call <- match.call()
 
-    ## Building the matrix
-    if(missing(data.dim)) {
-        data.dim <- c(5, 4)
-    }
-    ## Tricking the simulated data if the matrix has only one dimensions
-    if(data.dim[2] == 1) {
-        data.dim[2] <- 2
-    }
-    matrix <- matrix(rnorm(data.dim[1]*data.dim[2]), data.dim[1], data.dim[2])
-    matrix_text <- paste0("matrix(rnorm(",data.dim[1],"*",data.dim[2],"), ",data.dim[1], ", ",data.dim[2], ")")
-    
-    if(covar) {
-        matrix <- list(VCV = as.matrix(dist(matrix)), loc = diag(matrix))
-        matrix_text <- ""
-    }
-
-    ## Testing the metric
-    test <- NULL
-    op <- options(warn = -1)
-
     ## Get the metric arguments
     arguments <- names(formals(fun))
 
@@ -88,13 +69,88 @@ make.metric <- function(fun, ..., silent = FALSE, check.between.groups = FALSE, 
     is_between.groups <- all(c("matrix", "matrix2") %in% arguments)
     is_phylo <- "tree" %in% arguments
 
-    if(is_between.groups) {
-        ## Create a matrix2
-        matrix2 <- matrix(rnorm(data.dim[1]*data.dim[2]), data.dim[1], data.dim[2])        
+    ## Checking for helpers
+    RAM.help <- NULL
+    if(get.help && any("RAM.helper" %in% arguments)) {
+
+        ## Get the RAM helper
+        try_test <- try(help.fun <- eval(str2lang(as.character(as.expression(formals(fun)$RAM.helper)))), silent = TRUE)
+
+        ## Check if the helper is a function or an object
+        if(is(try_test, "function")) {            
+            
+            ## Add optional arguments (if evaluable)
+            if(length(optionals <- which(arguments %in% names(formals(help.fun)))) > 0) {
+                help_args <- formals(fun)[optionals]
+            } else {
+                help_args <- list()
+            }
+            ## Add the data argument
+            if(is.null(data.dim$dimensions)) {
+                dims <- 1:ncol(data.dim$matrix[[1]])
+            } else {
+                dims <- data.dim$dimensions
+            }
+            help_args[[length(help_args) + 1]] <- data.dim$matrix[[1]][, dims, drop = FALSE]
+            names(help_args)[length(help_args)] <- names(formals(help.fun))[1]
+
+            ## Get the RAM help
+            RAM.help <- do.call(help.fun, help_args)
+        } else {
+            ## Do some checks?
+            stop("TODO: make.metric with RAM.helper not being a function")
+            RAM.help <- RAM.helper
+        }
+
+        ## Set the test data to be the RAM.helper
+        matrix <- as.matrix(RAM.help)
+        matrix_test <- ""
+
         if(covar) {
-            matrix2 <- list(VCV = matrix2, loc = diag(matrix2))
+            matrix <- list(VCV = as.matrix(check.dist.matrix(RAM.help)[[1]]), loc = diag(as.matrix(check.dist.matrix(RAM.help)[[1]])))
+            matrix_text <- ""
+        }
+
+        if(is_between.groups) {
+            ## Create a matrix2
+            matrix2 <-  as.matrix(RAM.help)
+            if(covar) {
+                matrix2 <- list(VCV = as.matrix(check.dist.matrix(RAM.help)[[1]]), loc = diag(as.matrix(check.dist.matrix(RAM.help)[[1]])))
+            }
+        }
+
+    } else {
+
+        ## Simulating a matrix
+        if(missing(data.dim)) {
+            data.dim <- c(5, 4)
+        }
+
+        ## Tricking the simulated data if the matrix has only one dimensions
+        if(data.dim[2] == 1) {
+            data.dim[2] <- 2
+        }
+        matrix <- matrix(rnorm(data.dim[1]*data.dim[2]), data.dim[1], data.dim[2])
+        matrix_text <- paste0("matrix(rnorm(",data.dim[1],"*",data.dim[2],"), ",data.dim[1], ", ",data.dim[2], ")")
+        
+        if(covar) {
+            matrix <- list(VCV = as.matrix(dist(matrix)), loc = diag(matrix))
+            matrix_text <- ""
+        }
+
+        if(is_between.groups) {
+            ## Create a matrix2
+            matrix2 <- matrix(rnorm(data.dim[1]*data.dim[2]), data.dim[1], data.dim[2])        
+            if(covar) {
+                matrix2 <- list(VCV = matrix2, loc = diag(matrix2))
+            }
         }
     }
+
+
+    ## Testing the metric
+    test <- NULL
+    op <- options(warn = -1)
 
     ## Skip the dots if the dots has a tree argument
     if(!is_phylo) {
@@ -178,9 +234,9 @@ make.metric <- function(fun, ..., silent = FALSE, check.between.groups = FALSE, 
 
     if(silent == TRUE) {
         if(check.between.groups) {
-            return(list("type" = fun_type, "between.groups" = is_between.groups, "tree" = is_phylo))
+            return(list("type" = fun_type, "between.groups" = is_between.groups, "tree" = is_phylo, "RAM.help" = RAM.help))
         } else {
-            return(list("type" = fun_type, "tree" = is_phylo))
+            return(list("type" = fun_type, "tree" = is_phylo, "RAM.help" = RAM.help))
         }
     } else {
         return(invisible())
