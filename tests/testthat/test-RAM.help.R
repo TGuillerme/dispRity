@@ -11,7 +11,25 @@ dist.with.help <- function(matrix, method = "euclidean", RAM.helper = vegan::veg
     ## Return distances
     return(as.vector(distances))
 }
+dist.no.help <- function(matrix, method = "euclidean", RAM.helper = FALSE) {
+    ## Check for distance
+    distances <- check.dist.matrix(matrix, method = method)[[1]]
+    ## Return distances
+    return(as.vector(distances))
+}
+dist.no.help2 <- function(matrix, method = "euclidean", RAM.helper = NULL) {
+    ## Check for distance
+    distances <- check.dist.matrix(matrix, method = method)[[1]]
+    ## Return distances
+    return(as.vector(distances))
+}
 
+test_that("check.get.help works", {
+    expect_false(check.get.help(pairwise.dist))
+    expect_false(check.get.help(dist.no.help))
+    expect_false(check.get.help(dist.no.help2))
+    expect_true(check.get.help(dist.with.help))
+})
 
 test_that("make.metric handles help", {
 
@@ -23,15 +41,32 @@ test_that("make.metric handles help", {
     expect_equal(names(test), c("type", "tree", "RAM.help"))
     expect_is(test$RAM.help, "dist")
 
-    #NEXT STEP: feed make.metric to get.metric.handle in dispRity with get.help = TRUE
+    ## Get the help from get.dispRity.metric.handle
+    test <- get.dispRity.metric.handle(metric = dist.with.help, match_call = list(), data = data, tree = NULL)
+    expect_is(test, "list")
+    expect_equal(names(test), c("levels", "between.groups", "tree.metrics", "RAM.help"))
+    expect_is(test$RAM.help, "dist")
+
+    test <- get.dispRity.metric.handle(metric = pairwise.dist, match_call = list(), data = data, tree = NULL)
+    expect_is(test, "list")
+    expect_equal(names(test), c("levels", "between.groups", "tree.metrics", "RAM.help"))
+    expect_null(test$RAM.help)
+
+    test <- get.dispRity.metric.handle(metric = dist.no.help, match_call = list(), data = data, tree = NULL)
+    expect_is(test, "list")
+    expect_equal(names(test), c("levels", "between.groups", "tree.metrics", "RAM.help"))
+    expect_null(test$RAM.help)
 
 })
 
 test_that("general structure works", {
     ## General pipeline works with RAM.helper
 
+    ## Helpers for debug: all to remove
 
     # ## metric and data
+    # match_call <- list()
+    # dots <- list()
     # dimensions = NULL
     # between.groups = FALSE
     # verbose = FALSE
@@ -39,12 +74,19 @@ test_that("general structure works", {
     # metric <- dist.with.help
     # data <- matrix(rnorm(90), 9, 10)
 
+    # RAM_matrix <- as.matrix(RAM_help)
+
+    # ## In decompose, do something like:
+    # microbenchmark(
+    #     pairwise.dist(one_matrix[bootstrap, dimensions, drop = FALSE]),
+    #     pairwise.dist(as.matrix(RAM_help)[bootstrap, bootstrap, drop = FALSE]),
+    #     pairwise.dist(RAM_matrix[bootstrap, bootstrap, drop = FALSE])
+    # )
 
 
 
 
-
-
+    # Call the metric by changing the argument RAM.helper to RAM_help every iterations (select from the matrix)
 
     # ## multiple metrics
     # metric = c(mean, dist.with.help)

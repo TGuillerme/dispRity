@@ -21,7 +21,7 @@ test_that("get.dispRity.metric.handle", {
     
     ## Level1
     test <- get.dispRity.metric.handle(sum, match_call, data = data)
-    expect_equal(names(test), c("levels", "between.groups", "tree.metrics"))
+    expect_equal(names(test), c("levels", "between.groups", "tree.metrics", "RAM.help"))
     test <- test$levels
     expect_is(test, "list")
     expect_null(test[[1]])
@@ -30,7 +30,7 @@ test_that("get.dispRity.metric.handle", {
 
     ## Level2
     test <- get.dispRity.metric.handle(ranges, match_call, data = data)
-    expect_equal(names(test), c("levels", "between.groups", "tree.metrics"))
+    expect_equal(names(test), c("levels", "between.groups", "tree.metrics", "RAM.help"))
     test <- test$levels
     expect_is(test, "list")
     expect_null(test[[1]])
@@ -40,7 +40,7 @@ test_that("get.dispRity.metric.handle", {
     ## Level3
     expect_error(test <- get.dispRity.metric.handle(var, match_call, data = data))
     test <- get.dispRity.metric.handle(c(sd, var), match_call, data = data)
-    expect_equal(names(test), c("levels", "between.groups", "tree.metrics"))
+    expect_equal(names(test), c("levels", "between.groups", "tree.metrics", "RAM.help"))
     test <- test$levels
     expect_is(test, "list")
     expect_is(test[[1]], "function")

@@ -71,8 +71,13 @@ make.metric <- function(fun, ..., silent = FALSE, check.between.groups = FALSE, 
 
     ## Checking for helpers
     RAM.help <- NULL
-    if(get.help && any("RAM.helper" %in% arguments)) {
+    if(get.help) {
+        get_help <- check.get.help(fun)
+    } else {
+        get_help <- FALSE
+    }
 
+    if(get_help) {
         ## Get the RAM helper
         try_test <- try(help.fun <- eval(str2lang(as.character(as.expression(formals(fun)$RAM.helper)))), silent = TRUE)
 

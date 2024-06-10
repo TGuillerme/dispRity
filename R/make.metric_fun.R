@@ -14,3 +14,22 @@ check.metric <- function(metric) {
         stop("Invalid metric.", call. = FALSE)
     }
 }
+
+check.get.help <- function(metric) {
+    ## Does it have the argument name?
+    if(any("RAM.helper" %in% names(formals(metric)))) {
+        ## Is the argument name not equal to null?
+        if(!is.null(formals(metric)$RAM.helper)) {
+            ## Is the argument not a logical?
+            if(is(formals(metric)$RAM.helper, "logical")) {
+                return(formals(metric)$RAM.helper)
+            } else {
+                return(TRUE)
+            }
+        } else {
+            return(FALSE)
+        }
+    } else {
+        return(FALSE)
+    }
+}
