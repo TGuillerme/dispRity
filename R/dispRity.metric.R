@@ -508,7 +508,8 @@ displacements <- function(matrix, method = "euclidean", reference = 0, ...) {
 ## Calculate the neighbours distances
 neighbours <- function(matrix, which = min, method = "euclidean", ...) {
     ## Check if the matrix is a distance matrix first
-    distances <- as.matrix(check.dist.matrix(matrix, method = method)[[1]])
+    distances <- check.dist.matrix(matrix, method = method)[[1]]
+    distances <- as.matrix(distances)
     ## Remove the diagonals
     diag(distances) <- NA
     ## Get the selected distances for each rows
@@ -723,12 +724,12 @@ angles <- function(matrix, unit = "degree", base = 0, significant = FALSE, ...) 
 }
 
 ## Deviations
-deviations <- function(matrix, hyperplane, ..., significant = FALSE) {
+deviations <- function(matrix, hyperplane = NULL, ..., significant = FALSE) {
 
     ## Get the dimensions
     dimensions <- ncol(matrix)
 
-    if(missing(hyperplane)) {
+    if(is.null(hyperplane)) {
         ## If the data is unidimensional
         if(ncol(matrix) == 1) {
             data <- as.data.frame(cbind(seq_along(1:nrow(matrix)), matrix))
@@ -1162,11 +1163,12 @@ roundness <- function(matrix, vcv = TRUE) {
 }
 
 ## Counting the neighbours within a radius
-count.neighbours <- function(matrix, radius, relative = TRUE, method = "euclidean") {
+count.neighbours <- function(matrix, radius = NULL, relative = TRUE, method = "euclidean") {
     ## Check if the matrix is a distance matrix first
-    distances <- as.matrix(check.dist.matrix(matrix, method = method)[[1]])
+    distances <- check.dist.matrix(matrix, method = method)[[1]]
+    distances <- as.matrix(distances)
     ## Set the radius to half the distances
-    if(missing(radius)) {
+    if(is.null(radius)) {
         radius <- max(distances)/2
     } else {
         check.class(radius, c("numeric", "integer", "function"))

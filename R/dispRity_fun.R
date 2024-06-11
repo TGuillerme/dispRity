@@ -152,14 +152,26 @@ get.dispRity.metric.handle <- function(metric, match_call, data = list(matrix = 
 
 
 ## Function to reduce the checks (distance matrix input is already handled)
-reduce.checks <- function(fun, matrix, get.help) {
+reduce.checks <- function(fun, data = NULL, get.help = FALSE) {
 
     ## Reduce distance checks
-    if(get.help || check.dist.matrix(matrix)$was_dist) {
+    if(get.help || (!is.null(data) && check.dist.matrix(data, method = "euclidean")$was_dist)) {
         if(length(check_line <- grep("check.dist.matrix", body(fun))) > 0) {
             ## Remove them!
             for(one_check in check_line) {
-                body(fun)[[one_check]] <- substitute(distances <- matrix)
+                if(is(body(fun)[[one_check]], "<-") || is(body(fun)[[one_check]], "call")) {
+                    ## Substitute the line
+                    body(fun)[[one_check]] <- substitute(distances <- matrix)
+                } else {
+                    ## recursively dig in the loop
+                    inner_line <- grep("check.dist.matrix", as.character(body(fun)[[one_check]]))
+                    if(is(body(fun)[[one_check]][[inner_line]], " <-") || is(body(fun)[[one_check]], "call")) {
+                        body(fun)[[one_check]][[inner_line]] <- substitute(distances <- matrix)
+                    } else {
+                        inner_line2 <- grep("check.dist.matrix", as.character(body(fun)[[one_check]][[inner_line]]))
+                        body(fun)[[one_check]][[inner_line]][[inner_line2]] <- substitute(distances <- matrix)
+                    }
+                }
             }
         }
     }
@@ -167,28 +179,65 @@ reduce.checks <- function(fun, matrix, get.help) {
     ## Reduce method check
     if(length(check_line <- grep("check.method", body(fun))) > 0) {
         ## Remove them!
-        for(one_check in check_line) {
-            body(fun)[[one_check]] <- substitute(no_check <- NULL)
+         for(one_check in check_line) {
+            if(is(body(fun)[[one_check]], "<-") || is(body(fun)[[one_check]], "call")) {
+                ## Substitute the line
+                body(fun)[[one_check]] <- substitute(no_check <- NULL)
+            } else {
+                ## recursively dig in the loop
+                inner_line <- grep("check.method", as.character(body(fun)[[one_check]]))
+                if(is(body(fun)[[one_check]][[inner_line]], " <-") || is(body(fun)[[one_check]][[inner_line]], "call")) {
+                    body(fun)[[one_check]][[inner_line]] <- substitute(no_check <- NULL)
+                } else {
+                    inner_line2 <- grep("check.method", as.character(body(fun)[[one_check]][[inner_line]]))
+                    body(fun)[[one_check]][[inner_line]][[inner_line2]] <- substitute(no_check <- NULL)
+                }
+            }
         }
     }
 
     ## Reduce class check
     if(length(check_line <- grep("check.class", body(fun))) > 0) {
         ## Remove them!
-        for(one_check in check_line) {
-            body(fun)[[one_check]] <- substitute(no_check <- NULL)
+         for(one_check in check_line) {
+            if(is(body(fun)[[one_check]], "<-") || is(body(fun)[[one_check]], "call")) {
+                ## Substitute the line
+                body(fun)[[one_check]] <- substitute(no_check <- NULL)
+            } else {
+                ## recursively dig in the loop
+                inner_line <- grep("check.class", as.character(body(fun)[[one_check]]))
+                if(is(body(fun)[[one_check]][[inner_line]], " <-") || is(body(fun)[[one_check]][[inner_line]], "call")) {
+                    body(fun)[[one_check]][[inner_line]] <- substitute(no_check <- NULL)
+                } else {
+                    inner_line2 <- grep("check.class", as.character(body(fun)[[one_check]][[inner_line]]))
+                    body(fun)[[one_check]][[inner_line]][[inner_line2]] <- substitute(no_check <- NULL)
+                }
+            }
         }
     }
 
     ## Reduce length check
     if(length(check_line <- grep("check.length", body(fun))) > 0) {
         ## Remove them!
-        for(one_check in check_line) {
-            body(fun)[[one_check]] <- substitute(no_check <- NULL)
+         for(one_check in check_line) {
+            if(is(body(fun)[[one_check]], "<-") || is(body(fun)[[one_check]], "call")) {
+                ## Substitute the line
+                body(fun)[[one_check]] <- substitute(no_check <- NULL)
+            } else {
+                ## recursively dig in the loop
+                inner_line <- grep("check.length", as.character(body(fun)[[one_check]]))
+                if(is(body(fun)[[one_check]][[inner_line]], " <-") || is(body(fun)[[one_check]][[inner_line]], "call")) {
+                    body(fun)[[one_check]][[inner_line]] <- substitute(no_check <- NULL)
+                } else {
+                    inner_line2 <- grep("check.length", as.character(body(fun)[[one_check]][[inner_line]]))
+                    body(fun)[[one_check]][[inner_line]][[inner_line2]] <- substitute(no_check <- NULL)
+                }
+            }
         }
     }
     return(fun)
 }
+
 
 #####################
 ##
