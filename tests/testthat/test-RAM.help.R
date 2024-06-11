@@ -39,13 +39,13 @@ test_that("make.metric handles help", {
     test <- make.metric(fun = dist.with.help, data.dim = data, get.help = TRUE, silent = TRUE)
     expect_is(test, "list")
     expect_equal(names(test), c("type", "tree", "RAM.help"))
-    expect_is(test$RAM.help, "dist")
+    expect_is(test$RAM.help, "matrix")
 
     ## Get the help from get.dispRity.metric.handle
     test <- get.dispRity.metric.handle(metric = dist.with.help, match_call = list(), data = data, tree = NULL)
     expect_is(test, "list")
     expect_equal(names(test), c("levels", "between.groups", "tree.metrics", "RAM.help"))
-    expect_is(test$RAM.help, "dist")
+    expect_is(test$RAM.help, "matrix")
 
     test <- get.dispRity.metric.handle(metric = pairwise.dist, match_call = list(), data = data, tree = NULL)
     expect_is(test, "list")
@@ -56,6 +56,24 @@ test_that("make.metric handles help", {
     expect_is(test, "list")
     expect_equal(names(test), c("levels", "between.groups", "tree.metrics", "RAM.help"))
     expect_null(test$RAM.help)
+
+})
+
+test_that("reduce.checks works", {
+
+    # TODO!!!
+
+    # big_matrix <- matrix(rnorm(100000), 1000, 100) # 86 folds increase
+    # big_matrix <- matrix(rnorm(1000), 100, 10) # 21 folds increase
+    # dist_matrix <- as.matrix(vegan::vegdist(big_matrix, method = "euclidean"))
+
+    # test <- reduce.checks(dist.with.help)
+
+    # tust <- microbenchmark(
+    #     dist.with.help(big_matrix),
+    #     test(dist_matrix)
+    # )
+    # plot(tust)
 
 })
 
@@ -74,22 +92,8 @@ test_that("general structure works", {
     # metric <- dist.with.help
     # data <- matrix(rnorm(90), 9, 10)
 
-    # RAM_matrix <- as.matrix(RAM_help)
 
-    # ## In decompose, do something like:
-    # microbenchmark(
-    #     pairwise.dist(one_matrix[bootstrap, dimensions, drop = FALSE]),
-    #     pairwise.dist(as.matrix(RAM_help)[bootstrap, bootstrap, drop = FALSE]),
-    #     pairwise.dist(RAM_matrix[bootstrap, bootstrap, drop = FALSE])
-    # )
-
-
-
-
-    # Call the metric by changing the argument RAM.helper to RAM_help every iterations (select from the matrix)
-
-    # ## multiple metrics
-    # metric = c(mean, dist.with.help)
+    ## Generalise reduce.checks in get.metric.handles after testing the metrics!
 
 
 })

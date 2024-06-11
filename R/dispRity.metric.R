@@ -529,7 +529,15 @@ ellipsoid.volume <- function(matrix, method, ...) {
     ## Calculating the semi axes
     if(missing(method)) {
         ## Detect the method
-        is_dist <- check.dist.matrix(matrix, just.check = TRUE)
+        if(dim(matrix)[1] == dim(matrix)[2] &&
+           all(diag(as.matrix(matrix)) == 0) &&
+           all(matrix[upper.tri(matrix)] == matrix[rev(lower.tri(matrix))], na.rm = TRUE)) {
+            ## It was a distance matrix!
+            is_dist <- TRUE
+        } else {
+            is_dist <- FALSE
+        }
+
         if(is_dist) {
             ## Use the eigen method
             method <- "eigen"
@@ -551,7 +559,6 @@ ellipsoid.volume <- function(matrix, method, ...) {
     } else {
         semi_axes <- method[1:ncol_matrix]
     }
-
 
     ## Volume (from https://keisan.casio.com/exec/system/1223381019)
     return(pi^(ncol_matrix/2)/gamma((ncol_matrix/2)+1)*prod(semi_axes))
@@ -1162,7 +1169,8 @@ count.neighbours <- function(matrix, radius, relative = TRUE, method = "euclidea
     if(missing(radius)) {
         radius <- max(distances)/2
     } else {
-        radius_class <- check.class(radius, c("numeric", "integer", "function"))
+        check.class(radius, c("numeric", "integer", "function"))
+        radius_class <- class(radius)
         if(radius_class == "function") {
             radius <- radius(distances)
         }
