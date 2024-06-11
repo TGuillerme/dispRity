@@ -100,7 +100,7 @@ make.metric <- function(fun, ..., silent = FALSE, check.between.groups = FALSE, 
             names(help_args)[length(help_args)] <- names(formals(help.fun))[1]
 
             ## Get the RAM help
-            RAM.help <- do.call(help.fun, help_args)
+            RAM.help <- as.matrix(do.call(help.fun, help_args))
         } else {
             ## Do some checks?
             stop("TODO: make.metric with RAM.helper not being a function")
@@ -108,7 +108,7 @@ make.metric <- function(fun, ..., silent = FALSE, check.between.groups = FALSE, 
         }
 
         ## Set the test data to be the RAM.helper
-        matrix <- as.matrix(RAM.help)
+        matrix <- RAM.help
         matrix_test <- ""
 
         if(covar) {
@@ -118,7 +118,7 @@ make.metric <- function(fun, ..., silent = FALSE, check.between.groups = FALSE, 
 
         if(is_between.groups) {
             ## Create a matrix2
-            matrix2 <-  as.matrix(RAM.help)
+            matrix2 <- RAM.help
             if(covar) {
                 matrix2 <- list(VCV = as.matrix(check.dist.matrix(RAM.help)[[1]]), loc = diag(as.matrix(check.dist.matrix(RAM.help)[[1]])))
             }
