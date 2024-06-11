@@ -151,6 +151,45 @@ get.dispRity.metric.handle <- function(metric, match_call, data = list(matrix = 
 }
 
 
+## Function to reduce the checks (distance matrix input is already handled)
+reduce.checks <- function(fun, matrix, get.help) {
+
+    ## Reduce distance checks
+    if(get.help || check.dist.matrix(matrix)$was_dist) {
+        if(length(check_line <- grep("check.dist.matrix", body(fun))) > 0) {
+            ## Remove them!
+            for(one_check in check_line) {
+                body(fun)[[one_check]] <- substitute(distances <- matrix)
+            }
+        }
+    }
+
+    ## Reduce method check
+    if(length(check_line <- grep("check.method", body(fun))) > 0) {
+        ## Remove them!
+        for(one_check in check_line) {
+            body(fun)[[one_check]] <- substitute(no_check <- NULL)
+        }
+    }
+
+    ## Reduce class check
+    if(length(check_line <- grep("check.class", body(fun))) > 0) {
+        ## Remove them!
+        for(one_check in check_line) {
+            body(fun)[[one_check]] <- substitute(no_check <- NULL)
+        }
+    }
+
+    ## Reduce length check
+    if(length(check_line <- grep("check.length", body(fun))) > 0) {
+        ## Remove them!
+        for(one_check in check_line) {
+            body(fun)[[one_check]] <- substitute(no_check <- NULL)
+        }
+    }
+    return(fun)
+}
+
 #####################
 ##
 ## INSIDE the lapply_loop
