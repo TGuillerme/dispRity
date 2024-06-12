@@ -60,7 +60,6 @@ test_that("make.metric handles help", {
 })
 
 test_that("reduce.checks works", {
-
     matrix <- matrix(rnorm(90), 9, 10)
     dist_mat <- dist(matrix) ## Keep as distance!
 
@@ -83,21 +82,6 @@ test_that("reduce.checks works", {
     ## Works with options
     expect_equal(count.neighbours(matrix, radius = 2), reduce.checks(fun = count.neighbours, data = dist_mat, get.help = TRUE)(dist_mat, radius = 2))
     expect_equal(count.neighbours(matrix, radius = 0.1), reduce.checks(fun = count.neighbours, data = dist_mat, get.help = TRUE)(dist_mat, radius = 0.1))
-
-
-    # TODO!!!
-    # big_matrix <- matrix(rnorm(100000), 1000, 100) # 86 folds increase
-    # dist_matrix <- as.matrix(vegan::vegdist(big_matrix, method = "euclidean"))
-
-    # test <- reduce.checks(dist.with.help)
-
-    # tust <- microbenchmark(
-    #     pairwise.dist(big_matrix),
-    #     dist.with.help(big_matrix),
-    #     test(dist_matrix)
-    # )
-    # plot(tust)
-
 })
 
 test_that("general structure works", {
