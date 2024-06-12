@@ -658,7 +658,7 @@ func.eve <- function(matrix, method = "euclidean", ...) {
     ## partial weighted evenness (PEW)
     rel_br_lentghs <- branch_lengths/sum(branch_lengths)
     ## Regular abundance value (1/(S-1))
-    regular <- 1/(nrow(matrix) - 1)
+    regular <- 1/(nrow(as.matrix(distances)) - 1)
     ## Get the minimal distances
     min_distances <- sapply(rel_br_lentghs, function(x, y) min(c(x, y)), y = regular)
     ## Return the Functional eveness
