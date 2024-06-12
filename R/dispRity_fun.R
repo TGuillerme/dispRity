@@ -147,12 +147,17 @@ get.dispRity.metric.handle <- function(metric, match_call, data = list(matrix = 
         }
     }
 
-    return(list(levels = list("level3.fun" = level3.fun, "level2.fun" = level2.fun, "level1.fun" = level1.fun), between.groups = rev(between.groups), tree.metrics = rev(tree.metrics), RAM.help = RAM_help))
+    return(list(levels = list("level3.fun" = reduce.checks(level3.fun), "level2.fun" = reduce.checks(level2.fun), "level1.fun" = reduce.checks(level1.fun)), between.groups = rev(between.groups), tree.metrics = rev(tree.metrics), RAM.help = RAM_help))
 }
 
 
 ## Function to reduce the checks (distance matrix input is already handled)
 reduce.checks <- function(fun, data = NULL, get.help = FALSE) {
+
+    ## Do nothing
+    if(is.null(fun)) {
+        return(NULL)
+    }
 
     ## Reduce distance checks
     if(get.help || (!is.null(data) && check.dist.matrix(data, method = "euclidean")$was_dist)) {

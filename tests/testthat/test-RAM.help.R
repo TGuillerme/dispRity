@@ -63,6 +63,10 @@ test_that("reduce.checks works", {
 
     matrix <- matrix(rnorm(90), 9, 10)
     dist_mat <- dist(matrix) ## Keep as distance!
+
+    expect_is(reduce.checks(mean), "function")
+    expect_null(reduce.checks(NULL))
+
     ## No reduction of checks
     expect_equal(pairwise.dist(matrix), reduce.checks(fun = pairwise.dist, data = matrix, get.help = FALSE)(matrix))
     ## Removing checks (matrix is already distance)
@@ -82,14 +86,13 @@ test_that("reduce.checks works", {
 
 
     # TODO!!!
-
     # big_matrix <- matrix(rnorm(100000), 1000, 100) # 86 folds increase
-    # big_matrix <- matrix(rnorm(1000), 100, 10) # 21 folds increase
     # dist_matrix <- as.matrix(vegan::vegdist(big_matrix, method = "euclidean"))
 
     # test <- reduce.checks(dist.with.help)
 
     # tust <- microbenchmark(
+    #     pairwise.dist(big_matrix),
     #     dist.with.help(big_matrix),
     #     test(dist_matrix)
     # )
