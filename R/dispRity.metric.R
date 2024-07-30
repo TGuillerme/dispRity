@@ -661,7 +661,7 @@ func.eve <- function(matrix, method = "euclidean", ...) {
     regular <- 1/(nrow(as.matrix(distances)) - 1)
     ## Get the minimal distances
     min_distances <- sapply(rel_br_lentghs, function(x, y) min(c(x, y)), y = regular)
-    ## Return the Functional eveness
+    ## Return the Functional evenness
     return((sum(min_distances) - regular) / (1 - regular))
 }
 
