@@ -26,6 +26,15 @@
  - [ ] update all the `dispRity` functions that have a `check.dist.matrix` function to use a helper
 
 
+## Update dtt.dispRity to use the treats pipeline
+
+ - [ ] use `treats::map.traits` instead of `geiger::sim.char` for simulating the character.
+ - [ ] update the `alternative` argument to use the rank envelope test.
+
+> for `treats`: check the portability of `geiger::ratematrix`, `geiger::fitContinuous`, `geiger::fitDiscrete` (`?geiger::sim.char`) and try implementing them in `treats`?
+
+
+
 ## Potential BAT.fun if works with RAM.help
 
  * New interface for the `BAT` package with new generic metric function `BAT.metric`. This function allows to use any metric from the `BAT` function as a metric for `dispRity` using the synthax: `dispRity(data, metric = BAT.metric, BAT.fun = "name", ...)`
