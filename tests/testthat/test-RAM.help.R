@@ -85,31 +85,44 @@ test_that("reduce.checks works", {
 })
 
 test_that("general structure works", {
-    ## General pipeline works with RAM.helper
+    start <- Sys.time()
+    test <- dispRity(data = matrix(rnorm(90), 9, 10, dimnames = list(letters[1:9])), metric = dist.no.help)
+    end <- Sys.time()
+    check.class(test, "dispRity")
+    expect_equal(length(test$disparity[[1]][[1]]), 36)
+    no_help_time <- end-start
 
-    ## Helpers for debug: all to remove
+    start <- Sys.time()
+    test <- dispRity(data = matrix(rnorm(90), 9, 10, dimnames = list(letters[1:9])), metric = dist.with.help)
+    end <- Sys.time()
+    check.class(test, "dispRity")
+    expect_equal(length(test$disparity[[1]][[1]]), 36)
+    with_help_time <- end-start
 
-    # ## metric and data
-    # match_call <- list()
-    # dots <- list()
-    # dimensions = NULL
-    # between.groups = FALSE
-    # verbose = FALSE
-    # tree = NULL
-    # metric <- dist.with.help
-    # data <- matrix(rnorm(90), 9, 10)
-
-
-    ## Generalise reduce.checks in get.metric.handles after testing the metrics!
-
-
-})
-
-test_that("works with help being an object", {
-
+    ## Working with RAM.helper being a matrix
+    data = matrix(rnorm(90), 9, 10, dimnames = list(letters[1:9]))
+    dist_matrix <- vegan::vegdist(data, method = "euclidean")
+    test <- dispRity(data = data, metric = dist.with.help, RAM.helper = dist_matrix)
+    check.class(test, "dispRity")
+    expect_equal(length(test$disparity[[1]][[1]]), 36)
 })
 
 test_that("works with bootstraps", {
+
+    start <- Sys.time()
+    test <- dispRity(data = matrix(rnorm(90), 9, 10, dimnames = list(letters[1:9])), metric = dist.no.help)
+    end <- Sys.time()
+    check.class(test, "dispRity")
+    expect_equal(length(test$disparity[[1]][[1]]), 36)
+    no_help_time <- end-start
+
+    start <- Sys.time()
+    test <- dispRity(data = matrix(rnorm(90), 9, 10, dimnames = list(letters[1:9])), metric = dist.with.help)
+    end <- Sys.time()
+    check.class(test, "dispRity")
+    expect_equal(length(test$disparity[[1]][[1]]), 36)
+    with_help_time <- end-start
+
 
 })
 

@@ -62,7 +62,8 @@ get.dispRity.metric.handle <- function(metric, match_call, data = list(matrix = 
 
         ## Which level is the metric
         test_level <- make.metric(metric, silent = TRUE, check.between.groups = TRUE, data.dim = data_dim, tree = tree, covar = checks$is_covar, get.help = get_help, ...)
-        # warning("DEBUG dispRity_fun") ; test_level <- make.metric(metric, silent = TRUE, check.between.groups = TRUE, data.dim = checks$data.dim, tree = tree, covar = checks$is_covar, BAT.fun = BAT::alpha, BAT.args = list(tree = tree))
+        # warning("DEBUG dispRity_fun") ; test_level <- make.metric(metric, silent = TRUE, check.between.groups = TRUE, data.dim = data_dim, tree = tree, covar = checks$is_covar, get.help = get_help)
+        # warning("DEBUG dispRity_fun - BAT_update") ; test_level <- make.metric(metric, silent = TRUE, check.between.groups = TRUE, data.dim = checks$data.dim, tree = tree, covar = checks$is_covar, BAT.fun = BAT::alpha, BAT.args = list(tree = tree))
         level <- test_level$type
         between.groups[as.numeric(gsub("level", "", test_level$type))] <- test_level$between.groups
         tree.metrics[as.numeric(gsub("level", "", test_level$type))] <- test_level$tree
