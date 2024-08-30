@@ -1,8 +1,25 @@
 dispRity v1.8.11 (2024-06-06) 
 =========================
 
+
+<!-- Blurb: 
+ 
+ * `dispRity` has been not greatly optimised for using distance matrices: 1) it's now much faster thanks to the `RAM.helper` new optional argument (storing the distance matrix in the cache) and 2) it now allows direct analyses of distance matrices in a dispRity pipeline.
+ * `boot.matrix` function has now been generalised to be able to bootstrap any elements of a matrix. Previously it only allowed to bootstrap elements (rows) but now can work on dimensions (columns) or both (distances).
+ * Redesigned `multi.ace` to be more modular and better handle both continuous and/or discrete characters. This is secretly a pre-release for a future version that will greatly improve pipelines with ancestral state estimations ;).
+ * New utility functions (`set.root.time` to add root times to trees; `remove.dispRity` to cleanly remove parts of dispRity objects) and metrics (`count.neigbhours`).
+ * Loads of minor improvements and couple of bug fixes! Yay!
+
+ -->
+
 ### NEW FEATURES
  * Redesigned `multi.ace` to be more modular and handle both continuous and/or discrete characters. Changes include a **change in argument name** from `castor.options` to the generic `options.args` (the options can be provided the same way as before though); and a **change in default arguments** for `models` which can now be left missing (previously was `"ER"`) and applies `"ER"` and `"BM"` for respectively discrete and continuous characters by default.
+
+
+ * *New bootstrap options*
+ * New design when using distance matrices: `RAM.helper` now allows to save distance matrices in the cache, saving a lot of RAM and speeding up calculations.
+ * Redesigned `dispRity` and associated functions to now work on distance matrices while keeping the distance matrix properties (using `keep.distance = TRUE` as a default option - toggle back to `FALSE` to use previous behaviour)
+
  * *New utility function* `set.root.time` to add a root time to a tree (`"phylo"`), list of trees (`"multiPhylo"`) or `dispRity` object with trees.
  * *New utility function* `remove.dispRity` to cleanly remove specific parts of a `"dispRity"` object.
  * *New metric*: `count.neighbours` to count the number of neighbours for each elements within a certain radius (thanks to Rob MacDonald for the suggestion).

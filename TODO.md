@@ -38,12 +38,14 @@
   count.neighbours
   - [ ] do speed test for ego boost
 
-## Potential BAT.fun if works with RAM.help
+## Generalise pipeline for distance matrices.
 
- * New interface for the `BAT` package with new generic metric function `BAT.metric`. This function allows to use any metric from the `BAT` function as a metric for `dispRity` using the synthax: `dispRity(data, metric = BAT.metric, BAT.fun = "name", ...)`
- * New utility function: `dispRity.BAT` for converting some parts of `dispRity` objects into `BAT` arguments.
- - [ ] documentation
- - [ ] test
+ - [ ] add an option `keep.distance = TRUE` to `dispRity` which does:
+    - [ ] detect data as a distance matrix or not
+    - [ ] if yes + `keep.distance = TRUE` OR if no + `keep.distance = TRUE` + RAM.helper + distance based metric -> apply bootstrap or anything on rows and columns
+    - [ ] if no, then old behaviour.
+    - [ ] flag new default with warning messages when detecting if yes. "Data is considered as a distance matrix and analysed by keeping the distances (toggle off using `keep.distances = FALSE`").
+
 
 ## Vignettes and manual
 
