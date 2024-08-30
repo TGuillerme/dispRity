@@ -1,5 +1,12 @@
 # Road to 1.9
 
+ - [ ] do todo below
+ - [ ] compile book
+ - [ ] run test
+ - [ ] compile function index
+ - [ ] run CRAN check
+
+
 ## bootstrapping dimensions
 
  * **New argument** for `boot.matrix`: `what` to specify whether to bootstrap rows (`"rows"` - the default), columns (`"columns"`) or both (`c("rows", "columns")`). Thanks to Gavin Thomas for this suggestion.
