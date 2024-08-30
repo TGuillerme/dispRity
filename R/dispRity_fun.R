@@ -29,124 +29,208 @@ check.covar <- function(metric, data) {
     return(list(is_covar = is_covar, data.dim = dim_out))
 }
 
+check.one.metric <- function(metric, data, tree, ...) {
+    
+    ## Check the class
+    check.class(metric, c("function", "standardGeneric"), report = 1)
+
+    ## Run the checks
+    checks <- check.covar(metric, data)
+    get_help <- check.get.help(metric)
+    data_dim <- if(get_help) {data} else {checks$data.dim}
+    return(make.metric(metric, silent = TRUE, check.between.groups = TRUE, data.dim = data_dim, tree = tree, covar = checks$is_covar, get.help = get_help, ...))
+    
+    # warning("DEBUG dispRity_fun") ; test_level <- make.metric(metric, silent = TRUE, check.between.groups = TRUE, data.dim = data_dim, tree = tree, covar = checks$is_covar, get.help = get_help)
+    # warning("DEBUG dispRity_fun - BAT_update") ; test_level <- make.metric(metric, silent = TRUE, check.between.groups = TRUE, data.dim = checks$data.dim, tree = tree, covar = checks$is_covar, BAT.fun = BAT::alpha, BAT.args = list(tree = tree))
+}
+
+
 ## Handle the disparity metrics
 get.dispRity.metric.handle <- function(metric, match_call, data = list(matrix = list(matrix(NA, 5, 4))), tree = NULL, ...) {
 
     RAM_help <- level3.fun <- level2.fun <- level1.fun <- NULL
     tree.metrics <- between.groups <- rep(FALSE, 3)
     length_metric <- length(metric)
-    ## Get the metric handle
-    if(length_metric == 1) {
-        if(!is(metric, "list")) {
-            ## Metric was fed as a single element
-            check.class(metric, c("function", "standardGeneric"), report = 1)
+
+    ## Check the metrics
+    if(!is(metric, "list")) {
+        metric <- list(metric)
+    }
+
+    ## Check all metrics
+    metric_checks <- lapply(metric, check.one.metric, data, tree, ...)
+    # warning("DEBUG: dispRity_fun.R::get.dispRity.metric.handle") ; metric_checks <- lapply(metric, check.one.metric, data, tree)
+
+    ## Sort out the tests
+    levels       <- unlist(lapply(metric_checks, `[[` , "type"))
+    btw_groups   <- unlist(lapply(metric_checks, `[[` , "between.groups"))
+    tree_metrics <- unlist(lapply(metric_checks, `[[` , "tree"))
+    RAM_helps    <- lapply(metric_checks, `[[` , "RAM.help")
+
+    if(any(help_IDs <- !unlist(lapply(RAM_helps, is.null)))) {
+        if(sum(help_IDs) > 1) {
+            stop("RAM.help can only be used for one metric.", call. = FALSE)
+        }
+        ## One RAM help was used
+        RAM_help <- RAM_helps[help_IDs][[1]]
+        remove(RAM_helps)
+    }
+    remove(metric_checks)
+
+    ## can only unique levels
+    if(length(levels) != length(unique(levels))) stop("Some functions in metric are of the same dimension-level.\nTry combining them in a single function.\nFor more information, see:\n?make.metric()", call. = FALSE)
+    ## At least one level 1 or level 2 metric is required
+    if(length(levels) == 1 && levels[[1]] == "level3") {
+        stop("At least one metric must be dimension-level 1 or dimension-level 2\n.For more information, see:\n?make.metric()", call. = FALSE)
+    }
+
+    ## Sort the levels
+    if(!is.na(match("level1", levels))) {
+        level1.fun        <- metric[[match("level1", levels)]]
+        between.groups[1] <- btw_groups[match("level1", levels)]
+        tree.metrics[1]   <- tree_metrics[match("level1", levels)]
+    }
+    if(!is.na(match("level2", levels))) {
+        level2.fun        <- metric[[match("level2", levels)]]
+        between.groups[2] <- btw_groups[match("level2", levels)]
+        tree.metrics[2]   <- tree_metrics[match("level2", levels)]
+    }
+    if(!is.na(match("level3", levels))) {
+        level3.fun        <- metric[[match("level3", levels)]]
+        between.groups[3] <- btw_groups[match("level3", levels)]
+        tree.metrics[3]   <- tree_metrics[match("level3", levels)]
+    }
+
+    ## Evaluate the covarness
+    covar_check <- unlist(lapply(list(level1.fun, level2.fun, level3.fun), eval.covar))
+    if(any(covar_check)) {
+        if(sum(covar_check) > 1) {
+            ## Stop if there are more than one covar meetirc
+            stop.call(msg = "Only one metric can be set as as.covar().", call = "")
         } else {
-            ## Metric was still fed as a list
-            check.class(metric[[1]], c("function", "standardGeneric"), report = 1)
-            metric <- metric[[1]]
-        }
-
-        ## Check the metric for covarness
-        checks <- check.covar(metric, data)
-
-        ## Get help or not?
-        get_help <- check.get.help(metric)
-
-        data_dim <- if(get_help) {
-            ## Use the input data
-            data
-        } else {
-            ## Use the simulated data
-            checks$data.dim            
-        }
-
-        ## Which level is the metric
-        test_level <- make.metric(metric, silent = TRUE, check.between.groups = TRUE, data.dim = data_dim, tree = tree, covar = checks$is_covar, get.help = get_help, ...)
-        # warning("DEBUG dispRity_fun") ; test_level <- make.metric(metric, silent = TRUE, check.between.groups = TRUE, data.dim = data_dim, tree = tree, covar = checks$is_covar, get.help = get_help)
-        # warning("DEBUG dispRity_fun - BAT_update") ; test_level <- make.metric(metric, silent = TRUE, check.between.groups = TRUE, data.dim = checks$data.dim, tree = tree, covar = checks$is_covar, BAT.fun = BAT::alpha, BAT.args = list(tree = tree))
-        level <- test_level$type
-        between.groups[as.numeric(gsub("level", "", test_level$type))] <- test_level$between.groups
-        tree.metrics[as.numeric(gsub("level", "", test_level$type))] <- test_level$tree
-
-        if(get_help) {
-            RAM_help <- test_level$RAM.help
-        }
-
-        switch(level,
-            level3 = {
-                stop.call(match_call$metric, " metric must contain at least a dimension-level 1 or a dimension-level 2 metric.\nFor more information, see ?make.metric.")
-            },
-            level2 = {
-                level2.fun <- metric
-            },
-            level1 = {
-                level1.fun <- metric
-            }
-        )
-    } else {
-        ## Check all the metrics
-        for(i in 1:length_metric) {
-            if(!any(class(metric[[i]]) %in% c("function", "standardGeneric"))) {
-            #if(!is(metric[[i]], "function")) {
-                stop.call(msg.pre = "metric argument ", call = match_call$metric[[i + 1]], msg = " is not a function.")
-            }
-        }
-
-        ## Sorting the metrics by levels
-        lapply.wrapper <- function(metric, data, tree, ...) {
-            checks <- check.covar(metric, data)
-            return(make.metric(metric, silent = TRUE, check.between.groups = TRUE, data.dim = checks$data.dim, tree = tree, covar = checks$is_covar, ...))
-        }
-
-        ## getting the metric levels
-        test_level <- lapply(metric, lapply.wrapper, data = data, tree = tree, ...)
-        levels <- unlist(lapply(test_level, `[[` , 1))
-        btw_groups <- unlist(lapply(test_level, `[[` , 2))
-        tree_metrics <- unlist(lapply(test_level, `[[` , 3))
-
-        ## can only unique levels
-        if(length(levels) != length(unique(levels))) stop("Some functions in metric are of the same dimension-level.\nTry combining them in a single function.\nFor more information, see:\n?make.metric()", call. = FALSE)
-
-        ## At least one level 1 or level 2 metric is required
-        if(length(levels) == 1 && levels[[1]] == "level3") {
-            stop("At least one metric must be dimension-level 1 or dimension-level 2\n.For more information, see:\n?make.metric()", call. = FALSE)
-        }
-        
-        ## Get the level 1 metric
-        if(!is.na(match("level1", levels))) {
-            level1.fun <- metric[[match("level1", levels)]]
-            between.groups[1] <- btw_groups[match("level1", levels)]
-            tree.metrics[1] <- tree_metrics[match("level1", levels)]
-        }
-
-        ## Get the level 2 metric
-        if(!is.na(match("level2", levels))) {
-            level2.fun <- metric[[match("level2", levels)]]
-            between.groups[2] <- btw_groups[match("level2", levels)]
-            tree.metrics[2] <- tree_metrics[match("level2", levels)]
-        }
-
-        ## Get the level 3 metric
-        if(!is.na(match("level3", levels))) {
-            level3.fun <- metric[[match("level3", levels)]]
-            between.groups[3] <- btw_groups[match("level3", levels)]
-            tree.metrics[3] <- tree_metrics[match("level3", levels)]
-        }
-
-        ## Evaluate the covarness
-        covar_check <- unlist(lapply(list(level1.fun, level2.fun, level3.fun), eval.covar))
-        if(any(covar_check)) {
-            if(sum(covar_check) > 1) {
-                ## Stop if there are more than one covar meetirc
-                stop.call(msg = "Only one metric can be set as as.covar().", call = "")
-            } else {
-                if(!covar_check[length(covar_check)]) {
-                    ## Stop if the last dimension-level metric is not the covar one
-                    stop.call(msg = "Only the highest dimension-level metric can be set as as.covar().", call = "")
-                }
+            if(!covar_check[length(covar_check)]) {
+                ## Stop if the last dimension-level metric is not the covar one
+                stop.call(msg = "Only the highest dimension-level metric can be set as as.covar().", call = "")
             }
         }
     }
+
+
+
+    # ## Get the metric handle
+    # if(length_metric == 1) {
+    #     if(!is(metric, "list")) {
+    #         ## Metric was fed as a single element
+    #         check.class(metric, c("function", "standardGeneric"), report = 1)
+    #     } else {
+    #         ## Metric was still fed as a list
+    #         check.class(metric[[1]], c("function", "standardGeneric"), report = 1)
+    #         metric <- metric[[1]]
+    #     }
+
+    #     ## Check the metric for covarness
+    #     checks <- check.covar(metric, data)
+
+    #     ## Get help or not?
+    #     get_help <- check.get.help(metric)
+
+    #     data_dim <- if(get_help) {
+    #         ## Use the input data
+    #         data
+    #     } else {
+    #         ## Use the simulated data
+    #         checks$data.dim            
+    #     }
+
+    #     ## Which level is the metric
+    #     test_level <- make.metric(metric, silent = TRUE, check.between.groups = TRUE, data.dim = data_dim, tree = tree, covar = checks$is_covar, get.help = get_help, ...)
+    #     # warning("DEBUG dispRity_fun") ; test_level <- make.metric(metric, silent = TRUE, check.between.groups = TRUE, data.dim = data_dim, tree = tree, covar = checks$is_covar, get.help = get_help)
+    #     # warning("DEBUG dispRity_fun - BAT_update") ; test_level <- make.metric(metric, silent = TRUE, check.between.groups = TRUE, data.dim = checks$data.dim, tree = tree, covar = checks$is_covar, BAT.fun = BAT::alpha, BAT.args = list(tree = tree))
+    #     level <- test_level$type
+    #     between.groups[as.numeric(gsub("level", "", test_level$type))] <- test_level$between.groups
+    #     tree.metrics[as.numeric(gsub("level", "", test_level$type))] <- test_level$tree
+
+    #     if(get_help) {
+    #         RAM_help <- test_level$RAM.help
+    #     }
+
+    #     switch(level,
+    #         level3 = {
+    #             stop.call(match_call$metric, " metric must contain at least a dimension-level 1 or a dimension-level 2 metric.\nFor more information, see ?make.metric.")
+    #         },
+    #         level2 = {
+    #             level2.fun <- metric
+    #         },
+    #         level1 = {
+    #             level1.fun <- metric
+    #         }
+    #     )
+    # } else {
+    #     ## Check all the metrics
+    #     for(i in 1:length_metric) {
+    #         if(!any(class(metric[[i]]) %in% c("function", "standardGeneric"))) {
+    #         #if(!is(metric[[i]], "function")) {
+    #             stop.call(msg.pre = "metric argument ", call = match_call$metric[[i + 1]], msg = " is not a function.")
+    #         }
+    #     }
+
+    #     ## Sorting the metrics by levels
+    #     lapply.wrapper <- function(metric, data, tree, ...) {
+    #         checks <- check.covar(metric, data)
+    #         get_help <- check.get.help(metric)
+    #         data_dim <- if(get_help) {data} else {checks$data.dim}
+    #         return(make.metric(metric, silent = TRUE, check.between.groups = TRUE, data.dim = data_dim, tree = tree, covar = checks$is_covar, get.help = get_help, ...))
+    #     }
+
+    #     ## getting the metric levels
+    #     test_level <- lapply(metric, lapply.wrapper, data = data, tree = tree, ...)
+    #     levels <- unlist(lapply(test_level, `[[` , 1))
+    #     btw_groups <- unlist(lapply(test_level, `[[` , 2))
+    #     tree_metrics <- unlist(lapply(test_level, `[[` , 3))
+
+    #     ## can only unique levels
+    #     if(length(levels) != length(unique(levels))) stop("Some functions in metric are of the same dimension-level.\nTry combining them in a single function.\nFor more information, see:\n?make.metric()", call. = FALSE)
+
+    #     ## At least one level 1 or level 2 metric is required
+    #     if(length(levels) == 1 && levels[[1]] == "level3") {
+    #         stop("At least one metric must be dimension-level 1 or dimension-level 2\n.For more information, see:\n?make.metric()", call. = FALSE)
+    #     }
+        
+    #     ## Get the level 1 metric
+    #     if(!is.na(match("level1", levels))) {
+    #         level1.fun <- metric[[match("level1", levels)]]
+    #         between.groups[1] <- btw_groups[match("level1", levels)]
+    #         tree.metrics[1] <- tree_metrics[match("level1", levels)]
+    #     }
+
+    #     ## Get the level 2 metric
+    #     if(!is.na(match("level2", levels))) {
+    #         level2.fun <- metric[[match("level2", levels)]]
+    #         between.groups[2] <- btw_groups[match("level2", levels)]
+    #         tree.metrics[2] <- tree_metrics[match("level2", levels)]
+    #     }
+
+    #     ## Get the level 3 metric
+    #     if(!is.na(match("level3", levels))) {
+    #         level3.fun <- metric[[match("level3", levels)]]
+    #         between.groups[3] <- btw_groups[match("level3", levels)]
+    #         tree.metrics[3] <- tree_metrics[match("level3", levels)]
+    #     }
+
+    #     ## Evaluate the covarness
+    #     covar_check <- unlist(lapply(list(level1.fun, level2.fun, level3.fun), eval.covar))
+    #     if(any(covar_check)) {
+    #         if(sum(covar_check) > 1) {
+    #             ## Stop if there are more than one covar meetirc
+    #             stop.call(msg = "Only one metric can be set as as.covar().", call = "")
+    #         } else {
+    #             if(!covar_check[length(covar_check)]) {
+    #                 ## Stop if the last dimension-level metric is not the covar one
+    #                 stop.call(msg = "Only the highest dimension-level metric can be set as as.covar().", call = "")
+    #             }
+    #         }
+    #     }
+    # }
 
     return(list(levels = list("level3.fun" = reduce.checks(level3.fun), "level2.fun" = reduce.checks(level2.fun), "level1.fun" = reduce.checks(level1.fun)), between.groups = rev(between.groups), tree.metrics = rev(tree.metrics), RAM.help = RAM_help))
 }

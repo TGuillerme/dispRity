@@ -216,7 +216,7 @@ test_that("Sanitizing works", {
 
     ## Only dimensions 3!
     error <- capture_error(dispRity(data, metric = var))
-    expect_equal(error[[1]], "var metric must contain at least a dimension-level 1 or a dimension-level 2 metric.\nFor more information, see ?make.metric.")
+    expect_equal(error[[1]], "At least one metric must be dimension-level 1 or dimension-level 2\n.For more information, see:\n?make.metric()")
 })
 
 #Reset
