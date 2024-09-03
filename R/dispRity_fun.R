@@ -238,33 +238,8 @@ get.row.col <- function(x, row, col = NULL) {
     `[`(x, row, 1:`if`(is.null(col), ncol(x), col))
 }
 
-## Applying the function to one matrix (or two if nrow is not null)
-# one_matrix <- data$matrix[[1]] ; warning("DEBUG: dispRity_fun")
-# bootstrap <- na.omit(one_subsets_bootstrap) ; warning("DEBUG: dispRity_fun")
-# fun <- first_metric ; warning("DEBUG: dispRity_fun")
-# dimensions <- data$call$dimensions ; warning("DEBUG: dispRity_fun")
-decompose <- function(one_matrix, bootstrap, dimensions, fun, nrow, RAM_help = NULL, ...) {
 
-    ## Select the variables
-    bs_rows <- bootstrap
-    bs_cols <- dimensions
-    matrix  <- one_matrix
-
-    if(is.null(nrow)) {
-        ## Normal decompose
-        return(single.decompose(matrix, bs_rows, bs_cols, fun, ...))
-    } else {
-        ## Serial decompose
-        return(double.decompose(matrix, bs_rows, bs_cols, fun, nrow, is.dist = FALSE, ...))
-    }
-
-    ## Placeholder for RAM_help
-    # Run the following:
-        #fun(as.dist(RAM_help[bootstrap, bootstrap]))
-    # But make sure that fun does not do the check.dist.matrix bit.
-
-}
-
+## Decompositions
 single.decompose <- function(matrix, bs_rows, bs_cols, fun, ...) {
     return(fun(matrix[bs_rows, bs_cols, drop = FALSE], ...))
 }
@@ -284,6 +259,28 @@ double.decompose <- function(matrix, bs_rows, bs_cols, fun, nrow, is.dist = FALS
             ...)
         )
 }
+
+## Applying the function to one matrix (or two if nrow is not null)
+# one_matrix <- data$matrix[[1]] ; warning("DEBUG: dispRity_fun")
+# bootstrap <- na.omit(one_subsets_bootstrap) ; warning("DEBUG: dispRity_fun")
+# fun <- first_metric ; warning("DEBUG: dispRity_fun")
+# dimensions <- data$call$dimensions ; warning("DEBUG: dispRity_fun")
+decompose.simple <- function(one_matrix, bootstrap, dimensions, fun, nrow, ...) {
+
+    ## Select the variables
+    bs_rows <- bootstrap
+    bs_cols <- dimensions
+    matrix  <- one_matrix
+
+    if(is.null(nrow)) {
+        ## Normal decompose
+        return(single.decompose(matrix, bs_rows, bs_cols, fun, ...))
+    } else {
+        ## Serial decompose
+        return(double.decompose(matrix, bs_rows, bs_cols, fun, nrow, is.dist = FALSE, ...))
+    }
+}
+
 
 ## Same as decompose but including the tree argument
 # one_matrix <- matrices[[1]] ; warning("DEBUG: dispRity_fun")
@@ -331,9 +328,15 @@ decompose.matrix <- function(one_subsets_bootstrap, fun, data, nrow, use_tree, R
 
     ## Some compactify/decompactify thingy can happen here for a future version of the package where lapply(data$matrix, ...) can be lapply(decompact(data$matrix), ...)
 
+    if(!is.null(RAM_help)) {
+        data_list <- RAM_help
+    } else {
+        data_list <- data$matrix
+    }
+
     if(!use_tree) {
         ## Apply the fun, bootstrap and dimension on each matrix
-        return(unlist(lapply(data$matrix, decompose,
+        return(unlist(lapply(data_list, decompose.simple,
                             bootstrap  = na.omit(one_subsets_bootstrap),
                             dimensions = data$call$dimensions,
                             fun        = fun,
@@ -344,7 +347,7 @@ decompose.matrix <- function(one_subsets_bootstrap, fun, data, nrow, use_tree, R
         ## Check whether the number of trees and matrices match
         ## Applying the decomposition to all trees and all matrices
         return(do.call(cbind,
-            mapply(decompose.tree, data$matrix, data$tree,
+            mapply(decompose.tree, data_list, data$tree,
                     MoreArgs = list(bootstrap  = na.omit(one_subsets_bootstrap),
                                    dimensions = data$call$dimensions,
                                    fun        = fun,
