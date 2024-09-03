@@ -779,7 +779,7 @@ test_that("dispRity works with the tree component", {
     data <- custom.subsets(matrix, group = list(LETTERS[1:5], letters[1:5]), tree = tree)
     test <- dispRity(data = data, metric = edge.length.tree)
     expect_equal(c(test$disparity[[1]][[1]]), edge.length.tree(matrix[LETTERS[1:5], ], tree))
-    expect_equal(c(test$disparity[[2]][[1]]), edge.length.tree(matrix[letters[1:5], ],tree))
+    expect_equal(c(test$disparity[[2]][[1]]), edge.length.tree(matrix[letters[1:5], ], tree))
 
     ## More complex metric test
     test <- dispRity(data = data, metric = projections.tree)

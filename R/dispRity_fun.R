@@ -56,7 +56,7 @@ get.dispRity.metric.handle <- function(metric, match_call, data = list(matrix = 
 
     ## Check all metrics
     metric_checks <- lapply(metric, check.one.metric, data, tree, ...)
-    warning("DEBUG: dispRity_fun.R::get.dispRity.metric.handle") ; metric_checks <- lapply(metric, check.one.metric, data, tree)
+    # warning("DEBUG: dispRity_fun.R::get.dispRity.metric.handle") ; metric_checks <- lapply(metric, check.one.metric, data, tree)
 
     ## Sort out the tests
     levels       <- unlist(lapply(metric_checks, `[[` , "type"))
@@ -244,16 +244,18 @@ get.row.col <- function(x, row, col = NULL) {
 # fun <- first_metric ; warning("DEBUG: dispRity_fun")
 # dimensions <- data$call$dimensions ; warning("DEBUG: dispRity_fun")
 decompose <- function(one_matrix, bootstrap, dimensions, fun, nrow, RAM_help = NULL, ...) {
+
+    ## Select the variables
+    bs_rows <- bootstrap
+    bs_cols <- dimensions
+    matrix  <- one_matrix
+
     if(is.null(nrow)) {
         ## Normal decompose
-        return(fun(one_matrix[bootstrap, dimensions, drop = FALSE], ...))
+        return(single.decompose(matrix, bs_rows, bs_cols, fun, ...))
     } else {
         ## Serial decompose
-        return(
-            fun(matrix  = one_matrix[bootstrap[1:nrow], dimensions, drop = FALSE],
-                matrix2 = one_matrix[bootstrap[-c(1:nrow)], dimensions, drop = FALSE],
-                ...)
-            )
+        return(double.decompose(matrix, bs_rows, bs_cols, fun, nrow, is.dist = FALSE, ...))
     }
 
     ## Placeholder for RAM_help
@@ -263,6 +265,26 @@ decompose <- function(one_matrix, bootstrap, dimensions, fun, nrow, RAM_help = N
 
 }
 
+single.decompose <- function(matrix, bs_rows, bs_cols, fun, ...) {
+    return(fun(matrix[bs_rows, bs_cols, drop = FALSE], ...))
+}
+double.decompose <- function(matrix, bs_rows, bs_cols, fun, nrow, is.dist = FALSE, ...) {
+
+    ## Get the columns to return
+    select_cols1 <- select_cols2 <- bs_cols
+    if(is.dist) {
+        select_cols1 <- bs_cols[1:nrow]
+        select_cols2 <- bs_cols[-c(1:nrow)]
+    } 
+
+    ## Return the fun
+    return(
+        fun(matrix  = matrix[bs_rows[1:nrow],     select_cols1, drop = FALSE],
+            matrix2 = matrix[bs_rows[-c(1:nrow)], select_cols2, drop = FALSE],
+            ...)
+        )
+}
+
 ## Same as decompose but including the tree argument
 # one_matrix <- matrices[[1]] ; warning("DEBUG: dispRity_fun")
 # one_tree <- trees[[1]] ; warning("DEBUG: dispRity_fun")
@@ -270,33 +292,30 @@ decompose <- function(one_matrix, bootstrap, dimensions, fun, nrow, RAM_help = N
 # fun <- first_metric ; warning("DEBUG: dispRity_fun")
 # dimensions <- data$call$dimensions ; warning("DEBUG: dispRity_fun")
 decompose.tree <- function(one_matrix, one_tree, bootstrap, dimensions, fun, nrow, RAM_help = NULL, ...) {
+
+    ## Select the variables
+    bs_rows <- bootstrap
+    bs_cols <- dimensions
+    matrix  <- one_matrix
+
     ## Check if fun has a "reference.data" argument
     if(!("reference.data" %in% formalArgs(fun))) {
         ##Does not use reference.data
         if(is.null(nrow)) {
             ## Normal decompose
-            return(fun(one_matrix[bootstrap, dimensions, drop = FALSE], tree = one_tree, ...))
+            return(single.decompose(matrix, bs_rows, bs_cols, fun, tree = one_tree, ...))
         } else {
             ## Serial decompose
-            return(
-                fun(matrix  = one_matrix[bootstrap[1:nrow], dimensions, drop = FALSE],
-                    matrix2 = one_matrix[bootstrap[-c(1:nrow)], dimensions, drop = FALSE],
-                    tree    = one_tree, ...)
-                )
+            return(double.decompose(matrix, bs_rows, bs_cols, fun, nrow, is.dist = FALSE, tree = one_tree, ...))
         }
     } else {
         ## Uses reference.data
         if(is.null(nrow)) {
             ## Normal decompose
-            return(fun(one_matrix[bootstrap, dimensions, drop = FALSE], tree = one_tree, reference.data = one_matrix, ...))
+            return(single.decompose(matrix, bs_rows, bs_cols, fun, tree = one_tree, reference.data = one_matrix, ...))
         } else {
             ## Serial decompose
-            return(
-                fun(matrix  = one_matrix[bootstrap[1:nrow], dimensions, drop = FALSE],
-                    matrix2 = one_matrix[bootstrap[-c(1:nrow)], dimensions, drop = FALSE],
-                    tree    = one_tree,
-                    reference.data = one_matrix, ...)
-                )
+            return(double.decompose(matrix, bs_rows, bs_cols, fun, nrow, is.dist = FALSE, tree = one_tree, reference.data = one_matrix, ...))
         }
     }
 }
