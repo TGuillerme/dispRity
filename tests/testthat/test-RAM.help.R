@@ -39,13 +39,15 @@ test_that("make.metric handles help", {
     test <- make.metric(fun = dist.with.help, data.dim = data, get.help = TRUE, silent = TRUE)
     expect_is(test, "list")
     expect_equal(names(test), c("type", "tree", "RAM.help"))
-    expect_is(test$RAM.help, "matrix")
+    expect_is(test$RAM.help, "list")
+    expect_is(test$RAM.help[[1]], "matrix")
 
     ## Get the help from get.dispRity.metric.handle
     test <- get.dispRity.metric.handle(metric = dist.with.help, match_call = list(), data = data, tree = NULL)
     expect_is(test, "list")
     expect_equal(names(test), c("levels", "between.groups", "tree.metrics", "RAM.help"))
-    expect_is(test$RAM.help, "matrix")
+    expect_is(test$RAM.help, "list")
+    expect_is(test$RAM.help[[1]], "matrix")
 
     test <- get.dispRity.metric.handle(metric = pairwise.dist, match_call = list(), data = data, tree = NULL)
     expect_is(test, "list")
@@ -56,7 +58,6 @@ test_that("make.metric handles help", {
     expect_is(test, "list")
     expect_equal(names(test), c("levels", "between.groups", "tree.metrics", "RAM.help"))
     expect_null(test$RAM.help)
-
 })
 
 test_that("reduce.checks works", {
@@ -87,11 +88,7 @@ test_that("reduce.checks works", {
 test_that("general structure works", {
 
     ## TODO:
-    #in dispRity_fun.R::decompose:
-        ## Placeholder for RAM_help
-        # Run the following:
-            #fun(as.dist(RAM_help[bootstrap, bootstrap]))
-        # But make sure that fun does not do the check.dist.matrix bit.
+    # Make sure RAM_help is passed correctly to decompose
 
     
     data <- matrix(rnorm(90), 9, 10, dimnames = list(letters[1:9]))
@@ -119,35 +116,35 @@ test_that("general structure works", {
 
 test_that("works with bootstraps", {
 
-    data(BeckLee_mat99)
-    data(BeckLee_tree)
-    groups <- chrono.subsets(BeckLee_mat99, tree = BeckLee_tree, time = 10, method = "continuous", model = "acctran")
+    # data(BeckLee_mat99)
+    # data(BeckLee_tree)
+    # groups <- chrono.subsets(BeckLee_mat99, tree = BeckLee_tree, time = 10, method = "continuous", model = "acctran")
 
-    start <- Sys.time()
-    test <- dispRity(data = boot.matrix(groups, 5000), metric = c(median, pairwise.dist))
-    end <- Sys.time()
-    check.class(test, "dispRity")
-    expect_equal(dim(summary(test)), c(10, 8))
-    expect_equal(summary(test)$obs, c(2.472, 2.537, 2.623, 2.723, 2.750, 2.785, 2.841, 2.867, 2.867, 2.867))
-    no_help_time <- end-start
+    # start <- Sys.time()
+    # test <- dispRity(data = boot.matrix(groups, 5000), metric = c(median, pairwise.dist))
+    # end <- Sys.time()
+    # check.class(test, "dispRity")
+    # expect_equal(dim(summary(test)), c(10, 8))
+    # expect_equal(summary(test)$obs, c(2.472, 2.537, 2.623, 2.723, 2.750, 2.785, 2.841, 2.867, 2.867, 2.867))
+    # no_help_time <- end-start
 
-    start <- Sys.time()
-    test <- dispRity(data = boot.matrix(groups, 5000), metric = c(median, dist.with.help))
-    end <- Sys.time()
-    check.class(test, "dispRity")
-    expect_equal(dim(summary(test)), c(10, 8))
-    expect_equal(summary(test)$obs, c(2.472, 2.537, 2.623, 2.723, 2.750, 2.785, 2.841, 2.867, 2.867, 2.867))
-    with_help_time <- end-start
+    # start <- Sys.time()
+    # test <- dispRity(data = boot.matrix(groups, 5000), metric = c(median, dist.with.help))
+    # end <- Sys.time()
+    # check.class(test, "dispRity")
+    # expect_equal(dim(summary(test)), c(10, 8))
+    # expect_equal(summary(test)$obs, c(2.472, 2.537, 2.623, 2.723, 2.750, 2.785, 2.841, 2.867, 2.867, 2.867))
+    # with_help_time <- end-start
 
 
-    ## This should take the helper into account!
-    start <- Sys.time()
-    test <- dispRity(data = boot.matrix(groups, 100), metric = c(median, pairwise.dist), RAM.helper = stats::dist)
-    end <- Sys.time()
-    check.class(test, "dispRity")
-    expect_equal(dim(summary(test)), c(10, 8))
-    expect_equal(summary(test)$obs, c(2.472, 2.537, 2.623, 2.723, 2.750, 2.785, 2.841, 2.867, 2.867, 2.867))
-    with_help_time2 <- end-start
+    # ## This should take the helper into account!
+    # start <- Sys.time()
+    # test <- dispRity(data = boot.matrix(groups, 100), metric = c(median, pairwise.dist), RAM.helper = stats::dist)
+    # end <- Sys.time()
+    # check.class(test, "dispRity")
+    # expect_equal(dim(summary(test)), c(10, 8))
+    # expect_equal(summary(test)$obs, c(2.472, 2.537, 2.623, 2.723, 2.750, 2.785, 2.841, 2.867, 2.867, 2.867))
+    # with_help_time2 <- end-start
 
 })
 

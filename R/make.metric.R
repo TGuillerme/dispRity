@@ -96,15 +96,24 @@ make.metric <- function(fun, ..., silent = FALSE, check.between.groups = FALSE, 
             } else {
                 dims <- data.dim$dimensions
             }
-            help_args[[length(help_args) + 1]] <- data.dim$matrix[[1]][, dims, drop = FALSE]
-            names(help_args)[length(help_args)] <- names(formals(help.fun))[1]
+
+            ## Apply to all matrices
+            get.help.matrix <- function(one_matrix, help_fun, help_args, dims) {
+                help_args[[length(help_args) + 1]] <- one_matrix[, dims, drop = FALSE]
+                names(help_args)[length(help_args)] <- names(formals(help.fun))[1]
+                return(as.matrix(do.call(help.fun, help_args)))
+            }
 
             ## Get the RAM help
-            RAM.help <- as.matrix(do.call(help.fun, help_args))
+            RAM.help <- lapply(data.dim$matrix, get.help.matrix, help_fun, help_args, dims)
         } else {
             ## Do some checks?
             stop("TODO: make.metric with RAM.helper not being a function")
-            RAM.help <- RAM.helper
+            if(is(RAM.helper, "matrix") || is(RAM.helper, "dist")) {
+                RAM.help <- list(RAM.helper)
+            } else {
+                checks <- unlist(lapply(RAM.helper, function(x) is(x, "matrix") || is(x, "dist")))
+            }
         }
 
         ## Set the test data to be the RAM.helper
