@@ -90,28 +90,97 @@ test_that("general structure works", {
     ## TODO:
     # Make sure RAM_help is passed correctly to decompose
 
-    
+    set.seed(1)
     data <- matrix(rnorm(90), 9, 10, dimnames = list(letters[1:9]))
 
     start <- Sys.time()
-    test <- dispRity(data = data, metric = dist.no.help)
+    test <- dispRity(data = data, metric = pairwise.dist)
     end <- Sys.time()
+    no_help_time <- end-start
     check.class(test, "dispRity")
     expect_equal(length(test$disparity[[1]][[1]]), 36)
-    no_help_time <- end-start
+    expect_equal(summary(test)$obs, 4.041)
 
+    start <- Sys.time()
+    test <- dispRity(data = data, metric = pairwise.dist, RAM.helper = vegan::vegdist)
+    end <- Sys.time()
+    with_help_time <- end-start
+    check.class(test, "dispRity")
+    expect_equal(length(test$disparity[[1]][[1]]), 36)
+    expect_equal(summary(test)$obs, 4.041)
+
+    ## Help is faster (roughly 10 times? - NOPE?)
+    # library(microbenchmark)
+    # test <- microbenchmark("with help"    = dispRity(data = data, metric = pairwise.dist, RAM.helper = vegan::vegdist),
+    #                        "without help" = dispRity(data = data, metric = pairwise.dist))
+    # plot(test, main = "basic test")
+
+    ## Working with RAM.helper being a matrix or a list
+    dist_matrix <- vegan::vegdist(data, method = "euclidean")
+    start <- Sys.time()
+    test <- dispRity(data = data, metric = pairwise.dist, RAM.helper = dist_matrix)
+    end <- Sys.time()
+    with_help_time <- end-start
+    check.class(test, "dispRity")
+    expect_equal(length(test$disparity[[1]][[1]]), 36)
+    expect_equal(summary(test)$obs, 4.041)
+    # expect_gt(no_help_time, with_help_time)
+
+    start <- Sys.time()
+    test <- dispRity(data = data, metric = pairwise.dist, RAM.helper = list(dist_matrix))
+    end <- Sys.time()
+    with_help_time <- end-start
+    expect_equal(summary(test)$obs, 4.041)
+    # expect_gt(no_help_time, with_help_time)
+
+
+    ## Errors (wrong matrices)
+    ## Errors from make.metric
+    expect_warning(error <- capture_error(test <- dispRity(data = data, metric = pairwise.dist, RAM.helper = data)))
+    expect_equal(error[[1]], "RAM.helper argument must be a distance matrix (or list of them) or a function to generate a distance matrix.")
+    error <- capture_error(test <- dispRity(data = data, metric = pairwise.dist, RAM.helper = rnorm))
+    expect_equal(error[[1]], "RAM.helper argument must be a distance matrix (or list of them) or a function to generate a distance matrix.")
+
+    error <- capture_error(test <- dispRity(data = data, metric = pairwise.dist, RAM.helper = list(dist_matrix, dist_matrix)))
+    error <- capture_error(test <- dispRity(data = data, metric = pairwise.dist, RAM.helper = dist(matrix(rnorm(90), 9, 10, dimnames = list(LETTERS[1:9])))))
+
+
+    ## Working with RAM.helper options recycled from "metric"
+    test <- dispRity(data = data, metric = pairwise.dist, method = "manhattan")
+    expect_equal(summary(test)$obs, 10.01)
+    test <- dispRity(data = data, metric = pairwise.dist, method = "manhattan", RAM.helper = vegan::vegdist)
+    expect_equal(summary(test)$obs, 10.01)
+
+
+
+    ## Working with RAM.helper designed in the metric
+    dist.with.help <- function(matrix, method = "euclidean", RAM.helper = vegan::vegdist) {
+        ## Check for distance
+        distances <- check.dist.matrix(matrix, method = method)[[1]]
+        ## Return distances
+        return(as.vector(distances))
+    }
+
+    start <- Sys.time()
+    test <- dispRity(data = data, metric = pairwise.dist)
+    end <- Sys.time()
+    no_help_time <- end-start
+    expect_equal(summary(test)$obs, 4.041)
+    
     start <- Sys.time()
     test <- dispRity(data = data, metric = dist.with.help)
     end <- Sys.time()
-    check.class(test, "dispRity")
-    expect_equal(length(test$disparity[[1]][[1]]), 36)
     with_help_time <- end-start
+    expect_equal(summary(test)$obs, 4.041)
+    expect_gt(no_help_time, with_help_time)
 
-    ## Working with RAM.helper being a matrix
-    dist_matrix <- vegan::vegdist(data, method = "euclidean")
-    test <- dispRity(data = data, metric = dist.no.help, RAM.helper = dist_matrix)
-    check.class(test, "dispRity")
-    expect_equal(length(test$disparity[[1]][[1]]), 36)
+    ## Also handles optionals
+    test <- dispRity(data = data, metric = pairwise.dist, method = "manhattan")
+    expect_equal(summary(test)$obs, 10.01)
+    test <- dispRity(data = data, metric = dist.with.help, method = "manhattan")
+    expect_equal(summary(test)$obs, 10.01)
+
+
 })
 
 test_that("works with bootstraps", {

@@ -32,14 +32,20 @@ check.covar <- function(metric, data) {
 ## Checks the levels and extras for one metric
 check.one.metric <- function(metric, data, tree, ...) {
     
+    dots <- list(...)
+
     ## Check the class
     check.class(metric, c("function", "standardGeneric"), report = 1)
 
     ## Run the checks
     checks <- check.covar(metric, data)
     get_help <- check.get.help(metric)
+    if(!is.null(names(dots)) && ("RAM.helper" %in% names(dots))) {
+        get_help <- TRUE
+    }
     data_dim <- if(get_help) {data} else {checks$data.dim}
     return(make.metric(metric, silent = TRUE, check.between.groups = TRUE, data.dim = data_dim, tree = tree, covar = checks$is_covar, get.help = get_help, ...))
+    warning("DEBUG: dispRity_fun.R::check.one.metric"); test <- make.metric(metric, silent = TRUE, check.between.groups = TRUE, data.dim = data_dim, tree = tree, covar = checks$is_covar, get.help = get_help, RAM.helper = RAM.helper)
 }
 
 ## Handle the disparity metrics
@@ -56,7 +62,7 @@ get.dispRity.metric.handle <- function(metric, match_call, data = list(matrix = 
 
     ## Check all metrics
     metric_checks <- lapply(metric, check.one.metric, data, tree, ...)
-    # warning("DEBUG: dispRity_fun.R::get.dispRity.metric.handle") ; metric_checks <- lapply(metric, check.one.metric, data, tree)
+    # warning("DEBUG: dispRity_fun.R::get.dispRity.metric.handle") ; metric_checks <- lapply(metric, check.one.metric, data, tree, RAM.helper)
 
     ## Sort out the tests
     levels       <- unlist(lapply(metric_checks, `[[` , "type"))
@@ -270,7 +276,7 @@ decompose.simple <- function(one_matrix, bootstrap, dimensions, fun, nrow, ...) 
     ## Select the variables
     bs_rows <- bootstrap
     bs_cols <- dimensions
-    matrix  <- one_matrix
+    matrix  <- as.matrix(one_matrix)
 
     if(is.null(nrow)) {
         ## Normal decompose
@@ -293,7 +299,7 @@ decompose.tree <- function(one_matrix, one_tree, bootstrap, dimensions, fun, nro
     ## Select the variables
     bs_rows <- bootstrap
     bs_cols <- dimensions
-    matrix  <- one_matrix
+    matrix  <- as.matrix(one_matrix)
 
     ## Check if fun has a "reference.data" argument
     if(!("reference.data" %in% formalArgs(fun))) {
@@ -329,16 +335,22 @@ decompose.matrix <- function(one_subsets_bootstrap, fun, data, nrow, use_tree, R
     ## Some compactify/decompactify thingy can happen here for a future version of the package where lapply(data$matrix, ...) can be lapply(decompact(data$matrix), ...)
 
     if(!is.null(RAM_help)) {
-        data_list <- RAM_help
+        ## RAM help setup (assuming distance matrices)
+        data_list  <- RAM_help
+        dimensions <- na.omit(one_subsets_bootstrap)
+        bootstrap  <- na.omit(one_subsets_bootstrap)
     } else {
-        data_list <- data$matrix
+        ## Default setup
+        data_list  <- data$matrix
+        dimensions <- data$call$dimensions
+        bootstrap  <- na.omit(one_subsets_bootstrap)
     }
 
     if(!use_tree) {
         ## Apply the fun, bootstrap and dimension on each matrix
         return(unlist(lapply(data_list, decompose.simple,
-                            bootstrap  = na.omit(one_subsets_bootstrap),
-                            dimensions = data$call$dimensions,
+                            bootstrap  = bootstrap,
+                            dimensions = dimensions,
                             fun        = fun,
                             nrow       = nrow,
                             ...),
@@ -348,11 +360,11 @@ decompose.matrix <- function(one_subsets_bootstrap, fun, data, nrow, use_tree, R
         ## Applying the decomposition to all trees and all matrices
         return(do.call(cbind,
             mapply(decompose.tree, data_list, data$tree,
-                    MoreArgs = list(bootstrap  = na.omit(one_subsets_bootstrap),
-                                   dimensions = data$call$dimensions,
-                                   fun        = fun,
-                                   nrow       = nrow,
-                                   ...),
+                    MoreArgs = list(bootstrap  = bootstrap,
+                                    dimensions = dimensions,
+                                    fun        = fun,
+                                    nrow       = nrow,
+                                    ...),
                     SIMPLIFY = FALSE)))
     }
 }
