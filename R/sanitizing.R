@@ -95,7 +95,11 @@ check.dist.matrix <- function(matrix, method, just.check = FALSE, ...) {
 
     ## Check if distance
     if(is(matrix, "dist")) {
-        return(list(matrix, "was_dist" = TRUE))
+        if(just.check) {
+            return(TRUE)
+        } else {
+            return(list(matrix, "was_dist" = TRUE))            
+        }
     }
 
     ## Is the matrix square?
