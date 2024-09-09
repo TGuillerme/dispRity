@@ -17,8 +17,10 @@ dispRity v1.8.11 (2024-06-06)
 
 
  * *New bootstrap options*
- * New design when using distance matrices: `RAM.helper` now allows to save distance matrices in the cache, saving a lot of RAM and speeding up calculations.
- * Redesigned `dispRity` and associated functions to now work on distance matrices while keeping the distance matrix properties (using `keep.distance = TRUE` as a default option - toggle back to `FALSE` to use previous behaviour)
+ * New design when using distance matrices: `RAM.helper` now allows to save distance matrices in the cache, saving a lot of RAM and speeding up calculations. You can use the helper using `dispRity(..., RAM.helper = my_distance_function)` or `dispRity(..., RAM.helper = my_distance_matrix)`.
+ <!-- TODO: add to manual -->
+
+ * Redesigned `dispRity` and associated functions to now work on distance matrices while keeping the distance matrix properties (using `keep.distance = TRUE` as a default option - toggle back to `FALSE` to use previous behaviour).
 
  * *New utility function* `set.root.time` to add a root time to a tree (`"phylo"`), list of trees (`"multiPhylo"`) or `dispRity` object with trees.
  * *New utility function* `remove.dispRity` to cleanly remove specific parts of a `"dispRity"` object.
