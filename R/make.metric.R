@@ -125,20 +125,20 @@ make.metric <- function(fun, ..., silent = FALSE, check.between.groups = FALSE, 
             }
         } else {
             error <- TRUE
-            if(!is(RAM.helper, "list")) {
-                if(is(RAM.helper, "dist")) {
+            if(!is(help.fun, "list")) {
+                if(is(help.fun, "dist")) {
                     error <- FALSE
-                    RAM.help <- list(as.matrix(RAM.helper))
+                    RAM.help <- list(as.matrix(help.fun))
                 } else {
-                    if(is(RAM.helper, "matrix")) {
-                        error <- check.dist.matrix(RAM.helper, just.check = TRUE)
-                        RAM.help <- list(as.matrix(RAM.helper))
+                    if(is(help.fun, "matrix")) {
+                        error <- check.dist.matrix(help.fun, just.check = TRUE)
+                        RAM.help <- list(as.matrix(help.fun))
                     }
                 }
             } else {
-                checks <- unlist(lapply(RAM.helper, check.dist.matrix, just.check = TRUE))
+                checks <- unlist(lapply(help.fun, check.dist.matrix, just.check = TRUE))
                 error <- !all(checks)
-                RAM.help <- lapply(RAM.helper, as.dist)
+                RAM.help <- lapply(help.fun, as.dist)
             }
             if(error) {
                 stop("RAM.helper argument must be a distance matrix (or list of them) or a function to generate a distance matrix.", call. = FALSE)

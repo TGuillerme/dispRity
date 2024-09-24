@@ -86,53 +86,29 @@ test_that("reduce.checks works", {
 })
 
 test_that("general structure works", {
-
-    ## TODO:
-    # Make sure RAM_help is passed correctly to decompose
-
+    
     set.seed(1)
     data <- matrix(rnorm(90), 9, 10, dimnames = list(letters[1:9]))
 
-    start <- Sys.time()
     test <- dispRity(data = data, metric = pairwise.dist)
-    end <- Sys.time()
-    no_help_time <- end-start
     check.class(test, "dispRity")
     expect_equal(length(test$disparity[[1]][[1]]), 36)
     expect_equal(summary(test)$obs, 4.041)
 
-    start <- Sys.time()
     test <- dispRity(data = data, metric = pairwise.dist, RAM.helper = vegan::vegdist)
-    end <- Sys.time()
-    with_help_time <- end-start
     check.class(test, "dispRity")
     expect_equal(length(test$disparity[[1]][[1]]), 36)
     expect_equal(summary(test)$obs, 4.041)
-
-    ## Help is faster (roughly 10 times? - NOPE?)
-    # library(microbenchmark)
-    # test <- microbenchmark("with help"    = dispRity(data = data, metric = pairwise.dist, RAM.helper = vegan::vegdist),
-    #                        "without help" = dispRity(data = data, metric = pairwise.dist))
-    # plot(test, main = "basic test")
 
     ## Working with RAM.helper being a matrix or a list
     dist_matrix <- vegan::vegdist(data, method = "euclidean")
-    start <- Sys.time()
     test <- dispRity(data = data, metric = pairwise.dist, RAM.helper = dist_matrix)
-    end <- Sys.time()
-    with_help_time <- end-start
     check.class(test, "dispRity")
     expect_equal(length(test$disparity[[1]][[1]]), 36)
     expect_equal(summary(test)$obs, 4.041)
-    # expect_gt(no_help_time, with_help_time)
 
-    start <- Sys.time()
     test <- dispRity(data = data, metric = pairwise.dist, RAM.helper = list(dist_matrix))
-    end <- Sys.time()
-    with_help_time <- end-start
     expect_equal(summary(test)$obs, 4.041)
-    # expect_gt(no_help_time, with_help_time)
-
 
     ## Errors (wrong matrices)
     ## Errors from make.metric
@@ -179,8 +155,6 @@ test_that("general structure works", {
     expect_equal(summary(test)$obs, 10.01)
     test <- dispRity(data = data, metric = dist.with.help, method = "manhattan")
     expect_equal(summary(test)$obs, 10.01)
-
-
 })
 
 test_that("works with bootstraps", {
@@ -216,6 +190,21 @@ test_that("works with bootstraps", {
     # with_help_time2 <- end-start
 
 })
+
+## Show differences
+
+    # set.seed(1)
+    # data <- matrix(rnorm(20000), 200, 100, dimnames = list(as.character(1:200)))
+    # dist_matrix <- vegan::vegdist(data, method = "euclidean")
+
+    # library(microbenchmark)
+    # test <- microbenchmark("with pre-clac"= dispRity(data = data, metric = pairwise.dist, RAM.helper = dist_matrix),
+    #                        "with help"    = dispRity(data = data, metric = pairwise.dist, RAM.helper = vegan::vegdist),
+    #                        "without help" = dispRity(data = data, metric = pairwise.dist))
+    # plot(test, main = "One matrix", ylim = c(25000000, 50000000), ylab = "milliseconds", xlab = "")
+
+
+
 
 test_that("works with trees", {
     

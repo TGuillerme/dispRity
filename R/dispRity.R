@@ -132,6 +132,7 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
     match_call <- match.call()
     dots <- list(...)
     # warning("DEBUG") ; return(match_call)
+    # dots <- list(RAM.helper = dist_matrix)
 
     ## Check data input
     is_multi <- FALSE
@@ -355,7 +356,6 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
         stop(paste0("Impossible to apply a dimension-level 3 metric that is not a between group metric with a dimension-level1 or 2 metric that is. You can try to integrate that dimension-level 3 metric directly in the definition of the other metrics."), call. = FALSE)
     }
 
-
     ## Parallel
     # if(missing(parallel)) {
     #     do_parallel <- FALSE
@@ -532,6 +532,7 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
                             recursive = FALSE)
         names(disparity) <- names(disparities[[1]])
     } else {
+
         ## Normal disparity lapply
         disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, metric_has_tree, RAM_help, ...)
         #TG: check out the file disparity_internal_logic.md (located on the root of the package) for explanation about the logic in this lapply

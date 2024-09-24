@@ -33,7 +33,6 @@ check.covar <- function(metric, data) {
 check.one.metric <- function(metric, data, tree, ...) {
     
     dots <- list(...)
-
     ## Check the class
     check.class(metric, c("function", "standardGeneric"), report = 1)
 
@@ -44,6 +43,7 @@ check.one.metric <- function(metric, data, tree, ...) {
         get_help <- TRUE
     }
     data_dim <- if(get_help) {data} else {checks$data.dim}
+
     return(make.metric(metric, silent = TRUE, check.between.groups = TRUE, data.dim = data_dim, tree = tree, covar = checks$is_covar, get.help = get_help, ...))
     warning("DEBUG: dispRity_fun.R::check.one.metric"); test <- make.metric(metric, silent = TRUE, check.between.groups = TRUE, data.dim = data_dim, tree = tree, covar = checks$is_covar, get.help = get_help, RAM.helper = RAM.helper)
 }
