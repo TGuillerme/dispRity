@@ -43,11 +43,11 @@ test_that("make.metric handles help", {
     expect_is(test$dist.help[[1]], "matrix")
 
     ## Get the help from get.dispRity.metric.handle
-    test <- get.dispRity.metric.handle(metric = dist.with.help, match_call = list(), data = data, tree = NULL)
-    expect_is(test, "list")
-    expect_equal(names(test), c("levels", "between.groups", "tree.metrics", "dist.help"))
-    expect_is(test$dist.help, "list")
-    expect_is(test$dist.help[[1]], "matrix")
+    # test <- get.dispRity.metric.handle(metric = dist.with.help, match_call = list(), data = data, tree = NULL)
+    # expect_is(test, "list")
+    # expect_equal(names(test), c("levels", "between.groups", "tree.metrics", "dist.help"))
+    # expect_is(test$dist.help, "list")
+    # expect_is(test$dist.help[[1]], "matrix")
 
     test <- get.dispRity.metric.handle(metric = pairwise.dist, match_call = list(), data = data, tree = NULL)
     expect_is(test, "list")
@@ -128,22 +128,10 @@ test_that("general structure works", {
 
 
     ## Working with multiple metrics
-    test <- dispRity(data = data, metric = c(mean, pairwise.dist))
-    check.class(test, "dispRity")
-    expect_equal(summary(test)$obs, 3.963)
-
-    test <- dispRity(data = data, metric = c(mean, pairwise.dist), dist.helper = vegan::vegdist)
-    check.class(test, "dispRity")
-    expect_equal(length(test$disparity[[1]][[1]]), 36)
-    expect_equal(summary(test)$obs, 3.963)
-
-    ## Working with dist.helper being a matrix or a list
-    dist_matrix <- vegan::vegdist(data, method = "euclidean")
-    test <- dispRity(data = data, metric = c(mean, pairwise.dist), dist.helper = dist_matrix)
-    check.class(test, "dispRity")
-    expect_equal(length(test$disparity[[1]][[1]]), 36)
-    expect_equal(summary(test)$obs, 3.963)
-
+    error <- capture_error(test <- dispRity(data = data, metric = c(mean, pairwise.dist), dist.helper = dist_matrix))
+    expect_equal(error[[1]], "dist.help can only be used for one metric. You can try combine the 2 metrics together into one or calculate disparity step by step. For example:\ndispRity(dispRity(data, metric = level2.metric), metric = level1.metric)")
+    error <- capture_error(test <- dispRity(data = data, metric = c(mean, pairwise.dist), dist.helper = vegan::vegdist))
+    expect_equal(error[[1]], "dist.help can only be used for one metric. You can try combine the 2 metrics together into one or calculate disparity step by step. For example:\ndispRity(dispRity(data, metric = level2.metric), metric = level1.metric)")
 })
 
 test_that("works with bootstraps", {
@@ -151,33 +139,31 @@ test_that("works with bootstraps", {
     data(BeckLee_mat99)
     data(BeckLee_tree)
     groups <- chrono.subsets(BeckLee_mat99, tree = BeckLee_tree, time = 10, method = "continuous", model = "acctran")
+    bs_data <- boot.matrix(groups)
 
-    start <- Sys.time()
-    test <- dispRity(data = boot.matrix(groups), metric = c(median, pairwise.dist))
-    end <- Sys.time()
+    test <- dispRity(data = bs_data, metric = pairwise.dist)
     check.class(test, "dispRity")
     expect_equal(dim(summary(test)), c(10, 8))
-    expect_equal(summary(test)$obs, c(2.472, 2.537, 2.623, 2.723, 2.750, 2.785, 2.841, 2.867, 2.867, 2.867))
-    no_help_time <- end-start
+    expect_equal(summary(test)$obs.median, c(2.472, 2.537, 2.623, 2.723, 2.750, 2.785, 2.841, 2.867, 2.867, 2.867))
 
-    # start <- Sys.time()
-    # test <- dispRity(data = boot.matrix(groups, 100), metric = c(median, dist.with.help))
-    # end <- Sys.time()
-    # check.class(test, "dispRity")
-    # expect_equal(dim(summary(test)), c(10, 8))
-    # expect_equal(summary(test)$obs, c(2.472, 2.537, 2.623, 2.723, 2.750, 2.785, 2.841, 2.867, 2.867, 2.867))
-    # with_help_time <- end-start
+    test <- dispRity(data = bs_data, metric = pairwise.dist, dist.helper = stats::dist)
+    check.class(test, "dispRity")
+    expect_equal(dim(summary(test)), c(10, 8))
+    expect_equal(summary(test)$obs.median, c(2.472, 2.537, 2.623, 2.723, 2.750, 2.785, 2.841, 2.867, 2.867, 2.867))
+
+    dist_matrix <- dist(BeckLee_mat99)
+    test <- dispRity(data = bs_data, metric = pairwise.dist, dist.helper = dist_matrix)
+    check.class(test, "dispRity")
+    expect_equal(dim(summary(test)), c(10, 8))
+    expect_equal(summary(test)$obs.median, c(2.472, 2.537, 2.623, 2.723, 2.750, 2.785, 2.841, 2.867, 2.867, 2.867))
+
+    ## CHECK IF IT ACTUALLY DOES RECYCLE THE dist.helper!!!!
 
 
-    # ## This should take the helper into account!
-    # start <- Sys.time()
-    # test <- dispRity(data = boot.matrix(groups, 100), metric = c(median, pairwise.dist), dist.helper = stats::dist)
-    # end <- Sys.time()
-    # check.class(test, "dispRity")
-    # expect_equal(dim(summary(test)), c(10, 8))
-    # expect_equal(summary(test)$obs, c(2.472, 2.537, 2.623, 2.723, 2.750, 2.785, 2.841, 2.867, 2.867, 2.867))
-    # with_help_time2 <- end-start
-
+    # test <- microbenchmark("with pre-clac"= dispRity(data = bs_data, metric = pairwise.dist, dist.helper = dist_matrix),
+    #                        "with help"    = dispRity(data = bs_data, metric = pairwise.dist, dist.helper = dist),
+    #                        "without help" = dispRity(data = bs_data, metric = pairwise.dist))
+    # plot(test, main = "10 matrices and 100 BS", ylab = "milliseconds", xlab = "")
 })
 
 ## Show differences

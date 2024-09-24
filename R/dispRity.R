@@ -254,7 +254,7 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
     ## Get the metric list
     metrics_list <- get.dispRity.metric.handle(metric, match_call, data = data, tree = tree, ...)
     # metrics_list <- get.dispRity.metric.handle(metric, match_call, data = data, tree = NULL, dist.helper = dist.helper); warning("DEBUG: dispRity")
-    RAM_help <- metrics_list$dist.help
+    dist_help <- metrics_list$dist.help
     metric_is_between.groups <- unlist(metrics_list$between.groups)
     metric_has_tree <- unlist(metrics_list$tree)
     metrics_list <- metrics_list$levels
@@ -522,9 +522,9 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
 
         ## mapply this
         disparities <- mapply(mapply.wrapper, lapply_loops, splitted_data, 
-                            MoreArgs = list(metrics_list, matrix_decomposition, verbose, metric_has_tree, RAM_help, ...),
+                            MoreArgs = list(metrics_list, matrix_decomposition, verbose, metric_has_tree, dist_help, ...),
                             SIMPLIFY = FALSE)
-        # disparities <- mapply(mapply.wrapper, lapply_loops, splitted_data, MoreArgs = list(metrics_list, matrix_decomposition, verbose, metric_has_tree, RAM_help), SIMPLIFY = FALSE) ; warning("DEBUG dispRity")
+        # disparities <- mapply(mapply.wrapper, lapply_loops, splitted_data, MoreArgs = list(metrics_list, matrix_decomposition, verbose, metric_has_tree, dist_help), SIMPLIFY = FALSE) ; warning("DEBUG dispRity")
         
         ## Reformat to normal disparity object
         disparity <- unlist(lapply(as.list(1:ifelse(is.null(data$call$subsets["trees"]), n_trees, length(disparities[[1]]))),
@@ -534,11 +534,11 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
     } else {
 
         ## Normal disparity lapply
-        disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, metric_has_tree, RAM_help, ...)
+        disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, metric_has_tree, dist_help, ...)
         #TG: check out the file disparity_internal_logic.md (located on the root of the package) for explanation about the logic in this lapply
 
         # warning("DEBUG: dispRity")
-        # disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, metric_has_tree, RAM_help)
+        # disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, metric_has_tree, dist_help)
 
         ## If multiple matrices, split the resulting output into columns
     }

@@ -51,13 +51,19 @@ check.one.metric <- function(metric, data, tree, ...) {
 ## Handle the disparity metrics
 get.dispRity.metric.handle <- function(metric, match_call, data = list(matrix = list(matrix(NA, 5, 4))), tree = NULL, ...) {
 
-    RAM_help <- level3.fun <- level2.fun <- level1.fun <- NULL
+    dist_help <- level3.fun <- level2.fun <- level1.fun <- NULL
     tree.metrics <- between.groups <- rep(FALSE, 3)
     length_metric <- length(metric)
 
     ## Check the metrics
     if(!is(metric, "list")) {
         metric <- list(metric)
+    }
+    dots <- list(...)
+
+    ## Check if there are two metric + RAM helper
+    if("dist.helper" %in% names(dots) && length(metric) > 1) {
+        stop(paste0("dist.help can only be used for one metric. You can try combine the ", length(metric), " metrics together into one or calculate disparity step by step. For example:\ndispRity(dispRity(data, metric = level2.metric), metric = level1.metric)"), call. = FALSE)
     }
 
     ## Check all metrics
@@ -68,16 +74,7 @@ get.dispRity.metric.handle <- function(metric, match_call, data = list(matrix = 
     levels       <- unlist(lapply(metric_checks, `[[` , "type"))
     btw_groups   <- unlist(lapply(metric_checks, `[[` , "between.groups"))
     tree_metrics <- unlist(lapply(metric_checks, `[[` , "tree"))
-    RAM_helps    <- lapply(metric_checks, `[[` , "dist.help")
-
-    if(any(help_IDs <- !unlist(lapply(RAM_helps, is.null)))) {
-        if(sum(help_IDs) > 1) {
-            stop("dist.help can only be used for one metric.", call. = FALSE)
-        }
-        ## One RAM help was used
-        RAM_help <- RAM_helps[help_IDs][[1]]
-        remove(RAM_helps)
-    }
+    dist_helps    <- lapply(metric_checks, `[[` , "dist.help")
     remove(metric_checks)
 
     ## can only unique levels
@@ -118,7 +115,7 @@ get.dispRity.metric.handle <- function(metric, match_call, data = list(matrix = 
         }
     }
 
-    return(list(levels = list("level3.fun" = reduce.checks(level3.fun), "level2.fun" = reduce.checks(level2.fun), "level1.fun" = reduce.checks(level1.fun)), between.groups = rev(between.groups), tree.metrics = rev(tree.metrics), dist.help = RAM_help))
+    return(list(levels = list("level3.fun" = reduce.checks(level3.fun), "level2.fun" = reduce.checks(level2.fun), "level1.fun" = reduce.checks(level1.fun)), between.groups = rev(between.groups), tree.metrics = rev(tree.metrics), dist.help = dist_help))
 }
 
 ## Function to reduce the checks (distance matrix input is already handled)
@@ -294,7 +291,7 @@ decompose.simple <- function(one_matrix, bootstrap, dimensions, fun, nrow, ...) 
 # bootstrap <- na.omit(one_subsets_bootstrap) ; warning("DEBUG: dispRity_fun")
 # fun <- first_metric ; warning("DEBUG: dispRity_fun")
 # dimensions <- data$call$dimensions ; warning("DEBUG: dispRity_fun")
-decompose.tree <- function(one_matrix, one_tree, bootstrap, dimensions, fun, nrow, RAM_help = NULL, ...) {
+decompose.tree <- function(one_matrix, one_tree, bootstrap, dimensions, fun, nrow, dist_help = NULL, ...) {
 
     ## Select the variables
     bs_rows <- bootstrap
@@ -325,7 +322,7 @@ decompose.tree <- function(one_matrix, one_tree, bootstrap, dimensions, fun, nro
 
 ## Calculates disparity from a bootstrap table
 # fun <- first_metric ; warning("DEBUG: dispRity_fun")
-decompose.matrix <- function(one_subsets_bootstrap, fun, data, nrow, use_tree, RAM_help = NULL, ...) {
+decompose.matrix <- function(one_subsets_bootstrap, fun, data, nrow, use_tree, dist_help = NULL, ...) {
 
     ## Return NA if no data
     if(length(na.omit(one_subsets_bootstrap)) < 2) {
@@ -334,9 +331,9 @@ decompose.matrix <- function(one_subsets_bootstrap, fun, data, nrow, use_tree, R
 
     ## Some compactify/decompactify thingy can happen here for a future version of the package where lapply(data$matrix, ...) can be lapply(decompact(data$matrix), ...)
 
-    if(!is.null(RAM_help)) {
+    if(!is.null(dist_help)) {
         ## RAM help setup (assuming distance matrices)
-        data_list  <- RAM_help
+        data_list  <- dist_help
         dimensions <- na.omit(one_subsets_bootstrap)
         bootstrap  <- na.omit(one_subsets_bootstrap)
     } else {
@@ -370,7 +367,7 @@ decompose.matrix <- function(one_subsets_bootstrap, fun, data, nrow, use_tree, R
 }
 
 ## Calculates disparity from a VCV matrix
-decompose.VCV <- function(one_subsets_bootstrap, fun, data, use_array, use_tree = FALSE, RAM_help = NULL,...) {
+decompose.VCV <- function(one_subsets_bootstrap, fun, data, use_array, use_tree = FALSE, dist_help = NULL,...) {
 
     # ## Return NA if no data
     # if(length(na.omit(one_subsets_bootstrap)) < 2) {
@@ -406,7 +403,7 @@ decompose.VCV <- function(one_subsets_bootstrap, fun, data, use_array, use_tree 
 
 ## Apply decompose matrix
 # fun = first_metric ; warning("DEBUG: dispRity_fun")
-decompose.matrix.wrapper <- function(one_subsets_bootstrap, fun, data, use_array, use_tree = FALSE, RAM_help = NULL,...) {
+decompose.matrix.wrapper <- function(one_subsets_bootstrap, fun, data, use_array, use_tree = FALSE, dist_help = NULL,...) {
    
     if(is(one_subsets_bootstrap)[[1]] == "list") {
         ## Isolating the matrix into it's two components if the "matrix" is actually a list
@@ -418,12 +415,12 @@ decompose.matrix.wrapper <- function(one_subsets_bootstrap, fun, data, use_array
 
     ## Decomposing the matrix
     if(use_array) {
-        return(array(apply(one_subsets_bootstrap, 2, decompose.matrix, fun = fun, data = data, nrow = nrow, use_tree = use_tree, RAM_help = RAM_help, ...), dim = c(length(data$call$dimensions), length(data$call$dimensions), ncol(one_subsets_bootstrap))))
+        return(array(apply(one_subsets_bootstrap, 2, decompose.matrix, fun = fun, data = data, nrow = nrow, use_tree = use_tree, dist_help = dist_help, ...), dim = c(length(data$call$dimensions), length(data$call$dimensions), ncol(one_subsets_bootstrap))))
  
     } else {
 
         ## one_subsets_bootstrap is a list (in example) on a single matrix
-        results_out <- apply(one_subsets_bootstrap, 2, decompose.matrix, fun = fun, data = data, nrow = nrow, use_tree = use_tree, RAM_help = RAM_help, ...)
+        results_out <- apply(one_subsets_bootstrap, 2, decompose.matrix, fun = fun, data = data, nrow = nrow, use_tree = use_tree, dist_help = dist_help, ...)
 
         # one_subsets_bootstrap <- cbind(one_subsets_bootstrap, one_subsets_bootstrap)
         # decompose.matrix(one_subsets_bootstrap[,1], fun = fun, data = data, nrow = nrow, use_tree = use_tree)
@@ -450,7 +447,7 @@ decompose.matrix.wrapper <- function(one_subsets_bootstrap, fun, data, use_array
 # one_subsets_bootstrap <- lapply_loop[[1]][[1]] ; warning("DEBUG: dispRity_fun")
 # subsets <- lapply_loop[[1]] ; warning("DEBUG: dispRity_fun")
 # one_subsets_bootstrap <- subsets[[1]] ; warning("DEBUG: dispRity_fun")
-disparity.bootstraps <- function(one_subsets_bootstrap, metrics_list, data, matrix_decomposition, metric_has_tree = rep(FALSE, length(metrics_list)), RAM_help = NULL, ...){
+disparity.bootstraps <- function(one_subsets_bootstrap, metrics_list, data, matrix_decomposition, metric_has_tree = rep(FALSE, length(metrics_list)), dist_help = NULL, ...){
     
     ## 1 - Decomposing the matrix (if necessary)
     verbose_place_holder <- NULL
@@ -465,9 +462,9 @@ disparity.bootstraps <- function(one_subsets_bootstrap, metrics_list, data, matr
 
         if(!eval.covar(first_metric, null.return = FALSE)) {
             ## Decompose the metric using the first metric
-            disparity_out <- decompose.matrix.wrapper(one_subsets_bootstrap, fun = first_metric, data = data, use_array = use_array, use_tree = use_tree, RAM_help = RAM_help, ...)
+            disparity_out <- decompose.matrix.wrapper(one_subsets_bootstrap, fun = first_metric, data = data, use_array = use_array, use_tree = use_tree, dist_help = dist_help, ...)
         } else {
-            disparity_out <- decompose.VCV(one_subsets_bootstrap, fun = first_metric, data = data, use_array = use_array, use_tree = use_tree, RAM_help = RAM_help, ...)
+            disparity_out <- decompose.VCV(one_subsets_bootstrap, fun = first_metric, data = data, use_array = use_array, use_tree = use_tree, dist_help = dist_help, ...)
         }
     } else {
         disparity_out <- one_subsets_bootstrap
@@ -510,15 +507,15 @@ disparity.bootstraps <- function(one_subsets_bootstrap, metrics_list, data, matr
 
 ## Lapply wrapper for disparity.bootstraps function
 # subsets <- lapply_loop[[1]] ; warning("DEBUG: dispRity_fun")
-lapply.wrapper <- function(subsets, metrics_list, data, matrix_decomposition, verbose, metric_has_tree = rep(FALSE, length(metrics_list)), RAM_help = NULL, ...) {
+lapply.wrapper <- function(subsets, metrics_list, data, matrix_decomposition, verbose, metric_has_tree = rep(FALSE, length(metrics_list)), dist_help = NULL, ...) {
     if(verbose) {
         ## Making the verbose version of disparity.bootstraps
         body(disparity.bootstraps)[[2]] <- substitute(message(".", appendLF = FALSE))
     }
-    return(lapply(subsets, disparity.bootstraps, metrics_list, data, matrix_decomposition, metric_has_tree, RAM_help, ...))
+    return(lapply(subsets, disparity.bootstraps, metrics_list, data, matrix_decomposition, metric_has_tree, dist_help, ...))
 }
-mapply.wrapper <- function(lapply_loop, data, metrics_list, matrix_decomposition, verbose, metric_has_tree, RAM_help = NULL, ...) {
-    return(lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, metric_has_tree, RAM_help, ...))
+mapply.wrapper <- function(lapply_loop, data, metrics_list, matrix_decomposition, verbose, metric_has_tree, dist_help = NULL, ...) {
+    return(lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, metric_has_tree, dist_help, ...))
 }
 
 

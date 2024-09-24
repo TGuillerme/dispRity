@@ -64,9 +64,9 @@ make.metric <- function(fun, ..., silent = FALSE, check.between.groups = FALSE, 
 
     ## Get the metric arguments
     arguments <- names(formals(fun))
-    if(length(mat_arg <- which("matrix" %in% arguments)) > 0 || length(arguments) > 1) {
-        arguments <- arguments[-mat_arg]
-    }
+    # if(length(mat_arg <- which("matrix" %in% arguments)) > 0 || length(arguments) > 1) {
+    #     arguments <- arguments[-mat_arg]
+    # }
 
     ## Detecting a between.groups and phylo arguments
     is_between.groups <- all(c("matrix", "matrix2") %in% arguments)
@@ -101,8 +101,12 @@ make.metric <- function(fun, ..., silent = FALSE, check.between.groups = FALSE, 
         if(is(try_test, "function")) {
 
             ## Add optional arguments (if evaluable)
-            if(length(optionals <- which(arguments %in% names(formals(try_test)))) > 0) {
+            if(length(optionals <- which(names(formals(try_test)) %in% arguments)) > 0) {
                 help_args <- formals(fun)[optionals]
+                ## Update the arguments to the dots
+                if(length(arg_from_dots <- which(names(help_args) %in% names(dots))) > 0) {
+                    help_args[arg_from_dots] <- dots[arg_from_dots]
+                }
             } else {
                 help_args <- list()
             }
