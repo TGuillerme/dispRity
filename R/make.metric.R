@@ -9,7 +9,7 @@
 #' @param data.dim optional, two \code{numeric} values for the dimensions of the matrix to run the test function testing. If missing, a default 5 rows by 4 columns matrix is used.
 #' @param tree optional, a \code{phylo} object.
 #' @param covar \code{logical}, whether to treat the metric as applied the a \code{data$covar} component (\code{TRUE}) or not (\code{FALSE}; default).
-#' @param get.help \code{logical}, whether to also output the \code{dist.helper} if the metric has a \code{RAM.help} argument (\code{TRUE}) or not (\code{FALSE}; default).
+#' @param get.help \code{logical}, whether to also output the \code{dist.helper} if the metric has a \code{dist.help} argument (\code{TRUE}) or not (\code{FALSE}; default).
 #'
 #' @details
 #' This function tests:
@@ -64,13 +64,16 @@ make.metric <- function(fun, ..., silent = FALSE, check.between.groups = FALSE, 
 
     ## Get the metric arguments
     arguments <- names(formals(fun))
+    if(length(mat_arg <- which("matrix" %in% arguments)) > 0 || length(arguments) > 1) {
+        arguments <- arguments[-mat_arg]
+    }
 
     ## Detecting a between.groups and phylo arguments
     is_between.groups <- all(c("matrix", "matrix2") %in% arguments)
     is_phylo <- "tree" %in% arguments
 
     ## Checking for helpers
-    RAM.help <- help.fun <- NULL
+    dist.help <- help.fun <- NULL
     if(get.help) {
         get_help <- check.get.help(fun)
     } else {
@@ -96,9 +99,9 @@ make.metric <- function(fun, ..., silent = FALSE, check.between.groups = FALSE, 
 
         ## Check if the helper is a function or an object
         if(is(try_test, "function")) {
-            
+
             ## Add optional arguments (if evaluable)
-            if(length(optionals <- which(arguments %in% names(formals(help.fun)))) > 0) {
+            if(length(optionals <- which(arguments %in% names(formals(try_test)))) > 0) {
                 help_args <- formals(fun)[optionals]
             } else {
                 help_args <- list()
@@ -118,10 +121,10 @@ make.metric <- function(fun, ..., silent = FALSE, check.between.groups = FALSE, 
             }
 
             ## Get the RAM help
-            RAM.help <- lapply(data.dim$matrix, get.help.matrix, help.fun = try_test, help_args, dims)
+            dist.help <- lapply(data.dim$matrix, get.help.matrix, help.fun = try_test, help_args, dims)
 
             ## Check if RAM help is not a dist matrix
-            if(!is(RAM.help[[1]], "matrix") || !check.dist.matrix(RAM.help[[1]], just.check = TRUE)) {
+            if(!is(dist.help[[1]], "matrix") || !check.dist.matrix(dist.help[[1]], just.check = TRUE)) {
                 stop("dist.helper argument must be a distance matrix (or list of them) or a function to generate a distance matrix.", call. = FALSE)
             }
         } else {
@@ -129,17 +132,17 @@ make.metric <- function(fun, ..., silent = FALSE, check.between.groups = FALSE, 
             if(!is(help.fun, "list")) {
                 if(is(help.fun, "dist")) {
                     error <- FALSE
-                    RAM.help <- list(as.matrix(help.fun))
+                    dist.help <- list(as.matrix(help.fun))
                 } else {
                     if(is(help.fun, "matrix")) {
                         error <- !check.dist.matrix(help.fun, just.check = TRUE)
-                        RAM.help <- list(as.matrix(help.fun))
+                        dist.help <- list(as.matrix(help.fun))
                     }
                 }
             } else {
                 checks <- unlist(lapply(help.fun, check.dist.matrix, just.check = TRUE))
                 error <- !all(checks)
-                RAM.help <- lapply(help.fun, as.dist)
+                dist.help <- lapply(help.fun, as.dist)
             }
             if(error) {
                 stop("dist.helper argument must be a distance matrix (or list of them) or a function to generate a distance matrix.", call. = FALSE)
@@ -147,19 +150,19 @@ make.metric <- function(fun, ..., silent = FALSE, check.between.groups = FALSE, 
         }
 
         ## Set the test data to be the dist.helper
-        matrix <- RAM.help[[1]]
+        matrix <- dist.help[[1]]
         matrix_test <- ""
 
         if(covar) {
-            matrix <- list(VCV = as.matrix(check.dist.matrix(RAM.help)[[1]]), loc = diag(as.matrix(check.dist.matrix(RAM.help)[[1]])))
+            matrix <- list(VCV = as.matrix(check.dist.matrix(dist.help)[[1]]), loc = diag(as.matrix(check.dist.matrix(dist.help)[[1]])))
             matrix_text <- ""
         }
 
         if(is_between.groups) {
             ## Create a matrix2
-            matrix2 <- RAM.help
+            matrix2 <- dist.help
             if(covar) {
-                matrix2 <- list(VCV = as.matrix(check.dist.matrix(RAM.help)[[1]]), loc = diag(as.matrix(check.dist.matrix(RAM.help)[[1]])))
+                matrix2 <- list(VCV = as.matrix(check.dist.matrix(dist.help)[[1]]), loc = diag(as.matrix(check.dist.matrix(dist.help)[[1]])))
             }
         }
     } else {
@@ -276,9 +279,9 @@ make.metric <- function(fun, ..., silent = FALSE, check.between.groups = FALSE, 
 
     if(silent == TRUE) {
         if(check.between.groups) {
-            return(list("type" = fun_type, "between.groups" = is_between.groups, "tree" = is_phylo, "RAM.help" = RAM.help))
+            return(list("type" = fun_type, "between.groups" = is_between.groups, "tree" = is_phylo, "dist.help" = dist.help))
         } else {
-            return(list("type" = fun_type, "tree" = is_phylo, "RAM.help" = RAM.help))
+            return(list("type" = fun_type, "tree" = is_phylo, "dist.help" = dist.help))
         }
     } else {
         return(invisible())

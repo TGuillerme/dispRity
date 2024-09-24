@@ -68,11 +68,11 @@ get.dispRity.metric.handle <- function(metric, match_call, data = list(matrix = 
     levels       <- unlist(lapply(metric_checks, `[[` , "type"))
     btw_groups   <- unlist(lapply(metric_checks, `[[` , "between.groups"))
     tree_metrics <- unlist(lapply(metric_checks, `[[` , "tree"))
-    RAM_helps    <- lapply(metric_checks, `[[` , "RAM.help")
+    RAM_helps    <- lapply(metric_checks, `[[` , "dist.help")
 
     if(any(help_IDs <- !unlist(lapply(RAM_helps, is.null)))) {
         if(sum(help_IDs) > 1) {
-            stop("RAM.help can only be used for one metric.", call. = FALSE)
+            stop("dist.help can only be used for one metric.", call. = FALSE)
         }
         ## One RAM help was used
         RAM_help <- RAM_helps[help_IDs][[1]]
@@ -118,7 +118,7 @@ get.dispRity.metric.handle <- function(metric, match_call, data = list(matrix = 
         }
     }
 
-    return(list(levels = list("level3.fun" = reduce.checks(level3.fun), "level2.fun" = reduce.checks(level2.fun), "level1.fun" = reduce.checks(level1.fun)), between.groups = rev(between.groups), tree.metrics = rev(tree.metrics), RAM.help = RAM_help))
+    return(list(levels = list("level3.fun" = reduce.checks(level3.fun), "level2.fun" = reduce.checks(level2.fun), "level1.fun" = reduce.checks(level1.fun)), between.groups = rev(between.groups), tree.metrics = rev(tree.metrics), dist.help = RAM_help))
 }
 
 ## Function to reduce the checks (distance matrix input is already handled)

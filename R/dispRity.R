@@ -254,7 +254,7 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
     ## Get the metric list
     metrics_list <- get.dispRity.metric.handle(metric, match_call, data = data, tree = tree, ...)
     # metrics_list <- get.dispRity.metric.handle(metric, match_call, data = data, tree = NULL, dist.helper = dist.helper); warning("DEBUG: dispRity")
-    RAM_help <- metrics_list$RAM.help
+    RAM_help <- metrics_list$dist.help
     metric_is_between.groups <- unlist(metrics_list$between.groups)
     metric_has_tree <- unlist(metrics_list$tree)
     metrics_list <- metrics_list$levels

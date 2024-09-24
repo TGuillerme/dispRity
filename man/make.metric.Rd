@@ -30,7 +30,7 @@ make.metric(
 
 \item{covar}{\code{logical}, whether to treat the metric as applied the a \code{data$covar} component (\code{TRUE}) or not (\code{FALSE}; default).}
 
-\item{get.help}{\code{logical}, whether to also output the \code{RAM.helper} if the metric has a \code{RAM.help} argument (\code{TRUE}) or not (\code{FALSE}; default).}
+\item{get.help}{\code{logical}, whether to also output the \code{dist.helper} if the metric has a \code{dist.help} argument (\code{TRUE}) or not (\code{FALSE}; default).}
 }
 \description{
 Testing the dimension-level of disparity metrics

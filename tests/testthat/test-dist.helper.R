@@ -1,6 +1,6 @@
- # - 1. metrics can now have `RAM.help` arguments that intake a function that will run some pre-calculations. For example, this function can be `vegan::vegdist`.
+ # - 1. metrics can now have `dist.help` arguments that intake a function that will run some pre-calculations. For example, this function can be `vegan::vegdist`.
  # - 2. detect the need for RAM help in `get.dispRity.metric.handle`
- # - 3. compute heavy calculations at the whole data level in `dispRity` using the `RAM.help` function before the `lapply_loop`
+ # - 3. compute heavy calculations at the whole data level in `dispRity` using the `dist.help` function before the `lapply_loop`
  # - 4. store the calculations in `data` similarly as tree as `dist.helper`
  # - 5. run the metrics using a potential `dist.helper` similarly as tree.
 
@@ -38,26 +38,26 @@ test_that("make.metric handles help", {
     ## Get the help from make.metric
     test <- make.metric(fun = dist.with.help, data.dim = data, get.help = TRUE, silent = TRUE)
     expect_is(test, "list")
-    expect_equal(names(test), c("type", "tree", "RAM.help"))
-    expect_is(test$RAM.help, "list")
-    expect_is(test$RAM.help[[1]], "matrix")
+    expect_equal(names(test), c("type", "tree", "dist.help"))
+    expect_is(test$dist.help, "list")
+    expect_is(test$dist.help[[1]], "matrix")
 
     ## Get the help from get.dispRity.metric.handle
     test <- get.dispRity.metric.handle(metric = dist.with.help, match_call = list(), data = data, tree = NULL)
     expect_is(test, "list")
-    expect_equal(names(test), c("levels", "between.groups", "tree.metrics", "RAM.help"))
-    expect_is(test$RAM.help, "list")
-    expect_is(test$RAM.help[[1]], "matrix")
+    expect_equal(names(test), c("levels", "between.groups", "tree.metrics", "dist.help"))
+    expect_is(test$dist.help, "list")
+    expect_is(test$dist.help[[1]], "matrix")
 
     test <- get.dispRity.metric.handle(metric = pairwise.dist, match_call = list(), data = data, tree = NULL)
     expect_is(test, "list")
-    expect_equal(names(test), c("levels", "between.groups", "tree.metrics", "RAM.help"))
-    expect_null(test$RAM.help)
+    expect_equal(names(test), c("levels", "between.groups", "tree.metrics", "dist.help"))
+    expect_null(test$dist.help)
 
     test <- get.dispRity.metric.handle(metric = dist.no.help, match_call = list(), data = data, tree = NULL)
     expect_is(test, "list")
-    expect_equal(names(test), c("levels", "between.groups", "tree.metrics", "RAM.help"))
-    expect_null(test$RAM.help)
+    expect_equal(names(test), c("levels", "between.groups", "tree.metrics", "dist.help"))
+    expect_null(test$dist.help)
 })
 
 test_that("reduce.checks works", {
@@ -127,22 +127,22 @@ test_that("general structure works", {
     expect_equal(summary(test)$obs, 10.01)
 
 
-    # ## Working with multiple metrics
-    # test <- dispRity(data = data, metric = c(mean, pairwise.dist))
-    # check.class(test, "dispRity")
-    # expect_equal(summary(test)$obs, 3.963)
+    ## Working with multiple metrics
+    test <- dispRity(data = data, metric = c(mean, pairwise.dist))
+    check.class(test, "dispRity")
+    expect_equal(summary(test)$obs, 3.963)
 
-    # test <- dispRity(data = data, metric = c(mean, pairwise.dist), dist.helper = vegan::vegdist)
-    # check.class(test, "dispRity")
-    # expect_equal(length(test$disparity[[1]][[1]]), 36)
-    # expect_equal(summary(test)$obs, 3.963)
+    test <- dispRity(data = data, metric = c(mean, pairwise.dist), dist.helper = vegan::vegdist)
+    check.class(test, "dispRity")
+    expect_equal(length(test$disparity[[1]][[1]]), 36)
+    expect_equal(summary(test)$obs, 3.963)
 
-    # ## Working with dist.helper being a matrix or a list
-    # dist_matrix <- vegan::vegdist(data, method = "euclidean")
-    # test <- dispRity(data = data, metric = c(mean, pairwise.dist), dist.helper = dist_matrix)
-    # check.class(test, "dispRity")
-    # expect_equal(length(test$disparity[[1]][[1]]), 36)
-    # expect_equal(summary(test)$obs, 3.963)
+    ## Working with dist.helper being a matrix or a list
+    dist_matrix <- vegan::vegdist(data, method = "euclidean")
+    test <- dispRity(data = data, metric = c(mean, pairwise.dist), dist.helper = dist_matrix)
+    check.class(test, "dispRity")
+    expect_equal(length(test$disparity[[1]][[1]]), 36)
+    expect_equal(summary(test)$obs, 3.963)
 
 })
 
