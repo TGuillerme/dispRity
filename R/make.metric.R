@@ -86,6 +86,7 @@ make.metric <- function(fun, ..., silent = FALSE, check.between.groups = FALSE, 
     }
 
     if(get_help) {
+
         ## Get the RAM helper
         if(is.null(help.fun)) {
             try_test <- try(help.fun <- eval(str2lang(as.character(as.expression(formals(fun)$RAM.helper)))), silent = TRUE)
@@ -110,17 +111,17 @@ make.metric <- function(fun, ..., silent = FALSE, check.between.groups = FALSE, 
             }
 
             ## Apply to all matrices
-            get.help.matrix <- function(one_matrix, help_fun, help_args, dims) {
+            get.help.matrix <- function(one_matrix, help.fun, help_args, dims) {
                 help_args[[length(help_args) + 1]] <- one_matrix[, dims, drop = FALSE]
                 names(help_args)[length(help_args)] <- names(formals(help.fun))[1]
                 return(as.matrix(do.call(help.fun, help_args)))
             }
 
             ## Get the RAM help
-            RAM.help <- lapply(data.dim$matrix, get.help.matrix, help_fun, help_args, dims)
+            RAM.help <- lapply(data.dim$matrix, get.help.matrix, help.fun = try_test, help_args, dims)
 
             ## Check if RAM help is not a dist matrix
-            if(!is(RAM.help[[1]], "matrix")) {
+            if(!is(RAM.help[[1]], "matrix") || !check.dist.matrix(RAM.help[[1]], just.check = TRUE)) {
                 stop("RAM.helper argument must be a distance matrix (or list of them) or a function to generate a distance matrix.", call. = FALSE)
             }
         } else {
@@ -131,7 +132,7 @@ make.metric <- function(fun, ..., silent = FALSE, check.between.groups = FALSE, 
                     RAM.help <- list(as.matrix(help.fun))
                 } else {
                     if(is(help.fun, "matrix")) {
-                        error <- check.dist.matrix(help.fun, just.check = TRUE)
+                        error <- !check.dist.matrix(help.fun, just.check = TRUE)
                         RAM.help <- list(as.matrix(help.fun))
                     }
                 }

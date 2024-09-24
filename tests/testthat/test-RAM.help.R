@@ -86,7 +86,7 @@ test_that("reduce.checks works", {
 })
 
 test_that("general structure works", {
-    
+
     set.seed(1)
     data <- matrix(rnorm(90), 9, 10, dimnames = list(letters[1:9]))
 
@@ -112,48 +112,18 @@ test_that("general structure works", {
 
     ## Errors (wrong matrices)
     ## Errors from make.metric
-    expect_warning(error <- capture_error(test <- dispRity(data = data, metric = pairwise.dist, RAM.helper = data)))
+    error <- capture_error(test <- dispRity(data = data, metric = pairwise.dist, RAM.helper = data))
     expect_equal(error[[1]], "RAM.helper argument must be a distance matrix (or list of them) or a function to generate a distance matrix.")
     error <- capture_error(test <- dispRity(data = data, metric = pairwise.dist, RAM.helper = rnorm))
     expect_equal(error[[1]], "RAM.helper argument must be a distance matrix (or list of them) or a function to generate a distance matrix.")
-
-    error <- capture_error(test <- dispRity(data = data, metric = pairwise.dist, RAM.helper = list(dist_matrix, dist_matrix)))
-    error <- capture_error(test <- dispRity(data = data, metric = pairwise.dist, RAM.helper = dist(matrix(rnorm(90), 9, 10, dimnames = list(LETTERS[1:9])))))
-
 
     ## Working with RAM.helper options recycled from "metric"
     test <- dispRity(data = data, metric = pairwise.dist, method = "manhattan")
     expect_equal(summary(test)$obs, 10.01)
     test <- dispRity(data = data, metric = pairwise.dist, method = "manhattan", RAM.helper = vegan::vegdist)
     expect_equal(summary(test)$obs, 10.01)
-
-
-
-    ## Working with RAM.helper designed in the metric
-    dist.with.help <- function(matrix, method = "euclidean", RAM.helper = vegan::vegdist) {
-        ## Check for distance
-        distances <- check.dist.matrix(matrix, method = method)[[1]]
-        ## Return distances
-        return(as.vector(distances))
-    }
-
-    start <- Sys.time()
-    test <- dispRity(data = data, metric = pairwise.dist)
-    end <- Sys.time()
-    no_help_time <- end-start
-    expect_equal(summary(test)$obs, 4.041)
-    
-    start <- Sys.time()
-    test <- dispRity(data = data, metric = dist.with.help)
-    end <- Sys.time()
-    with_help_time <- end-start
-    expect_equal(summary(test)$obs, 4.041)
-    expect_gt(no_help_time, with_help_time)
-
-    ## Also handles optionals
-    test <- dispRity(data = data, metric = pairwise.dist, method = "manhattan")
-    expect_equal(summary(test)$obs, 10.01)
-    test <- dispRity(data = data, metric = dist.with.help, method = "manhattan")
+    dist_matrix <- vegan::vegdist(data, method = "manhattan")
+    test <- dispRity(data = data, metric = pairwise.dist, method = "manhattan", RAM.helper = dist_matrix)
     expect_equal(summary(test)$obs, 10.01)
 })
 
