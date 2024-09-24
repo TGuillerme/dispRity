@@ -9,7 +9,7 @@
 #' @param data.dim optional, two \code{numeric} values for the dimensions of the matrix to run the test function testing. If missing, a default 5 rows by 4 columns matrix is used.
 #' @param tree optional, a \code{phylo} object.
 #' @param covar \code{logical}, whether to treat the metric as applied the a \code{data$covar} component (\code{TRUE}) or not (\code{FALSE}; default).
-#' @param get.help \code{logical}, whether to also output the \code{RAM.helper} if the metric has a \code{RAM.help} argument (\code{TRUE}) or not (\code{FALSE}; default).
+#' @param get.help \code{logical}, whether to also output the \code{dist.helper} if the metric has a \code{RAM.help} argument (\code{TRUE}) or not (\code{FALSE}; default).
 #'
 #' @details
 #' This function tests:
@@ -76,12 +76,12 @@ make.metric <- function(fun, ..., silent = FALSE, check.between.groups = FALSE, 
     } else {
         get_help <- FALSE
     }
-    ## Extra check for get.help (RAM.helper is an additional argument)
+    ## Extra check for get.help (dist.helper is an additional argument)
     if(!get_help) {
-        if(!is.null(names(dots)) && any("RAM.helper" %in% names(dots))) {
+        if(!is.null(names(dots)) && any("dist.helper" %in% names(dots))) {
             get_help <- TRUE
-            help.fun <- dots$RAM.helper
-            dots$RAM.helper <- NULL
+            help.fun <- dots$dist.helper
+            dots$dist.helper <- NULL
         } 
     }
 
@@ -89,7 +89,7 @@ make.metric <- function(fun, ..., silent = FALSE, check.between.groups = FALSE, 
 
         ## Get the RAM helper
         if(is.null(help.fun)) {
-            try_test <- try(help.fun <- eval(str2lang(as.character(as.expression(formals(fun)$RAM.helper)))), silent = TRUE)
+            try_test <- try(help.fun <- eval(str2lang(as.character(as.expression(formals(fun)$dist.helper)))), silent = TRUE)
         } else {
             try_test <- help.fun
         }
@@ -122,7 +122,7 @@ make.metric <- function(fun, ..., silent = FALSE, check.between.groups = FALSE, 
 
             ## Check if RAM help is not a dist matrix
             if(!is(RAM.help[[1]], "matrix") || !check.dist.matrix(RAM.help[[1]], just.check = TRUE)) {
-                stop("RAM.helper argument must be a distance matrix (or list of them) or a function to generate a distance matrix.", call. = FALSE)
+                stop("dist.helper argument must be a distance matrix (or list of them) or a function to generate a distance matrix.", call. = FALSE)
             }
         } else {
             error <- TRUE
@@ -142,11 +142,11 @@ make.metric <- function(fun, ..., silent = FALSE, check.between.groups = FALSE, 
                 RAM.help <- lapply(help.fun, as.dist)
             }
             if(error) {
-                stop("RAM.helper argument must be a distance matrix (or list of them) or a function to generate a distance matrix.", call. = FALSE)
+                stop("dist.helper argument must be a distance matrix (or list of them) or a function to generate a distance matrix.", call. = FALSE)
             }
         }
 
-        ## Set the test data to be the RAM.helper
+        ## Set the test data to be the dist.helper
         matrix <- RAM.help[[1]]
         matrix_test <- ""
 

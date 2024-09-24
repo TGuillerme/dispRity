@@ -39,13 +39,13 @@ check.one.metric <- function(metric, data, tree, ...) {
     ## Run the checks
     checks <- check.covar(metric, data)
     get_help <- check.get.help(metric)
-    if(!is.null(names(dots)) && ("RAM.helper" %in% names(dots))) {
+    if(!is.null(names(dots)) && ("dist.helper" %in% names(dots))) {
         get_help <- TRUE
     }
     data_dim <- if(get_help) {data} else {checks$data.dim}
 
     return(make.metric(metric, silent = TRUE, check.between.groups = TRUE, data.dim = data_dim, tree = tree, covar = checks$is_covar, get.help = get_help, ...))
-    warning("DEBUG: dispRity_fun.R::check.one.metric"); test <- make.metric(metric, silent = TRUE, check.between.groups = TRUE, data.dim = data_dim, tree = tree, covar = checks$is_covar, get.help = get_help, RAM.helper = RAM.helper)
+    warning("DEBUG: dispRity_fun.R::check.one.metric"); test <- make.metric(metric, silent = TRUE, check.between.groups = TRUE, data.dim = data_dim, tree = tree, covar = checks$is_covar, get.help = get_help, dist.helper = dist.helper)
 }
 
 ## Handle the disparity metrics
@@ -62,7 +62,7 @@ get.dispRity.metric.handle <- function(metric, match_call, data = list(matrix = 
 
     ## Check all metrics
     metric_checks <- lapply(metric, check.one.metric, data, tree, ...)
-    # warning("DEBUG: dispRity_fun.R::get.dispRity.metric.handle") ; metric_checks <- lapply(metric, check.one.metric, data, tree, RAM.helper)
+    # warning("DEBUG: dispRity_fun.R::get.dispRity.metric.handle") ; metric_checks <- lapply(metric, check.one.metric, data, tree, dist.helper)
 
     ## Sort out the tests
     levels       <- unlist(lapply(metric_checks, `[[` , "type"))

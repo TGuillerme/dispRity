@@ -132,7 +132,7 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
     match_call <- match.call()
     dots <- list(...)
     # warning("DEBUG") ; return(match_call)
-    # dots <- list(RAM.helper = dist_matrix)
+    # dots <- list(dist.helper = dist_matrix)
 
     ## Check data input
     is_multi <- FALSE
@@ -253,7 +253,7 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
 
     ## Get the metric list
     metrics_list <- get.dispRity.metric.handle(metric, match_call, data = data, tree = tree, ...)
-    # metrics_list <- get.dispRity.metric.handle(metric, match_call, data = data, tree = NULL, RAM.helper = RAM.helper); warning("DEBUG: dispRity")
+    # metrics_list <- get.dispRity.metric.handle(metric, match_call, data = data, tree = NULL, dist.helper = dist.helper); warning("DEBUG: dispRity")
     RAM_help <- metrics_list$RAM.help
     metric_is_between.groups <- unlist(metrics_list$between.groups)
     metric_has_tree <- unlist(metrics_list$tree)

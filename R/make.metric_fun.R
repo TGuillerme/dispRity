@@ -17,12 +17,12 @@ check.metric <- function(metric) {
 
 check.get.help <- function(metric) {
     ## Does it have the argument name?
-    if(any("RAM.helper" %in% names(formals(metric)))) {
+    if(any("dist.helper" %in% names(formals(metric)))) {
         ## Is the argument name not equal to null?
-        if(!is.null(formals(metric)$RAM.helper)) {
+        if(!is.null(formals(metric)$dist.helper)) {
             ## Is the argument not a logical?
-            if(is(formals(metric)$RAM.helper, "logical")) {
-                return(formals(metric)$RAM.helper)
+            if(is(formals(metric)$dist.helper, "logical")) {
+                return(formals(metric)$dist.helper)
             } else {
                 return(TRUE)
             }

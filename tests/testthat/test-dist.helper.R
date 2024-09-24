@@ -1,23 +1,23 @@
  # - 1. metrics can now have `RAM.help` arguments that intake a function that will run some pre-calculations. For example, this function can be `vegan::vegdist`.
  # - 2. detect the need for RAM help in `get.dispRity.metric.handle`
  # - 3. compute heavy calculations at the whole data level in `dispRity` using the `RAM.help` function before the `lapply_loop`
- # - 4. store the calculations in `data` similarly as tree as `RAM.helper`
- # - 5. run the metrics using a potential `RAM.helper` similarly as tree.
+ # - 4. store the calculations in `data` similarly as tree as `dist.helper`
+ # - 5. run the metrics using a potential `dist.helper` similarly as tree.
 
 
-dist.with.help <- function(matrix, method = "euclidean", RAM.helper = vegan::vegdist) {
+dist.with.help <- function(matrix, method = "euclidean", dist.helper = vegan::vegdist) {
     ## Check for distance
     distances <- check.dist.matrix(matrix, method = method)[[1]]
     ## Return distances
     return(as.vector(distances))
 }
-dist.no.help <- function(matrix, method = "euclidean", RAM.helper = FALSE) {
+dist.no.help <- function(matrix, method = "euclidean", dist.helper = FALSE) {
     ## Check for distance
     distances <- check.dist.matrix(matrix, method = method)[[1]]
     ## Return distances
     return(as.vector(distances))
 }
-dist.no.help2 <- function(matrix, method = "euclidean", RAM.helper = NULL) {
+dist.no.help2 <- function(matrix, method = "euclidean", dist.helper = NULL) {
     ## Check for distance
     distances <- check.dist.matrix(matrix, method = method)[[1]]
     ## Return distances
@@ -95,54 +95,73 @@ test_that("general structure works", {
     expect_equal(length(test$disparity[[1]][[1]]), 36)
     expect_equal(summary(test)$obs, 4.041)
 
-    test <- dispRity(data = data, metric = pairwise.dist, RAM.helper = vegan::vegdist)
+    test <- dispRity(data = data, metric = pairwise.dist, dist.helper = vegan::vegdist)
     check.class(test, "dispRity")
     expect_equal(length(test$disparity[[1]][[1]]), 36)
     expect_equal(summary(test)$obs, 4.041)
 
-    ## Working with RAM.helper being a matrix or a list
+    ## Working with dist.helper being a matrix or a list
     dist_matrix <- vegan::vegdist(data, method = "euclidean")
-    test <- dispRity(data = data, metric = pairwise.dist, RAM.helper = dist_matrix)
+    test <- dispRity(data = data, metric = pairwise.dist, dist.helper = dist_matrix)
     check.class(test, "dispRity")
     expect_equal(length(test$disparity[[1]][[1]]), 36)
     expect_equal(summary(test)$obs, 4.041)
 
-    test <- dispRity(data = data, metric = pairwise.dist, RAM.helper = list(dist_matrix))
+    test <- dispRity(data = data, metric = pairwise.dist, dist.helper = list(dist_matrix))
     expect_equal(summary(test)$obs, 4.041)
 
     ## Errors (wrong matrices)
     ## Errors from make.metric
-    error <- capture_error(test <- dispRity(data = data, metric = pairwise.dist, RAM.helper = data))
-    expect_equal(error[[1]], "RAM.helper argument must be a distance matrix (or list of them) or a function to generate a distance matrix.")
-    error <- capture_error(test <- dispRity(data = data, metric = pairwise.dist, RAM.helper = rnorm))
-    expect_equal(error[[1]], "RAM.helper argument must be a distance matrix (or list of them) or a function to generate a distance matrix.")
+    error <- capture_error(test <- dispRity(data = data, metric = pairwise.dist, dist.helper = data))
+    expect_equal(error[[1]], "dist.helper argument must be a distance matrix (or list of them) or a function to generate a distance matrix.")
+    error <- capture_error(test <- dispRity(data = data, metric = pairwise.dist, dist.helper = rnorm))
+    expect_equal(error[[1]], "dist.helper argument must be a distance matrix (or list of them) or a function to generate a distance matrix.")
 
-    ## Working with RAM.helper options recycled from "metric"
+    ## Working with dist.helper options recycled from "metric"
     test <- dispRity(data = data, metric = pairwise.dist, method = "manhattan")
     expect_equal(summary(test)$obs, 10.01)
-    test <- dispRity(data = data, metric = pairwise.dist, method = "manhattan", RAM.helper = vegan::vegdist)
+    test <- dispRity(data = data, metric = pairwise.dist, method = "manhattan", dist.helper = vegan::vegdist)
     expect_equal(summary(test)$obs, 10.01)
     dist_matrix <- vegan::vegdist(data, method = "manhattan")
-    test <- dispRity(data = data, metric = pairwise.dist, method = "manhattan", RAM.helper = dist_matrix)
+    test <- dispRity(data = data, metric = pairwise.dist, method = "manhattan", dist.helper = dist_matrix)
     expect_equal(summary(test)$obs, 10.01)
+
+
+    # ## Working with multiple metrics
+    # test <- dispRity(data = data, metric = c(mean, pairwise.dist))
+    # check.class(test, "dispRity")
+    # expect_equal(summary(test)$obs, 3.963)
+
+    # test <- dispRity(data = data, metric = c(mean, pairwise.dist), dist.helper = vegan::vegdist)
+    # check.class(test, "dispRity")
+    # expect_equal(length(test$disparity[[1]][[1]]), 36)
+    # expect_equal(summary(test)$obs, 3.963)
+
+    # ## Working with dist.helper being a matrix or a list
+    # dist_matrix <- vegan::vegdist(data, method = "euclidean")
+    # test <- dispRity(data = data, metric = c(mean, pairwise.dist), dist.helper = dist_matrix)
+    # check.class(test, "dispRity")
+    # expect_equal(length(test$disparity[[1]][[1]]), 36)
+    # expect_equal(summary(test)$obs, 3.963)
+
 })
 
 test_that("works with bootstraps", {
 
-    # data(BeckLee_mat99)
-    # data(BeckLee_tree)
-    # groups <- chrono.subsets(BeckLee_mat99, tree = BeckLee_tree, time = 10, method = "continuous", model = "acctran")
+    data(BeckLee_mat99)
+    data(BeckLee_tree)
+    groups <- chrono.subsets(BeckLee_mat99, tree = BeckLee_tree, time = 10, method = "continuous", model = "acctran")
+
+    start <- Sys.time()
+    test <- dispRity(data = boot.matrix(groups), metric = c(median, pairwise.dist))
+    end <- Sys.time()
+    check.class(test, "dispRity")
+    expect_equal(dim(summary(test)), c(10, 8))
+    expect_equal(summary(test)$obs, c(2.472, 2.537, 2.623, 2.723, 2.750, 2.785, 2.841, 2.867, 2.867, 2.867))
+    no_help_time <- end-start
 
     # start <- Sys.time()
-    # test <- dispRity(data = boot.matrix(groups, 5000), metric = c(median, pairwise.dist))
-    # end <- Sys.time()
-    # check.class(test, "dispRity")
-    # expect_equal(dim(summary(test)), c(10, 8))
-    # expect_equal(summary(test)$obs, c(2.472, 2.537, 2.623, 2.723, 2.750, 2.785, 2.841, 2.867, 2.867, 2.867))
-    # no_help_time <- end-start
-
-    # start <- Sys.time()
-    # test <- dispRity(data = boot.matrix(groups, 5000), metric = c(median, dist.with.help))
+    # test <- dispRity(data = boot.matrix(groups, 100), metric = c(median, dist.with.help))
     # end <- Sys.time()
     # check.class(test, "dispRity")
     # expect_equal(dim(summary(test)), c(10, 8))
@@ -152,7 +171,7 @@ test_that("works with bootstraps", {
 
     # ## This should take the helper into account!
     # start <- Sys.time()
-    # test <- dispRity(data = boot.matrix(groups, 100), metric = c(median, pairwise.dist), RAM.helper = stats::dist)
+    # test <- dispRity(data = boot.matrix(groups, 100), metric = c(median, pairwise.dist), dist.helper = stats::dist)
     # end <- Sys.time()
     # check.class(test, "dispRity")
     # expect_equal(dim(summary(test)), c(10, 8))
@@ -168,8 +187,8 @@ test_that("works with bootstraps", {
     # dist_matrix <- vegan::vegdist(data, method = "euclidean")
 
     # library(microbenchmark)
-    # test <- microbenchmark("with pre-clac"= dispRity(data = data, metric = pairwise.dist, RAM.helper = dist_matrix),
-    #                        "with help"    = dispRity(data = data, metric = pairwise.dist, RAM.helper = vegan::vegdist),
+    # test <- microbenchmark("with pre-clac"= dispRity(data = data, metric = pairwise.dist, dist.helper = dist_matrix),
+    #                        "with help"    = dispRity(data = data, metric = pairwise.dist, dist.helper = vegan::vegdist),
     #                        "without help" = dispRity(data = data, metric = pairwise.dist))
     # plot(test, main = "One matrix", ylim = c(25000000, 50000000), ylab = "milliseconds", xlab = "")
 
