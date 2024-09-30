@@ -146,7 +146,7 @@ make.metric <- function(fun, ..., silent = FALSE, check.between.groups = FALSE, 
             } else {
                 checks <- unlist(lapply(help.fun, check.dist.matrix, just.check = TRUE))
                 error <- !all(checks)
-                dist.help <- lapply(help.fun, as.dist)
+                dist.help <- lapply(help.fun, as.matrix)
             }
             if(error) {
                 stop("dist.helper argument must be a distance matrix (or list of them) or a function to generate a distance matrix.", call. = FALSE)

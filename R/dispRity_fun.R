@@ -74,7 +74,7 @@ get.dispRity.metric.handle <- function(metric, match_call, data = list(matrix = 
     levels       <- unlist(lapply(metric_checks, `[[` , "type"))
     btw_groups   <- unlist(lapply(metric_checks, `[[` , "between.groups"))
     tree_metrics <- unlist(lapply(metric_checks, `[[` , "tree"))
-    dist_helps    <- lapply(metric_checks, `[[` , "dist.help")
+    dist_help    <- unlist(lapply(metric_checks, `[[` , "dist.help"), recursive = FALSE)
     remove(metric_checks)
 
     ## can only unique levels
@@ -273,7 +273,7 @@ decompose.simple <- function(one_matrix, bootstrap, dimensions, fun, nrow, ...) 
     ## Select the variables
     bs_rows <- bootstrap
     bs_cols <- dimensions
-    matrix  <- as.matrix(one_matrix)
+    matrix  <- one_matrix
 
     if(is.null(nrow)) {
         ## Normal decompose

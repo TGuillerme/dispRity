@@ -126,7 +126,6 @@ test_that("general structure works", {
     test <- dispRity(data = data, metric = pairwise.dist, method = "manhattan", dist.helper = dist_matrix)
     expect_equal(summary(test)$obs, 10.01)
 
-
     ## Working with multiple metrics
     error <- capture_error(test <- dispRity(data = data, metric = c(mean, pairwise.dist), dist.helper = dist_matrix))
     expect_equal(error[[1]], "dist.help can only be used for one metric. You can try combine the 2 metrics together into one or calculate disparity step by step. For example:\ndispRity(dispRity(data, metric = level2.metric), metric = level1.metric)")
@@ -159,7 +158,6 @@ test_that("works with bootstraps", {
 
     ## CHECK IF IT ACTUALLY DOES RECYCLE THE dist.helper!!!!
 
-
     # test <- microbenchmark("with pre-clac"= dispRity(data = bs_data, metric = pairwise.dist, dist.helper = dist_matrix),
     #                        "with help"    = dispRity(data = bs_data, metric = pairwise.dist, dist.helper = dist),
     #                        "without help" = dispRity(data = bs_data, metric = pairwise.dist))
@@ -168,15 +166,21 @@ test_that("works with bootstraps", {
 
 ## Show differences
 
-    # set.seed(1)
-    # data <- matrix(rnorm(20000), 200, 100, dimnames = list(as.character(1:200)))
-    # dist_matrix <- vegan::vegdist(data, method = "euclidean")
+# set.seed(1)
+# data <- matrix(rnorm(20000), 200, 100, dimnames = list(as.character(1:200)))
+# dist_matrix <- vegan::vegdist(data, method = "euclidean")
 
-    # library(microbenchmark)
-    # test <- microbenchmark("with pre-clac"= dispRity(data = data, metric = pairwise.dist, dist.helper = dist_matrix),
-    #                        "with help"    = dispRity(data = data, metric = pairwise.dist, dist.helper = vegan::vegdist),
-    #                        "without help" = dispRity(data = data, metric = pairwise.dist))
-    # plot(test, main = "One matrix", ylim = c(25000000, 50000000), ylab = "milliseconds", xlab = "")
+
+
+pairwise.dist
+
+
+
+# library(microbenchmark)
+# test <- microbenchmark("with pre-clac"= dispRity(data = data, metric = pairwise.dist, dist.helper = dist_matrix),
+#                        "with help"    = dispRity(data = data, metric = pairwise.dist, dist.helper = vegan::vegdist),
+#                        "without help" = dispRity(data = data, metric = pairwise.dist))
+# plot(test, main = "One matrix", ylab = "milliseconds", xlab = "")
 
 
 
