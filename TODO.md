@@ -5,6 +5,9 @@
  - [ ] run test
  - [ ] compile function index
  - [ ] run CRAN check
+ - [ ] add references in .Rd:
+   - [ ] reduce.space algorithms
+   - [ ] vegan algorithms
 
 
 ## bootstrapping dimensions
@@ -58,6 +61,8 @@
 ## Minor improvements:
   * Make roundness work for non-VCV matrices (specify the axis function, e.g. variances or quantiles).
   - [ ] TODO 
+  * Add vegan::adonis2 ref in adonis.dispRity
+  - [ ] TODO
 
 ## Bug fixes
  * Check MacOS bugs in the coverage pipeline
