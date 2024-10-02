@@ -492,6 +492,7 @@ Level | Name | Description | Source |
 2 | `centroids`<sup>1</sup> | The distance between each element and the centroid of the ordinated space | `dispRity` |
 1 | `convhull.surface` | The surface of the convex hull formed by all the elements | [`geometry`](https://cran.r-project.org/web/packages/geometry/index.html)`::convhulln$area` |
 1 | `convhull.volume` | The volume of the convex hull formed by all the elements | [`geometry`](https://cran.r-project.org/web/packages/geometry/index.html)`::convhulln$vol` |
+2 | `count.neighbours` | The number of neigbhours to each element in a specified radius | `dispRity` |
 2 | `deviations` | The minimal distance between each element and a hyperplane | `dispRity` |
 1 | `diagonal` | The longest distance in the ordinated space (like the diagonal in two dimensions) | `dispRity` |
 1 | `disalignment` | The rejection of the centroid of a matrix from the major axis of another (typically an `"as.covar"` metric) | `dispRity` |
@@ -635,7 +636,7 @@ Also note that they are really sensitive to the size of the dataset.
 
 > Cautionary note: measuring volumes in a high number of dimensions can be strongly affected by the [curse of dimensionality](https://en.wikipedia.org/wiki/Curse_of_dimensionality) that often results in near 0 disparity values. I strongly recommend reading [this really intuitive explanation](https://beta.observablehq.com/@tophtucker/theres-plenty-of-room-in-the-corners) from [Toph Tucker](https://github.com/tophtucker).
 
-#### Ranges, variances, quantiles, radius, pairwise distance, neighbours, modal value and diagonal
+#### Ranges, variances, quantiles, radius, pairwise distance, neighbours (and counting them), modal value and diagonal
 
 The functions `ranges`, `variances` `radius`, `pairwise.dist`, `mode.val` and `diagonal` all measure properties of the ordinated space based on its dimensional properties (they are also less affected by the "curse of dimensionality"):
 
@@ -706,6 +707,16 @@ summary(dispRity(dummy_space, metric = neighbours))
 ## The average furthest neighbour manhattan distances
 summary(dispRity(dummy_space, metric = neighbours,
                  which = max, method = "manhattan"))
+
+## The overall number of neighbours per point
+summary(dispRity(dummy_space, metric = count.neighbours,
+                 relative = FALSE))
+
+## The relative number of neigbhours
+## two standard deviations of each element
+summary(dispRity(dummy_space, metric = count.neighbours,
+                 radius = function(x)(sd(x)*2),
+                 relative = TRUE))
 ```
 
 Note that this function is a direct call to `vegan::vegdist(matrix, method = method, diag = FALSE, upper = FALSE, ...)`.
@@ -1492,7 +1503,7 @@ In practice, the `test.dispRity` function will pass the calculated disparity dat
 
 ### NPMANOVA in `dispRity` {#adonis}
 
-One often useful test to apply to multidimensional data is the permutational multivariate analysis of variance based on distance matrices `vegan::adonis`.
+One often useful test to apply to multidimensional data is the permutational multivariate analysis of variance based on distance matrices `vegan::adonis2`.
 This can be done on `dispRity` objects using the `adonis.dispRity` wrapper function.
 Basically, this function takes the exact same arguments as `adonis` and a `dispRity` object for data and performs a PERMANOVA based on the distance matrix of the multidimensional space (unless the multidimensional space was already defined as a distance matrix).
 The `adonis.dispRity` function uses the information from the `dispRity` object to generate default formulas:

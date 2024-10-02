@@ -5,9 +5,6 @@
  - [ ] run test
  - [ ] compile function index
  - [ ] run CRAN check
- - [ ] add references in .Rd:
-   - [ ] reduce.space algorithms
-   - [ ] vegan algorithms
 
 
 ## bootstrapping dimensions
@@ -54,15 +51,19 @@
 
  - [ ] make a MCMCglmm related standalone vignette
  - [ ] make a morpho disparity (Claddis) standalone vignette
- - [ ] make a RAM.help section in the manual
+ - [ ] make a dist.help section in the manual
  - [ ] update the bootstrap section in the manual with the dimensions
- - [ ] add `count.neigbhours` to the metrics section (*New metric*: `count.neighbours` to count the number of neighbours for each elements within a certain radius (thanks to Rob MacDonald for the suggestion).)
+ - [x] add `count.neigbhours` to the metrics section (*New metric*: `count.neighbours` to count the number of neighbours for each elements within a certain radius (thanks to Rob MacDonald for the suggestion).)
 
 ## Minor improvements:
   * Make roundness work for non-VCV matrices (specify the axis function, e.g. variances or quantiles).
   - [ ] TODO 
   * Add vegan::adonis2 ref in adonis.dispRity
-  - [ ] TODO
+  - [x] TODO
+  * add references in .Rd:
+  - [ ] reduce.space algorithms
+  - [x] vegan algorithms
+
 
 ## Bug fixes
  * Check MacOS bugs in the coverage pipeline

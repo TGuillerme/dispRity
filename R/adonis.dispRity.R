@@ -1,18 +1,18 @@
 #' @title adonis dispRity (from \code{vegan::adonis2})
 #'
-#' @description Passing \code{dispRity} objects to the \code{\link[vegan]{adonis2}} function from the \code{vegan} package.
+#' @description Passing \code{dispRity} objects to the \code{\link[vegan]{vegan::adonis2}} function from the \code{vegan} package.
 #'
 #' @param data A \code{dispRity} object with subsets
 #' @param formula The model formula (default is \code{matrix ~ group}, see details)
-#' @param method The distance method to be passed to \code{\link[vegan]{adonis2}} and eventually to \code{\link[vegan]{vegdist}} (see details - default \code{method ="euclidean"})
-#' @param ... Any optional arguments to be passed to \code{\link[vegan]{adonis2}}
+#' @param method The distance method to be passed to \code{\link[vegan]{vegan::adonis2}} and eventually to \code{\link[vegan]{vegan::vegdist}} (see details - default \code{method ="euclidean"})
+#' @param ... Any optional arguments to be passed to \code{\link[vegan]{vegan::adonis2}}
 #' @param warn \code{logical}, whether to print internal warnings (\code{TRUE}; default - advised) or not (\code{FALSE}).
 #' @param matrix \code{numeric}, which matrix to use (default is \code{1}).
 #' 
 #' @details
 #' The first element of the formula (the response) must be called \code{matrix} and the predictors must be existing in the subsets of the \code{dispRity} object.
 #'
-#' If \code{data$matrix[[1]]} is not a distance matrix, distance is calculated using the \code{\link[stats]{dist}} function. The type of distance can be passed via the standard \code{method} argument that will be recycled by \code{\link[vegan]{adonis2}}.
+#' If \code{data$matrix[[1]]} is not a distance matrix, distance is calculated using the \code{\link[stats]{dist}} function. The type of distance can be passed via the standard \code{method} argument that will be recycled by \code{\link[vegan]{vegan::adonis2}}.
 #' 
 #' If the \code{dispRity} data has custom subsets with a single group, the formula is set to \code{matrix ~ group}.
 #' 
