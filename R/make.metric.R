@@ -238,9 +238,9 @@ make.metric <- function(fun, ..., silent = FALSE, check.between.groups = FALSE, 
     options(op)
 
 
-    if(any("try-error" %in% test)){#} || any(is.na(test))) {
+    if(any("try-error" %in% test) || (!is.null(attr(test, "class")) && attr(test, "class") == "try-error")){#} || any(is.na(test))) {
         if(!silent) {
-            stop.call(match_call$fun, paste0("(", matrix_text, ")\nThe problem may also come from the optional arguments (...)", ifelse(is_phylo, " or the tree", " "), " in ", as.expression(match_call$fun), "."), "The provided metric function generated an error or a warning!\nDoes the following work?\n    ")
+            stop(paste0("The provided metric function generated an error or a warning!\nDoes the following work?\n", match_call$fun, "(", matrix_text, ")\nThe problem may also come from the optional arguments (...)", ifelse(is_phylo, " or the tree", " "), " in ", match_call$fun, ". Try declaring the function as:\n", match_call$fun, " <- function(matrix, ...)"), call. = FALSE)
         }
     } else {
 
@@ -274,7 +274,7 @@ make.metric <- function(fun, ..., silent = FALSE, check.between.groups = FALSE, 
             } else {
                 ## Function provides a wrong output
                 if(silent != TRUE) {
-                    stop.call(match_call$fun, paste0(ifelse(is_between.groups, "(matrix = matrix(rnorm(20), 5,4), matrix2 = matrix(rnorm(20), 5,4))", "(matrix(rnorm(20), 5,4))"), "\nThe problem may also come from the optional arguments (...) in ", as.expression(match_call$fun), "."), "The provided metric function generated an error or a warning!\nDoes the following work?\n    ")
+                    stop(paste0("The provided metric function generated an error or a warning!\nDoes the following work?\n", match_call$fun, "(", matrix_text, ")\nThe problem may also come from the optional arguments (...)", ifelse(is_phylo, " or the tree", " "), " in ", match_call$fun, ". Try declaring the function as:\n", match_call$fun, " <- function(matrix, ...)"), call. = FALSE)
                 } else {
                     fun_type <- "error"
                 }

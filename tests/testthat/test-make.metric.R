@@ -49,12 +49,12 @@ test_that("Output is correct", {
     test <- function(x) as.character(x)
     error <- capture_error(make.metric(test, verbose = TRUE))
     expect_equal(error[[1]],
-        "The provided metric function generated an error or a warning!\nDoes the following work?\n    test(matrix(rnorm(20), 5,4))\nThe problem may also come from the optional arguments (...) in test."
+        "The provided metric function generated an error or a warning!\nDoes the following work?\ntest(matrix(rnorm(5*4), 5, 4))\nThe problem may also come from the optional arguments (...)  in test. Try declaring the function as:\ntest <- function(matrix, ...)"
         )
 
     error <- capture_error(make.metric(test, silent = FALSE))
     expect_equal(error[[1]],
-        "The provided metric function generated an error or a warning!\nDoes the following work?\n    test(matrix(rnorm(20), 5,4))\nThe problem may also come from the optional arguments (...) in test."
+        "The provided metric function generated an error or a warning!\nDoes the following work?\ntest(matrix(rnorm(5*4), 5, 4))\nThe problem may also come from the optional arguments (...)  in test. Try declaring the function as:\ntest <- function(matrix, ...)"
         )
 
     expect_error(
@@ -98,7 +98,7 @@ test_that("Output is correct", {
         c("variances outputs a matrix object.", "variances is detected as being a dimension-level 2 function."))
 
     error <- capture_error(make.metric(make.metric))
-    expect_equal(error[[1]], "The provided metric function generated an error or a warning!\nDoes the following work?\n    make.metric(matrix(rnorm(20), 5,4))\nThe problem may also come from the optional arguments (...) in make.metric.")
+    expect_equal(error[[1]], "The provided metric function generated an error or a warning!\nDoes the following work?\nmake.metric(matrix(rnorm(5*4), 5, 4))\nThe problem may also come from the optional arguments (...) or the tree in make.metric. Try declaring the function as:\nmake.metric <- function(matrix, ...)")
 
     ## With between.groups
     between.groups.metric <- function(matrix, matrix2) return(42)
