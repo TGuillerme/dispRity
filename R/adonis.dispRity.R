@@ -1,18 +1,18 @@
 #' @title adonis dispRity (from \code{vegan::adonis2})
 #'
-#' @description Passing \code{dispRity} objects to the \code{\link[vegan]{vegan::adonis2}} function from the \code{vegan} package.
+#' @description Passing \code{dispRity} objects to the \code{\link[vegan]{adonis2}} function from the \code{vegan} package.
 #'
 #' @param data A \code{dispRity} object with subsets
 #' @param formula The model formula (default is \code{matrix ~ group}, see details)
-#' @param method The distance method to be passed to \code{\link[vegan]{vegan::adonis2}} and eventually to \code{\link[vegan]{vegan::vegdist}} (see details - default \code{method ="euclidean"})
-#' @param ... Any optional arguments to be passed to \code{\link[vegan]{vegan::adonis2}}
+#' @param method The distance method to be passed to \code{\link[vegan]{adonis2}} and eventually to \code{\link[vegan]{vegdist}} (see details - default \code{method ="euclidean"})
+#' @param ... Any optional arguments to be passed to \code{\link[vegan]{adonis2}}
 #' @param warn \code{logical}, whether to print internal warnings (\code{TRUE}; default - advised) or not (\code{FALSE}).
 #' @param matrix \code{numeric}, which matrix to use (default is \code{1}).
 #' 
 #' @details
 #' The first element of the formula (the response) must be called \code{matrix} and the predictors must be existing in the subsets of the \code{dispRity} object.
 #'
-#' If \code{data$matrix[[1]]} is not a distance matrix, distance is calculated using the \code{\link[stats]{dist}} function. The type of distance can be passed via the standard \code{method} argument that will be recycled by \code{\link[vegan]{vegan::adonis2}}.
+#' If \code{data$matrix[[1]]} is not a distance matrix, distance is calculated using the \code{\link[stats]{dist}} function. The type of distance can be passed via the standard \code{method} argument that will be recycled by \code{\link[vegan]{adonis2}}.
 #' 
 #' If the \code{dispRity} data has custom subsets with a single group, the formula is set to \code{matrix ~ group}.
 #' 
@@ -72,6 +72,8 @@
 #' 
 #' 
 #' @author Thomas Guillerme
+#' @references Oksanen J, Simpson G, Blanchet F, Kindt R, Legendre P, Minchin P, O'Hara R, Solymos P, Stevens M, Szoecs E, Wagner H, Barbour M, Bedward M, Bolker B, Borcard D, Carvalho G, Chirico M, De Caceres M, Durand S, Evangelista H, FitzJohn R, Friendly M, Furneaux B, Hannigan G, Hill M, Lahti L, McGlinn D, Ouellette M, Ribeiro Cunha E, Smith T, Stier A, Ter Braak C, Weedon J (2024). vegan: Community Ecology Package_. R package version 2.6-8,
+
 # @export
 
 # source("sanitizing.R")
@@ -218,8 +220,8 @@ adonis.dispRity <- function(data, formula = matrix ~ group, method = "euclidean"
 
     ## Run adonis
     ## Modifying adonis2 to only check the parent environment (not the global one: matrix input here should be present in the environment
-    adonis2.modif <- vegan::adonis2
-    formals(adonis2.modif) <-c(formals(vegan::adonis2), "matrix_input" = NA)
+    adonis2.modif <- adonis2
+    formals(adonis2.modif) <-c(formals(adonis2), "matrix_input" = NA)
     body(adonis2.modif)[[5]] <- substitute(lhs <- matrix_input)
     adonis_out <- adonis2.modif(formula, predictors, method = method, matrix_input = matrix, ...)
     # adonis_out <- adonis2.modif(formula, predictors, method = method, matrix_input = matrix) ; warning("DEBUG adonis.dispRity")

@@ -2,7 +2,7 @@
 % Please edit documentation in R/adonis.dispRity.R
 \name{adonis.dispRity}
 \alias{adonis.dispRity}
-\title{adonis dispRity (from \code{vegan::adonis2})}
+\title{adonis dispRity (from \code{adonis2})}
 \usage{
 adonis.dispRity(
   data,
@@ -88,6 +88,9 @@ adonis.dispRity(time_subsets, matrix ~ time)
 adonis.dispRity(time_subsets, matrix ~ chrono.subsets)
 
 
+}
+\references{
+Oksanen J, Simpson G, Blanchet F, Kindt R, Legendre P, Minchin P, O'Hara R, Solymos P, Stevens M, Szoecs E, Wagner H, Barbour M, Bedward M, Bolker B, Borcard D, Carvalho G, Chirico M, De Caceres M, Durand S, Evangelista H, FitzJohn R, Friendly M, Furneaux B, Hannigan G, Hill M, Lahti L, McGlinn D, Ouellette M, Ribeiro Cunha E, Smith T, Stier A, Ter Braak C, Weedon J (2024). vegan: Community Ecology Package_. R package version 2.6-8,
 }
 \seealso{
 \code{\link[vegan]{adonis2}}, \code{\link{test.dispRity}}, \code{\link{custom.subsets}}, \code{\link{chrono.subsets}}.

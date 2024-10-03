@@ -69,6 +69,7 @@
 #' 
 #' @author Thomas Guillerme
 #' @export
+#' @references Guillerme T, Bright JA, Cooney CR, Hughes EC, Varley ZK, Cooper N, Beckerman AP, Thomas GH. 2023. Innovation and elaboration on the avian tree of life. Science Advances. 9(43):eadg1641.
 
 dispRity.covar.projections <- function(data, type, base, sample, n, major.axis = 1, level = 0.95, output = c("position", "distance", "degree"), inc.base = FALSE, ..., verbose = FALSE) { #distance.method = "euclidean"
 

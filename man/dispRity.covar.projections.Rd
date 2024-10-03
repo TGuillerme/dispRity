@@ -89,6 +89,9 @@ plot(elements_proj)
 plot(elements_proj, speicfic.args = list(correlation.plot = c("position", "distance")))
 
 }
+\references{
+Guillerme T, Bright JA, Cooney CR, Hughes EC, Varley ZK, Cooper N, Beckerman AP, Thomas GH. 2023. Innovation and elaboration on the avian tree of life. Science Advances. 9(43):eadg1641.
+}
 \seealso{
 \code{\link{projections}} \code{\link{projections.between}} \code{\link{axis.covar}} \code{\link{dispRity}} \code{\link{MCMCglmm.subsets}}
 }
