@@ -47,6 +47,9 @@
     - [ ] flag new default with warning messages when detecting if yes. "Data is considered as a distance matrix and analysed by keeping the distances (toggle off using `keep.distances = FALSE`").
 
 
+## Update `dispRity.dtt` to work properly
+
+
 ## Vignettes and manual
 
  - [ ] make a MCMCglmm related standalone vignette

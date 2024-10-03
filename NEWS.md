@@ -7,6 +7,7 @@ dispRity v1.8.11 (2024-06-06)
  * `dispRity` has been not greatly optimised for using distance matrices: 1) it's now much faster thanks to the `dist.helper` new optional argument (storing the distance matrix in the cache) and 2) it now allows direct analyses of distance matrices in a dispRity pipeline.
  * `boot.matrix` function has now been generalised to be able to bootstrap any elements of a matrix. Previously it only allowed to bootstrap elements (rows) but now can work on dimensions (columns) or both (distances).
  * Redesigned `multi.ace` to be more modular and better handle both continuous and/or discrete characters. This is secretly a pre-release for a future version that will greatly improve pipelines with ancestral state estimations ;).
+ * Redesigned `dispRity.dtt` to be closely a 1 to 1 interface of `geiger::dtt` with default options.
  * New utility functions (`set.root.time` to add root times to trees; `remove.dispRity` to cleanly remove parts of dispRity objects) and metrics (`count.neigbhours`).
  * Loads of minor improvements and couple of bug fixes! Yay!
 
@@ -17,10 +18,18 @@ dispRity v1.8.11 (2024-06-06)
 
 
  * *New bootstrap options*
+
  * New design when using distance matrices: `dist.helper` now allows to save distance matrices in the cache, saving a lot of RAM and speeding up calculations. You can use the helper using `dispRity(..., dist.helper = my_distance_function)` or `dispRity(..., dist.helper = my_distance_matrix)`.
  <!-- TODO: add to manual -->
+ <!-- If the metric is used from dispRity.metric, dist.helper can be either a distance matrix or a distance function. Else, if it's a user made metric, the dist.helper needs to be distance function -->
+<!-- If dispRity.metric + dist.helper = function OR dist.helper = matrix(ces) -> then dispRity recycles the dist.helper and removes the distance calculation part from the dispRity.metric function  -->
+<!-- If !dispRity.metric + dist.helper = function -> the dispRity tries to recycle -->
+
 
  * Redesigned `dispRity` and associated functions to now work on distance matrices while keeping the distance matrix properties (using `keep.distance = TRUE` as a default option - toggle back to `FALSE` to use previous behaviour).
+
+
+ * Redesigned `dispRity.dtt` to be closely a 1 to 1 interface of `geiger::dtt` with default options.
 
  * *New utility function* `set.root.time` to add a root time to a tree (`"phylo"`), list of trees (`"multiPhylo"`) or `dispRity` object with trees.
  * *New utility function* `remove.dispRity` to cleanly remove specific parts of a `"dispRity"` object.
