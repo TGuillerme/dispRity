@@ -2,7 +2,7 @@
 % Please edit documentation in R/adonis.dispRity.R
 \name{adonis.dispRity}
 \alias{adonis.dispRity}
-\title{adonis dispRity (from \code{adonis2})}
+\title{adonis dispRity (from \code{vegan::adonis2})}
 \usage{
 adonis.dispRity(
   data,
