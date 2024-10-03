@@ -2391,3 +2391,66 @@ as.covar(variances)(my_covar$covar[["gulls"]][[1]])
 ## The same but applied to the dispRity function
 summary(dispRity(my_covar, metric = as.covar(variances)))
 ```
+
+
+
+## Disparity and distances
+
+There are two ways to use distances in `dispRity`, either with your input data being directly a distance matrix or with your disparity metric involving some kind of distance calculations.
+
+### Disparity data is distance
+
+If your disparity data is a distance matrix, you can use the option `is.dist = TRUE` in `dispRity` to make sure that all the operations done on your data take into account the fact that your disparity data has distance properties.
+For example, if you bootstrap the data, this will automatically bootstrap both rows AND columns (i.e. so that the bootstrapped matrices are still distances).
+This also improves speed on some calculations if you use [disparity metrics](#disparity-metrics) directly implemented in the package by avoiding recalculating distances (the full list can be seen in `?dispRity.metric` - they are usually the metrics with `dist` in their name).
+
+### Disparity metric is distance
+
+On the other hand if your data is not a distance matrix but you are using a metric that uses some kind of distance calculations, you can use the option `dist.helper` to greatly speed up calculations.
+`dist.helper` can be either a pre-calculated distance matrix (or a list of distance matrices) or, better yet, a function to calculate distance matrices, like `stats::dist` or `vegan::vegdist`.
+This option directly stores the distance matrix separately in the RAM and allows the disparity metric to directly access it at every disparity calculation iteration, making it much faster.
+Note that if you provide a function for `dist.helper`, you can also provide any un-ambiguous optional argument to that function, for example `method = "euclidean"`.
+
+If you use a disparity metric implemented in `dispRity`, the `dist.helper` option is correctly loaded onto the RAM regardless of the argument you provide (a matrix, a list of matrix or any function to calculate a distance matrix).
+On the other hand, if you use your own function for the disparity metric, make sure that `dist.helper` exactly matches the internal distance calculation function.
+For example if you use the already implemented `pairwise.dist` metric all the following options will be using `dist.helper` optimally: 
+
+```{r, eval = FALSE}
+## Using the dist function from stats (specifying it comes from stats)
+dispRity(my_data, metric = pairwise.dist, dist.helper = stats::dist)
+
+## Using the dist function from vegdist function (without specifying its origin)
+dispRity(my_data, metric = pairwise.dist, dist.helper = vegdist)
+
+## Using some pre-calculated distance with a generic function
+my_distance_matrix <- dist(my_distance_data)
+dispRity(my_data, metric = pairwise.dist, dist.helper = my_distance_matrix)
+
+## Using some pre-calculated distance with a user function defined elsewhere
+my_distance_matrix <- my.personalised.function(my_distance_data)
+dispRity(my_data, metric = pairwise.dist, dist.helper = my_distance_matrix)
+```
+
+However, if you use a homemade metric for calculating distances like this:
+
+```{r, eval = FALSE}
+## a personalised distance function
+my.sum.of.dist <- function(matrix) {
+  return(sum(dist(matrix)))
+}
+```
+
+The `dist.helper` will only work if you specify the function using the same syntax as in the user function:
+
+```{r, eval = FALSE}
+## The following uses the helper correctly (as in saves a lot of calculation time)
+dispRity(my_data, metric = my.sum.of.dist, dist.helper = dist)
+
+## These ones however, work but don't use the dist.helper (don't save time)
+## The dist.helper is not a function
+dispRity(my_data, metric = my.sum.of.dist, dist.helper = dist(my_data))
+## The dist.helper is not the correct function (should be dist)
+dispRity(my_data, metric = my.sum.of.dist, dist.helper = vegdist)
+## The dist.helper is not the correct function (should be just dist)
+dispRity(my_data, metric = my.sum.of.dist, dist.helper = stats::dist)
+```
