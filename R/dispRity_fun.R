@@ -167,15 +167,15 @@ reduce.checks <- function(fun, reduce.dist = NULL) {
             for(one_check in check_line) {
                 if(is(body(fun)[[one_check]], "<-") || is(body(fun)[[one_check]], "call")) {
                     ## Substitute the line
-                    body(fun)[[one_check]] <- substitute(distances <- matrix)
+                    body(fun)[[one_check]] <- substitute(distances <- matrix.to.dist(matrix))
                 } else {
                     ## recursively dig in the loop
                     inner_line <- grep(to_reduce, as.character(body(fun)[[one_check]]))
                     if(is(body(fun)[[one_check]][[inner_line]], " <-") || is(body(fun)[[one_check]], "call")) {
-                        body(fun)[[one_check]][[inner_line]] <- substitute(distances <- matrix)
+                        body(fun)[[one_check]][[inner_line]] <- substitute(distances <- matrix.to.dist(matrix))
                     } else {
                         inner_line2 <- grep(to_reduce, as.character(body(fun)[[one_check]][[inner_line]]))
-                        body(fun)[[one_check]][[inner_line]][[inner_line2]] <- substitute(distances <- matrix)
+                        body(fun)[[one_check]][[inner_line]][[inner_line2]] <- substitute(distances <- matrix.to.dist(matrix))
                     }
                 }
             }

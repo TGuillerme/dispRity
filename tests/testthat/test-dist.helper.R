@@ -62,7 +62,7 @@ test_that("make.metric handles help", {
 
 test_that("reduce.checks works", {
     matrix <- matrix(rnorm(90), 9, 10)
-    dist_mat <- dist(matrix) ## Keep as distance!
+    dist_mat <- as.matrix(dist(matrix))
 
     expect_is(reduce.checks(mean), "function")
     expect_null(reduce.checks(NULL))
@@ -132,38 +132,27 @@ test_that("general structure works", {
     error <- capture_error(test <- dispRity(data = data, metric = c(mean, pairwise.dist), dist.helper = vegan::vegdist))
     expect_equal(error[[1]], "dist.help can only be used for one metric. You can try combine the 2 metrics together into one or calculate disparity step by step. For example:\ndispRity(dispRity(data, metric = level2.metric), metric = level1.metric)")
 
-    # ## Working with metrics that are user designed.
-    # dist.of.pairs1 <- function(matrix) {
-    #     return(as.vector(dist(matrix)))
-    # }
-    # dist.of.pairs2 <- function(matrix) {
-    #     distances <- dist(matrix)
-    #     return(as.vector(distances))
-    # }
-    # dist.of.pairs3 <- function(matrix) {
-    #     dist <- dist(matrix)
-    #     return(as.vector(dist))
-    # }
+    ## Working with metrics that are user designed.
+    dist.of.pairs1 <- function(matrix, ...) {
+        return(as.vector(dist(matrix)))
+    }
+    dist.of.pairs2 <- function(matrix, ...) {
+        distances <- stats::dist(matrix)
+        return(as.vector(distances))
+    }
 
-    # test <- dispRity(data = data, metric = dist.of.pairs1)
-    # expect_equal(summary(test)$obs, 4.041)
-    # test <- dispRity(data = data, metric = dist.of.pairs2, dist.helper = dist)
+    test <- dispRity(data = data, metric = dist.of.pairs1)
+    expect_equal(summary(test)$obs, 4.041)
 
-    # metric <- pairwise.dist
-    # dots <- list(dist.helper = dist)
+    test <- dispRity(data = data, metric = dist.of.pairs2, dist.helper = stats::dist)
+    expect_equal(summary(test)$obs, 4.041)
 
-    # expect_equal(summary(test)$obs, 4.041)
-    # test <- dispRity(data = data, metric = dist.of.pairs3, dist.helper = dist)
-    # expect_equal(summary(test)$obs, 4.041)
-    # test <- dispRity(data = data, metric = dist.of.pairs1, dist.helper = dist)
-    # expect_equal(summary(test)$obs, 4.041)
+    test <- dispRity(data = data, metric = dist.of.pairs1, dist.helper = dist)
+    expect_equal(summary(test)$obs, 4.041)
 
-    # ## Works but actually doesn't use helper
-    # test <- dispRity(data = data, metric = dist.of.pairs2, dist.helper = dist)
-    # expect_equal(summary(test)$obs, 4.041)
-
-
-
+    ## Works but actually doesn't use helper
+    test <- dispRity(data = data, metric = dist.of.pairs2, dist.helper = dist)
+    expect_equal(summary(test)$obs, 4.041)
 })
 
 test_that("works with bootstraps", {
@@ -171,7 +160,7 @@ test_that("works with bootstraps", {
     data(BeckLee_mat99)
     data(BeckLee_tree)
     groups <- chrono.subsets(BeckLee_mat99, tree = BeckLee_tree, time = 10, method = "continuous", model = "acctran")
-    bs_data <- boot.matrix(groups)
+    bs_data <- boot.matrix(groups, bootstraps = 500)
 
     test <- dispRity(data = bs_data, metric = pairwise.dist)
     check.class(test, "dispRity")
@@ -188,6 +177,14 @@ test_that("works with bootstraps", {
     check.class(test, "dispRity")
     expect_equal(dim(summary(test)), c(10, 8))
     expect_equal(summary(test)$obs.median, c(2.472, 2.537, 2.623, 2.723, 2.750, 2.785, 2.841, 2.867, 2.867, 2.867))
+
+
+# test <- microbenchmark("no help"       = dispRity(bs_data, metric = pairwise.dist),
+#                        "with help"     = dispRity(bs_data, metric = pairwise.dist, dist.helper = vegan::vegdist),
+#                        "with pre calc" = dispRity(bs_data, metric = pairwise.dist, dist.helper = dist_matrix))
+
+
+
 })
 
 

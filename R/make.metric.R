@@ -97,6 +97,9 @@ make.metric <- function(fun, ..., silent = FALSE, check.between.groups = FALSE, 
             try_test <- help.fun
         }
 
+        ## Set reduce.dist to the detectable function name
+        reduce.dist <- TRUE
+
         ## Check if the helper is a function or an object
         if(is(try_test, "function")) {
 
@@ -131,9 +134,6 @@ make.metric <- function(fun, ..., silent = FALSE, check.between.groups = FALSE, 
             if(!is(dist.help[[1]], "matrix") || !check.dist.matrix(dist.help[[1]], just.check = TRUE)) {
                 stop("dist.helper argument must be a distance matrix (or list of them) or a function to generate a distance matrix.", call. = FALSE)
             }
-
-            ## Set reduce.dist to the detectable function name
-            reduce.dist <- TRUE
 
         } else {
             error <- TRUE
