@@ -73,7 +73,7 @@ make.metric <- function(fun, ..., silent = FALSE, check.between.groups = FALSE, 
     is_phylo <- "tree" %in% arguments
 
     ## Checking for helpers
-    dist.help <- help.fun <- NULL
+    dist.help <- help.fun <- reduce.dist <- NULL
     if(get.help) {
         get_help <- check.get.help(fun)
     } else {
@@ -131,6 +131,10 @@ make.metric <- function(fun, ..., silent = FALSE, check.between.groups = FALSE, 
             if(!is(dist.help[[1]], "matrix") || !check.dist.matrix(dist.help[[1]], just.check = TRUE)) {
                 stop("dist.helper argument must be a distance matrix (or list of them) or a function to generate a distance matrix.", call. = FALSE)
             }
+
+            ## Set reduce.dist to the detectable function name
+            reduce.dist <- TRUE
+
         } else {
             error <- TRUE
             if(!is(help.fun, "list")) {
@@ -283,9 +287,9 @@ make.metric <- function(fun, ..., silent = FALSE, check.between.groups = FALSE, 
 
     if(silent == TRUE) {
         if(check.between.groups) {
-            return(list("type" = fun_type, "between.groups" = is_between.groups, "tree" = is_phylo, "dist.help" = dist.help))
+            return(list("type" = fun_type, "between.groups" = is_between.groups, "tree" = is_phylo, "dist.help" = dist.help, "reduce.dist" = reduce.dist))
         } else {
-            return(list("type" = fun_type, "tree" = is_phylo, "dist.help" = dist.help))
+            return(list("type" = fun_type, "tree" = is_phylo, "dist.help" = dist.help, "reduce.dist" = reduce.dist))
         }
     } else {
         return(invisible())
