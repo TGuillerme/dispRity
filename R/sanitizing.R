@@ -336,3 +336,15 @@ check.dispRity.data <- function(data = NULL, tree = NULL, bind.trees = FALSE, re
         return(output)
     }
 }
+
+
+## Fast switch from matrix to dist
+matrix.to.dist <- function(data) {
+    out <- as.numeric(data[lower.tri(data)])
+    attr(out, "Labels") <- rownames(data)
+    attr(out, "Size") <- dim(data)[1]
+    attr(out, "Diag") <-  FALSE
+    attr(out, "Upper") <- FALSE
+    class(out) <- "dist"
+    return(out)
+}
