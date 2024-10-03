@@ -38,7 +38,7 @@ test_that("make.metric handles help", {
     ## Get the help from make.metric
     test <- make.metric(fun = dist.with.help, data.dim = data, get.help = TRUE, silent = TRUE)
     expect_is(test, "list")
-    expect_equal(names(test), c("type", "tree", "dist.help"))
+    expect_equal(names(test), c("type", "tree", "dist.help", "reduce.dist"))
     expect_is(test$dist.help, "list")
     expect_is(test$dist.help[[1]], "matrix")
 
@@ -68,21 +68,21 @@ test_that("reduce.checks works", {
     expect_null(reduce.checks(NULL))
 
     ## No reduction of checks
-    expect_equal(pairwise.dist(matrix), reduce.checks(fun = pairwise.dist, data = matrix, get.help = FALSE)(matrix))
+    expect_equal(pairwise.dist(matrix), reduce.checks(fun = pairwise.dist, reduce.dist = NULL)(matrix))
     ## Removing checks (matrix is already distance)
-    expect_equal(pairwise.dist(matrix), reduce.checks(fun = pairwise.dist, data = dist_mat, get.help = TRUE)(dist_mat))
-    expect_equal(neighbours(matrix), reduce.checks(fun = neighbours, data = dist_mat, get.help = TRUE)(dist_mat))
-    expect_equal(span.tree.length(matrix), reduce.checks(fun = span.tree.length, data = dist_mat, get.help = TRUE)(dist_mat))
-    expect_equal(func.eve(matrix), reduce.checks(fun = func.eve, data = dist_mat, get.help = TRUE)(dist_mat))
-    expect_equal(count.neighbours(matrix), reduce.checks(fun = count.neighbours, data = dist_mat, get.help = TRUE)(dist_mat))
+    expect_equal(pairwise.dist(matrix), reduce.checks(fun = pairwise.dist, reduce.dist = TRUE)(dist_mat))
+    expect_equal(neighbours(matrix), reduce.checks(fun = neighbours, reduce.dist = TRUE)(dist_mat))
+    expect_equal(span.tree.length(matrix), reduce.checks(fun = span.tree.length, reduce.dist = TRUE)(dist_mat))
+    expect_equal(func.eve(matrix), reduce.checks(fun = func.eve, reduce.dist = TRUE)(dist_mat))
+    expect_equal(count.neighbours(matrix), reduce.checks(fun = count.neighbours, reduce.dist = TRUE)(dist_mat))
 
     ## Removing other checks
-    expect_equal(angles(matrix), reduce.checks(angles, data = matrix, get.help = FALSE)(matrix))
-    expect_equal(deviations(matrix), reduce.checks(deviations, data = matrix, get.help = FALSE)(matrix))
+    expect_equal(angles(matrix), reduce.checks(angles, reduce.dist = NULL)(matrix))
+    expect_equal(deviations(matrix), reduce.checks(deviations, reduce.dist = NULL)(matrix))
 
     ## Works with options
-    expect_equal(count.neighbours(matrix, radius = 2), reduce.checks(fun = count.neighbours, data = dist_mat, get.help = TRUE)(dist_mat, radius = 2))
-    expect_equal(count.neighbours(matrix, radius = 0.1), reduce.checks(fun = count.neighbours, data = dist_mat, get.help = TRUE)(dist_mat, radius = 0.1))
+    expect_equal(count.neighbours(matrix, radius = 2), reduce.checks(fun = count.neighbours, reduce.dist = NULL)(dist_mat, radius = 2))
+    expect_equal(count.neighbours(matrix, radius = 0.1), reduce.checks(fun = count.neighbours, reduce.dist = NULL)(dist_mat, radius = 0.1))
 })
 
 test_that("general structure works", {
@@ -131,6 +131,39 @@ test_that("general structure works", {
     expect_equal(error[[1]], "dist.help can only be used for one metric. You can try combine the 2 metrics together into one or calculate disparity step by step. For example:\ndispRity(dispRity(data, metric = level2.metric), metric = level1.metric)")
     error <- capture_error(test <- dispRity(data = data, metric = c(mean, pairwise.dist), dist.helper = vegan::vegdist))
     expect_equal(error[[1]], "dist.help can only be used for one metric. You can try combine the 2 metrics together into one or calculate disparity step by step. For example:\ndispRity(dispRity(data, metric = level2.metric), metric = level1.metric)")
+
+    # ## Working with metrics that are user designed.
+    # dist.of.pairs1 <- function(matrix) {
+    #     return(as.vector(dist(matrix)))
+    # }
+    # dist.of.pairs2 <- function(matrix) {
+    #     distances <- dist(matrix)
+    #     return(as.vector(distances))
+    # }
+    # dist.of.pairs3 <- function(matrix) {
+    #     dist <- dist(matrix)
+    #     return(as.vector(dist))
+    # }
+
+    # test <- dispRity(data = data, metric = dist.of.pairs1)
+    # expect_equal(summary(test)$obs, 4.041)
+    # test <- dispRity(data = data, metric = dist.of.pairs2, dist.helper = dist)
+
+    # metric <- pairwise.dist
+    # dots <- list(dist.helper = dist)
+
+    # expect_equal(summary(test)$obs, 4.041)
+    # test <- dispRity(data = data, metric = dist.of.pairs3, dist.helper = dist)
+    # expect_equal(summary(test)$obs, 4.041)
+    # test <- dispRity(data = data, metric = dist.of.pairs1, dist.helper = dist)
+    # expect_equal(summary(test)$obs, 4.041)
+
+    # ## Works but actually doesn't use helper
+    # test <- dispRity(data = data, metric = dist.of.pairs2, dist.helper = dist)
+    # expect_equal(summary(test)$obs, 4.041)
+
+
+
 })
 
 test_that("works with bootstraps", {
@@ -159,6 +192,15 @@ test_that("works with bootstraps", {
 
 
 test_that("works with trees", {
+
+    # metric.pairdist <- function(matrix, tree) {
+    #     morpho_distance <- dist(matrix)
+    #     tree_dist <- cophenetic(tree)
+    #     return(sum(morpho_distance)/sum(tree_dist))
+    # }
+
+
+    
     # set.seed(1)
     # tree <- read.tree(text = "((((((A,B), C), D), E), F), G);")
     # tree$edge.length <- rep(1, 7+6)

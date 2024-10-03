@@ -121,5 +121,4 @@ test_that("Output is correct", {
     expect_equal(make.metric(between.groups.metric2, phy = rtree(5), silent = TRUE, check.between.groups = TRUE), list("type" = "level2", "between.groups" = TRUE, tree = FALSE, "dist.help" = NULL, "reduce.dist" = NULL))
     expect_equal(make.metric(normal.metric, silent = TRUE), list(type = "level1", tree = TRUE, "dist.help" = NULL, "reduce.dist" = NULL))
     expect_equal(make.metric(normal.metric2, silent = TRUE), list(type = "level1", tree = FALSE, "dist.help" = NULL, "reduce.dist" = NULL))
-    
 })

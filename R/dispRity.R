@@ -258,6 +258,7 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
     metric_is_between.groups <- unlist(metrics_list$between.groups)
     metric_has_tree <- unlist(metrics_list$tree)
     metrics_list <- metrics_list$levels
+    # return(metrics_list)
 
     ## Stop if data already contains disparity and metric is not level1
     if(!is.null(metrics_list$level3.fun) && length(data$call$disparity$metric) != 0) {

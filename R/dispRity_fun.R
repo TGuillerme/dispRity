@@ -51,7 +51,7 @@ check.one.metric <- function(metric, data, tree, ...) {
 ## Handle the disparity metrics
 get.dispRity.metric.handle <- function(metric, match_call, data = list(matrix = list(matrix(NA, 5, 4))), tree = NULL, ...) {
 
-    dist_help <- level3.fun <- level2.fun <- level1.fun <- NULL
+    dist_help <- level3.fun <- level2.fun <- level1.fun <- reduce.dist.lvl3 <- reduce.dist.lvl2 <- reduce.dist.lvl1 <- NULL
     tree.metrics <- between.groups <- rep(FALSE, 3)
     length_metric <- length(metric)
 
@@ -67,14 +67,15 @@ get.dispRity.metric.handle <- function(metric, match_call, data = list(matrix = 
     }
 
     ## Check all metrics
-    metric_checks <- lapply(metric, check.one.metric, data, tree, ...)
-    # warning("DEBUG: dispRity_fun.R::get.dispRity.metric.handle") ; metric_checks <- lapply(metric, check.one.metric, data, tree, dist.helper)
+    metric_checks <- lapply(metric, check.one.metric, data, tree, ...)    
+    # warning("DEBUG: dispRity_fun.R::get.dispRity.metric.handle") ; metric_checks <- lapply(metric, check.one.metric, data, tree, dist.helper = dist.helper)
 
     ## Sort out the tests
     levels       <- unlist(lapply(metric_checks, `[[` , "type"))
     btw_groups   <- unlist(lapply(metric_checks, `[[` , "between.groups"))
     tree_metrics <- unlist(lapply(metric_checks, `[[` , "tree"))
     dist_help    <- unlist(lapply(metric_checks, `[[` , "dist.help"), recursive = FALSE)
+    reduce_dist  <- unlist(lapply(metric_checks, `[[` , "reduce.dist"))
     remove(metric_checks)
 
     ## can only unique levels
@@ -89,16 +90,28 @@ get.dispRity.metric.handle <- function(metric, match_call, data = list(matrix = 
         level1.fun        <- metric[[match("level1", levels)]]
         between.groups[1] <- btw_groups[match("level1", levels)]
         tree.metrics[1]   <- tree_metrics[match("level1", levels)]
+        reduce.dist.lvl1  <- reduce_dist[match("level1", levels)]
+       if(!is.null(reduce.dist.lvl1)) {
+            reduce.dist.lvl1 <- match_call$dist.helper
+        }
     }
     if(!is.na(match("level2", levels))) {
         level2.fun        <- metric[[match("level2", levels)]]
         between.groups[2] <- btw_groups[match("level2", levels)]
         tree.metrics[2]   <- tree_metrics[match("level2", levels)]
+        reduce.dist.lvl2  <- reduce_dist[match("level2", levels)]
+        if(!is.null(reduce.dist.lvl2)) {
+            reduce.dist.lvl2 <- match_call$dist.helper
+        }
     }
     if(!is.na(match("level3", levels))) {
         level3.fun        <- metric[[match("level3", levels)]]
         between.groups[3] <- btw_groups[match("level3", levels)]
         tree.metrics[3]   <- tree_metrics[match("level3", levels)]
+        reduce.dist.lvl3  <- reduce_dist[match("level3", levels)]
+        if(!is.null(reduce.dist.lvl3)) {
+            reduce.dist.lvl3 <- match_call$dist.helper
+        }
     }
 
     ## Evaluate the covarness
@@ -115,11 +128,11 @@ get.dispRity.metric.handle <- function(metric, match_call, data = list(matrix = 
         }
     }
 
-    return(list(levels = list("level3.fun" = reduce.checks(level3.fun), "level2.fun" = reduce.checks(level2.fun), "level1.fun" = reduce.checks(level1.fun)), between.groups = rev(between.groups), tree.metrics = rev(tree.metrics), dist.help = dist_help))
+    return(list(levels = list("level3.fun" = reduce.checks(level3.fun, reduce.dist = reduce.dist.lvl3), "level2.fun" = reduce.checks(level2.fun, reduce.dist = reduce.dist.lvl2), "level1.fun" = reduce.checks(level1.fun, reduce.dist = reduce.dist.lvl1)), between.groups = rev(between.groups), tree.metrics = rev(tree.metrics), dist.help = dist_help))
 }
 
 ## Function to reduce the checks (distance matrix input is already handled)
-reduce.checks <- function(fun, data = NULL, get.help = FALSE) {
+reduce.checks <- function(fun, reduce.dist = NULL) {
 
     ## Do nothing
     if(is.null(fun)) {
@@ -127,8 +140,29 @@ reduce.checks <- function(fun, data = NULL, get.help = FALSE) {
     }
 
     ## Reduce distance checks
-    if(get.help || (!is.null(data) && check.dist.matrix(data, method = "euclidean")$was_dist)) {
-        if(length(check_line <- grep("check.dist.matrix", body(fun))) > 0) {
+    if(!is.null(reduce.dist)) {
+
+        ## If reduce.dist is logical (TRUE) change the function to "check.dist.matrix"
+        if(is.logical(reduce.dist)) {
+            to_reduce <- "check.dist.matrix"
+        } else {
+            ## reduce.dist is a function
+            if(grepl("check.dist.matrix", paste(as.character(body(fun)), collapse = ""))) {
+                ## The function contains check.dist.matrix and is internal to dispRity
+                to_reduce <- "check.dist.matrix"
+            } else {
+                ## The function is external
+                to_reduce <- as.character(reduce.dist)
+                if(length(to_reduce) > 1) {
+                    ## has the package name description
+                    to_reduce <- paste0(to_reduce[2], to_reduce[1], to_reduce[3], collapse = "")
+                }
+                to_reduce <- paste0(to_reduce, "\\(")
+            }
+        }
+
+        ## Reduce the function
+        if(length(check_line <- grep(to_reduce, body(fun))) > 0) {
             ## Remove them!
             for(one_check in check_line) {
                 if(is(body(fun)[[one_check]], "<-") || is(body(fun)[[one_check]], "call")) {
@@ -136,11 +170,11 @@ reduce.checks <- function(fun, data = NULL, get.help = FALSE) {
                     body(fun)[[one_check]] <- substitute(distances <- matrix)
                 } else {
                     ## recursively dig in the loop
-                    inner_line <- grep("check.dist.matrix", as.character(body(fun)[[one_check]]))
+                    inner_line <- grep(to_reduce, as.character(body(fun)[[one_check]]))
                     if(is(body(fun)[[one_check]][[inner_line]], " <-") || is(body(fun)[[one_check]], "call")) {
                         body(fun)[[one_check]][[inner_line]] <- substitute(distances <- matrix)
                     } else {
-                        inner_line2 <- grep("check.dist.matrix", as.character(body(fun)[[one_check]][[inner_line]]))
+                        inner_line2 <- grep(to_reduce, as.character(body(fun)[[one_check]][[inner_line]]))
                         body(fun)[[one_check]][[inner_line]][[inner_line2]] <- substitute(distances <- matrix)
                     }
                 }
@@ -291,7 +325,7 @@ decompose.simple <- function(one_matrix, bootstrap, dimensions, fun, nrow, ...) 
 # bootstrap <- na.omit(one_subsets_bootstrap) ; warning("DEBUG: dispRity_fun")
 # fun <- first_metric ; warning("DEBUG: dispRity_fun")
 # dimensions <- data$call$dimensions ; warning("DEBUG: dispRity_fun")
-decompose.tree <- function(one_matrix, one_tree, bootstrap, dimensions, fun, nrow, dist_help = NULL, ...) {
+decompose.tree <- function(one_matrix, one_tree, bootstrap, dimensions, fun, nrow, ...) {
 
     ## Select the variables
     bs_rows <- bootstrap
@@ -336,6 +370,7 @@ decompose.matrix <- function(one_subsets_bootstrap, fun, data, nrow, use_tree, d
         data_list  <- dist_help
         dimensions <- na.omit(one_subsets_bootstrap)
         bootstrap  <- na.omit(one_subsets_bootstrap)
+        # cat("DEBUG: uses dist_help in decompose.matrix\n")
     } else {
         ## Default setup
         data_list  <- data$matrix
