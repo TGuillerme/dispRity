@@ -182,55 +182,48 @@ test_that("works with bootstraps", {
 # test <- microbenchmark("no help"       = dispRity(bs_data, metric = pairwise.dist),
 #                        "with help"     = dispRity(bs_data, metric = pairwise.dist, dist.helper = vegan::vegdist),
 #                        "with pre calc" = dispRity(bs_data, metric = pairwise.dist, dist.helper = dist_matrix))
-
-
+# plot(test)
 
 })
 
 
 test_that("works with trees", {
 
-    # metric.pairdist <- function(matrix, tree) {
-    #     morpho_distance <- dist(matrix)
-    #     tree_dist <- cophenetic(tree)
-    #     return(sum(morpho_distance)/sum(tree_dist))
-    # }
+    metric.pairdist <- function(matrix, tree, ...) {
+        distances <- dist(matrix)
+        return(sum(distances)/sum(tree$edge.length))
+    }
 
+    metric.pairdist2 <- function(matrix, tree, ...) {
+        morpho_distances <- dist(matrix)
+        return(sum(morpho_distances)/sum(tree$edge.length))
+    }
 
-    
-    # set.seed(1)
-    # tree <- read.tree(text = "((((((A,B), C), D), E), F), G);")
-    # tree$edge.length <- rep(1, 7+6)
-    # tree$node.label <- letters[1:6]
-    # ## An empty matrix (with the right elements)
-    # matrix <- matrix(rnorm((7+6)*2), nrow = 7+6, ncol = 2)
-    # rownames(matrix) <- c(tree$tip.label, tree$node.label)
+    set.seed(1)
+    tree <- stree(7, type = "right")
+    tree$edge.length <- rep(1, 7+6)
+    tree$node.label <- letters[1:6]
+    tree$tip.label <- LETTERS[1:7]
+    ## An empty matrix (with the right elements)
+    matrix <- matrix(rnorm((7+6)*2), nrow = 7+6, ncol = 2)
+    rownames(matrix) <- c(tree$tip.label, tree$node.label)
 
-    # ## Simple test
-    # test <- dispRity(data = matrix, metric = edge.length.tree, tree = tree)
-    # expect_equal(c(test$disparity[[1]][[1]]), edge.length.tree(matrix, tree))
+    ## Simple test
+    test <- dispRity(data = matrix, metric = metric.pairdist, tree = tree)
+    expect_equal(c(test$disparity[[1]][[1]]), metric.pairdist(matrix, tree))
 
-    # ## More complex metric test
-    # test <- dispRity(data = matrix, metric = projections.tree, tree = tree, type = c("root","ancestor"))
-    # expect_equal(c(test$disparity[[1]][[1]]), projections.tree(matrix, tree))
+    ## Test with helper
+    test <- dispRity(data = matrix, metric = metric.pairdist, tree = tree, dist.helper = dist)
+    expect_equal(c(test$disparity[[1]][[1]]), metric.pairdist(matrix, tree))
+
+    ## Test with helper
+    test <- dispRity(data = matrix, metric = metric.pairdist2, tree = tree, dist.helper = dist)
+    expect_equal(c(test$disparity[[1]][[1]]), metric.pairdist(matrix, tree))
+
+    ## DOESN T WORK BECAUSE OF THE morpho_distances <- dist(matrix) DIFFERENT VARIABLE NAME
+
 })
 
-test_that("works with covar", {
-    
-    # data(charadriiformes)
-    # data <- MCMCglmm.subsets(data       = charadriiformes$data,
-    #                          posteriors = charadriiformes$posteriors,
-    #                          tree       = charadriiformes$tree,
-    #                          group      = MCMCglmm.levels(
-    #                                  charadriiformes$posteriors)[1:3],
-    #                          rename.groups = c("gulls", "plovers", "sandpipers"))
-
-    # ## Test works in 2 times (1st covar)
-    # testA <- dispRity(data, metric = as.covar(variances), dimensions = c(1:17))
-    # expect_is(testA, "dispRity")
-    # expect_equal(names(testA), c("matrix", "tree", "call", "subsets", "covar", "disparity"))
-    # expect_equal(c(summary(testA)$`97.5%`), c(0.068, 0.002, 0.016))
-})
 
 test_that("works with between groups", {
     # between.groups.simple <- function(matrix, matrix2) return(42)

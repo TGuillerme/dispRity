@@ -91,7 +91,7 @@ get.dispRity.metric.handle <- function(metric, match_call, data = list(matrix = 
         between.groups[1] <- btw_groups[match("level1", levels)]
         tree.metrics[1]   <- tree_metrics[match("level1", levels)]
         reduce.dist.lvl1  <- reduce_dist[match("level1", levels)]
-       if(!is.null(reduce.dist.lvl1)) {
+        if(!is.null(reduce.dist.lvl1)) {
             reduce.dist.lvl1 <- match_call$dist.helper
         }
     }
