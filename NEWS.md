@@ -49,6 +49,11 @@ dispRity v1.9 (2024-06-06)  *distant update*
  * `multi.ace` now correctly handles invariant characters when looking for NAs.
  * `dispRity` objects with a `$covar` component are not interpreted as bootstrapped by `boot.matrix` anymore.
 
+### DEPRECATED
+
+ * The `dimensions` argument from `boot.matrix` is now removed: it has been redundant with the `dimensions` argument in the `dispRity` since v0.3!
+
+
 dispRity v1.8 (2023-12-11) *dispRity.multi*
 =========================
 

@@ -5,7 +5,6 @@
 #' @param data A \code{matrix} or a list of matrices (typically output from \link{chrono.subsets} or \link{custom.subsets} - see details).
 #' @param bootstraps The number of bootstrap pseudoreplicates (\code{default = 100}).
 #' @param rarefaction Either a \code{logical} value whether to fully rarefy the data, a set of \code{numeric} values used to rarefy the data or \code{"min"} to rarefy at the minimum level (see details).
-#' @param dimensions Optional, a vector of \code{numeric} value(s) or the proportion of the dimensions to keep.
 #' @param verbose A \code{logical} value indicating whether to be verbose or not.
 #' @param boot.type The bootstrap algorithm to use (\code{default = "full"}; see details).
 #' @param prob Optional, a \code{matrix} or a \code{vector} of probabilities for each element to be selected during the bootstrap procedure. The \code{matrix} or the \code{vector} must have a row names or names attribute that corresponds to the elements in \code{data}.
@@ -55,8 +54,6 @@
 #' boot.matrix(BeckLee_mat50, bootstraps = 20, rarefaction = TRUE)
 #' ## Bootstrapping an ordinated matrix with only elements 7, 10 and 11 sampled
 #' boot.matrix(BeckLee_mat50, bootstraps = 20, rarefaction = c(7, 10, 11))
-#' ## Bootstrapping an ordinated matrix with only 3 dimensions
-#' boot.matrix(BeckLee_mat50, bootstraps = 20, dimensions = 3)
 #' ## Bootstrapping an the matrix but without sampling Cimolestes and sampling Maelestes 10x more
 #' boot.matrix(BeckLee_mat50, bootstraps = 20, prob = c("Cimolestes" = 0, "Maelestes" = 10))
 #' 
@@ -87,7 +84,7 @@
 # bootstraps <- 3
 # rarefaction <- TRUE
 
-boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions = NULL, verbose = FALSE, boot.type = "full", prob = NULL) {
+boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, verbose = FALSE, boot.type = "full", prob = NULL) {
 
     match_call <- match.call()
     ## ----------------------
@@ -162,7 +159,7 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions 
         if(verbose) message("Bootstrapping", appendLF = FALSE)
 
         ## Apply the custom.subsets
-        output <- dispRity.multi.apply(split_data, fun = boot.matrix.call, bootstraps = bootstraps, rarefaction = rarefaction, dimensions = dimensions, verbose = verbose, boot.type = boot.type, prob = prob)
+        output <- dispRity.multi.apply(split_data, fun = boot.matrix.call, bootstraps = bootstraps, rarefaction = rarefaction, verbose = verbose, boot.type = boot.type, prob = prob)
 
         if(verbose) message("Done.", appendLF = FALSE)
         return(output)
@@ -334,28 +331,8 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions 
         }
     )
 
-    ##  ~~~
-    ##  Add some extra method i.e. proportion of bootstrap shifts?
-    ##  ~~~
-
-    ## RM.LAST.AXIS
-    ## If TRUE, set automatic threshold at 0.95
-    if(!is.null(dimensions)) {
-        ## Else must be a single numeric value (proportional)
-        check.class(dimensions, c("numeric", "integer"), " must be a proportional threshold value.")
-        if(length(dimensions == 1)) {
-            if(dimensions < 0) {
-                stop.call("", "Number of dimensions to remove cannot be less than 0.")
-            }
-            if(dimensions < 1) dimensions <- 1:round(dimensions * ncol(data$matrix[[1]]))
-        } 
-        if(any(dimensions > ncol(data$matrix[[1]]))) {
-            stop.call("", "Number of dimensions to remove cannot be more than the number of columns in the matrix.")
-        }
-        data$call$dimensions <- dimensions
-    } else {
-        data$call$dimensions <- 1:ncol(data$matrix[[1]])
-    }
+    ## Add the dimensions to the call
+    data$call$dimensions <- 1:ncol(data$matrix[[1]])
 
     ## Return object if BS = 0
     if(bootstraps == 0) {

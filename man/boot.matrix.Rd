@@ -8,7 +8,6 @@ boot.matrix(
   data,
   bootstraps = 100,
   rarefaction = FALSE,
-  dimensions = NULL,
   verbose = FALSE,
   boot.type = "full",
   prob = NULL
@@ -20,8 +19,6 @@ boot.matrix(
 \item{bootstraps}{The number of bootstrap pseudoreplicates (\code{default = 100}).}
 
 \item{rarefaction}{Either a \code{logical} value whether to fully rarefy the data, a set of \code{numeric} values used to rarefy the data or \code{"min"} to rarefy at the minimum level (see details).}
-
-\item{dimensions}{Optional, a vector of \code{numeric} value(s) or the proportion of the dimensions to keep.}
 
 \item{verbose}{A \code{logical} value indicating whether to be verbose or not.}
 
@@ -73,8 +70,6 @@ boot.matrix(BeckLee_mat50, bootstraps = 20)
 boot.matrix(BeckLee_mat50, bootstraps = 20, rarefaction = TRUE)
 ## Bootstrapping an ordinated matrix with only elements 7, 10 and 11 sampled
 boot.matrix(BeckLee_mat50, bootstraps = 20, rarefaction = c(7, 10, 11))
-## Bootstrapping an ordinated matrix with only 3 dimensions
-boot.matrix(BeckLee_mat50, bootstraps = 20, dimensions = 3)
 ## Bootstrapping an the matrix but without sampling Cimolestes and sampling Maelestes 10x more
 boot.matrix(BeckLee_mat50, bootstraps = 20, prob = c("Cimolestes" = 0, "Maelestes" = 10))
 

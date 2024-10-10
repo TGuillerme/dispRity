@@ -58,35 +58,30 @@ boot.type = "full"
 ## Sanitizing
 test_that("Sanitizing works correctly", {
     expect_error(
-        boot.matrix(data = "a", bootstraps, rarefaction, dimensions = FALSE, verbose = FALSE, boot.type = "full")
+        boot.matrix(data = "a", bootstraps, rarefaction, verbose = FALSE, boot.type = "full")
         )
     expect_error(
-        boot.matrix(data, bootstraps = FALSE, rarefaction, dimensions = FALSE, verbose = FALSE, boot.type = "full")
+        boot.matrix(data, bootstraps = FALSE, rarefaction, verbose = FALSE, boot.type = "full")
         )
     expect_error(
-        boot.matrix(data, bootstraps = "a", rarefaction, dimensions = FALSE, verbose = FALSE, boot.type = "full")
+        boot.matrix(data, bootstraps = "a", rarefaction, verbose = FALSE, boot.type = "full")
         )
     expect_error(
-        boot.matrix(data, bootstraps, rarefaction = "a", dimensions = FALSE, verbose = FALSE, boot.type = "full")
+        boot.matrix(data, bootstraps, rarefaction = "a", verbose = FALSE, boot.type = "full")
         )
     expect_error(
-        boot.matrix(data, bootstraps, rarefaction, dimensions = -1, verbose = FALSE, boot.type = "full")
+        boot.matrix(data, bootstraps, rarefaction, verbose = 8, boot.type = "full")
         )
     expect_error(
-        boot.matrix(data, bootstraps, rarefaction, dimensions = FALSE, verbose = 8, boot.type = "full")
+        boot.matrix(data, bootstraps, rarefaction, verbose = FALSE, boot.type = "rangers")
         )
     expect_error(
-        boot.matrix(data, bootstraps, rarefaction, dimensions = FALSE, verbose = FALSE, boot.type = "rangers")
+        boot.matrix(data, bootstraps, rarefaction, verbose = FALSE, boot.type = 2)
         )
     expect_error(
-        boot.matrix(data, bootstraps, rarefaction, dimensions = FALSE, verbose = FALSE, boot.type = 2)
+        boot.matrix(data, bootstraps, rarefaction, verbose = FALSE, boot.type = "full", parallel = TRUE)
         )
-    expect_error(
-        boot.matrix(data, bootstraps, rarefaction, dimensions = FALSE, verbose = FALSE, boot.type = "full", parallel = TRUE)
-        )
-    expect_error(
-        boot.matrix(data, bootstraps, rarefaction, dimensions = 49)
-        )
+
     ## Wrong data input
     dutu <- list(1,2,3) ; class(dutu) <- "dispRity"
     expect_error(
@@ -143,16 +138,6 @@ test_that("No bootstraps", {
     expect_is(
         test$subsets[[1]][[1]]
         ,"matrix")
-})
-
-## No bootstrap but remove dimensions
-test_that("Remove dimensions", {
-    expect_equal(
-        boot.matrix(data, bootstraps = 0, dimensions = 0.5)$call$dimensions
-        ,1:24)
-    expect_equal(
-        boot.matrix(data, bootstraps = 0, dimensions = 24)$call$dimensions
-        , 24)
 })
 
 ## Bootstraps = 5
