@@ -28,15 +28,15 @@
  - 3. compute heavy calculations at the whole data level in `dispRity` using the `RAM.help` function before the `lapply_loop`
  - 4. store the calculations in `data` similarly as tree as `RAM.helper`
  - 5. run the metrics using a potential `RAM.helper` similarly as tree.
- - [ ] documentation
- - [ ] test
- - [ ] update all the `dispRity` functions that have a `check.dist.matrix` function to use a helper
+ - [x] documentation
+ - [x] test
+ - [x] update all the `dispRity` functions that have a `check.dist.matrix` function to use a helper
   neighbours
   span.tree.length
   pairwise.dist
   func.eve
   count.neighbours
-  - [ ] do speed test for ego boost
+  - [x] do speed test for ego boost
 
 ## Generalise pipeline for distance matrices.
 

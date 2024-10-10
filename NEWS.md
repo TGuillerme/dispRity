@@ -1,4 +1,4 @@
-dispRity v1.8.11 (2024-06-06) 
+dispRity v1.9 (2024-06-06)  *distant update*
 =========================
 
 
@@ -15,15 +15,13 @@ dispRity v1.8.11 (2024-06-06)
 
 ### NEW FEATURES
  * Redesigned `multi.ace` to be more modular and handle both continuous and/or discrete characters. Changes include a **change in argument name** from `castor.options` to the generic `options.args` (the options can be provided the same way as before though); and a **change in default arguments** for `models` which can now be left missing (previously was `"ER"`) and applies `"ER"` and `"BM"` for respectively discrete and continuous characters by default.
+ * New design when using distance matrices: `dist.helper` now allows to save distance matrices in the cache, saving a lot of RAM and speeding up calculations. You can use the helper using `dispRity(..., dist.helper = my_distance_function)` or `dispRity(..., dist.helper = my_distance_matrix)`.
+
 
 
  * *New bootstrap options*
 
- * New design when using distance matrices: `dist.helper` now allows to save distance matrices in the cache, saving a lot of RAM and speeding up calculations. You can use the helper using `dispRity(..., dist.helper = my_distance_function)` or `dispRity(..., dist.helper = my_distance_matrix)`.
- <!-- TODO: add to manual -->
- <!-- If the metric is used from dispRity.metric, dist.helper can be either a distance matrix or a distance function. Else, if it's a user made metric, the dist.helper needs to be distance function -->
-<!-- If dispRity.metric + dist.helper = function OR dist.helper = matrix(ces) -> then dispRity recycles the dist.helper and removes the distance calculation part from the dispRity.metric function  -->
-<!-- If !dispRity.metric + dist.helper = function -> the dispRity tries to recycle -->
+ 
 
 
  * Redesigned `dispRity` and associated functions to now work on distance matrices while keeping the distance matrix properties (using `keep.distance = TRUE` as a default option - toggle back to `FALSE` to use previous behaviour).
