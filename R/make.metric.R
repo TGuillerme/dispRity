@@ -88,6 +88,11 @@ make.metric <- function(fun, ..., silent = FALSE, check.between.groups = FALSE, 
         } 
     }
 
+    if(is_between.groups && get_help) {
+       warning("dist.helper is not yet implemented for between.groups metrics.")
+       get_help <- FALSE
+    }
+
     if(get_help) {
 
         ## Get the RAM helper

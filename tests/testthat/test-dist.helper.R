@@ -219,83 +219,44 @@ test_that("works with trees", {
     ## Test with helper
     test <- dispRity(data = matrix, metric = metric.pairdist2, tree = tree, dist.helper = dist)
     expect_equal(c(test$disparity[[1]][[1]]), metric.pairdist(matrix, tree))
-
-    ## DOESN T WORK BECAUSE OF THE morpho_distances <- dist(matrix) DIFFERENT VARIABLE NAME
-
 })
 
 
-test_that("works with between groups", {
-    # between.groups.simple <- function(matrix, matrix2) return(42)
-    # between.groups.complex <- function(matrix, matrix2) return(mean(matrix) - mean(matrix2))
+# test_that("TODO: works with between groups", {
 
-    # ## Testing data
-    # matrix <- do.call(rbind, list(matrix(1, 5, 5), matrix(2, 3, 5), matrix(3, 4, 5)))
-    # matrix_node <- do.call(rbind, list(matrix(3, 4, 5), matrix(2, 3, 5), matrix(1, 4, 5)))
-    # rownames(matrix) <- paste0("t", 1:12)
-    # test_tree <- stree(12, type = "right")
-    # rownames(matrix_node) <- paste0("n", 1:Nnode(test_tree))
-    # matrix_node <- rbind(matrix, matrix_node)
-    # test_tree$node.label <- paste0("n", 1:Nnode(test_tree))
-    # test_tree$edge.length <- rep(1, Nedge(test_tree))
-    # test_tree$root.time <- 12
+#     dist.difference <- function(matrix, matrix2, ...) {
+#         return(sum(dist(matrix)) - sum(dist(matrix2)))
+#     }
 
-    # ## custom subsets
-    # custom <- custom.subsets(matrix, group = list(c(1:5), c(6:8), c(9:12)))
-    # chrono <- chrono.subsets(matrix, test_tree, method = "discrete", time = c(12, 8.1, 5.1, 0))
+#     matrix <- data[c(1:5),]
+#     matrix2 <- data[c(6:8),]
 
 
-    # ## Custom normal
-    # test <- dispRity(custom, metric = between.groups.complex, between.groups = TRUE)
-    # expect_equal(capture.output(test)[4], "Disparity was calculated as: between.groups.complex between groups.")
-    # summary_results <- summary(test)
-    # expect_is(summary_results, "data.frame")
-    # expect_equal(dim(summary_results), c(3, 4))
-    # expect_equal(colnames(summary_results), c("subsets", "n_1", "n_2", "obs"))
-    # expect_equal(summary_results$subsets, c("1:2", "1:3", "2:3"))
-    # expect_equal(summary_results$obs, c(-1, -2, -1))
-    # expect_null(plot(test))
+#     ## Testing data
+#     set.seed(1)
+#     data <- do.call(rbind, list(matrix(1, 5, 5), matrix(2, 3, 5), matrix(rnorm(4*5), 4, 5)))
+#     rownames(data) <- letters[1:12]
 
+#     ## custom subsets
+#     custom <- custom.subsets(data, group = list(c(1:5), c(6:8), c(9:12)))
+#     test <- dispRity(custom, metric = dist.difference, between.groups = TRUE)
+#     expect_equal(capture.output(test)[4], "Disparity was calculated as: dist.difference between groups.")
+#     summary_results <- summary(test)
+#     expect_equal(summary_results$subsets, c("1:2", "1:3", "2:3"))
+#     expect_equal(summary_results$obs[1], 0)
+#     expect_equal(summary_results$obs[2], -17.3)
+#     expect_equal(summary_results$obs[3], -17.3)
 
+#     error <- capture_warning(test <- dispRity(custom, metric = dist.difference, between.groups = TRUE, dist.helper = dist))
+#     expect_equal(error[[1]], "dist.helper is not yet implemented for between.groups metrics.")
 
-})
+#     ##TODO!
 
-test_that("works with multiple matrices", {
-
-    # ## Works with level 2 and subsets
-    # matrices_list <- space.maker(elements = 30, dimensions = 5, distribution = rnorm, replicates = 3)
-    # ## warning is added rownames
-    # expect_warning(matrices_groups <- custom.subsets(data = matrices_list, group = list("group1" = 1:20, "group2" = 21:30)))
-    # data <- dispRity(data = matrices_groups, metric = centroids)
-    # expect_equal(dim(data$disparity[[1]]$elements), c(20, 3))
-    # expect_equal(dim(data$disparity[[2]]$elements), c(10, 3))
-})
-
-test_that("works with dispRity multi", {
-    # ## Two matrices and two trees
-    # set.seed(1)
-    # tree <- rmtree(2, 10)
-    # tree[[1]] <- makeNodeLabel(tree[[1]])
-    # tree[[2]] <- makeNodeLabel(tree[[2]], prefix = "shnode")
-    # tree[[1]]$root.time <- max(tree.age(tree[[1]])$ages)
-    # tree[[2]]$root.time <- max(tree.age(tree[[2]])$ages)
-
-    # data <- list(matrix(0, nrow = Ntip(tree[[1]]) + Nnode(tree[[1]]), dimnames = list(c(tree[[1]]$tip.label, tree[[1]]$node.label))),
-    #              matrix(0, nrow = Ntip(tree[[2]]) + Nnode(tree[[2]]), dimnames = list(c(tree[[2]]$tip.label, tree[[2]]$node.label))))
-
-    # ## Test working fine
-    # expect_warning(chrono_subsets <- chrono.subsets(data = data, tree = tree, time = 3, method = "continuous", model = "acctran"))
-    # expect_warning(test <- dispRity(chrono_subsets, metric = centroids))
-    # expect_is(test, c("dispRity", "multi"))
-    # expect_equal(names(test), c("matrix", "tree", "call", "subsets", "disparity"))
-    # expect_equal(capture.output(test), c(
-    #     " ---- dispRity object ---- ",
-    #     "3 continuous (acctran) time subsets for 19 elements in 2 separated matrices with 2 phylogenetic trees",
-    #     "    2.62/1.95, 1.31/0.98, 0.",
-    #     "Disparity was calculated as: centroids." 
-    # ))
-    # expect_null(plot(test))
-    # expect_equal(summary(test)$obs.median, c(0, 0, NA))
-
-})
-
+#     test <- dispRity(custom, metric = dist.difference2, between.groups = TRUE, dist.helper = dist)
+#     expect_equal(capture.output(test)[4], "Disparity was calculated as: dist.difference between groups.")
+#     summary_results <- summary(test)
+#     expect_equal(summary_results$subsets, c("1:2", "1:3", "2:3"))
+#     expect_equal(summary_results$obs[1], 0)
+#     expect_equal(summary_results$obs[2], -17.3)
+#     expect_equal(summary_results$obs[3], -17.3)
+# })

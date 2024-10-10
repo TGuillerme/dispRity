@@ -166,16 +166,18 @@ reduce.checks <- function(fun, reduce.dist = NULL) {
             ## Remove them!
             for(one_check in check_line) {
                 if(is(body(fun)[[one_check]], "<-") || is(body(fun)[[one_check]], "call")) {
-                    ## Substitute the line
-                    body(fun)[[one_check]] <- substitute(distances <- matrix.to.dist(matrix))
+                    ## Substitute the line (keeping the variable name)
+                    body(fun)[[one_check]] <- substitute(var_name <- matrix.to.dist(matrix), list(var_name = as.character(body(fun)[[one_check]])[2]))
                 } else {
                     ## recursively dig in the loop
                     inner_line <- grep(to_reduce, as.character(body(fun)[[one_check]]))
                     if(is(body(fun)[[one_check]][[inner_line]], " <-") || is(body(fun)[[one_check]], "call")) {
-                        body(fun)[[one_check]][[inner_line]] <- substitute(distances <- matrix.to.dist(matrix))
+                        # body(fun)[[one_check]][[inner_line]] <- substitute(distances <- matrix.to.dist(matrix))
+                        body(fun)[[one_check]][[inner_line]] <- substitute(var_name <- matrix.to.dist(matrix), list(var_name = as.character(body(fun)[[one_check]][[inner_line]])[2]))
                     } else {
                         inner_line2 <- grep(to_reduce, as.character(body(fun)[[one_check]][[inner_line]]))
-                        body(fun)[[one_check]][[inner_line]][[inner_line2]] <- substitute(distances <- matrix.to.dist(matrix))
+                        # body(fun)[[one_check]][[inner_line]][[inner_line2]] <- substitute(distances <- matrix.to.dist(matrix))
+                        body(fun)[[one_check]][[inner_line]][[inner_line2]] <- substitute(var_name <- matrix.to.dist(matrix), list(var_name = as.character(body(fun)[[one_check]][[inner_line]][[inner_line2]])[2]))
                     }
                 }
             }
