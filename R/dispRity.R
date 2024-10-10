@@ -8,6 +8,7 @@
 #' @param tree \code{NULL} (default) or an optional \code{phylo} or \code{multiPhylo} object to be attached to the data. If this argument is not null, it will be recycled by \code{metric} when possible.
 #' @param ... Optional arguments to be passed to the metric.
 #' @param between.groups A \code{logical} value indicating whether to run the calculations between groups (\code{TRUE}) or not (\code{FALSE} - default) or a \code{numeric} list of pairs of groups to run (see details).
+#' @param data.dist A \code{logical} value indicating whether to treat the data as distance data (\code{TRUE}) or not (\code{FALSE} - default).
 #' @param verbose A \code{logical} value indicating whether to be verbose or not.
 
 #          @param parallel Optional, either a \code{logical} argument whether to parallelise calculations (\code{TRUE}; the numbers of cores is automatically selected to n-1) or not (\code{FALSE}) or a single \code{numeric} value of the number of cores to use.
@@ -123,7 +124,7 @@
 # start_mem <- mem_used()
 
 
-dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALSE, verbose = FALSE, tree = NULL){#, parallel) {
+dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALSE, data.dist = FALSE, verbose = FALSE, tree = NULL){#, parallel) {
     ## ----------------------
     ##  SANITIZING
     ## ----------------------
@@ -219,13 +220,13 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
         }
         ## Set up the function to call
         dispRity.int.call <- function(data, tree, metric, dimensions, between.groups, verbose, ...) {
-            return(dispRity.call(data = data, metric = metric, dimensions = dimensions, ..., between.groups = between.groups, verbose = verbose, tree = tree))
+            return(dispRity.call(data = data, metric = metric, dimensions = dimensions, ..., between.groups = between.groups, data.dist = data.dist, verbose = verbose, tree = tree))
         }
 
         ## Run the apply
         if(verbose) message("Calculating multiple disparities", appendLF = FALSE)
 
-        output <- dispRity.multi.apply(matrices, fun = dispRity.int.call, metric = metric, tree = tree, dimensions = dimensions, between.groups = between.groups, verbose = verbose, ...)
+        output <- dispRity.multi.apply(matrices, fun = dispRity.int.call, metric = metric, tree = tree, dimensions = dimensions, between.groups = between.groups, data.dist = data.dist, verbose = verbose, ...)
         # output <- dispRity.multi.apply(matrices, fun = dispRity.int.call, metric = metric, trees = trees, dimensions = dimensions, between.groups = between.groups, verbose = verbose) ; warning("DEBUG")
         # test <- dispRity.int.call(matrices[[1]], trees[[1]], metric = metric, dimensions = dimensions, between.groups = between.groups, verbose = verbose) ; warning("DEBUG")   
 
@@ -304,6 +305,14 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
 
     ## VERBOSE
     check.class(verbose, "logical")
+
+    ## Data dist
+    check.class(data.dist, "logical")
+    if(data.dist) {
+        stop("DEBUG dispRity data.dist bit")
+        ## Pass down the data dist information up until the matrix decomposition bits (and there apply it on both rows and columns)
+        ## Something like matrix[elements, ] becomes matrix[elements, elements, drop = FALSE]]
+    }
 
     ## Serial
     is_between.groups <- FALSE

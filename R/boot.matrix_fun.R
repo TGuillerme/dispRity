@@ -69,19 +69,28 @@ boot.single.proba <- function(elements, rarefaction, all.elements) {
 }
 
 ## Performs bootstrap on one subsets and all rarefaction levels
-replicate.bootstraps <- function(rarefaction, bootstraps, subsets, boot.type.fun, all.elements) {
+replicate.bootstraps <- function(rarefaction, bootstraps, subsets, boot.type.fun, boot.by, all.elements) {
     verbose_place_holder <- FALSE
-    if(nrow(subsets$elements) == 1) {
-        if(length(subsets$elements) > 1) {
+
+    if(boot.by != "columns") {
+        sub_elements <- subsets$elements
+    } else {
+        ## Change to something like that if the bootstrapping is on the rows
+        stop("DEBUG: boot.matrix_fun replicate.bootstraps")
+        sub_elements <- subsets$dimensions
+    }
+
+    if(nrow(sub_elements) == 1) {
+        if(length(sub_elements) > 1) {
             ## Bootstrap with element sampler
-            return(matrix(replicate(bootstraps, elements.sampler(matrix(subsets$elements[1,], nrow = 1))), nrow = 1))
+            return(matrix(replicate(bootstraps, elements.sampler(matrix(sub_elements[1,], nrow = 1))), nrow = 1))
         } else {
             ## Empty subset (or containing a single element)
-            return(matrix(rep(subsets$elements[[1]], bootstraps), nrow = 1))
+            return(matrix(rep(sub_elements[[1]], bootstraps), nrow = 1))
         }
     } else {
         ## Normal bootstrap (sample through the elements matrix)
-        return(replicate(bootstraps, boot.type.fun(subsets$elements, rarefaction, all.elements)))
+        return(replicate(bootstraps, boot.type.fun(sub_elements, rarefaction, all.elements)))
     }
 }
 
@@ -91,7 +100,7 @@ bootstrap.wrapper <- function(subsets, bootstraps, rarefaction, boot.type.fun, v
         ## Making the verbose version of disparity.bootstraps
         body(replicate.bootstraps)[[2]] <- substitute(message(".", appendLF = FALSE))
     }
-    return(lapply(select.rarefaction(subsets, rarefaction), replicate.bootstraps, bootstraps, subsets, boot.type.fun, all.elements))
+    return(lapply(select.rarefaction(subsets, rarefaction), replicate.bootstraps, bootstraps, subsets, boot.type.fun, boot.by, all.elements))
 }
 
 ## Rarefaction levels selection

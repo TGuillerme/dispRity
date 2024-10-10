@@ -161,8 +161,6 @@ test_that("5 bootstraps", {
     expect_equal(
         length(test$subsets[[1]])
         ,2)
-
-
 })
 
 ## Bootstraps = 5 + Rarefaction = 5
@@ -338,7 +336,6 @@ test_that("boot.matrix deals with probabilities subsets", {
     expect_equal(dim(test2$subsets[[2]][[2]]), c(20,10))
 })
 
-
 test_that("boot.matrix works with the prob option (for probabilities sampling)", {
 
     ## Custom subsets
@@ -427,7 +424,7 @@ test_that("boot.matrix detects distance matrices", {
 
     expect_warning(boot.matrix(is_dist))
     msg <- capture_warnings(boot.matrix(is_dist))
-    expect_equal(msg, "boot.matrix is applied on what seems to be a distance matrix.\nThe resulting matrices won't be distance matrices anymore!")
+    expect_equal(msg, "boot.matrix is applied on what seems to be a distance matrix.\nThe resulting matrices won't be distance matrices anymore!\nIf this isn't the desired behavior, you can use the argument:\nboot.by = \"both\"")
 })
 
 test_that("boot.matrix works with multiple trees AND probabilities", {
@@ -546,7 +543,6 @@ test_that("boot.matrix works with multiple matrices, multiple trees and multiple
     expect_equal(dim(test_rare$subsets[[1]][[4]]), c(5, 6))
     expect_equal(dim(test_rare$subsets[[1]][[5]]), c(4, 6))
     expect_equal(dim(test_rare$subsets[[1]][[6]]), c(3, 6))
-
 })
 
 test_that("boot.matrix null works", {
@@ -564,5 +560,92 @@ test_that("boot.matrix null works", {
     res <- boot.matrix(data, boot.type = "null", bootstraps = 500)
     expect_equal(c(res$subsets[[1]]$elements), 1:5)
     expect_equal(sort(unique(c(res$subsets[[1]][[2]]))), 1:10)
+})
+
+test_that("boot.matrix works for boot.type", {
+
+    ## Simple
+    ## TODO By columns
+    ## TODO By both
+
+    ## With rarefaction
+    ## TODO By columns
+    ## TODO By both
+
+    ## With multiple matrices, trees and probabilities
+    # ## Normal bootstrapping
+    # data <- matrix(1, 5, 10)
+    # expect_warning(test <- boot.matrix(data, 7))
+    # expect_is(test, "dispRity")
+    # expect_is(test$matrix, "list")
+    # expect_is(test$matrix[[1]], "matrix")
+    # expect_is(test$subsets, "list")
+
+    # ## Normal bootstrapping with multiple matrices
+    # data2 <- matrix(2, 5, 10)
+    # data <- list(data, data2)
+    # expect_warning(test <- boot.matrix(data, 7))
+    # expect_is(test, "dispRity")
+    # expect_is(test$matrix, "list")
+    # expect_is(test$matrix[[1]], "matrix")
+    # expect_is(test$matrix[[2]], "matrix")
+    # expect_is(test$subsets, "list")
+
+    # expect_warning(test <- boot.matrix(data, rarefaction = TRUE))
+    # expect_is(test, "dispRity")
+    # expect_is(test$matrix, "list")
+    # expect_is(test$matrix[[1]], "matrix")
+    # expect_is(test$matrix[[2]], "matrix")
+    # expect_is(test$subsets, "list")
+
+    # ## Works with bound trees and matrices
+    # load("bound_test_data.rda")
+    # matrices <- bound_test_data$matrices
+    # trees <- bound_test_data$trees
+
+    # no_proba <- chrono.subsets(matrices, tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5, bind.data = TRUE)
+    # proba <- chrono.subsets(matrices, tree = trees, time = 3, method = "continuous", model = "gradual.split", t0 = 5, bind.data = TRUE)
+
+    # warn <- capture_warning(test <- boot.matrix(no_proba, bootstraps = 101))
+    # expect_equal(warn[[1]], "Because the data contains multiple trees and matrices bound together, the number of bootstraps is changed to 102 to distribute them evenly for each tree (34 bootstraps * 3 trees).")
+    
+    # set.seed(1)
+    # test_proba <- boot.matrix(proba, bootstraps = 6)
+    # test_no_proba <- boot.matrix(no_proba, bootstraps = 6)
+    
+    # expect_is(test_proba, "dispRity")
+    # expect_equal(length(test_proba$subsets), 3)
+    # expect_equal(length(test_proba$subsets[[1]]), 2)
+    # expect_equal(dim(test_proba$subsets[[1]][[1]]), c(7, 9))
+    # expect_equal(dim(test_proba$subsets[[1]][[2]]), c(7, 6))
+    # ## Element 1 never selected in the third tree
+    # expect_false(any(test_proba$subsets[[1]][[2]][,5] == 1))
+    # expect_false(any(test_proba$subsets[[1]][[2]][,6] == 1))
+
+    # expect_is(test_no_proba, "dispRity")
+    # expect_equal(length(test_no_proba$subsets), 3)
+    # expect_equal(length(test_no_proba$subsets[[1]]), 2)
+    # expect_equal(dim(test_no_proba$subsets[[1]][[1]]), c(7, 3))
+    # expect_equal(dim(test_no_proba$subsets[[1]][[2]]), c(7, 6))
+    # ## Element 4 never selected in the third tree
+    # expect_false(any(test_no_proba$subsets[[1]][[2]][,5] == 4))
+    # expect_false(any(test_no_proba$subsets[[1]][[2]][,6] == 4))
+
+
+    # ## With rarefaction
+    # test_rare <- boot.matrix(no_proba, bootstraps = 6, rarefaction = TRUE)
+    # expect_is(test_rare, "dispRity")
+    # expect_equal(length(test_rare$subsets), 3)
+    # expect_equal(length(test_rare$subsets[[1]]), 6)    
+    # expect_equal(dim(test_rare$subsets[[1]][[1]]), c(7, 3))
+    # expect_equal(dim(test_rare$subsets[[1]][[2]]), c(7, 6))
+    # expect_equal(dim(test_rare$subsets[[1]][[3]]), c(6, 6))
+    # expect_equal(dim(test_rare$subsets[[1]][[4]]), c(5, 6))
+    # expect_equal(dim(test_rare$subsets[[1]][[5]]), c(4, 6))
+    # expect_equal(dim(test_rare$subsets[[1]][[6]]), c(3, 6))
+
+    ## TODO By columns
+    ## TODO By both
+
 
 })

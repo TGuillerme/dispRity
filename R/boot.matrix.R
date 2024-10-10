@@ -5,8 +5,9 @@
 #' @param data A \code{matrix} or a list of matrices (typically output from \link{chrono.subsets} or \link{custom.subsets} - see details).
 #' @param bootstraps The number of bootstrap pseudoreplicates (\code{default = 100}).
 #' @param rarefaction Either a \code{logical} value whether to fully rarefy the data, a set of \code{numeric} values used to rarefy the data or \code{"min"} to rarefy at the minimum level (see details).
-#' @param verbose A \code{logical} value indicating whether to be verbose or not.
 #' @param boot.type The bootstrap algorithm to use (\code{default = "full"}; see details).
+#' @param boot.by Which dimension of the data to bootstrap: either \code{"rows"} to bootstrap the elements (default), \code{"columns"} for the dimensions or \code{"both"} for bootstrapping both equally (e.g. for distance matrices).
+#' @param verbose A \code{logical} value indicating whether to be verbose or not.
 #' @param prob Optional, a \code{matrix} or a \code{vector} of probabilities for each element to be selected during the bootstrap procedure. The \code{matrix} or the \code{vector} must have a row names or names attribute that corresponds to the elements in \code{data}.
 #' 
 #' @return
@@ -84,7 +85,7 @@
 # bootstraps <- 3
 # rarefaction <- TRUE
 
-boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, verbose = FALSE, boot.type = "full", prob = NULL) {
+boot.matrix <- function(data, bootstraps = 100, boot.type = "full", boot.by = "rows", rarefaction = FALSE, verbose = FALSE,, prob = NULL) {
 
     match_call <- match.call()
     ## ----------------------
@@ -101,8 +102,8 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, verbose = F
         data <- data$matrix
 
         ## Check whether it is a distance matrix
-        if(check.dist.matrix(data[[1]], just.check = TRUE)) {
-            warning("boot.matrix is applied on what seems to be a distance matrix.\nThe resulting matrices won't be distance matrices anymore!", call. = FALSE)
+        if(check.dist.matrix(data[[1]], just.check = TRUE) && boot.by != "both") {
+            warning("boot.matrix is applied on what seems to be a distance matrix.\nThe resulting matrices won't be distance matrices anymore!\nIf this isn't the desired behavior, you can use the argument:\nboot.by = \"both\"", call. = FALSE)
         }
 
         ## Creating the dispRity object
@@ -112,12 +113,6 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, verbose = F
         if(!is.null(data$call$bootstrap) && data$call$bootstrap[[2]] != "covar") {
             stop.call(msg.pre = "", match_call$data, msg = " was already bootstrapped.")
         }
-
-        ## Must be correct format
-        # check.length(data, 4, " must be either a matrix or an output from the chrono.subsets or custom.subsets functions.")
-        # if(!all(names(data) %in% c("matrix", "call", "subsets")) {
-        #     stop.call(match_call$data, " must be either a matrix or an output from the chrono.subsets or custom.subsets functions.")
-        # }
         
         ## With the correct names
         data_names <- names(data)
@@ -159,7 +154,7 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, verbose = F
         if(verbose) message("Bootstrapping", appendLF = FALSE)
 
         ## Apply the custom.subsets
-        output <- dispRity.multi.apply(split_data, fun = boot.matrix.call, bootstraps = bootstraps, rarefaction = rarefaction, verbose = verbose, boot.type = boot.type, prob = prob)
+        output <- dispRity.multi.apply(split_data, fun = boot.matrix.call, bootstraps = bootstraps, rarefaction = rarefaction, verbose = verbose, boot.type = boot.type, boot.by = boot.by, prob = prob)
 
         if(verbose) message("Done.", appendLF = FALSE)
         return(output)
@@ -331,8 +326,29 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, verbose = F
         }
     )
 
+    ## Select the bootstrap dimensions
+    check.length(boot.by, 1, " must be a single character string")
+    check.method(boot.by, c("rows", "columns", "both"), "boot.by")
+
     ## Add the dimensions to the call
-    data$call$dimensions <- 1:ncol(data$matrix[[1]])
+    if(is.null(data$call$dimensions)) {
+        data$call$dimensions <- 1:ncol(data$matrix[[1]])    
+    }
+
+    ## Switch all the elements
+    if(boot.by != "columns") {
+        ## elements are rows (or both)
+        all_elements <- 1:dim(data$matrix[[1]])[1]
+    } else {
+        ## elements are columns
+        all_elements <- data$call$dimension
+    }
+
+    ## Toggle distance mode
+    if(boot.by == "both") {
+        stop("DEBUG: boot.matrix")
+        ## If the bootstraping is on both, use subsets$elements as above but toggle a dist.data somewhere so that dispRity recycles the argument
+    }
 
     ## Return object if BS = 0
     if(bootstraps == 0) {
@@ -367,7 +383,7 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, verbose = F
                             )
     } else {
         ## Bootstrap the data set 
-        bootstrap_results <- lapply(data$subsets, bootstrap.wrapper, bootstraps, rarefaction, boot.type.fun, verbose, all.elements = 1:dim(data$matrix[[1]])[1])
+        bootstrap_results <- lapply(data$subsets, bootstrap.wrapper, bootstraps, rarefaction, boot.type.fun, boot.by, verbose, all.elements = all_elements)
     }
     if(verbose) message("Done.", appendLF = FALSE)
 
