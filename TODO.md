@@ -18,6 +18,7 @@
  - [ ] update the dispRity pipeline to call the bootstrapped dimensions.
  - [ ] documentation
  - [ ] test
+ - [ ] add sampling probabilities tutorial
 
 ## RAM helpers
 

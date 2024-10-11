@@ -7,9 +7,10 @@
 boot.matrix(
   data,
   bootstraps = 100,
+  boot.type = "full",
+  boot.by = "rows",
   rarefaction = FALSE,
   verbose = FALSE,
-  boot.type = "full",
   prob = NULL
 )
 }
@@ -18,11 +19,13 @@ boot.matrix(
 
 \item{bootstraps}{The number of bootstrap pseudoreplicates (\code{default = 100}).}
 
+\item{boot.type}{The bootstrap algorithm to use (\code{default = "full"}; see details).}
+
+\item{boot.by}{Which dimension of the data to bootstrap: either \code{"rows"} to bootstrap the elements (default), \code{"columns"} for the dimensions or \code{"both"} for bootstrapping both equally (e.g. for distance matrices).}
+
 \item{rarefaction}{Either a \code{logical} value whether to fully rarefy the data, a set of \code{numeric} values used to rarefy the data or \code{"min"} to rarefy at the minimum level (see details).}
 
 \item{verbose}{A \code{logical} value indicating whether to be verbose or not.}
-
-\item{boot.type}{The bootstrap algorithm to use (\code{default = "full"}; see details).}
 
 \item{prob}{Optional, a \code{matrix} or a \code{vector} of probabilities for each element to be selected during the bootstrap procedure. The \code{matrix} or the \code{vector} must have a row names or names attribute that corresponds to the elements in \code{data}.}
 }

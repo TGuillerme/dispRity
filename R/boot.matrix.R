@@ -85,7 +85,7 @@
 # bootstraps <- 3
 # rarefaction <- TRUE
 
-boot.matrix <- function(data, bootstraps = 100, boot.type = "full", boot.by = "rows", rarefaction = FALSE, verbose = FALSE,, prob = NULL) {
+boot.matrix <- function(data, bootstraps = 100, boot.type = "full", boot.by = "rows", rarefaction = FALSE, verbose = FALSE, prob = NULL) {
 
     match_call <- match.call()
     ## ----------------------
@@ -289,7 +289,7 @@ boot.matrix <- function(data, bootstraps = 100, boot.type = "full", boot.by = "r
     ## BOOT.TYPE
     check.class(boot.type, "character")
     boot.type <- tolower(boot.type)
-    check.length(boot.type, 1, " must be a single character string")
+    check.length(boot.type, 1, " must be one of the following: full, single, null.")
     
     ## Must be one of these methods
     check.method(boot.type, c("full", "single", "null"), "boot.type")
@@ -327,7 +327,7 @@ boot.matrix <- function(data, bootstraps = 100, boot.type = "full", boot.by = "r
     )
 
     ## Select the bootstrap dimensions
-    check.length(boot.by, 1, " must be a single character string")
+    check.length(boot.by, 1, " must be one of the following: rows, columns, both.")
     check.method(boot.by, c("rows", "columns", "both"), "boot.by")
 
     ## Add the dimensions to the call
@@ -377,13 +377,13 @@ boot.matrix <- function(data, bootstraps = 100, boot.type = "full", boot.by = "r
                                         ## Fun 3: Split the data per tree
                                         do.split.subsets, n_trees = n_trees),
                                     ## Fun 2: Apply the bootstraps
-                                    lapply, bootstrap.wrapper, bootstraps_per_tree, rarefaction, boot.type.fun, verbose),
+                                    lapply, bootstrap.wrapper, bootstraps = bootstraps_per_tree, rarefaction = rarefaction, boot.type.fun = boot.type.fun, verbose = verbose, all.elements = all_elements, boot.by = boot.by),
                                 ## Fun 1: Merge into one normal bootstrap table
                                 merge.to.list
                             )
     } else {
         ## Bootstrap the data set 
-        bootstrap_results <- lapply(data$subsets, bootstrap.wrapper, bootstraps, rarefaction, boot.type.fun, boot.by, verbose, all.elements = all_elements)
+        bootstrap_results <- lapply(data$subsets, bootstrap.wrapper, bootstraps = bootstraps, rarefaction = rarefaction, boot.type.fun = boot.type.fun, verbose = verbose, all.elements = all_elements, boot.by = boot.by)
     }
     if(verbose) message("Done.", appendLF = FALSE)
 
@@ -391,7 +391,7 @@ boot.matrix <- function(data, bootstraps = 100, boot.type = "full", boot.by = "r
     data$subsets <- mapply(combine.bootstraps, bootstrap_results, data$subsets, SIMPLIFY = FALSE)
 
     ## Adding the call information about the bootstrap
-    data$call$bootstrap <- c(bootstraps, boot.type, list(rare_out))
+    data$call$bootstrap <- c(bootstraps, boot.type, list(rare_out), boot.by)
 
     return(data)
 }

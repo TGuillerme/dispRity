@@ -69,7 +69,7 @@ boot.single.proba <- function(elements, rarefaction, all.elements) {
 }
 
 ## Performs bootstrap on one subsets and all rarefaction levels
-replicate.bootstraps <- function(rarefaction, bootstraps, subsets, boot.type.fun, boot.by, all.elements) {
+replicate.bootstraps <- function(rarefaction, bootstraps, subsets, boot.type.fun, all.elements, boot.by = "rows") {
     verbose_place_holder <- FALSE
 
     if(boot.by != "columns") {
@@ -95,12 +95,12 @@ replicate.bootstraps <- function(rarefaction, bootstraps, subsets, boot.type.fun
 }
 
 ## Performs bootstrap on multiple subsets and all rarefaction levels
-bootstrap.wrapper <- function(subsets, bootstraps, rarefaction, boot.type.fun, verbose, all.elements) {
+bootstrap.wrapper <- function(subsets, bootstraps, rarefaction, boot.type.fun, verbose, all.elements, boot.by = "rows") {
     if(verbose) {
         ## Making the verbose version of disparity.bootstraps
         body(replicate.bootstraps)[[2]] <- substitute(message(".", appendLF = FALSE))
     }
-    return(lapply(select.rarefaction(subsets, rarefaction), replicate.bootstraps, bootstraps, subsets, boot.type.fun, boot.by, all.elements))
+    return(lapply(select.rarefaction(subsets, rarefaction), replicate.bootstraps, bootstraps, subsets, boot.type.fun, all.elements, boot.by))
 }
 
 ## Rarefaction levels selection

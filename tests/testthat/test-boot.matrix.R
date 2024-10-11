@@ -564,9 +564,31 @@ test_that("boot.matrix null works", {
 
 test_that("boot.matrix works for boot.type", {
 
+    data <- matrix(rnorm(50), 10, 5, dimnames = list(letters[1:10]))
+    dist <- as.matrix(dist(matrix(rnorm(45), 9, 5, dimnames = list(letters[1:9]))))
+
+    error <- capture_error(test <- boot.matrix(data, bootstraps = 3, boot.by = "brows"))
+    expect_equal(error[[1]], "boot.by must be one of the following: rows, columns, both.")
+    error <- capture_error(test <- boot.matrix(data, bootstraps = 3, boot.by = c("rows", "columns")))
+    expect_equal(error[[1]], "boot.by must be one of the following: rows, columns, both.")
+
     ## Simple
-    ## TODO By columns
-    ## TODO By both
+    test <- boot.matrix(data, bootstraps = 3, boot.by = "rows")
+    expect_equal(test$subsets[[1]]$elements, matrix(1:10, 10, 1))
+    expect_equal(dim(test$subsets[[1]][[2]]), c(10, 3))
+    expect_equal(test$call$bootstrap[[4]], "rows")
+    ## By columns
+    # test <- boot.matrix(data, bootstraps = 3, boot.by = "columns")
+    # expect_equal(test$subsets[[1]]$elements, matrix(1:5, 5, 1))
+    # expect_equal(dim(test$subsets[[1]][[2]]), c(5, 3))
+    # expect_equal(test$call$bootstrap[[4]], "columns")
+    # ## By both
+    # test <- boot.matrix(data, bootstraps = 3, boot.by = "both")
+    # expect_equal(test$subsets[[1]]$elements, matrix(1:9, 9, 1))
+    # expect_equal(dim(test$subsets[[1]][[2]]), c(9, 3))
+    # expect_equal(test$call$bootstrap[[4]], "both")
+
+
 
     ## With rarefaction
     ## TODO By columns
