@@ -135,6 +135,10 @@ boot.matrix <- function(data, bootstraps = 100, boot.type = "full", boot.by = "r
     }
 
     check.class(verbose, "logical")
+    ## Select the bootstrap dimensions
+    check.length(boot.by, 1, " must be one of the following: rows, columns, both.")
+    check.method(boot.by, c("rows", "columns", "both"), "boot.by")
+
 
     ## If is multi lapply the stuff
     if((!is.null(data$call$dispRity.multi) && data$call$dispRity.multi) || is_multi) {
@@ -159,6 +163,7 @@ boot.matrix <- function(data, bootstraps = 100, boot.type = "full", boot.by = "r
         if(verbose) message("Done.", appendLF = FALSE)
         return(output)
     }
+
 
     ## Data must contain a first "bootstrap" (empty list)
     if(length(data$subsets) == 0) {
@@ -325,10 +330,6 @@ boot.matrix <- function(data, bootstraps = 100, boot.type = "full", boot.by = "r
             }
         }
     )
-
-    ## Select the bootstrap dimensions
-    check.length(boot.by, 1, " must be one of the following: rows, columns, both.")
-    check.method(boot.by, c("rows", "columns", "both"), "boot.by")
 
     ## Add the dimensions to the call
     if(is.null(data$call$dimensions)) {

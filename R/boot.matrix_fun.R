@@ -100,12 +100,16 @@ bootstrap.wrapper <- function(subsets, bootstraps, rarefaction, boot.type.fun, v
         ## Making the verbose version of disparity.bootstraps
         body(replicate.bootstraps)[[2]] <- substitute(message(".", appendLF = FALSE))
     }
-    return(lapply(select.rarefaction(subsets, rarefaction), replicate.bootstraps, bootstraps, subsets, boot.type.fun, all.elements, boot.by))
+    return(lapply(select.rarefaction(subsets, rarefaction, all.elements, boot.by), replicate.bootstraps, bootstraps, subsets, boot.type.fun, all.elements, boot.by))
 }
 
 ## Rarefaction levels selection
-select.rarefaction <- function(subsets, rarefaction) {
-    return(as.list(unique(c(nrow(subsets$elements), rarefaction[which(rarefaction <= nrow(subsets$elements))]))))
+select.rarefaction <- function(subsets, rarefaction, all.elements, boot.by) {
+    if(boot.by != "columns") {
+        return(as.list(unique(c(nrow(subsets$elements), rarefaction[which(rarefaction <= nrow(subsets$elements))]))))
+    } else {
+        return(as.list(unique(c(length(all.elements), rarefaction[which(rarefaction <= length(all.elements))]))))
+    }
 }
 
 ## Combine bootstrap results into a dispRity object
