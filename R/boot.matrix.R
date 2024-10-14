@@ -352,7 +352,7 @@ boot.matrix <- function(data, bootstraps = 100, boot.type = "full", boot.by = "r
     ## Switch all the elements
     if(boot.by != "columns") {
         ## elements are rows (or both)
-        all_elements <- 1:dim(data$matrix[[1]])[1]
+        all_elements <- matrix(1:dim(data$matrix[[1]])[1], ncol = 1)
     } else {
         ## elements are columns
         if(!probabilistic_subsets) {

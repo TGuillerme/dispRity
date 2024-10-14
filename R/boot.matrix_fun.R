@@ -18,7 +18,7 @@ elements.sampler <- function(elements) {
 
 ## Null bootstrap replacement
 boot.null <- function(elements, rarefaction, all.elements) {
-    if(is.na(elements[1,2])) {
+    if(dim(elements)[2] > 1) {
         return(sample(all.elements[,1], rarefaction, prob = all.elements[,3], replace = TRUE))
     } else {
         return(sample(all.elements[,1], rarefaction, replace = TRUE))
