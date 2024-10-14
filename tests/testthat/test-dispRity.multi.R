@@ -239,7 +239,7 @@ test_that("dispRity.multi works for boot.matrix", {
     expect_equal(capture.output(test), c(
         " ---- dispRity object ---- ",
         "19 elements in 2 separated matrices with 1 dimensions.",
-        "Data was bootstrapped 7 times (method:\"full\")." 
+        "Rows were bootstrapped 7 times (method:\"full\")." 
     ))
 
     # expect_warning(write <- capture_messages(test <- boot.matrix(data, bootstraps = 5, verbose = TRUE, boot.type = "single")))
@@ -342,18 +342,18 @@ test_that("dispRity.multi works for dispRity", {
     tree[[2]] <- makeNodeLabel(tree[[2]], prefix = "shnode")
     tree[[1]]$root.time <- max(tree.age(tree[[1]])$ages)
     tree[[2]]$root.time <- max(tree.age(tree[[2]])$ages)
-    data <- list(matrix(0, nrow = Ntip(tree[[1]]) + Nnode(tree[[1]]), dimnames = list(c(tree[[1]]$tip.label, tree[[1]]$node.label))),
-                 matrix(0, nrow = Ntip(tree[[2]]) + Nnode(tree[[2]]), dimnames = list(c(tree[[2]]$tip.label, tree[[2]]$node.label))))
+    data <- list(matrix(0, ncol = 3, nrow = Ntip(tree[[1]]) + Nnode(tree[[1]]), dimnames = list(c(tree[[1]]$tip.label, tree[[1]]$node.label))),
+                 matrix(0, ncol = 3, nrow = Ntip(tree[[2]]) + Nnode(tree[[2]]), dimnames = list(c(tree[[2]]$tip.label, tree[[2]]$node.label))))
 
     ## Test working fine
-    expect_warning(boot_matrix <- boot.matrix(data, bootstraps = 7))
+    expect_warning(boot_matrix <- boot.matrix(data, bootstraps = 7, boot.by = "columns"))
     test <- dispRity(boot_matrix, metric = centroids)
     expect_is(test, c("dispRity"))
     expect_equal(names(test), c("matrix", "tree", "call", "subsets", "disparity"))
     expect_equal(capture.output(test), c(
         " ---- dispRity object ---- ",
-        "19 elements in 2 separated matrices with 1 dimensions.",
-        "Data was bootstrapped 7 times (method:\"full\").",
+        "19 elements in 2 separated matrices with 3 dimensions.",
+        "Columns were bootstrapped 7 times (method:\"full\").",
         "Disparity was calculated as: centroids." 
     ))
     expect_null(plot(test))

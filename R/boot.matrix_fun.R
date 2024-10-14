@@ -110,7 +110,7 @@ select.rarefaction <- function(subsets, rarefaction, all.elements, boot.by = "ro
     if(boot.by != "columns") {
         return(as.list(unique(c(nrow(subsets$elements), rarefaction[which(rarefaction <= nrow(subsets$elements))]))))
     } else {
-        return(as.list(unique(c(length(all.elements), rarefaction[which(rarefaction <= length(all.elements))]))))
+        return(as.list(unique(c(dim(all.elements)[1], rarefaction[which(rarefaction <= dim(all.elements)[1])]))))
     }
 }
 

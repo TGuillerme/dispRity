@@ -616,47 +616,48 @@ test_that("boot.matrix works for boot.type", {
 
 
     ## Works with probs
-    # probs <- runif(10)
-    # names(probs) <- rownames(data)
-    # test <- boot.matrix(data, bootstraps = 3, boot.by = "rows", prob = probs)
-    # expect_equal(dim(test$subsets[[1]]$elements), c(10, 3))
-    # expect_equal(dim(test$subsets[[1]][[2]]), c(10, 3))
+    probs <- runif(10)
+    test <- boot.matrix(data, bootstraps = 3, boot.by = "rows", prob = probs)
+    expect_equal(dim(test$subsets[[1]]$elements), c(10, 3))
+    expect_equal(dim(test$subsets[[1]][[2]]), c(10, 3))
 
-    # test <- boot.matrix(data, bootstraps = 3, boot.by = "columns", prob = runif(3))
-    # expect_equal(dim(test$subsets[[1]]$elements), c(10, 1))
-    # expect_equal(dim(test$subsets[[1]][[2]]), c(5, 3))
+    test <- boot.matrix(data, bootstraps = 3, boot.by = "columns", prob = runif(5))
+    expect_equal(dim(test$subsets[[1]]$elements), c(10, 1))
+    expect_equal(dim(test$subsets[[1]][[2]]), c(5, 3))
 
+    ## Works well by never selecting dimension 1, 2 and 3
+    test <- boot.matrix(data, bootstraps = 100, boot.by = "columns", prob = c(0,0,0,1,1))
+    expect_equal(dim(test$subsets[[1]]$elements), c(10, 1))
+    expect_equal(dim(test$subsets[[1]][[2]]), c(5, 100))
+    expect_true(all(c(test$subsets[[1]][[2]]) != 1))
+    expect_true(all(c(test$subsets[[1]][[2]]) != 2))
+    expect_true(all(c(test$subsets[[1]][[2]]) != 3))
 
-    # ## Works with bound trees and matrices
-    # load("bound_test_data.rda")
-    # matrices <- bound_test_data$matrices
-    # trees <- bound_test_data$trees
+    ## Works with bound trees and matrices
+    load("bound_test_data.rda")
+    matrices <- bound_test_data$matrices
+    trees <- bound_test_data$trees
 
-    # no_proba <- chrono.subsets(matrices, tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5, bind.data = TRUE)
-    # proba <- chrono.subsets(matrices, tree = trees, time = 3, method = "continuous", model = "gradual.split", t0 = 5, bind.data = TRUE)
+    no_proba <- chrono.subsets(matrices, tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5, bind.data = TRUE)
+    proba <- chrono.subsets(matrices, tree = trees, time = 3, method = "continuous", model = "gradual.split", t0 = 5, bind.data = TRUE)
     
-    # set.seed(1)
-    # test_proba <- boot.matrix(proba, bootstraps = 6, boot.by = "rows")
-    # expect_equal(dim(test_proba$subsets[[1]][[1]]), c(7, 9))
-    # expect_equal(dim(test_proba$subsets[[1]][[2]]), c(7, 6))
-    # expect_equal(dim(test_proba$subsets[[2]][[1]]), c(8, 9))
-    # expect_equal(dim(test_proba$subsets[[2]][[2]]), c(8, 6))
-    # expect_equal(dim(test_proba$subsets[[3]][[1]]), c(10, 9))
-    # expect_equal(dim(test_proba$subsets[[3]][[2]]), c(10, 6))
-    # expect_equal(test_proba$call$bootstrap[[4]], "rows")
+    set.seed(1)
+    test_proba <- boot.matrix(proba, bootstraps = 6, boot.by = "rows")
+    expect_equal(dim(test_proba$subsets[[1]][[1]]), c(7, 9))
+    expect_equal(dim(test_proba$subsets[[1]][[2]]), c(7, 6))
+    expect_equal(dim(test_proba$subsets[[2]][[1]]), c(8, 9))
+    expect_equal(dim(test_proba$subsets[[2]][[2]]), c(8, 6))
+    expect_equal(dim(test_proba$subsets[[3]][[1]]), c(10, 9))
+    expect_equal(dim(test_proba$subsets[[3]][[2]]), c(10, 6))
+    expect_equal(test_proba$call$bootstrap[[4]], "rows")
 
-
-    # set.seed(1)
-    # test_proba <- boot.matrix(proba, bootstraps = 6, boot.by = "columns")
-    # expect_equal(dim(test_proba$subsets[[1]][[1]]), c(7, 9))
-    # expect_equal(dim(test_proba$subsets[[1]][[2]]), c(3, 6))
-    # expect_equal(dim(test_proba$subsets[[2]][[1]]), c(8, 9))
-    # expect_equal(dim(test_proba$subsets[[2]][[2]]), c(3, 6))
-    # expect_equal(dim(test_proba$subsets[[3]][[1]]), c(10, 9))
-    # expect_equal(dim(test_proba$subsets[[3]][[2]]), c(3, 6))
-    # expect_equal(test_proba$call$bootstrap[[4]], "rows")
-
-
-    # test_no_proba <- boot.matrix(no_proba, bootstraps = 6)
-
+    set.seed(1)
+    test_proba <- boot.matrix(proba, bootstraps = 6, boot.by = "columns")
+    expect_equal(dim(test_proba$subsets[[1]][[1]]), c(7, 9))
+    expect_equal(dim(test_proba$subsets[[1]][[2]]), c(3, 6))
+    expect_equal(dim(test_proba$subsets[[2]][[1]]), c(8, 9))
+    expect_equal(dim(test_proba$subsets[[2]][[2]]), c(3, 6))
+    expect_equal(dim(test_proba$subsets[[3]][[1]]), c(10, 9))
+    expect_equal(dim(test_proba$subsets[[3]][[2]]), c(3, 6))
+    expect_equal(test_proba$call$bootstrap[[4]], "columns")
 })

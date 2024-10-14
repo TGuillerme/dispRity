@@ -206,7 +206,7 @@ boot.matrix <- function(data, bootstraps = 100, boot.type = "full", boot.by = "r
 
             if(is.null(prob_names)) {
                 if(boot.by != "columns") {
-                    prob_names <- names(prob) <- rownames(matrix)
+                    prob_names <- names(prob) <- rownames(data$matrix[[1]])
                 }
             } else {
                 if(is.null(prob_names$names)) {
@@ -358,7 +358,11 @@ boot.matrix <- function(data, bootstraps = 100, boot.type = "full", boot.by = "r
         if(!probabilistic_subsets) {
             all_elements <- matrix(data$call$dimension, ncol = 1)
         } else {
-            all_elements <- cbind(data$call$dimension, NA, prob)
+            if(!is.null(prob)) {
+                all_elements <- cbind(data$call$dimension, NA, prob)
+            } else {
+                all_elements <- cbind(data$call$dimension, NA, rep(1, length(data$call$dimension)))
+            }
         }
     }
 
