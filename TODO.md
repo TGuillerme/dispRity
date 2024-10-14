@@ -5,7 +5,7 @@
  - [ ] run test
  - [ ] compile function index
  - [ ] run CRAN check
-
+ - [ ] RECOMPILE ALL INTERNAL DATASETS
 
 ## bootstrapping dimensions
 
