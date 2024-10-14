@@ -578,15 +578,17 @@ test_that("boot.matrix works for boot.type", {
     expect_equal(dim(test$subsets[[1]][[2]]), c(10, 3))
     expect_equal(test$call$bootstrap[[4]], "rows")
     # By columns
-    # test <- boot.matrix(data, bootstraps = 3, boot.by = "columns")
-    # expect_equal(test$subsets[[1]]$elements, matrix(1:5, 5, 1))
-    # expect_equal(dim(test$subsets[[1]][[2]]), c(5, 3))
-    # expect_equal(test$call$bootstrap[[4]], "columns")
-    # ## By both
-    # test <- boot.matrix(data, bootstraps = 3, boot.by = "both")
-    # expect_equal(test$subsets[[1]]$elements, matrix(1:9, 9, 1))
-    # expect_equal(dim(test$subsets[[1]][[2]]), c(9, 3))
-    # expect_equal(test$call$bootstrap[[4]], "both")
+    test <- boot.matrix(data, bootstraps = 3, boot.by = "columns")
+    expect_equal(test$subsets[[1]]$elements, matrix(1:10, 10, 1))
+    expect_equal(dim(test$subsets[[1]][[2]]), c(5, 3))
+    expect_equal(test$call$bootstrap[[4]], "columns")
+    ## By both
+    warning <- capture_warning(boot.matrix(data, bootstraps = 3, boot.by = "both"))
+    expect_equal(warning[[1]], "boot.matrix is applied to both rows and columns but the input data seems to not be a distance matrix.\nThe resulting bootstraps might not resample it correctly.")
+    test <- boot.matrix(dist, bootstraps = 3, boot.by = "both")
+    expect_equal(test$subsets[[1]]$elements, matrix(1:9, 9, 1))
+    expect_equal(dim(test$subsets[[1]][[2]]), c(9, 3))
+    expect_equal(test$call$bootstrap[[4]], "both")
 
 
 

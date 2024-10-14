@@ -94,6 +94,11 @@ boot.matrix <- function(data, bootstraps = 100, boot.type = "full", boot.by = "r
     is_multi <- FALSE
 
     ## DATA
+
+    ## Check boot.by
+    check.length(boot.by, 1, " must be one of the following: rows, columns, both.")
+    check.method(boot.by, c("rows", "columns", "both"), "boot.by")
+
     ## If class is dispRity, data is serial
     if(!is(data, "dispRity")) {
         ## Data must be a matrix
@@ -101,9 +106,13 @@ boot.matrix <- function(data, bootstraps = 100, boot.type = "full", boot.by = "r
         is_multi <- any(is_multi, data$multi)
         data <- data$matrix
 
-        ## Check whether it is a distance matrix
-        if(check.dist.matrix(data[[1]], just.check = TRUE) && boot.by != "both") {
+        ## Check whether it is a distance matrix (and the boot.by is set to both)
+        dist_check <- check.dist.matrix(data[[1]], just.check = TRUE)
+        if(dist_check && boot.by != "both") {
             warning("boot.matrix is applied on what seems to be a distance matrix.\nThe resulting matrices won't be distance matrices anymore!\nIf this isn't the desired behavior, you can use the argument:\nboot.by = \"both\"", call. = FALSE)
+        }
+        if(!dist_check && boot.by == "both") {
+            warning("boot.matrix is applied to both rows and columns but the input data seems to not be a distance matrix.\nThe resulting bootstraps might not resample it correctly.", call. = FALSE)
         }
 
         ## Creating the dispRity object
@@ -134,11 +143,8 @@ boot.matrix <- function(data, bootstraps = 100, boot.type = "full", boot.by = "r
         }
     }
 
+    ## Check verbose
     check.class(verbose, "logical")
-    ## Select the bootstrap dimensions
-    check.length(boot.by, 1, " must be one of the following: rows, columns, both.")
-    check.method(boot.by, c("rows", "columns", "both"), "boot.by")
-
 
     ## If is multi lapply the stuff
     if((!is.null(data$call$dispRity.multi) && data$call$dispRity.multi) || is_multi) {
@@ -163,7 +169,6 @@ boot.matrix <- function(data, bootstraps = 100, boot.type = "full", boot.by = "r
         if(verbose) message("Done.", appendLF = FALSE)
         return(output)
     }
-
 
     ## Data must contain a first "bootstrap" (empty list)
     if(length(data$subsets) == 0) {
@@ -343,12 +348,6 @@ boot.matrix <- function(data, bootstraps = 100, boot.type = "full", boot.by = "r
     } else {
         ## elements are columns
         all_elements <- data$call$dimension
-    }
-
-    ## Toggle distance mode
-    if(boot.by == "both") {
-        stop("DEBUG: boot.matrix")
-        ## If the bootstraping is on both, use subsets$elements as above but toggle a dist.data somewhere so that dispRity recycles the argument
     }
 
     ## Return object if BS = 0

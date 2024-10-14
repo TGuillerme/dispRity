@@ -75,12 +75,10 @@ replicate.bootstraps <- function(rarefaction, bootstraps, subsets, boot.type.fun
     if(boot.by != "columns") {
         sub_elements <- subsets$elements
     } else {
-        ## Change to something like that if the bootstrapping is on the rows
-        stop("DEBUG: boot.matrix_fun replicate.bootstraps")
-        sub_elements <- subsets$dimensions
+        sub_elements <- matrix(all.elements, ncol = 1)
     }
 
-    if(nrow(sub_elements) == 1) {
+    if(nrow(subsets$elements) == 1) {
         if(length(sub_elements) > 1) {
             ## Bootstrap with element sampler
             return(matrix(replicate(bootstraps, elements.sampler(matrix(sub_elements[1,], nrow = 1))), nrow = 1))
@@ -104,7 +102,7 @@ bootstrap.wrapper <- function(subsets, bootstraps, rarefaction, boot.type.fun, v
 }
 
 ## Rarefaction levels selection
-select.rarefaction <- function(subsets, rarefaction, all.elements, boot.by) {
+select.rarefaction <- function(subsets, rarefaction, all.elements, boot.by = "rows") {
     if(boot.by != "columns") {
         return(as.list(unique(c(nrow(subsets$elements), rarefaction[which(rarefaction <= nrow(subsets$elements))]))))
     } else {
