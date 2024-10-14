@@ -372,9 +372,11 @@ decompose.matrix <- function(one_subsets_bootstrap, fun, data, nrow, use_tree, d
         data_list  <- dist_help
         dimensions <- na.omit(one_subsets_bootstrap)
         bootstrap  <- na.omit(one_subsets_bootstrap)
-        # cat("DEBUG: uses dist_help in decompose.matrix\n")
     } else {
         ## Default setup
+
+        ## Set up the variables depending on the boot.by
+
         data_list  <- data$matrix
         dimensions <- data$call$dimensions
         bootstrap  <- na.omit(one_subsets_bootstrap)

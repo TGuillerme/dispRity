@@ -828,6 +828,39 @@ test_that("dispRity works with the tree component", {
 })
 
 
+test_that("dispRity works with dist.data", {
+
+    set.seed(1)
+    data <- matrix(rnorm(50), 10, 5, dimnames = list(letters[1:10]))
+    dist <- as.matrix(dist(matrix(rnorm(45), 9, 5, dimnames = list(letters[1:9]))))
+    
+    test <- dispRity(data = dist, metric = centroids, dist.data = TRUE)
+
+    ## subsets
+    data <- custom.subsets(dist, group = list(c(1:4), c(5:9)), dist.data = TRUE)
+
+})
+
+test_that("dispRity works with boot.by", {
+    data <- matrix(rnorm(50), 10, 5, dimnames = list(letters[1:10]))
+    dist <- as.matrix(dist(matrix(rnorm(45), 9, 5, dimnames = list(letters[1:9]))))
+
+    
+    ## Simple
+    test <- boot.matrix(data, bootstraps = 3, boot.by = "rows")
+    expect_equal(test$subsets[[1]]$elements, matrix(1:10, 10, 1))
+    expect_equal(dim(test$subsets[[1]][[2]]), c(10, 3))
+    expect_equal(test$call$bootstrap[[4]], "rows")
+    # By columns
+    test <- boot.matrix(data, bootstraps = 3, boot.by = "columns")
+    expect_equal(test$subsets[[1]]$elements, matrix(1:10, 10, 1))
+    expect_equal(dim(test$subsets[[1]][[2]]), c(5, 3))
+    expect_equal(test$call$bootstrap[[4]], "columns")
+    ## By both
+
+})
+
+
 # test_that("dispRity compact works", {
 
 #     compact.matrix <- function(matrix_list) {

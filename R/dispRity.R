@@ -8,7 +8,7 @@
 #' @param tree \code{NULL} (default) or an optional \code{phylo} or \code{multiPhylo} object to be attached to the data. If this argument is not null, it will be recycled by \code{metric} when possible.
 #' @param ... Optional arguments to be passed to the metric.
 #' @param between.groups A \code{logical} value indicating whether to run the calculations between groups (\code{TRUE}) or not (\code{FALSE} - default) or a \code{numeric} list of pairs of groups to run (see details).
-#' @param data.dist A \code{logical} value indicating whether to treat the data as distance data (\code{TRUE}) or not (\code{FALSE} - default).
+#' @param dist.data A \code{logical} value indicating whether to treat the data as distance data (\code{TRUE}) or not (\code{FALSE} - default).
 #' @param verbose A \code{logical} value indicating whether to be verbose or not.
 
 #          @param parallel Optional, either a \code{logical} argument whether to parallelise calculations (\code{TRUE}; the numbers of cores is automatically selected to n-1) or not (\code{FALSE}) or a single \code{numeric} value of the number of cores to use.
@@ -124,7 +124,7 @@
 # start_mem <- mem_used()
 
 
-dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALSE, data.dist = FALSE, verbose = FALSE, tree = NULL){#, parallel) {
+dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALSE, dist.data = FALSE, verbose = FALSE, tree = NULL){#, parallel) {
     ## ----------------------
     ##  SANITIZING
     ## ----------------------
@@ -220,13 +220,13 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
         }
         ## Set up the function to call
         dispRity.int.call <- function(data, tree, metric, dimensions, between.groups, verbose, ...) {
-            return(dispRity.call(data = data, metric = metric, dimensions = dimensions, ..., between.groups = between.groups, data.dist = data.dist, verbose = verbose, tree = tree))
+            return(dispRity.call(data = data, metric = metric, dimensions = dimensions, ..., between.groups = between.groups, dist.data = dist.data, verbose = verbose, tree = tree))
         }
 
         ## Run the apply
         if(verbose) message("Calculating multiple disparities", appendLF = FALSE)
 
-        output <- dispRity.multi.apply(matrices, fun = dispRity.int.call, metric = metric, tree = tree, dimensions = dimensions, between.groups = between.groups, verbose = verbose, ...)
+        output <- dispRity.multi.apply(matrices, fun = dispRity.int.call, metric = metric, tree = tree, dimensions = dimensions, between.groups = between.groups, dist.data = dist.data, verbose = verbose, ...)
         # output <- dispRity.multi.apply(matrices, fun = dispRity.int.call, metric = metric, trees = trees, dimensions = dimensions, between.groups = between.groups, verbose = verbose) ; warning("DEBUG")
         # test <- dispRity.int.call(matrices[[1]], trees[[1]], metric = metric, dimensions = dimensions, between.groups = between.groups, verbose = verbose) ; warning("DEBUG")   
 
@@ -254,7 +254,7 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
 
     ## Get the metric list
     metrics_list <- get.dispRity.metric.handle(metric, match_call, data = data, tree = tree, ...)
-    # metrics_list <- get.dispRity.metric.handle(metric, match_call, data = data, tree = NULL, dist.helper = dist.helper); warning("DEBUG: dispRity")
+    # metrics_list <- get.dispRity.metric.handle(metric, match_call, data = data, tree = NULL); warning("DEBUG: dispRity")
     dist_help <- metrics_list$dist.help
     metric_is_between.groups <- unlist(metrics_list$between.groups)
     metric_has_tree <- unlist(metrics_list$tree)
@@ -307,9 +307,9 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
     check.class(verbose, "logical")
 
     ## Data dist
-    check.class(data.dist, "logical")
-    if(data.dist) {
-        stop("DEBUG dispRity data.dist bit")
+    check.class(dist.data, "logical")
+    if(dist.data) {
+        stop("DEBUG dispRity dist.data bit")
         ## Pass down the data dist information up until the matrix decomposition bits (and there apply it on both rows and columns)
         ## Something like matrix[elements, ] becomes matrix[elements, elements, drop = FALSE]]
     }
@@ -532,7 +532,7 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
 
         ## mapply this
         disparities <- mapply(mapply.wrapper, lapply_loops, splitted_data, 
-                            MoreArgs = list(metrics_list, matrix_decomposition, verbose, metric_has_tree, dist_help, ...),
+                            MoreArgs = list(metrics_list = metrics_list, matrix_decomposition = matrix_decomposition, verbose = verbose, metric_has_tree = metric_has_tree, dist_help = dist_help, dist.data = dist.data, ...),
                             SIMPLIFY = FALSE)
         # disparities <- mapply(mapply.wrapper, lapply_loops, splitted_data, MoreArgs = list(metrics_list, matrix_decomposition, verbose, metric_has_tree, dist_help), SIMPLIFY = FALSE) ; warning("DEBUG dispRity")
         
@@ -544,7 +544,7 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
     } else {
 
         ## Normal disparity lapply
-        disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, metric_has_tree, dist_help, ...)
+        disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list = metrics_list, data = data, matrix_decomposition = matrix_decomposition, verbose = verbose, metric_has_tree = metric_has_tree, dist_help = dist_help, dist.data = dist.data, ...)
         #TG: check out the file disparity_internal_logic.md (located on the root of the package) for explanation about the logic in this lapply
 
         # warning("DEBUG: dispRity")
@@ -605,6 +605,9 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
 
     ## Adding the between groups
     data$call$disparity$metrics$between.groups <- ifelse(is_between.groups, TRUE, FALSE)
+
+    ## Adding the distance
+    data$call$dist.data <- TRUE
 
     if(!is.null(data$call$disparity$metrics$args)) {
         if(length(dots) != 0) {
