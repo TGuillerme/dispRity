@@ -6,7 +6,7 @@
 #' @param bootstraps The number of bootstrap pseudoreplicates (\code{default = 100}).
 #' @param rarefaction Either a \code{logical} value whether to fully rarefy the data, a set of \code{numeric} values used to rarefy the data or \code{"min"} to rarefy at the minimum level (see details).
 #' @param boot.type The bootstrap algorithm to use (\code{default = "full"}; see details).
-#' @param boot.by Which dimension of the data to bootstrap: either \code{"rows"} to bootstrap the elements (default), \code{"columns"} for the dimensions or \code{"both"} for bootstrapping both equally (e.g. for distance matrices).
+#' @param boot.by Which dimension of the data to bootstrap: either \code{"rows"} to bootstrap the elements (default), \code{"columns"} for the dimensions or \code{"dist"} for bootstrapping both equally (e.g. for distance matrices).
 #' @param verbose A \code{logical} value indicating whether to be verbose or not.
 #' @param prob Optional, a \code{matrix} or a \code{vector} of probabilities for each element to be selected during the bootstrap procedure. The \code{matrix} or the \code{vector} must have a row names or names attribute that corresponds to the elements in \code{data}.
 #' 
@@ -96,8 +96,8 @@ boot.matrix <- function(data, bootstraps = 100, boot.type = "full", boot.by = "r
     ## DATA
 
     ## Check boot.by
-    check.length(boot.by, 1, " must be one of the following: rows, columns, both.")
-    check.method(boot.by, c("rows", "columns", "both"), "boot.by")
+    check.length(boot.by, 1, " must be one of the following: rows, columns, dist.")
+    check.method(boot.by, c("rows", "columns", "dist"), "boot.by")
 
     ## If class is dispRity, data is serial
     if(!is(data, "dispRity")) {
@@ -108,10 +108,10 @@ boot.matrix <- function(data, bootstraps = 100, boot.type = "full", boot.by = "r
 
         ## Check whether it is a distance matrix (and the boot.by is set to both)
         dist_check <- check.dist.matrix(data[[1]], just.check = TRUE)
-        if(dist_check && boot.by != "both") {
-            warning("boot.matrix is applied on what seems to be a distance matrix.\nThe resulting matrices won't be distance matrices anymore!\nIf this isn't the desired behavior, you can use the argument:\nboot.by = \"both\"", call. = FALSE)
+        if(dist_check && boot.by != "dist") {
+            warning("boot.matrix is applied on what seems to be a distance matrix.\nThe resulting matrices won't be distance matrices anymore!\nIf this isn't the desired behavior, you can use the argument:\nboot.by = \"dist\"", call. = FALSE)
         }
-        if(!dist_check && boot.by == "both") {
+        if(!dist_check && boot.by == "dist") {
             warning("boot.matrix is applied to both rows and columns but the input data seems to not be a distance matrix.\nThe resulting bootstraps might not resample it correctly.", call. = FALSE)
         }
 
@@ -203,8 +203,11 @@ boot.matrix <- function(data, bootstraps = 100, boot.type = "full", boot.by = "r
 
             ## Check if it has attributes
             prob_names <- attributes(prob)
+
             if(is.null(prob_names)) {
-                stop.call("", "prob argument must have names (vector) or dimnames (matrix) attributes.")
+                if(boot.by != "columns") {
+                    prob_names <- names(prob) <- rownames(matrix)
+                }
             } else {
                 if(is.null(prob_names$names)) {
                     prob_names <- prob_names$dimnames[[1]]
@@ -224,15 +227,17 @@ boot.matrix <- function(data, bootstraps = 100, boot.type = "full", boot.by = "r
             }
 
             ## Check the names
-            if(!all(prob_names %in% rownames(data$matrix[[1]]))) {
-                stop.call(msg.pre = "prob argument contains elements not present in ", call =match_call$data, msg = ".")
-            } else {
-                ## Check if they are any names missing
-                missing_rows <- rownames(data$matrix[[1]]) %in% prob_names
-                if(any(missing_rows)) {
-                    extra_prob <- rep(1, length(which(!missing_rows)))
-                    names(extra_prob) <- rownames(data$matrix[[1]])[!missing_rows]
-                    prob <- c(extra_prob, prob)
+            if(boot.by != "columns") {
+                if(!all(prob_names %in% rownames(data$matrix[[1]]))) {
+                    stop.call(msg.pre = "prob argument contains elements not present in ", call =match_call$data, msg = ".")
+                } else {
+                    ## Check if they are any names missing
+                    missing_rows <- rownames(data$matrix[[1]]) %in% prob_names
+                    if(any(missing_rows)) {
+                        extra_prob <- rep(1, length(which(!missing_rows)))
+                        names(extra_prob) <- rownames(data$matrix[[1]])[!missing_rows]
+                        prob <- c(extra_prob, prob)
+                    }
                 }
             }
 
@@ -247,11 +252,12 @@ boot.matrix <- function(data, bootstraps = 100, boot.type = "full", boot.by = "r
             }
 
             ## Renaming the elements to match the numbers in subsets
-            names(prob) <- match(names(prob), rownames(data$matrix[[1]]))
+            if(boot.by != "columns") {
+                names(prob) <- match(names(prob), rownames(data$matrix[[1]]))
+            }
 
             ## Update the dispRity object
             add.prob <- function(one_subset, prob) {
-
                 col1 <- one_subset$elements
                 col2 <- rep(NA, nrow(one_subset$elements))
                 col3 <- prob[match(one_subset$elements[,1], names(prob))]
@@ -263,7 +269,9 @@ boot.matrix <- function(data, bootstraps = 100, boot.type = "full", boot.by = "r
                 return(one_subset)
             }
 
-            data$subsets <- lapply(data$subsets, add.prob, prob)
+            if(boot.by != "columns") {
+                data$subsets <- lapply(data$subsets, add.prob, prob)
+            }
         }
     }
 
@@ -347,7 +355,11 @@ boot.matrix <- function(data, bootstraps = 100, boot.type = "full", boot.by = "r
         all_elements <- 1:dim(data$matrix[[1]])[1]
     } else {
         ## elements are columns
-        all_elements <- data$call$dimension
+        if(!probabilistic_subsets) {
+            all_elements <- matrix(data$call$dimension, ncol = 1)
+        } else {
+            all_elements <- cbind(data$call$dimension, NA, prob)
+        }
     }
 
     ## Return object if BS = 0

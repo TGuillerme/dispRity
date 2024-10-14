@@ -18,7 +18,11 @@ elements.sampler <- function(elements) {
 
 ## Null bootstrap replacement
 boot.null <- function(elements, rarefaction, all.elements) {
-    return(sample(all.elements, rarefaction, replace = TRUE))
+    if(is.na(elements[1,2])) {
+        return(sample(all.elements[,1], rarefaction, prob = all.elements[,3], replace = TRUE))
+    } else {
+        return(sample(all.elements[,1], rarefaction, replace = TRUE))
+    }
 }
 
 ## Full bootstrap replacement 
@@ -75,7 +79,7 @@ replicate.bootstraps <- function(rarefaction, bootstraps, subsets, boot.type.fun
     if(boot.by != "columns") {
         sub_elements <- subsets$elements
     } else {
-        sub_elements <- matrix(all.elements, ncol = 1)
+        sub_elements <- all.elements
     }
 
     if(nrow(subsets$elements) == 1) {

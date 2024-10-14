@@ -21,7 +21,7 @@ boot.matrix(
 
 \item{boot.type}{The bootstrap algorithm to use (\code{default = "full"}; see details).}
 
-\item{boot.by}{Which dimension of the data to bootstrap: either \code{"rows"} to bootstrap the elements (default), \code{"columns"} for the dimensions or \code{"both"} for bootstrapping both equally (e.g. for distance matrices).}
+\item{boot.by}{Which dimension of the data to bootstrap: either \code{"rows"} to bootstrap the elements (default), \code{"columns"} for the dimensions or \code{"dist"} for bootstrapping both equally (e.g. for distance matrices).}
 
 \item{rarefaction}{Either a \code{logical} value whether to fully rarefy the data, a set of \code{numeric} values used to rarefy the data or \code{"min"} to rarefy at the minimum level (see details).}
 
