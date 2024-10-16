@@ -16,7 +16,8 @@ chrono.subsets(
   FADLAD = NULL,
   verbose = FALSE,
   t0 = FALSE,
-  bind.data = FALSE
+  bind.data = FALSE,
+  dist.data = FALSE
 )
 }
 \arguments{
@@ -39,6 +40,8 @@ chrono.subsets(
 \item{t0}{If \code{time} is a number of samples, whether to start the sampling from the \code{tree$root.time} (\code{TRUE}), or from the first sample containing at least three elements (\code{FALSE} - default) or from a fixed time point (if \code{t0} is a single \code{numeric} value).}
 
 \item{bind.data}{If \code{data} contains multiple matrices and \code{tree} contains the same number of trees, whether to bind the pairs of matrices and the trees (\code{TRUE}) or not (\code{FALSE} - default).}
+
+\item{dist.data}{A \code{logical} value indicating whether to treat the data as distance data (\code{TRUE}) or not (\code{FALSE} - default).}
 }
 \description{
 Splits the data into a chronological (time) subsets list.
