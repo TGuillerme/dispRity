@@ -8,7 +8,7 @@
 #' @param tree \code{NULL} (default) or an optional \code{phylo} or \code{multiPhylo} object to be attached to the data. If this argument is not null, it will be recycled by \code{metric} when possible.
 #' @param ... Optional arguments to be passed to the metric.
 #' @param between.groups A \code{logical} value indicating whether to run the calculations between groups (\code{TRUE}) or not (\code{FALSE} - default) or a \code{numeric} list of pairs of groups to run (see details).
-#' @param dist.data A \code{logical} value indicating whether to treat the data as distance data (\code{TRUE}) or not (\code{FALSE} - default).
+#' @param dist.data A \code{logical} value indicating whether to treat the data as distance data (\code{TRUE}) or not (\code{FALSE}). By default it is set to \code{NULL} and interprets whether to use distance data from \code{data}.
 #' @param verbose A \code{logical} value indicating whether to be verbose or not.
 
 #          @param parallel Optional, either a \code{logical} argument whether to parallelise calculations (\code{TRUE}; the numbers of cores is automatically selected to n-1) or not (\code{FALSE}) or a single \code{numeric} value of the number of cores to use.
@@ -124,7 +124,7 @@
 # start_mem <- mem_used()
 
 
-dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALSE, dist.data = FALSE, verbose = FALSE, tree = NULL){#, parallel) {
+dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALSE, dist.data = NULL, verbose = FALSE, tree = NULL){#, parallel) {
     ## ----------------------
     ##  SANITIZING
     ## ----------------------
@@ -307,12 +307,31 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
     check.class(verbose, "logical")
 
     ## Data dist
-    check.class(dist.data, "logical")
-    if(dist.data) {
-        stop("DEBUG dispRity dist.data bit")
-        ## Pass down the data dist information up until the matrix decomposition bits (and there apply it on both rows and columns)
-        ## Something like matrix[elements, ] becomes matrix[elements, elements, drop = FALSE]]
+    if(is.null(dist.data)) {
+        ## Check if data has distance
+        if(!is.null(data$call$dist.data)) {
+            dist.data <- data$call$dist.data
+        } else {
+            ## Default is not dist.data
+            dist.data <- FALSE
+        }
+        ## Check if bootstraps has distance
+        if(!is.null(data$call$bootstrap) && data$call$bootstrap[[4]] == "dist") {
+            dist.data <- TRUE
+        }
+    } else {
+        ## Check class
+        check.class(dist.data, "logical")
+        ## Check conflict?
+        if(!dist.data) {
+            if((!is.null(data$call$dist.data) && data$call$dist.data) || (!is.null(data$call$bootstrap) && data$call$bootstrap[[4]] == "dist")) {
+                warning(paste0("data.dist is set to FALSE (the data will not be treated as a distance matrix) even though ", match_call$data, " contains distance treated data."))
+            }
+        }
     }
+
+    ## Check do_by.col from bootstraps
+    do_by.col <- ifelse(!is.null(data$call$boostrap) && data$call$bootstap[[4]] == "columns", TRUE, FALSE)
 
     ## Serial
     is_between.groups <- FALSE
@@ -532,7 +551,14 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
 
         ## mapply this
         disparities <- mapply(mapply.wrapper, lapply_loops, splitted_data, 
-                            MoreArgs = list(metrics_list = metrics_list, matrix_decomposition = matrix_decomposition, verbose = verbose, metric_has_tree = metric_has_tree, dist_help = dist_help, dist.data = dist.data, ...),
+                            MoreArgs = list(metrics_list         = metrics_list,
+                                            matrix_decomposition = matrix_decomposition,
+                                            verbose              = verbose,
+                                            metric_has_tree      = metric_has_tree,
+                                            dist_help            = dist_help,
+                                            dist.data            = dist.data,
+                                            do_by.col            = do_by.col,
+                                            ...),
                             SIMPLIFY = FALSE)
         # disparities <- mapply(mapply.wrapper, lapply_loops, splitted_data, MoreArgs = list(metrics_list, matrix_decomposition, verbose, metric_has_tree, dist_help), SIMPLIFY = FALSE) ; warning("DEBUG dispRity")
         
@@ -542,13 +568,21 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
                             recursive = FALSE)
         names(disparity) <- names(disparities[[1]])
     } else {
-
         ## Normal disparity lapply
-        disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list = metrics_list, data = data, matrix_decomposition = matrix_decomposition, verbose = verbose, metric_has_tree = metric_has_tree, dist_help = dist_help, dist.data = dist.data, ...)
+        disparity <- lapply(lapply_loop, lapply.wrapper,
+                            metrics_list         = metrics_list,
+                            data                 = data,
+                            matrix_decomposition = matrix_decomposition,
+                            verbose              = verbose,
+                            metric_has_tree      = metric_has_tree,
+                            dist_help            = dist_help,
+                            dist.data            = dist.data,
+                            do_by.col            = do_by.col,
+                            ...)
         #TG: check out the file disparity_internal_logic.md (located on the root of the package) for explanation about the logic in this lapply
 
         # warning("DEBUG: dispRity")
-        # disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, metric_has_tree, dist_help)
+        # disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list = metrics_list, data = data, matrix_decomposition = matrix_decomposition, verbose = verbose, metric_has_tree = metric_has_tree, dist_help = dist_help, dist.data = dist.data)
 
         ## If multiple matrices, split the resulting output into columns
     }
