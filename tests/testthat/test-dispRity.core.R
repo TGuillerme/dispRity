@@ -903,23 +903,27 @@ test_that("dispRity works with boot.by = columns", {
     ## Toggle do_by.col in dispRity
     ## Then pass it to lapply wrapper to change the variable by.col from NULL do subset$elements.
 
+    set.seed(1)
+    data <- matrix(rnorm(50), 10, 5, dimnames = list(letters[1:10]))
+    cust <- custom.subsets(data, group = list(c(1:4), c(5:10)))
 
-    # data <- matrix(rnorm(50), 10, 5, dimnames = list(letters[1:10]))
-    # dist <- as.matrix(dist(matrix(rnorm(45), 9, 5, dimnames = list(letters[1:9]))))
+    set.seed(1)
+    boot_test1 <- boot.matrix(cust, bootstraps = 3, boot.by = "rows")
+    expect_equal(boot_test1$subsets[[1]]$elements, matrix(1:4, 4, 1))
+    expect_equal(dim(boot_test1$subsets[[1]][[2]]), c(4, 3))
+    expect_equal(boot_test1$subsets[[2]]$elements, matrix(5:10, 6, 1))
+    expect_equal(dim(boot_test1$subsets[[2]][[2]]), c(6, 3))
+    expect_equal(boot_test1$call$bootstrap[[4]], "rows")
+    expect_equal(summary(dispRity(boot_test1, metric = centroids))$bs.median, c(1.086, 1.156))
 
-    
-    # ## Simple
-    # test <- boot.matrix(data, bootstraps = 3, boot.by = "rows")
-    # expect_equal(test$subsets[[1]]$elements, matrix(1:10, 10, 1))
-    # expect_equal(dim(test$subsets[[1]][[2]]), c(10, 3))
-    # expect_equal(test$call$bootstrap[[4]], "rows")
-    # # By columns
-    # test <- boot.matrix(data, bootstraps = 3, boot.by = "columns")
-    # expect_equal(test$subsets[[1]]$elements, matrix(1:10, 10, 1))
-    # expect_equal(dim(test$subsets[[1]][[2]]), c(5, 3))
-    # expect_equal(test$call$bootstrap[[4]], "columns")
-    ## By both
-
+    set.seed(1)
+    boot_test2 <- boot.matrix(cust, bootstraps = 3, boot.by = "columns")
+    expect_equal(boot_test2$subsets[[1]]$elements, matrix(1:4, 4, 1))
+    expect_equal(dim(boot_test2$subsets[[1]][[2]]), c(5, 3))
+    expect_equal(boot_test2$subsets[[2]]$elements, matrix(5:10, 6, 1))
+    expect_equal(dim(boot_test2$subsets[[2]][[2]]), c(5, 3))
+    expect_equal(boot_test2$call$bootstrap[[4]], "columns")
+    expect_equal(summary(dispRity(boot_test2, metric = centroids))$bs.median, c(1.919, 1.337))
 })
 
 

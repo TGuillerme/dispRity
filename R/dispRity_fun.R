@@ -374,16 +374,16 @@ decompose.matrix <- function(one_subsets_bootstrap, fun, data, nrow, use_tree, d
         dist.data <- TRUE
     } else {
         data_list  <- data$matrix
+    
     }
     ## Select the dimensions
     if(dist.data) {
         bootstrap  <- dimensions <- na.omit(one_subsets_bootstrap)
     } else {
         if(!is.null(by.col)) {
-            stop("DEBUG: dispRity_fun::decompose.matrix")
             ## Dimensions is bootstrap if not elements.
             dimensions <- na.omit(one_subsets_bootstrap)
-            bootstrap <- by.col 
+            bootstrap <- na.omit(by.col) 
         } else {
             ## Base bootstrap use
             dimensions <- data$call$dimensions
@@ -566,6 +566,8 @@ lapply.wrapper <- function(subsets, metrics_list, data, matrix_decomposition, ve
     if(do_by.col) {
         ## Get the elements and pass them on
         by.col <- subsets$elements
+        ## Replace the first subset (elements) by the data dimensions
+        subsets$elements <- matrix(data$call$dimensions, ncol = 1)
     } else {
         ## Don't pass anything
         by.col <- NULL

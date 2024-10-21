@@ -331,7 +331,7 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
     }
 
     ## Check do_by.col from bootstraps
-    do_by.col <- ifelse(!is.null(data$call$boostrap) && data$call$bootstap[[4]] == "columns", TRUE, FALSE)
+    do_by.col <- ifelse(!is.null(data$call$bootstrap) && data$call$bootstrap[[4]] == "columns", TRUE, FALSE)
 
     ## Serial
     is_between.groups <- FALSE
