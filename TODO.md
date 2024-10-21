@@ -13,7 +13,7 @@
 
  - [x] implement checks for what
  - [x] implement checks for dimensions (can now be integer or numeric - number to bootstrap)
- - [ ] update the dispRity pipeline to call the bootstrapped dimensions.
+ - [x] update the dispRity pipeline to call the bootstrapped dimensions.
  - [ ] documentation
  - [ ] test
  - [ ] add sampling probabilities tutorial
@@ -39,11 +39,11 @@
 
 ## Generalise pipeline for distance matrices.
 
- - [ ] add an option `keep.distance = TRUE` to `dispRity` which does:
-    - [ ] detect data as a distance matrix or not
-    - [ ] if yes + `keep.distance = TRUE` OR if no + `keep.distance = TRUE` + RAM.helper + distance based metric -> apply bootstrap or anything on rows and columns
-    - [ ] if no, then old behaviour.
-    - [ ] flag new default with warning messages when detecting if yes. "Data is considered as a distance matrix and analysed by keeping the distances (toggle off using `keep.distances = FALSE`").
+ - [x] add an option `keep.distance = TRUE` to `dispRity` which does:
+    - [x] detect data as a distance matrix or not
+    - [x] if yes + `keep.distance = TRUE` OR if no + `keep.distance = TRUE` + RAM.helper + distance based metric -> apply bootstrap or anything on rows and columns
+    - [x] if no, then old behaviour.
+    - [x] flag new default with warning messages when detecting if yes. "Data is considered as a distance matrix and analysed by keeping the distances (toggle off using `keep.distances = FALSE`").
 
 
 ## Update `dispRity.dtt` to work properly
