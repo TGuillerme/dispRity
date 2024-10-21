@@ -11,10 +11,8 @@
 
  * **New argument** for `boot.matrix`: `what` to specify whether to bootstrap rows (`"rows"` - the default), columns (`"columns"`) or both (`c("rows", "columns")`). Thanks to Gavin Thomas for this suggestion.
 
- - [ ] implement checks for what
- - [ ] implement checks for dimensions (can now be integer or numeric - number to bootstrap)
- - [ ] implement checks for boot.type (can now also be a named vector like boot.type = c("rows" = "full", "columns" = "single")) (else it's used for both "what" if both are called)
- - [ ] update the dimensions element to be able to accommodate bootstrapped dimensions.
+ - [x] implement checks for what
+ - [x] implement checks for dimensions (can now be integer or numeric - number to bootstrap)
  - [ ] update the dispRity pipeline to call the bootstrapped dimensions.
  - [ ] documentation
  - [ ] test
