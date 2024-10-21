@@ -146,6 +146,8 @@ boot.matrix <- function(data, bootstraps = 100, boot.type = "full", boot.by = "r
     ## Check boot.by and data
     if(!is.null(data$call$dist.data) && data$call$dist.data && boot.by != "dist") {
         warning(paste0("boot.by not set to \"dist\" (the data will not be treated as a distance matrix) even though ", match_call$data, " contains distance treated data."))
+        ## Toggling data dist
+        data$call$dist.data <- FALSE
     }
     
     ## Check verbose

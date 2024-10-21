@@ -883,11 +883,11 @@ test_that("dispRity works with dist.data", {
     warn <- capture_warning(boot.matrix(cust))
     expect_equal(warn[[1]], "boot.by not set to \"dist\" (the data will not be treated as a distance matrix) even though cust contains distance treated data.")
     set.seed(1)
-    expect_warning(boot_data <- boot.matrix(cust))
+    expect_warning(boot_data <- boot.matrix(cust, boot.by = "rows"))
     set.seed(1)
     boot_dist <- boot.matrix(cust, boot.by = "dist")
-    expect_equal(summary(dispRity(data = boot_dist, metric = centroids))$bs.median, c(2.173, 2.768))
-    expect_equal(summary(dispRity(data = boot_data, metric = centroids))$bs.median, c(2.103, 3.140))
+    expect_equal(summary(dispRity(data = boot_dist, metric = centroids))$obs.median, c(2.163, 2.925))
+    expect_equal(summary(dispRity(data = boot_data, metric = centroids))$obs.median, c(2.679, 3.268))
 
     expect_warning(cust <- custom.subsets(dist, group = list(c(1:4), c(5:9))))
     set.seed(1)
@@ -896,7 +896,6 @@ test_that("dispRity works with dist.data", {
     boot_dist <- boot.matrix(cust, boot.by = "dist")
     expect_equal(summary(dispRity(data = boot_dist, metric = centroids))$bs.median, c(2.103, 3.140))
     expect_equal(summary(dispRity(data = boot_data, metric = centroids))$bs.median, c(2.173, 2.768))
-
 })
 
 test_that("dispRity works with boot.by = columns", {
