@@ -417,7 +417,8 @@ test_that("custom.subsets detects distance matrices", {
 
     expect_warning(custom.subsets(is_dist, group = list(letters[1:5], letters[6:10])))
     msg <- capture_warnings(custom.subsets(is_dist, group = list(letters[1:5], letters[6:10])))
-    expect_equal(msg, "custom.subsets is applied on what seems to be a distance matrix.\nThe resulting matrices won't be distance matrices anymore!")
+    expect_equal(msg, "custom.subsets is applied on what seems to be a distance matrix.\nThe resulting matrices won't be distance matrices anymore!\nYou can use dist.data = TRUE, if you want to keep the data as a distance matrix.")
+
 })
 
 test_that("custom.subsets works with tree", {
