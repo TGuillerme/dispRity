@@ -316,7 +316,7 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
             dist.data <- FALSE
         }
         ## Check if bootstraps has distance
-        if(!is.null(data$call$bootstrap) && data$call$bootstrap[[4]] == "dist") {
+        if(!is.null(data$call$bootstrap) && length(data$call$bootstrap) > 3 && data$call$bootstrap[[4]] == "dist") {
             dist.data <- TRUE
         }
     } else {
@@ -324,14 +324,14 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
         check.class(dist.data, "logical")
         ## Check conflict?
         if(!dist.data) {
-            if((!is.null(data$call$dist.data) && data$call$dist.data) || (!is.null(data$call$bootstrap) && data$call$bootstrap[[4]] == "dist")) {
+            if((!is.null(data$call$dist.data) && data$call$dist.data) || (!is.null(data$call$bootstrap) && length(data$call$bootstrap) > 3 && data$call$bootstrap[[4]] == "dist")) {
                 warning(paste0("data.dist is set to FALSE (the data will not be treated as a distance matrix) even though ", match_call$data, " contains distance treated data."))
             }
         }
     }
 
     ## Check do_by.col from bootstraps
-    do_by.col <- ifelse(!is.null(data$call$bootstrap) && data$call$bootstrap[[4]] == "columns", TRUE, FALSE)
+    do_by.col <- ifelse(!is.null(data$call$bootstrap) && length(data$call$bootstrap) > 3 && data$call$bootstrap[[4]] == "columns", TRUE, FALSE)
 
     ## Serial
     is_between.groups <- FALSE

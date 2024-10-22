@@ -336,7 +336,7 @@ print.dispRity <- function(x, all = FALSE, ...) {
                 if(x$call$bootstrap[[2]] == "covar") {
                     cat(paste0("Data is based on ", length(x$covar[[1]]), " posterior sample", ifelse(length(x$covar[[1]]) > 1, "s","")))
                 } else {
-                    if(!is.null(x$call$bootstrap[[4]])) {
+                    if(length(x$call$bootstrap) > 3 && !is.null(x$call$bootstrap[[4]])) {
                         cat(paste(ifelse(x$call$bootstrap[[4]] == "dist", "Rows and columns",paste(toupper(substr(x$call$bootstrap[[4]], 1, 1)), substr(x$call$bootstrap[[4]], 2, nchar(x$call$bootstrap[[4]])), sep="")), " were bootstrapped ", x$call$bootstrap[[1]], " times (method:\"", x$call$bootstrap[[2]], "\")", sep = ""))
                     } else {
                         cat(paste("Rows were bootstrapped ", x$call$bootstrap[[1]], " times (method:\"", x$call$bootstrap[[2]], "\")", sep = ""))
