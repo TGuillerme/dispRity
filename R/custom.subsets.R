@@ -81,7 +81,7 @@ custom.subsets <- function(data, group, tree = NULL, dist.data = FALSE) {
             tree <- NULL
         }
         ## Apply the custom.subsets
-        return(dispRity.multi.apply(matrices, fun = custom.subsets, group = group, tree = tree))
+        return(dispRity.multi.apply(matrices, fun = custom.subsets, group = group, tree = tree, dist.data = dist.data))
     } else {
         if(!is.null(tree)) {
             tree <- data$tree

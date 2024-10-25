@@ -219,7 +219,7 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
             body(dispRity.call)[[start_verbose]] <- body(dispRity.call)[[end_verbose]] <- substitute(empty_line <- NULL)
         }
         ## Set up the function to call
-        dispRity.int.call <- function(data, tree, metric, dimensions, between.groups, verbose, ...) {
+        dispRity.int.call <- function(data, tree, metric, dimensions, between.groups, dist.data, verbose, ...) {
             return(dispRity.call(data = data, metric = metric, dimensions = dimensions, ..., between.groups = between.groups, dist.data = dist.data, verbose = verbose, tree = tree))
         }
 
@@ -227,8 +227,8 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
         if(verbose) message("Calculating multiple disparities", appendLF = FALSE)
 
         output <- dispRity.multi.apply(matrices, fun = dispRity.int.call, metric = metric, tree = tree, dimensions = dimensions, between.groups = between.groups, dist.data = dist.data, verbose = verbose, ...)
-        # output <- dispRity.multi.apply(matrices, fun = dispRity.int.call, metric = metric, trees = trees, dimensions = dimensions, between.groups = between.groups, verbose = verbose) ; warning("DEBUG")
-        # test <- dispRity.int.call(matrices[[1]], trees[[1]], metric = metric, dimensions = dimensions, between.groups = between.groups, verbose = verbose) ; warning("DEBUG")   
+        # output <- dispRity.multi.apply(matrices, fun = dispRity.int.call, metric = metric, trees = trees, dimensions = dimensions, between.groups = between.groups, verbose = verbose, dist.data = dist.data) ; warning("DEBUG")
+        # test <- dispRity.int.call(matrices[[1]], trees[[1]], metric = metric, dimensions = dimensions, between.groups = between.groups, verbose = verbose, dist.data = dist.data) ; warning("DEBUG")   
 
         if(verbose) message("Done.\n", appendLF = FALSE)
 
