@@ -254,7 +254,7 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
 
     ## Get the metric list
     metrics_list <- get.dispRity.metric.handle(metric, match_call, data = data, tree = tree, ...)
-    # metrics_list <- get.dispRity.metric.handle(metric, match_call, data = data, tree = NULL); warning("DEBUG: dispRity")
+    # metrics_list <- get.dispRity.metric.handle(metric, match_call, data = data, tree = NULL); warning("DEBUG: dispRity 257")
     dist_help <- metrics_list$dist.help
     metric_is_between.groups <- unlist(metrics_list$between.groups)
     metric_has_tree <- unlist(metrics_list$tree)
@@ -639,9 +639,6 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
 
     ## Adding the between groups
     data$call$disparity$metrics$between.groups <- ifelse(is_between.groups, TRUE, FALSE)
-
-    ## Adding the distance
-    data$call$dist.data <- TRUE
 
     if(!is.null(data$call$disparity$metrics$args)) {
         if(length(dots) != 0) {
