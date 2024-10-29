@@ -16,16 +16,8 @@ dispRity v1.9 (2024-06-06)  *distant update*
 ### NEW FEATURES
  * Redesigned `multi.ace` to be more modular and handle both continuous and/or discrete characters. Changes include a **change in argument name** from `castor.options` to the generic `options.args` (the options can be provided the same way as before though); and a **change in default arguments** for `models` which can now be left missing (previously was `"ER"`) and applies `"ER"` and `"BM"` for respectively discrete and continuous characters by default.
  * New design when using distance matrices: `dist.helper` now allows to save distance matrices in the cache, saving a lot of RAM and speeding up calculations. You can use the helper using `dispRity(..., dist.helper = my_distance_function)` or `dispRity(..., dist.helper = my_distance_matrix)`.
-
-
-
- * *New bootstrap options*
-
- 
-
-
- * Redesigned `dispRity` and associated functions to now work on distance matrices while keeping the distance matrix properties (using `keep.distance = TRUE` as a default option - toggle back to `FALSE` to use previous behaviour).
-
+ * *New dispRity, custom.subsets and chrono.subsets option*: these three functions can now use `dist.data = TRUE` to specify that the input data is a distance matrix (and handle it accordingly).
+ * *New bootstrap options*: you can now use `boot.by` to specify whether bootstrap the rows (previous behaviour), the columns or both (for distance matrices).
 
  * Redesigned `dispRity.dtt` to be closely a 1 to 1 interface of `geiger::dtt` with default options.
 

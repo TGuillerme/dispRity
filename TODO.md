@@ -5,7 +5,7 @@
  - [ ] run test
  - [ ] compile function index
  - [ ] run CRAN check
- - [ ] RECOMPILE ALL INTERNAL DATASETS
+ - [x] RECOMPILE ALL INTERNAL DATASETS
 
 ## bootstrapping dimensions
 
@@ -51,11 +51,16 @@
 
 ## Vignettes and manual
 
- - [ ] make a MCMCglmm related standalone vignette
- - [ ] make a morpho disparity (Claddis) standalone vignette
+ - [ ] add a summary of specific methods.
+ - [ ] make a dispRity.multi vignette
  - [ ] make a dist.help section in the manual
  - [ ] update the bootstrap section in the manual with the dimensions
  - [x] add `count.neigbhours` to the metrics section (*New metric*: `count.neighbours` to count the number of neighbours for each elements within a certain radius (thanks to Rob MacDonald for the suggestion).)
+
+ - [ ] make a MCMCglmm related standalone vignette
+ - [ ] make a morpho disparity (Claddis) standalone vignette
+
+
 
 ## Minor improvements:
   * Make roundness work for non-VCV matrices (specify the axis function, e.g. variances or quantiles).
