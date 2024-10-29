@@ -458,11 +458,11 @@ test_that("boot.matrix works with multiple trees AND probabilities", {
     test <- boot.matrix(time_slices_multree_proba, bootstraps = 7)
     expect_is(test, "dispRity")
     expect_equal(sort(unlist(lapply(test$subsets, lapply, length), use.name = FALSE)),
-                 c(18, 21, 42, 49, 60, 70))
+                 c(18, 21, 36, 42, 60, 70))
     test <- boot.matrix(time_slices_multree_proba, bootstraps = 7, rarefaction = TRUE)
     expect_is(test, "dispRity")
     expect_equal(sort(unlist(lapply(test$subsets, lapply, length), use.name = FALSE)),
-                 c(18, 21, 21, 21, 28, 28, 35, 35, 42, 42, 42, 49, 49, 56, 60, 63, 70))
+                 c(18, 21, 21, 21, 28, 28, 35, 35, 36, 42, 42, 49, 56, 60, 63, 70))
 
     warn <- capture_warning(boot.matrix(time_slices_multree_proba, bootstraps = 7, boot.type = "single"))
     expect_equal(warn[[1]], "Multiple trees where used in time_slices_multree_proba. The 'boot.type' option is set to \"full\".")

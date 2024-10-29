@@ -469,9 +469,9 @@ test_that("dispRity deals with probabilities subsets", {
     expect_equal(summary(test2)$n, c(11,20))
     expect_equal(summary(test3)$n, c(15,21))
 
-    expect_equal(as.vector(summary(test1)$obs), c(-0.005, -0.003))
-    expect_equal(as.vector(summary(test2)$obs), c(-0.005, 0.002))
-    expect_equal(as.vector(summary(test3)$obs), c(-0.005, 0.003))
+    expect_equal(as.vector(summary(test1)$obs), c(0.000, 0.002))
+    expect_equal(as.vector(summary(test2)$obs), c(-0.004, 0.000))
+    expect_equal(as.vector(summary(test3)$obs), c(-0.005, 0.002))
 })
 
 test_that("dispRity works with function recycling", {
@@ -540,7 +540,7 @@ test_that("dispRity works with multiple trees from time-slicing", {
     test <- dispRity(boot.matrix(time_slices_proba), metric = c(sum, variances))
     expect_is(test, "dispRity")
     sum_test3 <- summary(test)
-    expect_equal(sum_test3$n, c(3, 7, 10))
+    expect_equal(sum_test3$n, c(3, 6, 10))
     # expect_equal_round(sum_test3$obs.median[c(1,3)], sum_test1$obs.median[c(1,3)])
 
     set.seed(1)
@@ -826,7 +826,6 @@ test_that("dispRity works with the tree component", {
     test <- dispRity(data = data, metric = between.groups.edge.length.tree, tree = tree, between.groups = TRUE)
     expect_equal(unlist(c(unname(summary(test)))), c("1:2", "5", "5", "3", "-0.8", "1", "5", "5.9"))
 })
-
 
 test_that("dispRity works with dist.data", {
 

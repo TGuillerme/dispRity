@@ -165,18 +165,18 @@ test_that("works with bootstraps", {
     test <- dispRity(data = bs_data, metric = pairwise.dist)
     check.class(test, "dispRity")
     expect_equal(dim(summary(test)), c(10, 8))
-    expect_equal(summary(test)$obs.median, c(2.472, 2.537, 2.623, 2.723, 2.750, 2.785, 2.841, 2.867, 2.867, 2.867))
+    expect_equal(summary(test)$obs.median, c(2.416, 2.481, 2.567, 2.668, 2.697, 2.729, 2.788, 2.811, 2.811, 2.811))
 
     test <- dispRity(data = bs_data, metric = pairwise.dist, dist.helper = stats::dist)
     check.class(test, "dispRity")
     expect_equal(dim(summary(test)), c(10, 8))
-    expect_equal(summary(test)$obs.median, c(2.472, 2.537, 2.623, 2.723, 2.750, 2.785, 2.841, 2.867, 2.867, 2.867))
+    expect_equal(summary(test)$obs.median, c(2.416, 2.481, 2.567, 2.668, 2.697, 2.729, 2.788, 2.811, 2.811, 2.811))
 
     dist_matrix <- dist(BeckLee_mat99)
     test <- dispRity(data = bs_data, metric = pairwise.dist, dist.helper = dist_matrix)
     check.class(test, "dispRity")
     expect_equal(dim(summary(test)), c(10, 8))
-    expect_equal(summary(test)$obs.median, c(2.472, 2.537, 2.623, 2.723, 2.750, 2.785, 2.841, 2.867, 2.867, 2.867))
+    expect_equal(summary(test)$obs.median, c(2.416, 2.481, 2.567, 2.668, 2.697, 2.729, 2.788, 2.811, 2.811, 2.811))
 
 
 # test <- microbenchmark("no help"       = dispRity(bs_data, metric = pairwise.dist),

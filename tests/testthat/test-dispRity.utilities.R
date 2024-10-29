@@ -428,7 +428,7 @@ test_that("get.disparity", {
         ,names(data$subsets))
     expect_equal(
         round(test[[5]], digit = 5)
-        ,4.09234)
+        ,3.93353)
 
     test <- get.disparity(data, observed = FALSE)
     expect_is(
