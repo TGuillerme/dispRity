@@ -1,6 +1,6 @@
 
 ## Modified .dtt function from https://github.com/mwpennell/geiger-v2/blob/master/R/disparity.R
-geiger.dtt.dispRity <- function(phy, data, metric, relative){
+geiger.dtt.dispRity <- function(phy, data, metric){
 
     ## Combining the tree and the data
     phy$node.label <- NULL
