@@ -28,6 +28,7 @@ dispRity v1.9 (2024-06-06)  *distant update*
 ### MINOR IMPROVEMENTS
 
  * `custom.subsets` can now take a logical vector for the `group` argument.
+ * `custom.subsets` now recycles node names when using a tree to create clade groups.
  * `plot` functions doing scatter plot now centers them without changing the scale of both axes.
  * **changed default argument** for `tree.age`: the number of digits output by `tree.age` is now changed from 3 to 4 by default.
  * the random starting parameters in `reduce.space` are now drawn from the input data distribution which speeds up the function significantly.

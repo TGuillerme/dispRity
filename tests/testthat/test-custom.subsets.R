@@ -75,7 +75,7 @@ test_that("set.group.list works", {
     test <- set.group.list(group6, data, group_class = class(group6))
     expect_is(test, "list")
     expect_equal(length(test), 4)
-    expect_equal(unlist(lapply(test, length)), c(9, 3, 5, 3))
+    expect_equal(unlist(lapply(test, length)), c("f" = 9, "g" = 3, "h" = 5, "i" = 3))
 })
 
 ## Check.group.list

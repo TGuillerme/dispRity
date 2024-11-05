@@ -33,6 +33,12 @@ get.tree.clades <- function(tree, data) {
         clade_nodes <- lapply(clades, get.node.labels, tree = tree)
         clades <- mapply(c, clades, clade_nodes)
     }
+
+    ## Add clade names
+    if(!is.null(tree$node.label)) {
+        names(clades) <- tree$node.label
+    }
+
     return(clades)
 }
 
