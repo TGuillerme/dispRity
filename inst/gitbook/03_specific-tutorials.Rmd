@@ -245,6 +245,40 @@ time_slices <- chrono.subsets(data = BeckLee_mat99,
 boot.matrix(time_slices, bootstraps = 100)
 ```
 
+### Bootstrapping dimensions
+
+In some cases, you might also be interested in bootstrapping dimensions rather than observations.
+I.e. bootstrapping the columns of a matrix rather than the rows.
+
+It's pretty easy! By default, `boot.matrix` uses the option `boot.by = "rows"` which you can toggle to `boot.by = "columns"`
+
+```{r, eval = TRUE}
+## Bootstrapping the observations (default)
+boot_obs <- boot.matrix(data = crown_stem, boot.by = "rows")
+
+## Bootstrapping the columns rather than the rows
+boot_dim <- boot.matrix(data = crown_stem, boot.by = "columns")
+```
+
+In these two examples, the first one `boot_obs` bootstraps the rows as showed before (default behaviour).
+But the second one, `boot_dim` bootstraps the dimensions.
+That means that for each 
+
+```{r, eval = TRUE}
+## Measuring disparity and summarising
+summary(dispRity(boot_obs, metric = mean))
+summary(dispRity(boot_dim, metric = mean))
+```
+
+
+### Bootstrapping with fine tuned probabilities
+
+```{r, eval = TRUE}
+boot.matrix(data = BeckLee_mat50)
+```
+
+
+
 ## Disparity metrics {#disparity-metrics}
 
 There are many ways of measuring disparity!
@@ -2398,13 +2432,24 @@ summary(dispRity(my_covar, metric = as.covar(variances)))
 
 There are two ways to use distances in `dispRity`, either with your input data being directly a distance matrix or with your disparity metric involving some kind of distance calculations.
 
-### Disparity data is distance
+### Disparity data is a distance
 
-If your disparity data is a distance matrix, you can use the option `is.dist = TRUE` in `dispRity` to make sure that all the operations done on your data take into account the fact that your disparity data has distance properties.
+If your disparity data is a distance matrix, you can use the option `dist.data = TRUE` in `dispRity` to make sure that all the operations done on your data take into account the fact that your disparity data has distance properties.
 For example, if you bootstrap the data, this will automatically bootstrap both rows AND columns (i.e. so that the bootstrapped matrices are still distances).
 This also improves speed on some calculations if you use [disparity metrics](#disparity-metrics) directly implemented in the package by avoiding recalculating distances (the full list can be seen in `?dispRity.metric` - they are usually the metrics with `dist` in their name).
 
-### Disparity metric is distance
+
+#### Subsets
+
+dist.data = TRUE
+
+#### Bootstrapping
+
+boot.by = "dist"
+
+
+
+### Disparity metric is a distance
 
 On the other hand if your data is not a distance matrix but you are using a metric that uses some kind of distance calculations, you can use the option `dist.helper` to greatly speed up calculations.
 `dist.helper` can be either a pre-calculated distance matrix (or a list of distance matrices) or, better yet, a function to calculate distance matrices, like `stats::dist` or `vegan::vegdist`.
@@ -2454,3 +2499,4 @@ dispRity(my_data, metric = my.sum.of.dist, dist.helper = vegdist)
 ## The dist.helper is not the correct function (should be just dist)
 dispRity(my_data, metric = my.sum.of.dist, dist.helper = stats::dist)
 ```
+
