@@ -35,9 +35,13 @@ lapply.summary <- function(disparity_subsets, cent.tend, quantiles, ...) {
 }
 
 ## lapply wrapper for getting elements
-lapply.get.elements <- function(subsets, bootstrapped = TRUE) {
+lapply.get.elements <- function(subsets, bootstrapped = TRUE, boot_col = FALSE) {
     if(bootstrapped){
-        return(unlist(lapply(subsets[-1], nrow)))
+        if(!boot_col) {
+            return(unlist(lapply(subsets[-1], nrow)))
+        } else {
+            return(unlist(lapply(subsets[1], nrow)))
+        }
     } else {
         return(unlist(lapply(subsets, nrow)))
     }

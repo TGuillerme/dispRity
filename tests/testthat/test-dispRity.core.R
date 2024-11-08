@@ -914,6 +914,8 @@ test_that("dispRity works with boot.by = columns", {
     expect_equal(dim(boot_test1$subsets[[2]][[2]]), c(6, 3))
     expect_equal(boot_test1$call$bootstrap[[4]], "rows")
     expect_equal(summary(dispRity(boot_test1, metric = centroids))$bs.median, c(1.086, 1.156))
+    expect_equal(summary(dispRity(boot_test1, metric = centroids))$n, c(4, 6))
+
 
     set.seed(1)
     boot_test2 <- boot.matrix(cust, bootstraps = 3, boot.by = "columns")
@@ -923,6 +925,7 @@ test_that("dispRity works with boot.by = columns", {
     expect_equal(dim(boot_test2$subsets[[2]][[2]]), c(5, 3))
     expect_equal(boot_test2$call$bootstrap[[4]], "columns")
     expect_equal(summary(dispRity(boot_test2, metric = centroids))$bs.median, c(1.919, 1.337))
+    expect_equal(summary(dispRity(boot_test1, metric = centroids))$n, c(4, 6))
 })
 
 
