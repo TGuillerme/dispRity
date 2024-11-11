@@ -2424,8 +2424,6 @@ as.covar(variances)(my_covar$covar[["gulls"]][[1]])
 summary(dispRity(my_covar, metric = as.covar(variances)))
 ```
 
-
-
 ## Disparity and distances
 
 There are two ways to use distances in `dispRity`, either with your input data being directly a distance matrix or with your disparity metric involving some kind of distance calculations.
@@ -2479,7 +2477,6 @@ boot.matrix(distance_data, boot.by = "dist")
 
 Similarly to the `dispRity`, `custom.subsets` and `chrono.subsets` function above, the option to treat the input data as a distance matrix is recorded and recycled so there is no need to specify it each time.
 
-
 ### Disparity metric is a distance
 
 On the other hand if your data is not a distance matrix but you are using a metric that uses some kind of distance calculations, you can use the option `dist.helper` to greatly speed up calculations.
@@ -2530,4 +2527,27 @@ dispRity(my_data, metric = my.sum.of.dist, dist.helper = vegdist)
 ## The dist.helper is not the correct function (should be just dist)
 dispRity(my_data, metric = my.sum.of.dist, dist.helper = stats::dist)
 ```
+<!-- 
+## Multi disparity: running disparity analyses on different data
 
+All the options and functions we've covered so far are running disparity analyses assuming that there is one unique trait space (although that trait space can be probabilistic and comprising multiple matrices).
+
+
+```{r}
+
+
+    tree <- rmtree(2, 10)
+    tree[[1]] <- makeNodeLabel(tree[[1]])
+    tree[[2]] <- makeNodeLabel(tree[[2]], prefix = "shnode")
+    tree[[1]]$root.time <- max(tree.age(tree[[1]])$ages)
+    tree[[2]]$root.time <- max(tree.age(tree[[2]])$ages)
+    data <- list(matrix(0, nrow = Ntip(tree[[1]]) + Nnode(tree[[1]]), dimnames = list(c(tree[[1]]$tip.label, tree[[1]]$node.label))),
+                 matrix(0, nrow = Ntip(tree[[2]]) + Nnode(tree[[2]]), dimnames = list(c(tree[[2]]$tip.label, tree[[2]]$node.label))))
+
+    ## Test working fine
+    test <- dispRity(data, metric = mean, tree = tree)
+    plot(test)
+    expect_equal(summary(test)$obs.median, 0)
+```
+
+ -->
