@@ -7,6 +7,11 @@
  - [ ] run CRAN check
  - [x] RECOMPILE ALL INTERNAL DATASETS
 
+
+## multi.ace
+
+ - [x] check that "combined" properly recycles the tree's node labels.
+
 ## bootstrapping dimensions
 
  * **New argument** for `boot.matrix`: `what` to specify whether to bootstrap rows (`"rows"` - the default), columns (`"columns"`) or both (`c("rows", "columns")`). Thanks to Gavin Thomas for this suggestion.
@@ -15,7 +20,7 @@
  - [x] implement checks for dimensions (can now be integer or numeric - number to bootstrap)
  - [x] update the dispRity pipeline to call the bootstrapped dimensions.
  - [ ] documentation
- - [ ] test
+ - [x] test
  - [ ] add sampling probabilities tutorial
 
 ## RAM helpers
@@ -44,9 +49,6 @@
     - [x] if yes + `keep.distance = TRUE` OR if no + `keep.distance = TRUE` + RAM.helper + distance based metric -> apply bootstrap or anything on rows and columns
     - [x] if no, then old behaviour.
     - [x] flag new default with warning messages when detecting if yes. "Data is considered as a distance matrix and analysed by keeping the distances (toggle off using `keep.distances = FALSE`").
-
-
-## Update `dispRity.dtt` to work properly
 
 
 ## Vignettes and manual
