@@ -211,18 +211,6 @@ boot.matrix(BeckLee_mat50, dimensions = 0.5)
 ## Using the first 10 dimensions
 boot.matrix(BeckLee_mat50, dimensions = 10)
 ```
-
-It is also possible to specify the sampling probability in the bootstrap for each elements.
-This can be useful for weighting analysis for example (i.e. giving more importance to specific elements).
-These probabilities can be passed to the `prob` argument individually with a vector with the elements names or with a matrix with the rownames as elements names.
-The elements with no specified probability will be assigned a probability of 1 (or 1/maximum weight if the argument is weights rather than probabilities).
-
-```{r, eval=TRUE}
-## Attributing a weight of 0 to Cimolestes and 10 to Maelestes
-boot.matrix(BeckLee_mat50,
-            prob = c("Cimolestes" = 0, "Maelestes" = 10))
-```
-
 Of course, one could directly supply the subsets generated above (using `chrono.subsets` or `custom.subsets`) to this function.
 
 ```{r, eval=TRUE}
@@ -245,6 +233,20 @@ time_slices <- chrono.subsets(data = BeckLee_mat99,
 boot.matrix(time_slices, bootstraps = 100)
 ```
 
+
+### Bootstrapping with probabilities
+
+It is also possible to specify the sampling probability in the bootstrap for each elements.
+This can be useful for weighting analysis for example (i.e. giving more importance to specific elements).
+These probabilities can be passed to the `prob` argument individually with a vector with the elements names or with a matrix with the rownames as elements names.
+The elements with no specified probability will be assigned a probability of 1 (or 1/maximum weight if the argument is weights rather than probabilities).
+
+```{r, eval=TRUE}
+## Attributing a weight of 0 to Cimolestes and 10 to Maelestes
+boot.matrix(BeckLee_mat50,
+            prob = c("Cimolestes" = 0, "Maelestes" = 10))
+```
+
 ### Bootstrapping dimensions
 
 In some cases, you might also be interested in bootstrapping dimensions rather than observations.
@@ -254,29 +256,25 @@ It's pretty easy! By default, `boot.matrix` uses the option `boot.by = "rows"` w
 
 ```{r, eval = TRUE}
 ## Bootstrapping the observations (default)
+set.seed(1)
 boot_obs <- boot.matrix(data = crown_stem, boot.by = "rows")
 
 ## Bootstrapping the columns rather than the rows
+set.seed(1)
 boot_dim <- boot.matrix(data = crown_stem, boot.by = "columns")
 ```
 
 In these two examples, the first one `boot_obs` bootstraps the rows as showed before (default behaviour).
 But the second one, `boot_dim` bootstraps the dimensions.
-That means that for each 
+That means that for each bootstrap sample, the value calculated is actually obtained by reshuffling the dimensions (columns) rather than the observations (rows).
 
 ```{r, eval = TRUE}
 ## Measuring disparity and summarising
-summary(dispRity(boot_obs, metric = mean))
-summary(dispRity(boot_dim, metric = mean))
+summary(dispRity(boot_obs, metric = sum))
+summary(dispRity(boot_dim, metric = sum))
 ```
 
-
-### Bootstrapping with fine tuned probabilities
-
-```{r, eval = TRUE}
-boot.matrix(data = BeckLee_mat50)
-```
-
+Note here how the observed sum is the same (no bootstrapping) but the bootstrapping distributions are quiet different even though the same seed was used.
 
 
 ## Disparity metrics {#disparity-metrics}
@@ -2438,15 +2436,48 @@ If your disparity data is a distance matrix, you can use the option `dist.data =
 For example, if you bootstrap the data, this will automatically bootstrap both rows AND columns (i.e. so that the bootstrapped matrices are still distances).
 This also improves speed on some calculations if you use [disparity metrics](#disparity-metrics) directly implemented in the package by avoiding recalculating distances (the full list can be seen in `?dispRity.metric` - they are usually the metrics with `dist` in their name).
 
-
 #### Subsets
 
-dist.data = TRUE
+By default, the `dispRity` package does not treat any matrix as a distance matrix.
+It will however try to guess whether your input data is a distance matrix or not.
+This means that if you input a distance matrix, you might get a warning letting you know the input matrix might not be treated correctly (e.g. when bootstrapping or subsetting).
+For the functions `dispRity`, `custom.subsets` and `chrono.subsets` you can simply toggle the option `dist.data = TRUE` to make sure you treat your input data as a distance matrix throughout your analysis.
+
+```{r}
+## Creating a distance matrix
+distance_data <- as.matrix(dist(BeckLee_mat50))
+
+## Measuring the diagonal of the distance matrix
+dispRity(distance_data, metric = diag, dist.data = TRUE)
+```
+
+If you use a pipeline of any of these functions, you only need to specify it once and the data will be treated as a distance matrix throughout.
+
+```{r}
+## Creating a distance matrix
+distance_data <- as.matrix(dist(BeckLee_mat50))
+
+## Creating two subsets specifying that the data is a distance matrix
+subsets <- custom.subsets(distance_data, group = list(c(1:5), c(6:10)), dist.data = TRUE)
+## Measuring disparity treating the data as distance matrices
+dispRity(subsets, metric = diag)
+
+## Measuring disparity treating the data as a normal matrix (toggling the option to FALSE)
+dispRity(subsets, metric = diag, dist.data = FALSE)
+## Note that a warning appears but the function still runs
+```
 
 #### Bootstrapping
 
-boot.by = "dist"
+The function `boot.matrix` also can deal with distance matrices by bootstrapping both rows and columns in a linked way (e.g. if a bootstrap pseudo-replicate draws the values 1, 2, and 5, it will select both columns 1, 2, and 5 and rows 1, 2, and 5 - keeping the distance structure of the data).
+You can do that by using the `boot.by = "dist"` function that will bootstrap the data in a distance matrix fashion:
 
+```{r}
+## Measuring the diagonal of a bootstrapped matrix
+boot.matrix(distance_data, boot.by = "dist")
+```
+
+Similarly to the `dispRity`, `custom.subsets` and `chrono.subsets` function above, the option to treat the input data as a distance matrix is recorded and recycled so there is no need to specify it each time.
 
 
 ### Disparity metric is a distance

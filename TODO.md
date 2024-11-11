@@ -19,9 +19,9 @@
  - [x] implement checks for what
  - [x] implement checks for dimensions (can now be integer or numeric - number to bootstrap)
  - [x] update the dispRity pipeline to call the bootstrapped dimensions.
- - [ ] documentation
+ - [x] documentation
  - [x] test
- - [ ] add sampling probabilities tutorial
+ - [x] add sampling probabilities tutorial
 
 ## RAM helpers
 
@@ -53,10 +53,9 @@
 
 ## Vignettes and manual
 
- - [ ] add a summary of specific methods.
  - [ ] make a dispRity.multi vignette
- - [ ] make a dist.help section in the manual
- - [ ] update the bootstrap section in the manual with the dimensions
+ - [x] make a dist.help section in the manual
+ - [x] update the bootstrap section in the manual with the dimensions
  - [x] add `count.neigbhours` to the metrics section (*New metric*: `count.neighbours` to count the number of neighbours for each elements within a certain radius (thanks to Rob MacDonald for the suggestion).)
 
  - [ ] make a MCMCglmm related standalone vignette
