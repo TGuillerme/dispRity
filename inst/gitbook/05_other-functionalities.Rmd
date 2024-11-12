@@ -482,7 +482,7 @@ The function works by taking a node (or a list of nodes), a tree and a sliding v
 The node will be moved "up" (towards the tips) for the given sliding value.
 You can move the node "down" (towards the roots) using a negative value.
 
-```{r}
+```{r, fig.height = 12, fig.width = 4}
 set.seed(42)
 ## Generating simple coalescent tree
 tree <- rcoal(5)
@@ -502,7 +502,7 @@ The `remove.zero.brlen` is a "clever" wrapping function that uses the `slide.nod
 This function will slide nodes up or down in successive postorder traversals (i.e. going down the tree clade by clade) in order to minimise the number of nodes to slide while making sure there are no silly negative branch lengths produced!
 By default it is trying to slide the nodes using 1% of the minimum branch length to avoid changing the topology too much.
 
-```{r}
+```{r, fig.height = 12, fig.width = 4}
 set.seed(42)
 ## Generating a tree
 tree <- rtree(20)

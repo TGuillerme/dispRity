@@ -201,18 +201,6 @@ boot.matrix(BeckLee_mat50, bootstraps = 20,
 
 > Note that using the `rarefaction` argument also bootstraps the data. In these examples, the function bootstraps the data (without rarefaction) AND also bootstraps the data with the different rarefaction levels.
 
-One other argument is `dimensions` that specifies how many dimensions from the matrix should be used for further analysis.
-When missing, all dimensions from the ordinated matrix are used.
-
-```{r, eval=TRUE}
-## Using the first 50% of the dimensions
-boot.matrix(BeckLee_mat50, dimensions = 0.5)
-
-## Using the first 10 dimensions
-boot.matrix(BeckLee_mat50, dimensions = 10)
-```
-Of course, one could directly supply the subsets generated above (using `chrono.subsets` or `custom.subsets`) to this function.
-
 ```{r, eval=TRUE}
 ## Creating subsets of crown and stem mammals
 crown_stem <- custom.subsets(BeckLee_mat50,
@@ -232,7 +220,6 @@ time_slices <- chrono.subsets(data = BeckLee_mat99,
 ## Bootstrapping the time slice subsets
 boot.matrix(time_slices, bootstraps = 100)
 ```
-
 
 ### Bootstrapping with probabilities
 
@@ -1403,7 +1390,7 @@ This can be done by plotting `dispRity` objects with no calculated disparity!
 For example, we might be interested in looking at how the distribution of elements change as a function of the distributions of different sub-settings.
 For example custom subsets *vs.* time subsets:
 
-```{r, fig.width=8, fig.height=4}
+```{r, fig.width=12, fig.height=6}
 ## Making the different subsets
 cust_subsets <- custom.subsets(BeckLee_mat99,
                                crown.stem(BeckLee_tree,
@@ -1432,7 +1419,7 @@ Groups that don't overlap on two set dimensions can totally overlap in all other
 For `dispRity` objects that do contain disparity data, the default option is to plot your disparity data.
 However you can always force the `preview` option using the following:
 
-```{r, fig.height = 16, fig.width = 8}
+```{r, fig.height = 12, fig.width = 6}
 par(mfrow = c(2,1))
 ## Default plotting
 plot(disparity_time_slices, main = "Disparity through time")
@@ -1452,7 +1439,7 @@ But you can also decide to _only_ colour the circles in blue using `points.col =
 
 Here is an example with multiple elements (lines and points) taken from the [disparity with trees](#dispRitree) section below:
 
-```{r}
+```{r, fig.height = 12, fig.width = 12}
 ## Loading some demo data:
 ## An ordinated matrix with node and tip labels
 data(BeckLee_mat99)
@@ -2012,7 +1999,7 @@ Note that, as expected, this central tendency is the same in both metrics!
 
 Another, maybe more intuitive way, to compare both approaches for measuring disparity is to plot the distributions:
 
-```{r, fig.width=8, fig.height=8}
+```{r, fig.width=8, fig.height=4}
 ## Graphical parameters
 op <- par(bty = "n", mfrow = c(1, 2))
 
@@ -2228,7 +2215,7 @@ summary(dispRity(three_tree, metric = c(sum, variances)))
 
 This results show the effect of considering a tree distribution: in the first case (`one_tree`) the time slice at 3.95 Mya has a sum of variances of 2.9 but this values goes down to 0.256 in the second case (`three_tree`) which is due to the differences in branch lengths distributions:
 
-```{r, print = FALSE}
+```{r, print = FALSE, fig.width = 4, fig.height = 12}
 par(mfrow = c(3,1))
 slices <- c(7.9, 3.95, 0)
 fun.plot <- function(tree) {
@@ -2321,7 +2308,6 @@ plot(sum_edge_length)
 
 Of course this can be done with multiple trees and be combined with an approach using multiple matrices (see [here](#multi.input))!
 
-
 ## Disparity of variance-covariance matrices (covar) {#covar}
 
 Variance-covariance matrices are sometimes a useful way to summarise multidimensional data.
@@ -2332,6 +2318,7 @@ For example, you might have a multidimensional dataset where your observations h
 You can then analyse this data using a glmm with something like `my_data ~ observations + phylogeny + redisduals`.
 For more info on these models [start here](https://en.wikipedia.org/wiki/Generalized_linear_mixed_model).
 For more details on running these models, I suggest using the `MCMCglmm` package (@MCMCglmm) from @hadfield2010 (but see also @mulTree).
+For an example use of this code, see @guillerme2023innovation.
 
 ### Creating a `dispRity` object with a `$covar` component
 
@@ -2377,7 +2364,7 @@ One useful thing to do with these objects is then to visualise them in 2D.
 Here we can use the `covar.plot` function (that has many different options that just `plot.dispRity` for plotting covar objects) to plot the trait space, the 95% confidence interval ellipses of the variance-covariance matrices and the major axes from these ellipses.
 See the `?covar.plot` help page for all the options available:
 
-```{r}
+```{r, fig.height = 12, fig.width = 12}
 par(mfrow = c(2,2))
 ## The traitspace
 covar.plot(my_covar, col = c("orange", "darkgreen", "blue"), main = "Trait space")
