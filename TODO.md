@@ -2,8 +2,8 @@
 
  - [ ] do todo below
  - [ ] compile book
- - [ ] run test
- - [ ] compile function index
+ - [x] run test
+ - [x] compile function index
  - [ ] run CRAN check
  - [x] RECOMPILE ALL INTERNAL DATASETS
 
