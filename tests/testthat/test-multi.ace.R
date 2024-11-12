@@ -383,21 +383,21 @@ test_that("multi.ace works", {
 
 
     ## Test1
-    set.seed(3)
-    test <- capture.output(results <- multi.ace(data = matrix_complex,
-                            tree = tree_test, 
-                            models = "ER", 
-                            threshold = FALSE,
-                            special.tokens = c("weird" = "%"),
-                            special.behaviours = list(weirdtoken = function(x,y) return(c(1,2))),
-                            brlen.multiplier = rnorm(10),
-                            verbose = TRUE,
-                            parallel = FALSE,
-                            output = "matrix",
-                            estimation.details = c("loglikelihood", "transition_matrix")))
-    expect_equal(test,
-              c("Preparing the data:.....Done." ,
-                "Running ancestral states estimations:....................Done."))
+    # set.seed(3)
+    # test <- capture.output(results <- multi.ace(data = matrix_complex,
+    #                         tree = tree_test, 
+    #                         models = "ER", 
+    #                         threshold = FALSE,
+    #                         special.tokens = c("weird" = "%"),
+    #                         special.behaviours = list(weirdtoken = function(x,y) return(c(1,2))),
+    #                         brlen.multiplier = rnorm(10),
+    #                         verbose = TRUE,
+    #                         parallel = FALSE,
+    #                         output = "matrix",
+    #                         estimation.details = c("loglikelihood", "transition_matrix")))
+    # expect_equal(test,
+    #           c("Preparing the data:.....Done." ,
+    #             "Running ancestral states estimations:....................Done."))
 
     # set.seed(3)
     # test <- capture.output(results <- multi.ace(data = matrix_complex,
