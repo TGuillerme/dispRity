@@ -76,6 +76,7 @@ You can also find more information in the [`dispRity` manual](https://rawcdn.git
 
 ## Latest major patch highlights
 ### dispRity v1.8 (2023-12-11) *dispRity.multi*
+<!-- ### dispRity v1.9 (2024-11-@@@) *distance update* -->
 [Read the full patch note here](https://github.com/TGuillerme/dispRity/blob/master/NEWS.md).
 
  * Added the _dispRity.multi_ internal architecture now allowing users to work with different matrices **and** different trees as inputs for `custom.subsets`, `chrono.subsets`, `boot.matrix` and `dispRity`. This change is not affecting the user level appart from now allowing to bypass some error messages (thanks to Mario Corio for that obvious suggestion).
@@ -83,6 +84,13 @@ You can also find more information in the [`dispRity` manual](https://rawcdn.git
  * *New vignette* compiling resources for developers to help people (and future me) to edit the package. 
  * And many more new additions, improvements and couple of bug fixes!
  * **NOTE** there are now changes in the following function names: `ellipse.volume` is now `ellipsoid.volume`; `rescale.dispRity` is now `scale.dispRity` and `randtest.dist` is now `distance.randtest` (the old aliases still work).
+
+<!-- 
+ * `dispRity` has been not greatly optimised for using distance matrices: 1) it's now much faster thanks to the `dist.helper` new optional argument (storing the distance matrix in the cache) and 2) it now allows direct analyses of distance matrices in a dispRity pipeline.
+ * `boot.matrix` function has now been generalised to be able to bootstrap any elements of a matrix. Previously it only allowed to bootstrap elements (rows) but now can work on dimensions (columns) or both (distances).
+ * Redesigned `multi.ace` to be more modular and better handle both continuous and/or discrete characters. This is secretly a pre-release for a future version that will greatly improve pipelines with ancestral state estimations ;).
+ * New utility functions (`set.root.time` to add root times to trees; `remove.dispRity` to cleanly remove parts of dispRity objects) and metrics (`count.neigbhours`).
+ * Loads of minor improvements and couple of bug fixes! Yay! -->
 
 Previous patch notes and notes for the *next version* can be seen [here](https://github.com/TGuillerme/dispRity/blob/master/NEWS.md).
 
