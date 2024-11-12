@@ -44,6 +44,7 @@
 
 ## Generalise pipeline for distance matrices.
 
+
  - [x] add an option `keep.distance = TRUE` to `dispRity` which does:
     - [x] detect data as a distance matrix or not
     - [x] if yes + `keep.distance = TRUE` OR if no + `keep.distance = TRUE` + RAM.helper + distance based metric -> apply bootstrap or anything on rows and columns
