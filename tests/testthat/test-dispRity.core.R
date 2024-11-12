@@ -21,7 +21,7 @@ test_that("get.dispRity.metric.handle", {
     
     ## Level1
     test <- get.dispRity.metric.handle(sum, match_call, data = data)
-    expect_equal(names(test), c("levels", "between.groups", "tree.metrics"))
+    expect_equal(names(test), c("levels", "between.groups", "tree.metrics", "dist.help"))
     test <- test$levels
     expect_is(test, "list")
     expect_null(test[[1]])
@@ -30,7 +30,7 @@ test_that("get.dispRity.metric.handle", {
 
     ## Level2
     test <- get.dispRity.metric.handle(ranges, match_call, data = data)
-    expect_equal(names(test), c("levels", "between.groups", "tree.metrics"))
+    expect_equal(names(test), c("levels", "between.groups", "tree.metrics", "dist.help"))
     test <- test$levels
     expect_is(test, "list")
     expect_null(test[[1]])
@@ -40,7 +40,7 @@ test_that("get.dispRity.metric.handle", {
     ## Level3
     expect_error(test <- get.dispRity.metric.handle(var, match_call, data = data))
     test <- get.dispRity.metric.handle(c(sd, var), match_call, data = data)
-    expect_equal(names(test), c("levels", "between.groups", "tree.metrics"))
+    expect_equal(names(test), c("levels", "between.groups", "tree.metrics", "dist.help"))
     test <- test$levels
     expect_is(test, "list")
     expect_is(test[[1]], "function")
@@ -95,7 +95,7 @@ test_that("decompose.matrix.wrapper", {
     one_bs_matrix <- data$subsets[[1]][[5]]
     bs_max <- 5
 
-    decomp_array <- decompose.matrix.wrapper(one_bs_matrix[,1:bs_max], fun = variances, data = data, use_array = TRUE)
+    decomp_array  <- decompose.matrix.wrapper(one_bs_matrix[,1:bs_max], fun = variances, data = data, use_array = TRUE)
     decomp_matrix <- decompose.matrix.wrapper(one_bs_matrix[,1:bs_max], fun = variances, data = data, use_array = FALSE)
 
     expect_is(decomp_array, "array")
@@ -216,7 +216,7 @@ test_that("Sanitizing works", {
 
     ## Only dimensions 3!
     error <- capture_error(dispRity(data, metric = var))
-    expect_equal(error[[1]], "var metric must contain at least a dimension-level 1 or a dimension-level 2 metric.\nFor more information, see ?make.metric.")
+    expect_equal(error[[1]], "At least one metric must be dimension-level 1 or dimension-level 2\n.For more information, see:\n?make.metric()")
 })
 
 #Reset
@@ -469,9 +469,9 @@ test_that("dispRity deals with probabilities subsets", {
     expect_equal(summary(test2)$n, c(11,20))
     expect_equal(summary(test3)$n, c(15,21))
 
-    expect_equal(as.vector(summary(test1)$obs), c(-0.005, -0.003))
-    expect_equal(as.vector(summary(test2)$obs), c(-0.005, 0.002))
-    expect_equal(as.vector(summary(test3)$obs), c(-0.005, 0.003))
+    expect_equal(as.vector(summary(test1)$obs), c(0.000, 0.002))
+    expect_equal(as.vector(summary(test2)$obs), c(-0.004, 0.000))
+    expect_equal(as.vector(summary(test3)$obs), c(-0.005, 0.002))
 })
 
 test_that("dispRity works with function recycling", {
@@ -540,7 +540,7 @@ test_that("dispRity works with multiple trees from time-slicing", {
     test <- dispRity(boot.matrix(time_slices_proba), metric = c(sum, variances))
     expect_is(test, "dispRity")
     sum_test3 <- summary(test)
-    expect_equal(sum_test3$n, c(3, 7, 10))
+    expect_equal(sum_test3$n, c(3, 6, 10))
     # expect_equal_round(sum_test3$obs.median[c(1,3)], sum_test1$obs.median[c(1,3)])
 
     set.seed(1)
@@ -779,7 +779,7 @@ test_that("dispRity works with the tree component", {
     data <- custom.subsets(matrix, group = list(LETTERS[1:5], letters[1:5]), tree = tree)
     test <- dispRity(data = data, metric = edge.length.tree)
     expect_equal(c(test$disparity[[1]][[1]]), edge.length.tree(matrix[LETTERS[1:5], ], tree))
-    expect_equal(c(test$disparity[[2]][[1]]), edge.length.tree(matrix[letters[1:5], ],tree))
+    expect_equal(c(test$disparity[[2]][[1]]), edge.length.tree(matrix[letters[1:5], ], tree))
 
     ## More complex metric test
     test <- dispRity(data = data, metric = projections.tree)
@@ -825,6 +825,107 @@ test_that("dispRity works with the tree component", {
     ## Working with matrix decomposition
     test <- dispRity(data = data, metric = between.groups.edge.length.tree, tree = tree, between.groups = TRUE)
     expect_equal(unlist(c(unname(summary(test)))), c("1:2", "5", "5", "3", "-0.8", "1", "5", "5.9"))
+})
+
+test_that("dispRity works with dist.data", {
+
+    set.seed(1)
+    data <- matrix(rnorm(50), 10, 5, dimnames = list(letters[1:10]))
+    dist <- as.matrix(dist(matrix(rnorm(45), 9, 5, dimnames = list(letters[1:9]))))
+    
+    ## Basics (options parsed)
+    test_dist <- dispRity(data = dist, metric = centroids, dist.data = TRUE)
+    test_data <- dispRity(data = dist, metric = centroids, dist.data = FALSE)
+    expect_equal(summary(test_dist)$obs.median, 2.839)
+    expect_equal(summary(test_data)$obs.median, 2.839)
+    
+    ## Subsets (different results)
+    warn <- capture_warning(cust <- custom.subsets(dist, group = list(c(1:4), c(5:9))))
+    expect_equal(warn[[1]], "custom.subsets is applied on what seems to be a distance matrix.\nThe resulting matrices won't be distance matrices anymore!\nYou can use dist.data = TRUE, if you want to keep the data as a distance matrix.")
+    expect_warning(cust <- custom.subsets(dist, group = list(c(1:4), c(5:9))))
+    test_dist <- dispRity(data = cust, metric = centroids, dist.data = TRUE)
+    test_data <- dispRity(data = cust, metric = centroids, dist.data = FALSE)
+    expect_equal(summary(test_dist)$obs.median, c(2.163, 2.925))
+    expect_equal(summary(test_data)$obs.median, c(2.679, 3.268))
+
+    ## Subsets (with dist.data recycled)
+    cust <- custom.subsets(dist, group = list(c(1:4), c(5:9)), dist.data = TRUE)
+    test_dist <- dispRity(data = cust, metric = centroids)
+    test_data <- dispRity(data = cust, metric = centroids, dist.data = TRUE)
+    expect_equal(summary(test_dist)$obs, c(2.163, 2.925))
+    expect_equal(summary(test_data)$obs, c(2.163, 2.925))
+    ## Force toggle off
+    warn <- capture_warning(test_data <- dispRity(data = cust, metric = centroids, dist.data = FALSE))
+    expect_equal(warn[[1]], "data.dist is set to FALSE (the data will not be treated as a distance matrix) even though cust contains distance treated data.")
+    expect_warning(test_data <- dispRity(data = cust, metric = centroids, dist.data = FALSE))
+    expect_equal(summary(test_data)$obs.median, c(2.679, 3.268))
+
+    ## Bootstraps
+    set.seed(1)
+    boot <- boot.matrix(dist, boot.by = "dist")
+    expect_equal(boot$call$bootstrap[[4]], "dist")
+    test_dist <- dispRity(data = boot, metric = centroids, dist.data = TRUE)
+    warn <- capture_warning(test_data <- dispRity(data = boot, metric = centroids, dist.data = FALSE))
+    expect_equal(warn[[1]], "data.dist is set to FALSE (the data will not be treated as a distance matrix) even though boot contains distance treated data.")
+    expect_warning(test_data <- dispRity(data = boot, metric = centroids, dist.data = FALSE))
+    expect_equal(summary(test_dist)$bs.median, 3.545)
+    expect_equal(summary(test_data)$bs.median, 2.874)
+    ## Inherits properly
+    test_dist <- dispRity(data = boot, metric = centroids)
+    test_data <- dispRity(data = boot, metric = centroids)
+    expect_equal(summary(test_dist)$bs.median, 3.545)
+    expect_equal(summary(test_data)$bs.median, 3.545)
+
+    ## Bootstraps + subsets
+    cust <- custom.subsets(dist, group = list(c(1:4), c(5:9)), dist.data = TRUE)
+    ## Warning because no distance!
+    warn <- capture_warning(boot.matrix(cust))
+    expect_equal(warn[[1]], "boot.by not set to \"dist\" (the data will not be treated as a distance matrix) even though cust contains distance treated data.")
+    set.seed(1)
+    expect_warning(boot_data <- boot.matrix(cust, boot.by = "rows"))
+    set.seed(1)
+    boot_dist <- boot.matrix(cust, boot.by = "dist")
+    expect_equal(summary(dispRity(data = boot_dist, metric = centroids))$obs.median, c(2.163, 2.925))
+    expect_equal(summary(dispRity(data = boot_data, metric = centroids))$obs.median, c(2.679, 3.268))
+
+    expect_warning(cust <- custom.subsets(dist, group = list(c(1:4), c(5:9))))
+    set.seed(1)
+    boot_data <- boot.matrix(cust)
+    set.seed(1)
+    boot_dist <- boot.matrix(cust, boot.by = "dist")
+    expect_equal(summary(dispRity(data = boot_dist, metric = centroids))$bs.median, c(2.103, 3.140))
+    expect_equal(summary(dispRity(data = boot_data, metric = centroids))$bs.median, c(2.173, 2.768))
+})
+
+test_that("dispRity works with boot.by = columns", {
+
+    ## Toggle do_by.col in dispRity
+    ## Then pass it to lapply wrapper to change the variable by.col from NULL do subset$elements.
+
+    set.seed(1)
+    data <- matrix(rnorm(50), 10, 5, dimnames = list(letters[1:10]))
+    cust <- custom.subsets(data, group = list(c(1:4), c(5:10)))
+
+    set.seed(1)
+    boot_test1 <- boot.matrix(cust, bootstraps = 3, boot.by = "rows")
+    expect_equal(boot_test1$subsets[[1]]$elements, matrix(1:4, 4, 1))
+    expect_equal(dim(boot_test1$subsets[[1]][[2]]), c(4, 3))
+    expect_equal(boot_test1$subsets[[2]]$elements, matrix(5:10, 6, 1))
+    expect_equal(dim(boot_test1$subsets[[2]][[2]]), c(6, 3))
+    expect_equal(boot_test1$call$bootstrap[[4]], "rows")
+    expect_equal(summary(dispRity(boot_test1, metric = centroids))$bs.median, c(1.086, 1.156))
+    expect_equal(summary(dispRity(boot_test1, metric = centroids))$n, c(4, 6))
+
+
+    set.seed(1)
+    boot_test2 <- boot.matrix(cust, bootstraps = 3, boot.by = "columns")
+    expect_equal(boot_test2$subsets[[1]]$elements, matrix(1:4, 4, 1))
+    expect_equal(dim(boot_test2$subsets[[1]][[2]]), c(5, 3))
+    expect_equal(boot_test2$subsets[[2]]$elements, matrix(5:10, 6, 1))
+    expect_equal(dim(boot_test2$subsets[[2]][[2]]), c(5, 3))
+    expect_equal(boot_test2$call$bootstrap[[4]], "columns")
+    expect_equal(summary(dispRity(boot_test2, metric = centroids))$bs.median, c(1.919, 1.337))
+    expect_equal(summary(dispRity(boot_test1, metric = centroids))$n, c(4, 6))
 })
 
 

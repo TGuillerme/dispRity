@@ -133,7 +133,7 @@
 #' @references Vill'{e}ger S, Mason NW, Mouillot D. 2008. New multidimensional functional diversity indices for a multifaceted framework in functional ecology. Ecology. 89(8):2290-301.
 #' @references Wills MA. 2001. Morphological disparity: a primer. In Fossils, phylogeny, and form (pp. 55-144). Springer, Boston, MA.
 #' @references Foote, M. 1990. Nearest-neighbor analysis of trilobite morphospace. Systematic Zoology, 39(4), pp.371-382.
-#' 
+#' @references Guillerme T, Puttick MN, Marcy AE, Weisbecker V. 2020. Shifting spaces: Which disparity or dissimilarity measurement best summarize occupancy in multidimensional spaces?. Ecology and evolution. 10(14):7261-75.
 #' 
 #' 
 #' @seealso \code{\link{dispRity}} and \code{\link{make.metric}}.
@@ -508,7 +508,8 @@ displacements <- function(matrix, method = "euclidean", reference = 0, ...) {
 ## Calculate the neighbours distances
 neighbours <- function(matrix, which = min, method = "euclidean", ...) {
     ## Check if the matrix is a distance matrix first
-    distances <- as.matrix(check.dist.matrix(matrix, method = method)[[1]])
+    distances <- check.dist.matrix(matrix, method = method)[[1]]
+    distances <- as.matrix(distances)
     ## Remove the diagonals
     diag(distances) <- NA
     ## Get the selected distances for each rows
@@ -529,7 +530,15 @@ ellipsoid.volume <- function(matrix, method, ...) {
     ## Calculating the semi axes
     if(missing(method)) {
         ## Detect the method
-        is_dist <- check.dist.matrix(matrix, just.check = TRUE)
+        if(dim(matrix)[1] == dim(matrix)[2] &&
+           all(diag(as.matrix(matrix)) == 0) &&
+           all(matrix[upper.tri(matrix)] == matrix[rev(lower.tri(matrix))], na.rm = TRUE)) {
+            ## It was a distance matrix!
+            is_dist <- TRUE
+        } else {
+            is_dist <- FALSE
+        }
+
         if(is_dist) {
             ## Use the eigen method
             method <- "eigen"
@@ -551,7 +560,6 @@ ellipsoid.volume <- function(matrix, method, ...) {
     } else {
         semi_axes <- method[1:ncol_matrix]
     }
-
 
     ## Volume (from https://keisan.casio.com/exec/system/1223381019)
     return(pi^(ncol_matrix/2)/gamma((ncol_matrix/2)+1)*prod(semi_axes))
@@ -650,10 +658,10 @@ func.eve <- function(matrix, method = "euclidean", ...) {
     ## partial weighted evenness (PEW)
     rel_br_lentghs <- branch_lengths/sum(branch_lengths)
     ## Regular abundance value (1/(S-1))
-    regular <- 1/(nrow(matrix) - 1)
+    regular <- 1/(nrow(as.matrix(distances)) - 1)
     ## Get the minimal distances
     min_distances <- sapply(rel_br_lentghs, function(x, y) min(c(x, y)), y = regular)
-    ## Return the Functional eveness
+    ## Return the Functional evenness
     return((sum(min_distances) - regular) / (1 - regular))
 }
 
@@ -716,12 +724,12 @@ angles <- function(matrix, unit = "degree", base = 0, significant = FALSE, ...) 
 }
 
 ## Deviations
-deviations <- function(matrix, hyperplane, ..., significant = FALSE) {
+deviations <- function(matrix, hyperplane = NULL, ..., significant = FALSE) {
 
     ## Get the dimensions
     dimensions <- ncol(matrix)
 
-    if(missing(hyperplane)) {
+    if(is.null(hyperplane)) {
         ## If the data is unidimensional
         if(ncol(matrix) == 1) {
             data <- as.data.frame(cbind(seq_along(1:nrow(matrix)), matrix))
@@ -1155,14 +1163,16 @@ roundness <- function(matrix, vcv = TRUE) {
 }
 
 ## Counting the neighbours within a radius
-count.neighbours <- function(matrix, radius, relative = TRUE, method = "euclidean") {
+count.neighbours <- function(matrix, radius = NULL, relative = TRUE, method = "euclidean") {
     ## Check if the matrix is a distance matrix first
-    distances <- as.matrix(check.dist.matrix(matrix, method = method)[[1]])
+    distances <- check.dist.matrix(matrix, method = method)[[1]]
+    distances <- as.matrix(distances)
     ## Set the radius to half the distances
-    if(missing(radius)) {
+    if(is.null(radius)) {
         radius <- max(distances)/2
     } else {
-        radius_class <- check.class(radius, c("numeric", "integer", "function"))
+        check.class(radius, c("numeric", "integer", "function"))
+        radius_class <- class(radius)
         if(radius_class == "function") {
             radius <- radius(distances)
         }

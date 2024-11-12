@@ -1,16 +1,27 @@
 # Road to 1.9
 
+ - [ ] do todo below
+ - [ ] compile book
+ - [x] run test
+ - [x] compile function index
+ - [] run CRAN check
+ - [x] RECOMPILE ALL INTERNAL DATASETS
+
+
+## multi.ace
+
+ - [x] check that "combined" properly recycles the tree's node labels.
+
 ## bootstrapping dimensions
 
  * **New argument** for `boot.matrix`: `what` to specify whether to bootstrap rows (`"rows"` - the default), columns (`"columns"`) or both (`c("rows", "columns")`). Thanks to Gavin Thomas for this suggestion.
 
- - [ ] implement checks for what
- - [ ] implement checks for dimensions (can now be integer or numeric - number to bootstrap)
- - [ ] implement checks for boot.type (can now also be a named vector like boot.type = c("rows" = "full", "columns" = "single")) (else it's used for both "what" if both are called)
- - [ ] update the dimensions element to be able to accommodate bootstrapped dimensions.
- - [ ] update the dispRity pipeline to call the bootstrapped dimensions.
- - [ ] documentation
- - [ ] test
+ - [x] implement checks for what
+ - [x] implement checks for dimensions (can now be integer or numeric - number to bootstrap)
+ - [x] update the dispRity pipeline to call the bootstrapped dimensions.
+ - [x] documentation
+ - [x] test
+ - [x] add sampling probabilities tutorial
 
 ## RAM helpers
 
@@ -21,38 +32,47 @@
  - 3. compute heavy calculations at the whole data level in `dispRity` using the `RAM.help` function before the `lapply_loop`
  - 4. store the calculations in `data` similarly as tree as `RAM.helper`
  - 5. run the metrics using a potential `RAM.helper` similarly as tree.
- - [ ] documentation
- - [ ] test
- - [ ] update all the `dispRity` functions that have a `check.dist.matrix` function to use a helper
+ - [x] documentation
+ - [x] test
+ - [x] update all the `dispRity` functions that have a `check.dist.matrix` function to use a helper
+  neighbours
+  span.tree.length
+  pairwise.dist
+  func.eve
+  count.neighbours
+  - [x] do speed test for ego boost
+
+## Generalise pipeline for distance matrices.
 
 
-## Update dtt.dispRity to use the treats pipeline
+ - [x] add an option `keep.distance = TRUE` to `dispRity` which does:
+    - [x] detect data as a distance matrix or not
+    - [x] if yes + `keep.distance = TRUE` OR if no + `keep.distance = TRUE` + RAM.helper + distance based metric -> apply bootstrap or anything on rows and columns
+    - [x] if no, then old behaviour.
+    - [x] flag new default with warning messages when detecting if yes. "Data is considered as a distance matrix and analysed by keeping the distances (toggle off using `keep.distances = FALSE`").
 
- - [ ] use `treats::map.traits` instead of `geiger::sim.char` for simulating the character.
- - [ ] update the `alternative` argument to use the rank envelope test.
-
-> for `treats`: check the portability of `geiger::ratematrix`, `geiger::fitContinuous`, `geiger::fitDiscrete` (`?geiger::sim.char`) and try implementing them in `treats`?
-
-
-
-## Potential BAT.fun if works with RAM.help
-
- * New interface for the `BAT` package with new generic metric function `BAT.metric`. This function allows to use any metric from the `BAT` function as a metric for `dispRity` using the synthax: `dispRity(data, metric = BAT.metric, BAT.fun = "name", ...)`
- * New utility function: `dispRity.BAT` for converting some parts of `dispRity` objects into `BAT` arguments.
- - [ ] documentation
- - [ ] test
 
 ## Vignettes and manual
 
+ - [ ] make a dispRity.multi vignette
+ - [x] make a dist.help section in the manual
+ - [x] update the bootstrap section in the manual with the dimensions
+ - [x] add `count.neigbhours` to the metrics section (*New metric*: `count.neighbours` to count the number of neighbours for each elements within a certain radius (thanks to Rob MacDonald for the suggestion).)
+
  - [ ] make a MCMCglmm related standalone vignette
  - [ ] make a morpho disparity (Claddis) standalone vignette
- - [ ] make a RAM.help section in the manual
- - [ ] update the bootstrap section in the manual with the dimensions
- - [ ] add `count.neigbhours` to the metrics section (*New metric*: `count.neighbours` to count the number of neighbours for each elements within a certain radius (thanks to Rob MacDonald for the suggestion).)
+
+
 
 ## Minor improvements:
   * Make roundness work for non-VCV matrices (specify the axis function, e.g. variances or quantiles).
   - [ ] TODO 
+  * Add vegan::adonis2 ref in adonis.dispRity
+  - [x] TODO
+  * add references in .Rd:
+  - [ ] reduce.space algorithms
+  - [x] vegan algorithms
+
 
 ## Bug fixes
  * Check MacOS bugs in the coverage pipeline

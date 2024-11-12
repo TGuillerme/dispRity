@@ -72,6 +72,8 @@
 #' 
 #' 
 #' @author Thomas Guillerme
+#' @references Oksanen J, Simpson G, Blanchet F, Kindt R, Legendre P, Minchin P, O'Hara R, Solymos P, Stevens M, Szoecs E, Wagner H, Barbour M, Bedward M, Bolker B, Borcard D, Carvalho G, Chirico M, De Caceres M, Durand S, Evangelista H, FitzJohn R, Friendly M, Furneaux B, Hannigan G, Hill M, Lahti L, McGlinn D, Ouellette M, Ribeiro Cunha E, Smith T, Stier A, Ter Braak C, Weedon J (2024). vegan: Community Ecology Package_. R package version 2.6-8,
+
 # @export
 
 # source("sanitizing.R")
@@ -218,8 +220,8 @@ adonis.dispRity <- function(data, formula = matrix ~ group, method = "euclidean"
 
     ## Run adonis
     ## Modifying adonis2 to only check the parent environment (not the global one: matrix input here should be present in the environment
-    adonis2.modif <- vegan::adonis2
-    formals(adonis2.modif) <-c(formals(vegan::adonis2), "matrix_input" = NA)
+    adonis2.modif <- adonis2
+    formals(adonis2.modif) <-c(formals(adonis2), "matrix_input" = NA)
     body(adonis2.modif)[[5]] <- substitute(lhs <- matrix_input)
     adonis_out <- adonis2.modif(formula, predictors, method = method, matrix_input = matrix, ...)
     # adonis_out <- adonis2.modif(formula, predictors, method = method, matrix_input = matrix) ; warning("DEBUG adonis.dispRity")

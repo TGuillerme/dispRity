@@ -412,6 +412,8 @@ Vill'{e}ger S, Mason NW, Mouillot D. 2008. New multidimensional functional diver
 Wills MA. 2001. Morphological disparity: a primer. In Fossils, phylogeny, and form (pp. 55-144). Springer, Boston, MA.
 
 Foote, M. 1990. Nearest-neighbor analysis of trilobite morphospace. Systematic Zoology, 39(4), pp.371-382.
+
+Guillerme T, Puttick MN, Marcy AE, Weisbecker V. 2020. Shifting spaces: Which disparity or dissimilarity measurement best summarize occupancy in multidimensional spaces?. Ecology and evolution. 10(14):7261-75.
 }
 \seealso{
 \code{\link{dispRity}} and \code{\link{make.metric}}.

@@ -48,7 +48,7 @@ test_that("dispRity and dtt give the same results", {
 
     ## Error when providing wrong dimensions metric
     error <- capture_error(dtt.dispRity(data = BeckLee_mat50, metric = var, tree = BeckLee_tree, nsim = 10))
-    expect_equal(error[[1]], "var metric must contain at least a dimension-level 1 or a dimension-level 2 metric.\nFor more information, see ?make.metric.")
+    expect_equal(error[[1]], "At least one metric must be dimension-level 1 or dimension-level 2\n.For more information, see:\n?make.metric()")
 
     ## Tree has no root time
     data(BeckLee_tree)

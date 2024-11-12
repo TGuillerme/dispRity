@@ -17,9 +17,8 @@ Development (master):
 CRAN:
 
 [![minimal R version](https://img.shields.io/badge/R%3E%3D-4.0.0-6666ff.svg)](https://cran.r-project.org/)
-[![cran version](http://www.r-pkg.org/badges/version/dispRity)](https://cran.r-project.org/package=dispRity)
-[![rstudio mirror downloads](http://cranlogs.r-pkg.org/badges/grand-total/dispRity)](https://github.com/metacran/cranlogs.app)
-![](http://cranlogs.r-pkg.org/badges/dispRity)
+<a href="https://CRAN.R-project.org/package=dispRity"><img src="https://www.r-pkg.org/badges/version/dispRity" alt="CRAN status"></a>
+<a href="https://cran.r-project.org/package=dispRity"><img src="https://cranlogs.r-pkg.org/badges/grand-total/dispRity" alt="CRAN downloads"></a>
 
 ### **`dispRity`** is a `R` modular package for measuring disparity in multidimensional spaces.
 

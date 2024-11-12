@@ -11,7 +11,8 @@ make.metric(
   check.between.groups = FALSE,
   data.dim,
   tree = NULL,
-  covar = FALSE
+  covar = FALSE,
+  get.help = FALSE
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ make.metric(
 \item{tree}{optional, a \code{phylo} object.}
 
 \item{covar}{\code{logical}, whether to treat the metric as applied the a \code{data$covar} component (\code{TRUE}) or not (\code{FALSE}; default).}
+
+\item{get.help}{\code{logical}, whether to also output the \code{dist.helper} if the metric has a \code{dist.help} argument (\code{TRUE}) or not (\code{FALSE}; default).}
 }
 \description{
 Testing the dimension-level of disparity metrics

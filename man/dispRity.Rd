@@ -10,6 +10,7 @@ dispRity(
   dimensions = NULL,
   ...,
   between.groups = FALSE,
+  dist.data = NULL,
   verbose = FALSE,
   tree = NULL
 )
@@ -24,6 +25,8 @@ dispRity(
 \item{...}{Optional arguments to be passed to the metric.}
 
 \item{between.groups}{A \code{logical} value indicating whether to run the calculations between groups (\code{TRUE}) or not (\code{FALSE} - default) or a \code{numeric} list of pairs of groups to run (see details).}
+
+\item{dist.data}{A \code{logical} value indicating whether to treat the data as distance data (\code{TRUE}) or not (\code{FALSE}). By default it is set to \code{NULL} and interprets whether to use distance data from \code{data}.}
 
 \item{verbose}{A \code{logical} value indicating whether to be verbose or not.}
 

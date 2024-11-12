@@ -81,9 +81,9 @@ test_that("Works with one or more groups", {
     expect_is(test2, "anova.cca")
     expect_is(test2, "anova")
     expect_is(test2, "data.frame")
-    expect_equal(attr(test2, "heading")[1], c("Permutation test for adonis under reduced model\nTerms added sequentially (first to last)\nPermutation: free\nNumber of permutations: 10\n"))  
+    expect_equal(attr(test2, "heading")[1], c("Permutation test for adonis under reduced model\nPermutation: free\nNumber of permutations: 10\n"))  
     expect_equal(attr(test2, "heading")[2], c("vegan::adonis2(formula = dist(matrix) ~ g1 + g2, permutations = 10, method = \"manhattan\")"))
-    expect_equal(test2$Df, c(1, 1, 7, 9))
+    expect_equal(test2$Df, c(2, 7, 9))
     # expect_equal(round(test2$aov.tab[[6]], digit = 5), round(c(0.36364, 0.72727, NA, NA), digit = 5))
 
     ## Works well on non distance matrices
@@ -183,5 +183,5 @@ test_that("Correct behaviour with palaeo data", {
     test_disp_time3 <- adonis.dispRity(disp_time, formula = matrix ~ chrono.subsets, warn = FALSE)
 
     ## test 1 and 2 are the same
-    expect_lt(test_disp_time1$"Pr(>F)"[1], test_disp_time3$"Pr(>F)"[1])
+    expect_equal(test_disp_time1$"Pr(>F)"[1], test_disp_time3$"Pr(>F)"[1])
 })
