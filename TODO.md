@@ -4,7 +4,7 @@
  - [ ] compile book
  - [x] run test
  - [x] compile function index
- - [ ] run CRAN check
+ - [] run CRAN check
  - [x] RECOMPILE ALL INTERNAL DATASETS
 
 
