@@ -45,7 +45,7 @@ check.one.metric <- function(metric, data, tree, ...) {
     data_dim <- if(get_help) {data} else {checks$data.dim}
 
     return(make.metric(metric, silent = TRUE, check.between.groups = TRUE, data.dim = data_dim, tree = tree, covar = checks$is_covar, get.help = get_help, ...))
-    warning("DEBUG: dispRity_fun.R::check.one.metric"); test <- make.metric(metric, silent = TRUE, check.between.groups = TRUE, data.dim = data_dim, tree = tree, covar = checks$is_covar, get.help = get_help, dist.helper = dist.helper)
+    # warning("DEBUG: dispRity_fun.R::check.one.metric"); test <- make.metric(metric, silent = TRUE, check.between.groups = TRUE, data.dim = data_dim, tree = tree, covar = checks$is_covar, get.help = get_help, dist.helper = dist.helper)
 }
 
 ## Handle the disparity metrics
