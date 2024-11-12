@@ -354,13 +354,13 @@ test_that("multi.ace works", {
     my_models <- c(rep("ER", 25), rep("SYM", 25))
 
     ## Output details
-    # set.seed(8) 
-    # matrix_test <- sim.morpho(rcoal(6), characters = 10, model = "ER", rates = c(rgamma, rate = 10, shape = 5), invariant = FALSE)
-    # tree_test <- rmtree(2, 6)
-    # matrix_complex <- matrix_test
-    # matrix_complex[sample(1:length(matrix_complex), 5)] <- "-"
-    # matrix_complex[sample(1:length(matrix_complex), 5)] <- "0%2"
-    # matrix_complex[sample(1:length(matrix_complex), 5)] <- "?"
+    set.seed(8) 
+    matrix_test <- sim.morpho(rcoal(6), characters = 10, model = "ER", rates = c(rgamma, rate = 10, shape = 5), invariant = FALSE)
+    tree_test <- rmtree(2, 6)
+    matrix_complex <- matrix_test
+    matrix_complex[sample(1:length(matrix_complex), 5)] <- "-"
+    matrix_complex[sample(1:length(matrix_complex), 5)] <- "0%2"
+    matrix_complex[sample(1:length(matrix_complex), 5)] <- "?"
     # results <- multi.ace(data = matrix_complex,
     #                         tree = tree_test, 
     #                         models = "ER", 
