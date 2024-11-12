@@ -50,7 +50,7 @@ check.subsets <- function(subsets, data) {
         if(is(subsets, "numeric") || is(subsets, "integer")) {
             if(any(na_subsets <- is.na(match(subsets, 1:length(data$disparity))))) {
                 ## Subsets not found
-                stop(paste0(ifelse(length(which(na_subsets)) > 1, "Subsets ", "Subset "), paste0(subsets[which(na_subsets)], collapse = ", "), " not found."))
+                stop(paste0(ifelse(length(which(na_subsets)) > 1, "Subsets ", "Subset "), paste0(subsets[which(na_subsets)], collapse = ", "), " not found."), call. = FALSE)
             }
         } else {
             if(is(subsets, "character")) {
@@ -61,10 +61,10 @@ check.subsets <- function(subsets, data) {
                 ## Check if the searched ones exist
                 if(any(na_subsets <- is.na(match(subset_search, subset_available)))) {
                     ## Subsets not found
-                    stop(paste0(ifelse(length(which(na_subsets)) > 1, "Subsets ", "Subset "), paste0(subsets[which(na_subsets)], collapse = ", "), " not found."))
+                    stop(paste0(ifelse(length(which(na_subsets)) > 1, "Subsets ", "Subset "), paste0(subsets[which(na_subsets)], collapse = ", "), " not found."), call. = FALSE)
                 }
             } else {
-                stop("subsets argument must be of class \"numeric\" or \"character\".")
+                stop("subsets argument must be of class \"numeric\" or \"character\".", call. = FALSE)
             }
         }
 
@@ -76,12 +76,12 @@ check.subsets <- function(subsets, data) {
         }
 
         if(length(subsets) > length(data$subsets)) {
-            stop("Not enough subsets in the original data.")
+            stop("Not enough subsets in the original data.", call. = FALSE)
         } else {
             if(is(subsets, "numeric") || is(subsets, "integer")) {
                 if(any(na_subsets <- is.na(match(subsets, 1:length(data$subsets))))) {
                     ## Subsets not found
-                    stop(paste0(ifelse(length(which(na_subsets)) > 1, "Subsets ", "Subset "), paste0(subsets[which(na_subsets)], collapse = ", "), " not found."))
+                    stop(paste0(ifelse(length(which(na_subsets)) > 1, "Subsets ", "Subset "), paste0(subsets[which(na_subsets)], collapse = ", "), " not found."), call. = FALSE)
                 }
             } else {
                 if(is(subsets, "character")) {
@@ -89,11 +89,11 @@ check.subsets <- function(subsets, data) {
 
                         subsets <- subsets[which(is.na(match(subsets, names(data$subsets))))]
                         orthograph <- ifelse(length(subsets) == 1, "Subset ", "Subsets ")
-                        stop(paste0(orthograph, paste0(subsets, collapse = ", "), " not found."))
+                        stop(paste0(orthograph, paste0(subsets, collapse = ", "), " not found."), call. = FALSE)
 
                     }
                 } else {
-                    stop("subsets argument must be of class \"numeric\" or \"character\".")
+                    stop("subsets argument must be of class \"numeric\" or \"character\".", call. = FALSE)
                 }
             }
         }
@@ -330,7 +330,12 @@ slide.node.root <- function(bin_age, tree) {
 get.interval.subtrees <- function(one_tree, bin_ages, to.root) {
     ## Slice the right sides of the trees
     slice.one.tree <- function(age, tree) {
-        slice.tree(tree, age[2], model = "acctran", keep.all.ancestors = TRUE)
+        if(age[2] != 0) {
+            slice.tree(tree, age[2], model = "acctran", keep.all.ancestors = TRUE)
+        } else {
+            ## If age = 0, simply return the tree (keep everything and then compress branch lengths)
+            return(tree)
+        }
     }
     subset_subtrees <- lapply(bin_ages, slice.one.tree, one_tree) # TODO need fix for multiphylo
 

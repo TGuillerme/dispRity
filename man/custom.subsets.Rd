@@ -7,14 +7,16 @@
 \alias{cust.subsets}
 \title{Separating data into custom subsets.}
 \usage{
-custom.subsets(data, group, tree = NULL)
+custom.subsets(data, group, tree = NULL, dist.data = FALSE)
 }
 \arguments{
 \item{data}{A \code{matrix} or a \code{list} of matrices.}
 
-\item{group}{Either a \code{list} of row numbers or names to be used as different groups, a \code{data.frame} with the same \eqn{k} elements as in \code{data} as rownames or a \code{factor} vector. If \code{group} is a \code{phylo} object matching \code{data}, groups are automatically generated as clades (and the tree is attached to the resulting \code{dispRity} object).}
+\item{group}{Either a \code{list} of row numbers or names to be used as different groups, a \code{data.frame} with the same \eqn{k} elements as in \code{data} as rownames, a \code{factor} or a \code{logical} vector. If \code{group} is a \code{phylo} object matching \code{data}, groups are automatically generated as clades (and the tree is attached to the resulting \code{dispRity} object).}
 
 \item{tree}{\code{NULL} (default) or an optional \code{phylo} or \code{multiPhylo} object to be attached to the data.}
+
+\item{dist.data}{A \code{logical} value indicating whether to treat the data as distance data (\code{TRUE}) or not (\code{FALSE} - default).}
 }
 \description{
 Splits the data into a customized subsets list.

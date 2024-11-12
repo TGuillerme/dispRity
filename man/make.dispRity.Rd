@@ -3,11 +3,14 @@
 \name{make.dispRity}
 \alias{make.dispRity}
 \alias{fill.dispRity}
+\alias{remove.dispRity}
 \title{Make and fill \code{dispRity}.}
 \usage{
 make.dispRity(data, tree, call, subsets)
 
 fill.dispRity(data, tree, check)
+
+remove.dispRity(data, what)
 }
 \arguments{
 \item{data}{A \code{matrix}.}
@@ -19,9 +22,16 @@ fill.dispRity(data, tree, check)
 \item{subsets}{Optional, a \code{list} to be a \code{dispRity} subsets list.}
 
 \item{check}{Logical, whether to check the data (\code{TRUE}; default, highly advised) or not (\code{FALSE}).}
+
+\item{what}{Which elements to remove. Can be any of the following: \code{"subsets"}, \code{"bootstraps"}, \code{"covar"}, \code{"tree"}, \code{"disparity"}. See details.}
 }
 \description{
 Creating an empty \code{dispRity} object from a matrix
+}
+\details{
+When using \code{remove.dispRity}, the function recursively removes any other data depending on \code{"what"}.
+For example, for a data with disparity calculated for bootstrapped subsets, removing the subsets (\code{what = "subsets"}) also removes the bootstraps and the disparity data.
+But removing the bootstraps (\code{what = "bootstraps"}) removes only the bootstraps draws and the disparity relating to the bootstraps (but keeps the subsets and the non-bootstrapped disparity values).
 }
 \examples{
 ## An empty dispRity object

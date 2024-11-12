@@ -204,7 +204,7 @@ legend("topleft", lty = 1, col = "black",
        legend = "The standard deviation")
 ```
 
-If you are a `ggplot`er, you can extract the data from the `dispRity` object using the `extract.dispRity` function. If you like `ggplot` and the `dispRity` package and feel like collaborating with me, please [drop me an email](mailto:guillert@tcd.ie) so that we can figure out a way to make a `ggplot` module to the package (and make you an author!).
+If you are a `ggplot`er, you can extract the data from the `dispRity` object using the `get.disparity` function. If you like `ggplot` and the `dispRity` package and feel like collaborating with me, please [drop me an email](mailto:guillert@tcd.ie) so that we can figure out a way to make a `ggplot` module to the package (and make you an author!).
 
 ## Some more advanced stuff
 

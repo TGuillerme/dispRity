@@ -1,3 +1,37 @@
+dispRity v1.9 (2024-11-12)  *distant update*
+=========================
+
+### NEW FEATURES
+ * Redesigned `multi.ace` to be more modular and handle both continuous and/or discrete characters. Changes include a **change in argument name** from `castor.options` to the generic `options.args` (the options can be provided the same way as before though); and a **change in default arguments** for `models` which can now be left missing (previously was `"ER"`) and applies `"ER"` and `"BM"` for respectively discrete and continuous characters by default.
+ * New design when using distance matrices: `dist.helper` now allows to save distance matrices in the cache, saving a lot of RAM and speeding up calculations. You can use the helper using `dispRity(..., dist.helper = my_distance_function)` or `dispRity(..., dist.helper = my_distance_matrix)`.
+ * *New `dispRity`, `custom.subsets` and `chrono.subsets` option*: these three functions can now use `dist.data = TRUE` to specify that the input data is a distance matrix (and handle it accordingly).
+ * *New bootstrap options*: you can now use `boot.by` to specify whether bootstrap the rows (previous behaviour), the columns or both (for distance matrices).
+ * *New utility function* `set.root.time` to add a root time to a tree (`"phylo"`), list of trees (`"multiPhylo"`) or `dispRity` object with trees.
+ * *New utility function* `remove.dispRity` to cleanly remove specific parts of a `"dispRity"` object.
+ * *New metric*: `count.neighbours` to count the number of neighbours for each elements within a certain radius (thanks to Rob MacDonald for the suggestion).
+
+### MINOR IMPROVEMENTS
+
+ * `custom.subsets` can now take a logical vector for the `group` argument.
+ * `custom.subsets` now recycles node names when using a tree to create clade groups.
+ * `plot` functions doing scatter plot now centers them without changing the scale of both axes.
+ * **changed default argument** for `tree.age`: the number of digits output by `tree.age` is now changed from 3 to 4 by default.
+ * the random starting parameters in `reduce.space` are now drawn from the input data distribution which speeds up the function significantly.
+ * `match.tip.edges` can now just work for colouring edges connecting a vector of tips.
+ * remove deprecated internal requirements in `boot.matrix`.
+ * improved RAM management for `make.metric` (now uses the largest requestable subset rather than the whole data for testing).
+
+### BUG FIXES
+
+ * `scale.dispRity` now correctly ignores `NA`s when scaling.
+ * `multi.ace` now correctly handles invariant characters when looking for NAs.
+ * `dispRity` objects with a `$covar` component are not interpreted as bootstrapped by `boot.matrix` anymore.
+
+### DEPRECATED
+
+ * The `dimensions` argument from `boot.matrix` is now removed: it has been redundant with the `dimensions` argument in the `dispRity` since v0.3!
+
+
 dispRity v1.8 (2023-12-11) *dispRity.multi*
 =========================
 

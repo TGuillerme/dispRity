@@ -5,9 +5,9 @@
 #' @param data A \code{matrix} or a list of matrices (typically output from \link{chrono.subsets} or \link{custom.subsets} - see details).
 #' @param bootstraps The number of bootstrap pseudoreplicates (\code{default = 100}).
 #' @param rarefaction Either a \code{logical} value whether to fully rarefy the data, a set of \code{numeric} values used to rarefy the data or \code{"min"} to rarefy at the minimum level (see details).
-#' @param dimensions Optional, a vector of \code{numeric} value(s) or the proportion of the dimensions to keep.
-#' @param verbose A \code{logical} value indicating whether to be verbose or not.
 #' @param boot.type The bootstrap algorithm to use (\code{default = "full"}; see details).
+#' @param boot.by Which dimension of the data to bootstrap: either \code{"rows"} to bootstrap the elements (default), \code{"columns"} for the dimensions or \code{"dist"} for bootstrapping both equally (e.g. for distance matrices).
+#' @param verbose A \code{logical} value indicating whether to be verbose or not.
 #' @param prob Optional, a \code{matrix} or a \code{vector} of probabilities for each element to be selected during the bootstrap procedure. The \code{matrix} or the \code{vector} must have a row names or names attribute that corresponds to the elements in \code{data}.
 #' 
 #' @return
@@ -55,8 +55,6 @@
 #' boot.matrix(BeckLee_mat50, bootstraps = 20, rarefaction = TRUE)
 #' ## Bootstrapping an ordinated matrix with only elements 7, 10 and 11 sampled
 #' boot.matrix(BeckLee_mat50, bootstraps = 20, rarefaction = c(7, 10, 11))
-#' ## Bootstrapping an ordinated matrix with only 3 dimensions
-#' boot.matrix(BeckLee_mat50, bootstraps = 20, dimensions = 3)
 #' ## Bootstrapping an the matrix but without sampling Cimolestes and sampling Maelestes 10x more
 #' boot.matrix(BeckLee_mat50, bootstraps = 20, prob = c("Cimolestes" = 0, "Maelestes" = 10))
 #' 
@@ -87,7 +85,7 @@
 # bootstraps <- 3
 # rarefaction <- TRUE
 
-boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions = NULL, verbose = FALSE, boot.type = "full", prob = NULL) {
+boot.matrix <- function(data, bootstraps = 100, boot.type = "full", boot.by = "rows", rarefaction = FALSE, verbose = FALSE, prob = NULL) {
 
     match_call <- match.call()
     ## ----------------------
@@ -96,6 +94,11 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions 
     is_multi <- FALSE
 
     ## DATA
+
+    ## Check boot.by
+    check.length(boot.by, 1, " must be one of the following: rows, columns, dist.")
+    check.method(boot.by, c("rows", "columns", "dist"), "boot.by")
+
     ## If class is dispRity, data is serial
     if(!is(data, "dispRity")) {
         ## Data must be a matrix
@@ -103,28 +106,30 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions 
         is_multi <- any(is_multi, data$multi)
         data <- data$matrix
 
-        ## Check whether it is a distance matrix
-        if(check.dist.matrix(data[[1]], just.check = TRUE)) {
-            warning("boot.matrix is applied on what seems to be a distance matrix.\nThe resulting matrices won't be distance matrices anymore!", call. = FALSE)
+        ## Check whether it is a distance matrix (and the boot.by is set to both)
+        dist_check <- check.dist.matrix(data[[1]], just.check = TRUE)
+        if(dist_check && boot.by != "dist") {
+            warning("boot.matrix is applied on what seems to be a distance matrix.\nThe resulting matrices won't be distance matrices anymore!\nIf this isn't the desired behavior, you can use the argument:\nboot.by = \"dist\"", call. = FALSE)
+        }
+        if(!dist_check && boot.by == "dist") {
+            warning("boot.matrix is applied to both rows and columns but the input data seems to not be a distance matrix.\nThe resulting bootstraps might not resample it correctly.", call. = FALSE)
         }
 
         ## Creating the dispRity object
         data <- make.dispRity(data = data)
     } else {
         ## Must not already been bootstrapped
-        if(!is.null(data$call$bootstrap)) {
+        if(!is.null(data$call$bootstrap) && data$call$bootstrap[[2]] != "covar") {
             stop.call(msg.pre = "", match_call$data, msg = " was already bootstrapped.")
         }
-
-        ## Must be correct format
-        check.length(data, 4, " must be either a matrix or an output from the chrono.subsets or custom.subsets functions.")
         
         ## With the correct names
         data_names <- names(data)
         if(is.null(data_names)) {
             stop.call(match_call$data, " must be either a matrix or an output from the chrono.subsets or custom.subsets functions.")
         } else {
-            if(data_names[[1]] != "matrix" | data_names[[2]] != "tree" | data_names[[3]] != "call" | data_names[[4]] != "subsets") {
+            if(!all(data_names %in% c("matrix", "tree", "call", "subsets"))) {
+            # if(data_names[[1]] != "matrix" | data_names[[2]] != "tree" | data_names[[3]] != "call" | data_names[[4]] != "subsets") {
                 stop.call(match_call$data, "must be either a matrix or an output from the chrono.subsets or custom.subsets functions.")
             }
         }
@@ -138,6 +143,14 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions 
         }
     }
 
+    ## Check boot.by and data
+    if(!is.null(data$call$dist.data) && data$call$dist.data && boot.by != "dist") {
+        warning(paste0("boot.by not set to \"dist\" (the data will not be treated as a distance matrix) even though ", match_call$data, " contains distance treated data."))
+        ## Toggling data dist
+        data$call$dist.data <- FALSE
+    }
+    
+    ## Check verbose
     check.class(verbose, "logical")
 
     ## If is multi lapply the stuff
@@ -158,7 +171,7 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions 
         if(verbose) message("Bootstrapping", appendLF = FALSE)
 
         ## Apply the custom.subsets
-        output <- dispRity.multi.apply(split_data, fun = boot.matrix.call, bootstraps = bootstraps, rarefaction = rarefaction, dimensions = dimensions, verbose = verbose, boot.type = boot.type, prob = prob)
+        output <- dispRity.multi.apply(split_data, fun = boot.matrix.call, bootstraps = bootstraps, rarefaction = rarefaction, verbose = verbose, boot.type = boot.type, boot.by = boot.by, prob = prob)
 
         if(verbose) message("Done.", appendLF = FALSE)
         return(output)
@@ -197,8 +210,11 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions 
 
             ## Check if it has attributes
             prob_names <- attributes(prob)
+
             if(is.null(prob_names)) {
-                stop.call("", "prob argument must have names (vector) or dimnames (matrix) attributes.")
+                if(boot.by != "columns") {
+                    prob_names <- names(prob) <- rownames(data$matrix[[1]])
+                }
             } else {
                 if(is.null(prob_names$names)) {
                     prob_names <- prob_names$dimnames[[1]]
@@ -218,15 +234,17 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions 
             }
 
             ## Check the names
-            if(!all(prob_names %in% rownames(data$matrix[[1]]))) {
-                stop.call(msg.pre = "prob argument contains elements not present in ", call =match_call$data, msg = ".")
-            } else {
-                ## Check if they are any names missing
-                missing_rows <- rownames(data$matrix[[1]]) %in% prob_names
-                if(any(missing_rows)) {
-                    extra_prob <- rep(1, length(which(!missing_rows)))
-                    names(extra_prob) <- rownames(data$matrix[[1]])[!missing_rows]
-                    prob <- c(extra_prob, prob)
+            if(boot.by != "columns") {
+                if(!all(prob_names %in% rownames(data$matrix[[1]]))) {
+                    stop.call(msg.pre = "prob argument contains elements not present in ", call =match_call$data, msg = ".")
+                } else {
+                    ## Check if they are any names missing
+                    missing_rows <- rownames(data$matrix[[1]]) %in% prob_names
+                    if(any(missing_rows)) {
+                        extra_prob <- rep(1, length(which(!missing_rows)))
+                        names(extra_prob) <- rownames(data$matrix[[1]])[!missing_rows]
+                        prob <- c(extra_prob, prob)
+                    }
                 }
             }
 
@@ -241,11 +259,12 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions 
             }
 
             ## Renaming the elements to match the numbers in subsets
-            names(prob) <- match(names(prob), rownames(data$matrix[[1]]))
+            if(boot.by != "columns") {
+                names(prob) <- match(names(prob), rownames(data$matrix[[1]]))
+            }
 
             ## Update the dispRity object
             add.prob <- function(one_subset, prob) {
-
                 col1 <- one_subset$elements
                 col2 <- rep(NA, nrow(one_subset$elements))
                 col3 <- prob[match(one_subset$elements[,1], names(prob))]
@@ -257,7 +276,9 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions 
                 return(one_subset)
             }
 
-            data$subsets <- lapply(data$subsets, add.prob, prob)
+            if(boot.by != "columns") {
+                data$subsets <- lapply(data$subsets, add.prob, prob)
+            }
         }
     }
 
@@ -293,7 +314,7 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions 
     ## BOOT.TYPE
     check.class(boot.type, "character")
     boot.type <- tolower(boot.type)
-    check.length(boot.type, 1, " must be a single character string")
+    check.length(boot.type, 1, " must be one of the following: full, single, null.")
     
     ## Must be one of these methods
     check.method(boot.type, c("full", "single", "null"), "boot.type")
@@ -330,27 +351,26 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions 
         }
     )
 
-    ##  ~~~
-    ##  Add some extra method i.e. proportion of bootstrap shifts?
-    ##  ~~~
+    ## Add the dimensions to the call
+    if(is.null(data$call$dimensions)) {
+        data$call$dimensions <- 1:ncol(data$matrix[[1]])    
+    }
 
-    ## RM.LAST.AXIS
-    ## If TRUE, set automatic threshold at 0.95
-    if(!is.null(dimensions)) {
-        ## Else must be a single numeric value (proportional)
-        check.class(dimensions, c("numeric", "integer"), " must be a proportional threshold value.")
-        if(length(dimensions == 1)) {
-            if(dimensions < 0) {
-                stop.call("", "Number of dimensions to remove cannot be less than 0.")
-            }
-            if(dimensions < 1) dimensions <- 1:round(dimensions * ncol(data$matrix[[1]]))
-        } 
-        if(any(dimensions > ncol(data$matrix[[1]]))) {
-            stop.call("", "Number of dimensions to remove cannot be more than the number of columns in the matrix.")
-        }
-        data$call$dimensions <- dimensions
+    ## Switch all the elements
+    if(boot.by != "columns") {
+        ## elements are rows (or both)
+        all_elements <- matrix(1:dim(data$matrix[[1]])[1], ncol = 1)
     } else {
-        data$call$dimensions <- 1:ncol(data$matrix[[1]])
+        ## elements are columns
+        if(!probabilistic_subsets) {
+            all_elements <- matrix(data$call$dimension, ncol = 1)
+        } else {
+            if(!is.null(prob)) {
+                all_elements <- cbind(data$call$dimension, NA, prob)
+            } else {
+                all_elements <- cbind(data$call$dimension, NA, rep(1, length(data$call$dimension)))
+            }
+        }
     }
 
     ## Return object if BS = 0
@@ -380,13 +400,13 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions 
                                         ## Fun 3: Split the data per tree
                                         do.split.subsets, n_trees = n_trees),
                                     ## Fun 2: Apply the bootstraps
-                                    lapply, bootstrap.wrapper, bootstraps_per_tree, rarefaction, boot.type.fun, verbose),
+                                    lapply, bootstrap.wrapper, bootstraps = bootstraps_per_tree, rarefaction = rarefaction, boot.type.fun = boot.type.fun, verbose = verbose, all.elements = all_elements, boot.by = boot.by),
                                 ## Fun 1: Merge into one normal bootstrap table
                                 merge.to.list
                             )
     } else {
         ## Bootstrap the data set 
-        bootstrap_results <- lapply(data$subsets, bootstrap.wrapper, bootstraps, rarefaction, boot.type.fun, verbose, all.elements = 1:dim(data$matrix[[1]])[1])
+        bootstrap_results <- lapply(data$subsets, bootstrap.wrapper, bootstraps = bootstraps, rarefaction = rarefaction, boot.type.fun = boot.type.fun, verbose = verbose, all.elements = all_elements, boot.by = boot.by)
     }
     if(verbose) message("Done.", appendLF = FALSE)
 
@@ -394,7 +414,7 @@ boot.matrix <- function(data, bootstraps = 100, rarefaction = FALSE, dimensions 
     data$subsets <- mapply(combine.bootstraps, bootstrap_results, data$subsets, SIMPLIFY = FALSE)
 
     ## Adding the call information about the bootstrap
-    data$call$bootstrap <- c(bootstraps, boot.type, list(rare_out))
+    data$call$bootstrap <- c(bootstraps, boot.type, list(rare_out), boot.by)
 
     return(data)
 }

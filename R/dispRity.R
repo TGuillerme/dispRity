@@ -8,6 +8,7 @@
 #' @param tree \code{NULL} (default) or an optional \code{phylo} or \code{multiPhylo} object to be attached to the data. If this argument is not null, it will be recycled by \code{metric} when possible.
 #' @param ... Optional arguments to be passed to the metric.
 #' @param between.groups A \code{logical} value indicating whether to run the calculations between groups (\code{TRUE}) or not (\code{FALSE} - default) or a \code{numeric} list of pairs of groups to run (see details).
+#' @param dist.data A \code{logical} value indicating whether to treat the data as distance data (\code{TRUE}) or not (\code{FALSE}). By default it is set to \code{NULL} and interprets whether to use distance data from \code{data}.
 #' @param verbose A \code{logical} value indicating whether to be verbose or not.
 
 #          @param parallel Optional, either a \code{logical} argument whether to parallelise calculations (\code{TRUE}; the numbers of cores is automatically selected to n-1) or not (\code{FALSE}) or a single \code{numeric} value of the number of cores to use.
@@ -123,7 +124,7 @@
 # start_mem <- mem_used()
 
 
-dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALSE, verbose = FALSE, tree = NULL){#, parallel) {
+dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALSE, dist.data = NULL, verbose = FALSE, tree = NULL){#, parallel) {
     ## ----------------------
     ##  SANITIZING
     ## ----------------------
@@ -132,6 +133,7 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
     match_call <- match.call()
     dots <- list(...)
     # warning("DEBUG") ; return(match_call)
+    # dots <- list(dist.helper = dist_matrix)
 
     ## Check data input
     is_multi <- FALSE
@@ -217,16 +219,16 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
             body(dispRity.call)[[start_verbose]] <- body(dispRity.call)[[end_verbose]] <- substitute(empty_line <- NULL)
         }
         ## Set up the function to call
-        dispRity.int.call <- function(data, tree, metric, dimensions, between.groups, verbose, ...) {
-            return(dispRity.call(data = data, metric = metric, dimensions = dimensions, ..., between.groups = between.groups, verbose = verbose, tree = tree))
+        dispRity.int.call <- function(data, tree, metric, dimensions, between.groups, dist.data, verbose, ...) {
+            return(dispRity.call(data = data, metric = metric, dimensions = dimensions, ..., between.groups = between.groups, dist.data = dist.data, verbose = verbose, tree = tree))
         }
 
         ## Run the apply
         if(verbose) message("Calculating multiple disparities", appendLF = FALSE)
 
-        output <- dispRity.multi.apply(matrices, fun = dispRity.int.call, metric = metric, tree = tree, dimensions = dimensions, between.groups = between.groups, verbose = verbose, ...)
-        # output <- dispRity.multi.apply(matrices, fun = dispRity.int.call, metric = metric, trees = trees, dimensions = dimensions, between.groups = between.groups, verbose = verbose) ; warning("DEBUG")
-        # test <- dispRity.int.call(matrices[[1]], trees[[1]], metric = metric, dimensions = dimensions, between.groups = between.groups, verbose = verbose) ; warning("DEBUG")   
+        output <- dispRity.multi.apply(matrices, fun = dispRity.int.call, metric = metric, tree = tree, dimensions = dimensions, between.groups = between.groups, dist.data = dist.data, verbose = verbose, ...)
+        # output <- dispRity.multi.apply(matrices, fun = dispRity.int.call, metric = metric, trees = trees, dimensions = dimensions, between.groups = between.groups, verbose = verbose, dist.data = dist.data) ; warning("DEBUG")
+        # test <- dispRity.int.call(matrices[[1]], trees[[1]], metric = metric, dimensions = dimensions, between.groups = between.groups, verbose = verbose, dist.data = dist.data) ; warning("DEBUG")   
 
         if(verbose) message("Done.\n", appendLF = FALSE)
 
@@ -234,12 +236,30 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
         return(dispRity.multi.merge(data, output, match_call))
     }
 
+    ## Dimensions
+    if(!is.null(dimensions)) {
+        ## Else must be a single numeric value (proportional)
+        check.class(dimensions, c("numeric", "integer"), " must be a proportional threshold value.")
+        if(length(dimensions) == 1) {
+            if(dimensions < 0) {
+                stop.call("", "Number of dimensions cannot be less than 0.")
+            }
+            if(dimensions < 1) dimensions <- 1:round(dimensions * ncol(data$matrix[[1]]))
+        } 
+        if(any(dimensions > ncol(data$matrix[[1]]))) {
+            stop.call("", "Number of dimensions cannot be more than the number of columns in the matrix.")
+        }
+        data$call$dimensions <- dimensions
+    }
+
     ## Get the metric list
     metrics_list <- get.dispRity.metric.handle(metric, match_call, data = data, tree = tree, ...)
-    # metrics_list <- get.dispRity.metric.handle(metric, match_call, data = data, tree = NULL)
+    # metrics_list <- get.dispRity.metric.handle(metric, match_call, data = data, tree = NULL); warning("DEBUG: dispRity 257")
+    dist_help <- metrics_list$dist.help
     metric_is_between.groups <- unlist(metrics_list$between.groups)
     metric_has_tree <- unlist(metrics_list$tree)
     metrics_list <- metrics_list$levels
+    # return(metrics_list)
 
     ## Stop if data already contains disparity and metric is not level1
     if(!is.null(metrics_list$level3.fun) && length(data$call$disparity$metric) != 0) {
@@ -283,24 +303,35 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
     ## Check if the subsets contains probabilities or not
     has_probabilities <- ifelse(length(grep("\\.split", data$call$subsets)) == 0, FALSE, TRUE)
 
-    ## Dimensions
-    if(!is.null(dimensions)) {
-        ## Else must be a single numeric value (proportional)
-        check.class(dimensions, c("numeric", "integer"), " must be a proportional threshold value.")
-        if(length(dimensions) == 1) {
-            if(dimensions < 0) {
-                stop.call("", "Number of dimensions cannot be less than 0.")
-            }
-            if(dimensions < 1) dimensions <- 1:round(dimensions * ncol(data$matrix[[1]]))
-        } 
-        if(any(dimensions > ncol(data$matrix[[1]]))) {
-            stop.call("", "Number of dimensions cannot be more than the number of columns in the matrix.")
-        }
-        data$call$dimensions <- dimensions
-    }
-
     ## VERBOSE
     check.class(verbose, "logical")
+
+    ## Data dist
+    if(is.null(dist.data)) {
+        ## Check if data has distance
+        if(!is.null(data$call$dist.data)) {
+            dist.data <- data$call$dist.data
+        } else {
+            ## Default is not dist.data
+            dist.data <- FALSE
+        }
+        ## Check if bootstraps has distance
+        if(!is.null(data$call$bootstrap) && length(data$call$bootstrap) > 3 && data$call$bootstrap[[4]] == "dist") {
+            dist.data <- TRUE
+        }
+    } else {
+        ## Check class
+        check.class(dist.data, "logical")
+        ## Check conflict?
+        if(!dist.data) {
+            if((!is.null(data$call$dist.data) && data$call$dist.data) || (!is.null(data$call$bootstrap) && length(data$call$bootstrap) > 3 && data$call$bootstrap[[4]] == "dist")) {
+                warning(paste0("data.dist is set to FALSE (the data will not be treated as a distance matrix) even though ", match_call$data, " contains distance treated data."))
+            }
+        }
+    }
+
+    ## Check do_by.col from bootstraps
+    do_by.col <- ifelse(!is.null(data$call$bootstrap) && length(data$call$bootstrap) > 3 && data$call$bootstrap[[4]] == "columns", TRUE, FALSE)
 
     ## Serial
     is_between.groups <- FALSE
@@ -342,7 +373,7 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
         ## Serial is a list, check if it contains the right information (pairs of things that exist)
         pairs <- unique(unlist(lapply(between.groups, length))) 
         if(length(pairs) > 1 || pairs != 2 || max(unlist(between.groups)) > length(data$subsets)) {
-            stop("The provided list of groups (between.groups) must be a list of pairs of subsets in the data.")
+            stop("The provided list of groups (between.groups) must be a list of pairs of subsets in the data.", call. = FALSE)
         }
         list_of_pairs <- between.groups
         is_between.groups <- TRUE
@@ -353,7 +384,6 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
         ## Stop.call
         stop(paste0("Impossible to apply a dimension-level 3 metric that is not a between group metric with a dimension-level1 or 2 metric that is. You can try to integrate that dimension-level 3 metric directly in the definition of the other metrics."), call. = FALSE)
     }
-
 
     ## Parallel
     # if(missing(parallel)) {
@@ -469,9 +499,36 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
 
     if(verbose) message("Calculating disparity", appendLF = FALSE)
 
-    ## Running the multiple matrix mode
-    # if(is_bound || length(data$matrix) > 1) {
+    ## Running BAT.metrics with complex options (subsets)
+    # if(match_call$metric == "BAT.metric" && !is.null(match_call$BAT.args) && !is.null(data$subsets)) {
+    #     ## Convert the data
+    #     batted_data <- dispRity.BAT(data, inc.all = FALSE) # maybe add inc.all?
+    #     ## Run the metric
+    #     disparities <- BAT.metric(batted_data, ..., return.raw = TRUE)
+    #     # disparities <- BAT.metric(batted_data, BAT.fun = BAT.fun, return.raw = TRUE, BAT.args = dots$BAT.args) ; warning("DEBUG")
 
+    #     ## Transform the output into a disparity list
+    #     subsets_names <- name.subsets(data)
+
+    #     ## Get the elements
+    #     disparity <- lapply_loop
+    #     if(nrow(disparities) == length(subsets_names)) {
+    #         ## Is not bootstrapped
+    #         for(one_subset in subset_names) {
+    #             disparity[[one_subset]]$elements <- matrix(nrow = 1, disparities[one_subset, ])
+    #         }
+    #     } else {
+    #         ## Is bootstrapped
+    #         for(one_subset in subset_names) {
+    #             disparity[[one_subset]] <- format.results.subsets(disparity[[one_subset]], disparities, one_subset) 
+    #         }
+    #     }
+
+    #     ## Clean RAM
+    #     rm(disparities)
+    # } else {
+
+    ## Other disparity formats
     if(any( 
           c(## Data is bound to a tree
             is_bound,
@@ -494,9 +551,16 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
 
         ## mapply this
         disparities <- mapply(mapply.wrapper, lapply_loops, splitted_data, 
-                            MoreArgs = list(metrics_list, matrix_decomposition, verbose, metric_has_tree, ...),
+                            MoreArgs = list(metrics_list         = metrics_list,
+                                            matrix_decomposition = matrix_decomposition,
+                                            verbose              = verbose,
+                                            metric_has_tree      = metric_has_tree,
+                                            dist_help            = dist_help,
+                                            dist.data            = dist.data,
+                                            do_by.col            = do_by.col,
+                                            ...),
                             SIMPLIFY = FALSE)
-        # disparities <- mapply(mapply.wrapper, lapply_loops, splitted_data, MoreArgs = list(metrics_list, matrix_decomposition, verbose, metric_has_tree), SIMPLIFY = FALSE) ; warning("DEBUG dispRity")
+        # disparities <- mapply(mapply.wrapper, lapply_loops, splitted_data, MoreArgs = list(metrics_list, matrix_decomposition, verbose, metric_has_tree, dist_help), SIMPLIFY = FALSE) ; warning("DEBUG dispRity")
         
         ## Reformat to normal disparity object
         disparity <- unlist(lapply(as.list(1:ifelse(is.null(data$call$subsets["trees"]), n_trees, length(disparities[[1]]))),
@@ -505,12 +569,24 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
         names(disparity) <- names(disparities[[1]])
     } else {
         ## Normal disparity lapply
-        disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list, data, matrix_decomposition, verbose, metric_has_tree, ...)
+        disparity <- lapply(lapply_loop, lapply.wrapper,
+                            metrics_list         = metrics_list,
+                            data                 = data,
+                            matrix_decomposition = matrix_decomposition,
+                            verbose              = verbose,
+                            metric_has_tree      = metric_has_tree,
+                            dist_help            = dist_help,
+                            dist.data            = dist.data,
+                            do_by.col            = do_by.col,
+                            ...)
         #TG: check out the file disparity_internal_logic.md (located on the root of the package) for explanation about the logic in this lapply
 
-        ## If multiple matrices, split the resulting output into columns
+        # warning("DEBUG: dispRity")
+        # disparity <- lapply(lapply_loop, lapply.wrapper, metrics_list = metrics_list, data = data, matrix_decomposition = matrix_decomposition, verbose = verbose, metric_has_tree = metric_has_tree, dist_help = dist_help, dist.data = dist.data)
 
+        ## If multiple matrices, split the resulting output into columns
     }
+    # } # ifelse exit form BAT.metrics
 
     # }
     ## Free the loop memory

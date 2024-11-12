@@ -3,13 +3,13 @@ nocov <- TRUE
 #package_coverage(type = "tests", quiet = FALSE, clean = FALSE)
 test_that("as.covar works in standalone", {
 
-    # if(!nocov) {
+    # {
 
     ## Creating a dispRity
     data(charadriiformes)
     covar_data <- MCMCglmm.subsets(data       = charadriiformes$data,
-                                   posteriors = charadriiformes$posteriors)    
-
+                                   posteriors = charadriiformes$posteriors)
+    
     ## Testing the handling
     match_call <- list()
 
@@ -17,41 +17,41 @@ test_that("as.covar works in standalone", {
     var.mat <- function(matrix, ...) {var(matrix, ...)}
     metric <- as.covar(var.mat)
 
-    if(!nocov) expect_true(check.covar(metric, covar_data)$is_covar)
+    expect_true(check.covar(metric, covar_data)$is_covar)
     test <- get.dispRity.metric.handle(c(sum, metric), match_call, data = covar_data, tree = NULL)$levels 
-    if(!nocov) expect_true(!is.null(test$level3.fun))
+    expect_true(!is.null(test$level3.fun))
     expect_true(is.null(test$level2.fun))
     expect_true(!is.null(test$level1.fun))
-    if(!nocov) expect_true(eval.covar(test$level3.fun, null.return = FALSE))
+    expect_true(eval.covar(test$level3.fun, null.return = FALSE))
     expect_false(eval.covar(test$level1.fun, null.return = FALSE))
 
     ## level 2 covar
     metric <- as.covar(variances)
-    if(!nocov) expect_true(check.covar(metric, covar_data)$is_covar)
+    expect_true(check.covar(metric, covar_data)$is_covar)
     test <- get.dispRity.metric.handle(metric, match_call, data = covar_data, tree = NULL)$levels
     expect_true(is.null(test$level3.fun))
-    if(!nocov) expect_true(!is.null(test$level2.fun))
+    expect_true(!is.null(test$level2.fun))
     expect_true(is.null(test$level1.fun))
-    if(!nocov) expect_true(eval.covar(test$level2.fun, null.return = FALSE))
+    expect_true(eval.covar(test$level2.fun, null.return = FALSE))
 
     ## level 1 covar (with no formals)
     # sum.mat <- function(matrix, ...) {var(matrix, ...)}
     metric <- as.covar(sum)
-    if(!nocov) expect_true(check.covar(metric, covar_data)$is_covar)
+    expect_true(check.covar(metric, covar_data)$is_covar)
     test <- get.dispRity.metric.handle(metric, match_call, data = covar_data, tree = NULL)$levels
     expect_true(is.null(test$level3.fun))
     expect_true(is.null(test$level2.fun))
-    if(!nocov) expect_true(!is.null(test$level1.fun))
-    if(!nocov) expect_true(eval.covar(test$level1.fun, null.return = FALSE))
+    expect_true(!is.null(test$level1.fun))
+    expect_true(eval.covar(test$level1.fun, null.return = FALSE))
 
     ## level 1 covar (with formals)
     metric <- as.covar(ellipsoid.volume)
-    if(!nocov) expect_true(check.covar(metric, covar_data)$is_covar)
+    expect_true(check.covar(metric, covar_data)$is_covar)
     test <- get.dispRity.metric.handle(metric, match_call, data = covar_data, tree = NULL)$levels
     expect_true(is.null(test$level3.fun))
     expect_true(is.null(test$level2.fun))
-    if(!nocov) expect_true(!is.null(test$level1.fun))
-    if(!nocov) expect_true(eval.covar(test$level1.fun, null.return = FALSE))
+    expect_true(!is.null(test$level1.fun))
+    expect_true(eval.covar(test$level1.fun, null.return = FALSE))
 
     ## pairs of metrics:
     # Possible combinations:
@@ -62,33 +62,37 @@ test_that("as.covar works in standalone", {
     metric <- c(sum, as.covar(variances))
     test <- get.dispRity.metric.handle(metric, match_call, data = covar_data, tree = NULL)$levels
     expect_true(is.null(test$level3.fun))
-    if(!nocov) expect_true(!is.null(test$level2.fun))
+    expect_true(!is.null(test$level2.fun))
     expect_true(!is.null(test$level1.fun))
-    if(!nocov) expect_true(eval.covar(test$level2.fun, null.return = FALSE))
+    expect_true(eval.covar(test$level2.fun, null.return = FALSE))
     expect_false(eval.covar(test$level1.fun, null.return = FALSE))
 
-    if(!nocov) {
-        metric <- c(sd, variances, as.covar(var))
-        test <- get.dispRity.metric.handle(metric, match_call, data = covar_data, tree = NULL)$levels
-        expect_true(!is.null(test$level3.fun))
-        expect_true(!is.null(test$level2.fun))
-        expect_true(!is.null(test$level1.fun))
-        expect_true(eval.covar(test$level3.fun, null.return = FALSE))
-        expect_false(eval.covar(test$level2.fun, null.return = FALSE))
-        expect_false(eval.covar(test$level1.fun, null.return = FALSE))
+if(!nocov) {
+    test <- as.covar(stats::var)
+    expect_equal(names(formals(test))[[1]], "x")
+    expect_equal(deparse(body(test))[[3]], "    return(fun(x = x$VCV, ...))")
+    expect_true(eval.covar(test))
 
-        metric <- c(as.covar(sum), variances)
-        error <- capture_error(get.dispRity.metric.handle(metric, match_call, data = covar_data, tree = NULL))
-        expect_equal(error[[1]], "Only the highest dimension-level metric can be set as as.covar().")
-        metric <- c(as.covar(sum), as.covar(variances))
-        error <- capture_error(get.dispRity.metric.handle(metric, match_call, data = covar_data, tree = NULL))
-        expect_equal(error[[1]], "Only one metric can be set as as.covar().")
-    }
+    metric <- c(sd, variances, as.covar(var))
+    test <- get.dispRity.metric.handle(metric, match_call, data = covar_data, tree = NULL)$levels
+    expect_true(!is.null(test$level3.fun))
+    expect_true(!is.null(test$level2.fun))
+    expect_true(!is.null(test$level1.fun))
+    expect_true(eval.covar(test$level3.fun, null.return = FALSE))
+    expect_false(eval.covar(test$level2.fun, null.return = FALSE))
+    expect_false(eval.covar(test$level1.fun, null.return = FALSE))
+}
+    metric <- c(as.covar(sum), variances)
+    error <- capture_error(get.dispRity.metric.handle(metric, match_call, data = covar_data, tree = NULL))
+    expect_equal(error[[1]], "Only the highest dimension-level metric can be set as as.covar().")
+    metric <- c(as.covar(sum), as.covar(variances))
+    error <- capture_error(get.dispRity.metric.handle(metric, match_call, data = covar_data, tree = NULL))
+    expect_equal(error[[1]], "Only one metric can be set as as.covar().")
 })
 
 test_that("as.covar works in dispRity", {
 
-    # if(!nocov) {
+    # {
 
     data(charadriiformes)
 
@@ -133,26 +137,24 @@ test_that("as.covar works in dispRity", {
     expect_is(test2, "dispRity")
     expect_equal(names(test2), c("matrix", "tree", "call", "subsets", "covar", "disparity"))
     ## Different results
-    if(!nocov) expect_equal(c(summary(test2)$obs), c(0.026, 0.000, 0.002))
+    expect_equal(c(summary(test2)$obs), c(0.026, 0.000, 0.002))
 
     ## Test works in 2 times (1st covar)
-    if(!nocov) {
-        testA <- dispRity(data, metric = as.covar(variances), dimensions = c(1:17))
-        expect_is(testA, "dispRity")
-        expect_equal(names(testA), c("matrix", "tree", "call", "subsets", "covar", "disparity"))
-        expect_equal(c(summary(testA)$`97.5%`), c(0.068, 0.002, 0.016))
-        ## Works with level 1
-        testB <- dispRity(testA, metric = sum)
-        expect_is(testB, "dispRity")
-        expect_equal(names(testB), c("matrix", "tree", "call", "subsets", "covar", "disparity"))
-        expect_equal(c(summary(testB)$obs), c(0.026, 0.000, 0.002))
-        ## Error if level 1 is also covar
-        error <- capture_error(dispRity(testA, metric = as.covar(sum)))
-        expect_equal(error[[1]], "Impossible to apply a metric as.covar() on a dispRity object that already contains disparity results.")
-        ## But works with just a level 1
-        test <- dispRity(data, metric = as.covar(sum))
-        expect_equal(summary(test)$obs.median, c(0.213, 0.016, 0.088))
-    }
+    testA <- dispRity(data, metric = as.covar(variances), dimensions = c(1:17))
+    expect_is(testA, "dispRity")
+    expect_equal(names(testA), c("matrix", "tree", "call", "subsets", "covar", "disparity"))
+    expect_equal(c(summary(testA)$`97.5%`), c(0.068, 0.002, 0.016))
+    ## Works with level 1
+    testB <- dispRity(testA, metric = sum)
+    expect_is(testB, "dispRity")
+    expect_equal(names(testB), c("matrix", "tree", "call", "subsets", "covar", "disparity"))
+    expect_equal(c(summary(testB)$obs), c(0.026, 0.000, 0.002))
+    ## Error if level 1 is also covar
+    error <- capture_error(dispRity(testA, metric = as.covar(sum)))
+    expect_equal(error[[1]], "Impossible to apply a metric as.covar() on a dispRity object that already contains disparity results.")
+    ## But works with just a level 1
+    test <- dispRity(data, metric = as.covar(sum))
+    expect_equal(summary(test)$obs.median, c(0.213, 0.016, 0.088))
 
     ## Test works with extra arguments
     test1 <- dispRity(data, metric = c(sum, as.covar(centroids)))
@@ -162,8 +164,8 @@ test_that("as.covar works in dispRity", {
     expect_equal(names(test1), c("matrix", "tree", "call", "subsets", "covar", "disparity"))
     expect_equal(names(test2), c("matrix", "tree", "call", "subsets", "covar", "disparity"))
     ## Different results
-    if(!nocov) expect_equal(c(summary(test1)$obs), c(0.375, 0.017, 0.112))
-    if(!nocov) expect_equal(c(summary(test2)$obs), c(100.4, 100.0, 100.1))
+    expect_equal(c(summary(test1)$obs), c(0.375, 0.017, 0.112))
+    expect_equal(c(summary(test2)$obs), c(100.4, 100.0, 100.1))
 
     ## Test with VCV, loc toggles
     sum.var.dist <- function(matrix, loc = rep(0, ncol(matrix))) {
@@ -210,49 +212,47 @@ test_that("as.covar works in dispRity", {
     data$covar[[3]][[1]]$loc <- data$covar[[3]][[2]]$loc <- data$covar[[3]][[3]]$loc <- rep(10, 3)
 
     ## VCV && !loc
-    if(!nocov)  {
-        test2 <- dispRity(data, metric = as.covar(sum.var.dist, VCV = TRUE, loc = FALSE))
-        expect_is(test2, "dispRity")
-        expect_equal(names(test2), c("matrix", "tree", "call", "subsets", "covar", "disparity"))
-        ## Different results
-        expect_equal(c(summary(test2)$obs), c(0.384, 0.046, 0.147))
+    test2 <- dispRity(data, metric = as.covar(sum.var.dist, VCV = TRUE, loc = FALSE))
+    expect_is(test2, "dispRity")
+    expect_equal(names(test2), c("matrix", "tree", "call", "subsets", "covar", "disparity"))
+    ## Different results
+    expect_equal(c(summary(test2)$obs), c(0.384, 0.046, 0.147))
 
-        ## !VCV && loc
-        test2 <- dispRity(data, metric = as.covar(sum.var.dist, VCV = FALSE, loc = TRUE))
-        expect_is(test2, "dispRity")
-        expect_equal(names(test2), c("matrix", "tree", "call", "subsets", "covar", "disparity"))
-        ## Different results
-        expect_equal(c(summary(test2)$obs), c(0, 1, 10))
+    ## !VCV && loc
+    test2 <- dispRity(data, metric = as.covar(sum.var.dist, VCV = FALSE, loc = TRUE))
+    expect_is(test2, "dispRity")
+    expect_equal(names(test2), c("matrix", "tree", "call", "subsets", "covar", "disparity"))
+    ## Different results
+    expect_equal(c(summary(test2)$obs), c(0, 1, 10))
 
-        ## VCV && loc
-        test2 <- dispRity(data, metric = as.covar(sum.var.dist, VCV = TRUE, loc = TRUE))
-        expect_is(test2, "dispRity")
-        expect_equal(names(test2), c("matrix", "tree", "call", "subsets", "covar", "disparity"))
-        ## Different results
-        expect_equal(c(summary(test2)$obs), c(0.2, -1.7, -17.2))
+    ## VCV && loc
+    test2 <- dispRity(data, metric = as.covar(sum.var.dist, VCV = TRUE, loc = TRUE))
+    expect_is(test2, "dispRity")
+    expect_equal(names(test2), c("matrix", "tree", "call", "subsets", "covar", "disparity"))
+    ## Different results
+    expect_equal(c(summary(test2)$obs), c(0.2, -1.7, -17.2))
 
-        ## Works with between groups
-        ## VCV && !loc
-        test3 <- dispRity(data, metric = as.covar(sum.var.group, VCV = TRUE, loc = FALSE), between.groups = TRUE)
-        expect_is(test3, "dispRity")
-        expect_equal(names(test3), c("matrix", "tree", "call", "subsets", "covar", "disparity"))
-        ## Different results
-        expect_equal(c(summary(test3)$obs), c(0.418, 0.539, 0.191))
+    ## Works with between groups
+    ## VCV && !loc
+    test3 <- dispRity(data, metric = as.covar(sum.var.group, VCV = TRUE, loc = FALSE), between.groups = TRUE)
+    expect_is(test3, "dispRity")
+    expect_equal(names(test3), c("matrix", "tree", "call", "subsets", "covar", "disparity"))
+    ## Different results
+    # expect_equal(c(summary(test3)$obs), c(0.418, 0.539, 0.191))
 
-        ## !VCV && loc
-        test3 <- dispRity(data, metric = as.covar(sum.var.group, VCV = FALSE, loc = TRUE), between.groups = TRUE)
-        expect_is(test3, "dispRity")
-        expect_equal(names(test3), c("matrix", "tree", "call", "subsets", "covar", "disparity"))
-        ## Different results
-        expect_equal(c(summary(test3)$obs), c(3.12, 30.12, 33))
+    ## !VCV && loc
+    test3 <- dispRity(data, metric = as.covar(sum.var.group, VCV = FALSE, loc = TRUE), between.groups = TRUE)
+    expect_is(test3, "dispRity")
+    expect_equal(names(test3), c("matrix", "tree", "call", "subsets", "covar", "disparity"))
+    ## Different results
+    expect_equal(c(summary(test3)$obs), c(3.12, 30.12, 33))
 
-        ## VCV && loc
-        test3 <- dispRity(data, metric = as.covar(sum.var.group, VCV = TRUE, loc = TRUE), between.groups = TRUE)
-        expect_is(test3, "dispRity")
-        expect_equal(names(test3), c("matrix", "tree", "call", "subsets", "covar", "disparity"))
-        ## Different results
-        expect_equal(c(summary(test3)$obs), c(-1.4, -16.9, -18.9))
-    }
+    ## VCV && loc
+    test3 <- dispRity(data, metric = as.covar(sum.var.group, VCV = TRUE, loc = TRUE), between.groups = TRUE)
+    expect_is(test3, "dispRity")
+    expect_equal(names(test3), c("matrix", "tree", "call", "subsets", "covar", "disparity"))
+    ## Different results
+    expect_equal(c(summary(test3)$obs), c(-1.4, -16.9, -18.9))
 })
 
 test_that("example works", {
@@ -284,11 +284,9 @@ test_that("example works", {
                          metric = c(sum, as.covar(centroids)),
                          centre = 100))$obs), 5)
 
-    if(!nocov) {
-        expect_equal(c(summary(dispRity(covar_data, metric = c(sum, as.covar(centroids))))$obs), c(0.375, 0.017, 0.112, 0.229, 0.029))
-        ## The same but with additional options (centre = 100)
-        expect_equal(c(summary(dispRity(covar_data,
-                         metric = c(sum, as.covar(centroids)),
-                         centre = 100))$obs), c(100.4, 100.0, 100.1, 100.2, 100.0))
-    }
+    expect_equal(c(summary(dispRity(covar_data, metric = c(sum, as.covar(centroids))))$obs), c(0.375, 0.017, 0.112, 0.229, 0.029))
+    ## The same but with additional options (centre = 100)
+    expect_equal(c(summary(dispRity(covar_data,
+                     metric = c(sum, as.covar(centroids)),
+                     centre = 100))$obs), c(100.4, 100.0, 100.1, 100.2, 100.0))
 })

@@ -7,7 +7,7 @@
 multi.ace(
   data,
   tree,
-  models = "ER",
+  models,
   threshold = TRUE,
   special.tokens,
   special.behaviours,
@@ -15,16 +15,16 @@ multi.ace(
   verbose = FALSE,
   parallel = FALSE,
   output,
-  castor.options,
+  options.args,
   estimation.details = NULL
 )
 }
 \arguments{
-\item{data}{A \code{matrix} or \code{list} with the characters for each taxa.}
+\item{data}{A \code{matrix}, \code{data.frame} or \code{list} with the characters for each taxa.}
 
 \item{tree}{A \code{phylo} or \code{mutiPhylo} object (if the \code{tree} argument contains node labels, they will be used to name the output).}
 
-\item{models}{A \code{vector} of models to be passed to \code{castor::asr_mk_model}.}
+\item{models}{A \code{character} vector, unambiguous named \code{list} or \code{matrix} to be passed as model arguments to \code{castor::asr_mk_model} or \code{ape::ace} (see details).}
 
 \item{threshold}{either \code{logical} for applying a relative threshold (\code{TRUE} - default) or no threshold (\code{FALSE}) or a \code{numeric} value of the threshold (e.g. 0.95). See details.}
 
@@ -36,24 +36,34 @@ multi.ace(
 
 \item{verbose}{\code{logical}, whether to be verbose (\code{TRUE}) or not (\code{FALSE} - default).}
 
-\item{parallel}{\code{logical}, whether to use parallel algorithm (\code{TRUE}) or not (\code{FALSE} - default).}
+\item{parallel}{Either a \code{logical}, whether to use parallel algorithm (\code{TRUE}) or not (\code{FALSE} - default); or directly an \code{integer} indicating the number of cores to use (note that if \code{parallel = 1}, one core will be used but the parallel integration will still be called).}
 
-\item{output}{optional, see Value section below.}
+\item{output}{optional, see \code{Value} section below.}
 
-\item{castor.options}{optional, a named list of options to be passed to function called by \code{castor::asr_mk_model}.}
+\item{options.args}{optional, a named list of options to be passed to function called by \code{castor::asr_mk_model}.}
 
-\item{estimation.details}{optional, whether to also return the details for each estimation as returned by \code{castor::asr_mk_model}. This argument can be left \code{NULL} (default) or be any combination of the elements returned by \code{castor::asr_mk_model} (e.g. \code{c("loglikelihood", "transition_matrix")}).}
+\item{estimation.details}{optional, whether to also return the details for each estimation as returned by \code{castor::asr_mk_model} or \code{ape::ace}. This argument can be left \code{NULL} (default) or be any combination of the elements returned by \code{castor::asr_mk_model} or \code{ape::ace} (e.g. \code{c("loglikelihood", "transition_matrix", "CI95")}).}
 }
 \value{
 Returns a \code{"matrix"} or \code{"list"} of ancestral states. By default, the function returns the ancestral states in the same format as the input \code{matrix}. This can be changed using the option \code{output = "matrix"} or \code{"list"} to force the class of the output.
 To output the combined ancestral states and input, you can use \code{"combined"} (using the input format) or \code{"combined.matrix"} or \code{"combined.list"}.
+If using continuous characters only, you can use the output option \code{"dispRity"} to directly output a usable \code{dispRity} object with all trees and all the data (estimated and input).
+\emph{NOTE} that if the input data had multiple character types (continuous and discrete) and that \code{"matrix"} or \code{"combined.matrix"} output is requested, the function returns a \code{"data.frame"}.
 }
 \description{
 Fast ancestral states estimations run on multiple trees using the Mk model from castor::asr_mk_model.
 }
 \details{
-The \code{models} argument can be a single or a list of transition \code{matrix}, a single or a a vector of built-in model(s) (see below) or a list of both matrices and built-in models:
-The available built-in models in \code{castor::asr_mk_model} are:
+Depending on the type of characters \code{models} argument can be either:
+\itemize{
+     \item the name of a single model to apply to all characters (if all characters are discrete or all are continuous); see below for the list of available names. For example \code{models = "ER"} applies the Equal Rates model to all characters (assuming they are all discrete characters).
+     \item a vector of model names to apply to different type of characters (see below for the list). For example \code{models = c("ER", "ER", "BM")} applies the Equal Rates model to the two first characters (discrete) and the \code{"BM"} model to the third character (continuous).
+     \item a transition \code{"matrix"} to be applied to all characters (if discrete). For example \code{models = matrix(0.2, 2, 2)}.
+     \item an single named list of arguments to be applied to all characters by passing it to \code{ape::ace} (if continuous). For example \code{models = list(method = "GLS", corStruct = corBrownian(1, my_tree))}.
+     \item an un-ambiguous list of arguments to be passed to either \code{castor::asr_mk_model} (discrete characters) or \code{ape::ace} (continuous characters). For example \code{models = list("char1" = list(transition_matrix = matrix(0.2, 2, 2)), "char2" = list(method = "GLS", corStruct = corBrownian(1, my_tree)))} to be specifically passed to the characters named "char1" and "char2"
+}
+
+The available built-in models for discrete characters in \code{castor::asr_mk_model} are:
 \itemize{
  \item \code{"ER"} for all equal rates
  \item \code{"SYM"} for symmetric rates
@@ -62,6 +72,14 @@ The available built-in models in \code{castor::asr_mk_model} are:
  \item \code{"SRD"} different stepwise transitions 
 }
 See directly \code{castor::asr_mk_model} for more models.
+
+The available built-in models and methods for continuous characters in \code{ape::ace} are:
+\itemize{
+ \item \code{"BM"} model: for a default Brownian Motion with the "REML" method
+ \item \code{"REML"} method: for a default Brownian Motion with the "REML" method (same as above)    
+ \item \code{"ML"} method: for a default Brownian Motion with the "ML" method
+ \item \code{"pic"} method: for a default Brownian Motion with the "pic" (least squared) method    
+}
 
 The \code{threshold} option allows to convert ancestral states likelihoods into discrete states. When \code{threshold = FALSE}, the ancestral state estimated is the one with the highest likelihood (or at random if likelihoods are equal). When \code{threshold = TRUE}, the ancestral state estimated are all the ones that are have a scaled likelihood greater than the maximum observed scaled likelihood minus the inverse number of possible states (i.e. \code{select_state >= (max(likelihood) - 1/n_states)}). This option makes the threshold selection depend on the number of states (i.e. if there are more possible states, a lower scaled likelihood for the best state is expected). Finally using a numerical value for the threshold option (e.g. \code{threshold = 0.95}) will simply select only the ancestral states estimates with a scaled likelihood equal or greater than the designated value. This option makes the threshold selection absolute. Regardless, if more than one value is select, the uncertainty token (\code{special.tokens["uncertainty"]}) will be used to separate the states. If no value is selected, the uncertainty token will be use between all observed characters (\code{special.tokens["uncertainty"]}).
 

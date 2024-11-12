@@ -57,7 +57,7 @@ slide.nodes <- function(nodes, tree, slide, allow.negative.root = FALSE) {
     ## Getting the node IDs (if character)
     if(node_class == "character") {
         if(is.null(tree$node.label)) {
-            stop("The tree has no node labels, provide the nodes as integers.")
+            stop("The tree has no node labels, provide the nodes as integers.", call. = FALSE)
         } 
         nodes <- which(tree$node.label %in% nodes) + Ntip(tree)
     }
@@ -65,14 +65,14 @@ slide.nodes <- function(nodes, tree, slide, allow.negative.root = FALSE) {
     check.class(tree, "phylo")
 
     ## Check whether nodes exist in the tree
-    if(any(nodes > (Nnode(tree)+Ntip(tree)))) stop("node(s) not found in tree.")
-    if(any(nodes < Nnode(tree))) stop("node(s) not found in tree.")
+    if(any(nodes > (Nnode(tree)+Ntip(tree)))) stop("node(s) not found in tree.", call. = FALSE)
+    if(any(nodes < Nnode(tree))) stop("node(s) not found in tree.", call. = FALSE)
     if(!allow.negative.root) {
         if(any(nodes == (Ntip(tree)+1))) warning(paste0("The parent of the root node (", (Ntip(tree) + 1), ") cannot be slid."))
     }
 
     ## Check whether the tree has edge lengths
-    if(is.null(tree$edge.length)) stop("The tree has no edge lengths.")
+    if(is.null(tree$edge.length)) stop("The tree has no edge lengths.", call. = FALSE)
 
     ## Slide
     check.class(slide, c("numeric", "integer"))
@@ -82,7 +82,7 @@ slide.nodes <- function(nodes, tree, slide, allow.negative.root = FALSE) {
 
     ## Catch eventual errors
     if(is.null(tree)) {
-        stop(paste0("The slide value (", slide, ") produced negative branch length(s)."))
+        stop(paste0("The slide value (", slide, ") produced negative branch length(s)."), call. = FALSE)
     }
     return(tree)
 }

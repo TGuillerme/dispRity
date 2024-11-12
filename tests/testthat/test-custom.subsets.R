@@ -75,7 +75,7 @@ test_that("set.group.list works", {
     test <- set.group.list(group6, data, group_class = class(group6))
     expect_is(test, "list")
     expect_equal(length(test), 4)
-    expect_equal(unlist(lapply(test, length)), c(9, 3, 5, 3))
+    expect_equal(unlist(lapply(test, length)), c("f" = 9, "g" = 3, "h" = 5, "i" = 3))
 })
 
 ## Check.group.list
@@ -417,7 +417,8 @@ test_that("custom.subsets detects distance matrices", {
 
     expect_warning(custom.subsets(is_dist, group = list(letters[1:5], letters[6:10])))
     msg <- capture_warnings(custom.subsets(is_dist, group = list(letters[1:5], letters[6:10])))
-    expect_equal(msg, "custom.subsets is applied on what seems to be a distance matrix.\nThe resulting matrices won't be distance matrices anymore!")
+    expect_equal(msg, "custom.subsets is applied on what seems to be a distance matrix.\nThe resulting matrices won't be distance matrices anymore!\nYou can use dist.data = TRUE, if you want to keep the data as a distance matrix.")
+
 })
 
 test_that("custom.subsets works with tree", {
@@ -443,4 +444,16 @@ test_that("custom.subsets works with a factor", {
     expect_is(test, "dispRity")
     expect_equal(n.subsets(test), 3)
     expect_equal(size.subsets(test), c("gulls" = 159, "plovers" = 98, "sandpipers" = 102))
+})
+
+test_that("custom.subsets works with a logical", {
+    ## Random 3D dataset with 200 taxa
+    data <- dispRity::space.maker(elements = 200, dimensions = 3, distribution = rnorm)
+    set.seed(1)
+    group <- sample(c(TRUE, FALSE), 200, replace = TRUE)
+
+    ## Creating groups with a logical
+    expect_warning(test <- custom.subsets(data, group = group))
+    expect_equal(name.subsets(test), c("FALSE", "TRUE"))
+    expect_equal(size.subsets(test), c("FALSE" = 98, "TRUE" = 102))
 })

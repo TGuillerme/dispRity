@@ -33,6 +33,12 @@ get.tree.clades <- function(tree, data) {
         clade_nodes <- lapply(clades, get.node.labels, tree = tree)
         clades <- mapply(c, clades, clade_nodes)
     }
+
+    ## Add clade names
+    if(!is.null(tree$node.label)) {
+        names(clades) <- tree$node.label
+    }
+
     return(clades)
 }
 
@@ -43,6 +49,12 @@ set.group.list <- function(group, data, group_class) {
     if(group_class[1] == "matrix") {
         group_class <- "data.frame"
         group <- as.data.frame(group)
+    }
+
+    ## Logical is set to factor
+    if(group_class[1] == "logical") {
+        group <- as.factor(group)
+        group_class[1] <- "factor"
     }
 
     ## Switch methods
@@ -56,9 +68,9 @@ set.group.list <- function(group, data, group_class) {
                            unlist(group_list, recursive = FALSE)},
             ## Group is a phylo
             "phylo"      = get.tree.clades(group, data),
+            ## Group is factor
             "factor"     = {group_list <- lapply(as.list(levels(group)), function(lvl, group) which(group == lvl), group = group) ; names(group_list) <- levels(group) ; group_list}
-            )
-        )
+        ))
 }
 
 

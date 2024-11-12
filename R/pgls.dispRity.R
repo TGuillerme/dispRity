@@ -50,7 +50,7 @@ pgls.dispRity <- function(data, tree, formula, model = "BM", ..., optim = list()
         data <- add.tree(data, tree = tree, replace = TRUE)
     } else {
         if(is.null(get.tree(data))) {
-            stop("No tree was found in the provided data and none was provided through the tree argument.")
+            stop("No tree was found in the provided data and none was provided through the tree argument.", call. = FALSE)
         }
     }
 
@@ -110,14 +110,14 @@ get.formula <- function(disparity) {
         group <- lapply(disparity$subsets, function(x) return(c(x$elements)))
         ## Check overlap
         if(any(table(unlist(group)) != 1)) {
-            stop("Some groups have overlapping elements.")
+            stop("Some groups have overlapping elements.", call. = FALSE)
         }
         ## Return the correct formula
         if(disparity$call$subsets[[1]] == "customised") {
             return(disparity ~ group)
         } else {
             ## Warning for time auto-correlation
-            stop("It is currently not possible to apply an phylogenetic linear model on dispRity data with time series.")
+            stop("It is currently not possible to apply an phylogenetic linear model on dispRity data with time series.", call. = FALSE)
             # warning("Data contains time series: the default formula used is disparity ~ time but it does not take time autocorrelation into account.", call. = FALSE)
             # colnames(group_table) <- "time"
             # return(list(formula = disparity ~ time, group = NULL, time = group_table))
@@ -165,7 +165,7 @@ get.pgls.data <- function(data) {
         multiple_trees <- (length(trees) > 1)
         multiple_datas <- (length(data_list) > 1)
         if(multiple_datas && multiple_trees) {
-            stop(paste0("Data must either same number of matrices (", length(data_list), ") and trees (", length(trees) , ") or just one tree or matrix combined with respectively with multiple matrices or trees."))
+            stop(paste0("Data must either same number of matrices (", length(data_list), ") and trees (", length(trees) , ") or just one tree or matrix combined with respectively with multiple matrices or trees."), call. = FALSE)
         }
         ## Combine the data
         if(multiple_datas) {

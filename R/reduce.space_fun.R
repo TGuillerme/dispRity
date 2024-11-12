@@ -83,15 +83,11 @@ optimise.results <- function(to_remove, fun, remove, args, tuning, verbose = FAL
     ## Check if optimisation is necessary
     if(length(which(to_remove)) != criterion) {
         
-        if(verbose) cat("Run parameter optimisation:")
-
         ## Find the optimal parameter
         args$parameters$optimise <- optimise.parameter(fun, args, criterion = criterion, tuning = tuning, verbose = verbose)
         
         ## Rerun the function with the optimal parameter
         to_remove <- do.call(fun, args)
-
-        if(verbose) cat("Done.\n")
     }
 
     if(!return.optim) {

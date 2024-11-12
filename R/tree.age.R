@@ -22,7 +22,7 @@
 
 #Modified from [R-sig-phylo] nodes and taxa depth II - 21/06/2011 - Paolo Piras - ppiras(at)uniroma3.it
 
-tree.age <- function(tree, age, order = 'past', fossil = TRUE, digits = 3){
+tree.age <- function(tree, age, order = 'past', fossil = TRUE, digits = 4){
 
     #SANITYZING
 

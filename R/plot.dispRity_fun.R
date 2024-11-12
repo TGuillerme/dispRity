@@ -750,9 +750,13 @@ do.plot.preview <- function(data, specific.args, ...) {
     plot_args <- get.dots(dots, plot_args, "ylab", paste0("Dimension ", specific.args$dimensions[2], " (", loading[specific.args$dimensions[2]], "%)"))
 
     ## Setting plot limits
-    plot_lim <- range(unlist(lapply(data$matrix[specific.args$matrix], function(matrix, dim) c(matrix[, dim]), dim = specific.args$dimensions)))
-    plot_args <- get.dots(dots, plot_args, "xlim", plot_lim)
-    plot_args <- get.dots(dots, plot_args, "ylim", plot_lim)
+    xrange <- range(unlist(lapply(data$matrix[specific.args$matrix], function(matrix, dim) c(matrix[, dim]), dim = specific.args$dimensions[1])))
+    yrange <- range(unlist(lapply(data$matrix[specific.args$matrix], function(matrix, dim) c(matrix[, dim]), dim = specific.args$dimensions[2])))
+    ## Get the centered scale range
+    plot_lims <- get.center.scale.range(xrange, yrange)
+
+    plot_args <- get.dots(dots, plot_args, "xlim", plot_lims$xlim)
+    plot_args <- get.dots(dots, plot_args, "ylim", plot_lims$ylim)
 
     ## Get the number of colour groups
     n_groups <- length(data$subsets)
@@ -1574,7 +1578,7 @@ do.plot.projection <- function(data, specific.args, cent.tend, ...) {
 
         ## Get the central tendencies
         if(!all(specific.args$correlation.plot %in% names(data)) && length(specific.args$correlation.plot) != 2) {
-            stop(paste0("correlation.plot argument must contain 2 elements from data (data contains: ", paste(names(data), collapse = ", "), ")."))
+            stop(paste0("correlation.plot argument must contain 2 elements from data (data contains: ", paste(names(data), collapse = ", "), ")."), call. = FALSE)
         }
 
         ## Remove the phylogeny part (if exists)
@@ -1596,4 +1600,23 @@ do.plot.projection <- function(data, specific.args, cent.tend, ...) {
         ## Plot the results
         plot(plot_data, ...)
     }
+}
+
+
+## Get centered scaled range for prettier plots
+get.center.scale.range <- function(xrange, yrange) {
+    ## Get the ranges
+    x_diff <- diff(xrange)
+    y_diff <- diff(yrange)
+
+    ## Largest range stays unchanged
+    if(x_diff >= y_diff) {
+        xlim <- xrange
+        ylim <- c(mean(yrange)-(x_diff/2), mean(yrange)+(x_diff/2))
+    }
+    if(x_diff < y_diff) {
+        ylim <- yrange
+        xlim <- c(mean(xrange)-(y_diff/2), mean(xrange)+(y_diff/2))
+    }
+    return(list(xlim = xlim, ylim = ylim))
 }

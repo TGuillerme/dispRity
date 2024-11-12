@@ -67,6 +67,11 @@ MCMCglmm.sample(model, n = 5)
 MCMCglmm.covars(model, sample = 42)
 ## Get two random samples from the model
 MCMCglmm.covars(model, n = 2)
+
+## Get the variance for each terms in the model
+terms_variance <- MCMCglmm.variance(model)
+boxplot(terms_variance, horizontal = TRUE, las = 1)
+
 }
 \seealso{
 \code{\link{MCMCglmm.subsets}}

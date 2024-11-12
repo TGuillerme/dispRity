@@ -6,7 +6,7 @@ get.percent.age <- function(tree, percent = 0.01) {
         percent <- percent + 0.01
         tree_slice <- slice.tree.sharp(tree, tree$root.time - (percent * tree$root.time))
         if(percent >= 100) {
-            stop("Impossible to find a starting point to slice the tree. This can happen if the tree has no branch length or has a \"ladder\" structure. You can try to fix that by setting specific slicing times.")
+            stop("Impossible to find a starting point to slice the tree. This can happen if the tree has no branch length or has a \"ladder\" structure. You can try to fix that by setting specific slicing times.", call. = FALSE)
             break
         }
     }

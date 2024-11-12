@@ -4,19 +4,27 @@
 \alias{match.tip.edge}
 \title{Match tips or nodes edge vector}
 \usage{
-match.tip.edge(vector, phylo, replace.na, use.parsimony = TRUE)
+match.tip.edge(
+  vector,
+  phylo,
+  replace.na,
+  use.parsimony = TRUE,
+  to.root = FALSE
+)
 }
 \arguments{
-\item{vector}{a vector of variables (equal to the number of tips or to the number of tips and nodes).}
+\item{vector}{a vector of variables (equal to the number of tips or to the number of tips and nodes) or a vector of tips and nodes names or IDs.}
 
 \item{phylo}{a phylo or multiPhylo object.}
 
 \item{replace.na}{optional, what to replace NAs with.}
 
 \item{use.parsimony}{logical, whether to also colour internal edges parsimoniously (\code{TRUE} - default; i.e. if two nodes have the same unique ancestor node and the same variable, the ancestor node is assume to be the of the same value as its descendants) or not (\code{FALSE}).}
+
+\item{to.root}{logical, if \code{vector} is a list of tips and nodes, whether to colour internal edges all the way to the root (\code{TRUE}) or not (\code{FALSE} - default).}
 }
 \value{
-A vector of variables equal to the number of edges in the tree (or a list of vectors if the \code{phylo} input is of class \code{"multiPhylo"}).
+If the input \code{vector} is a vector of variables, the function returns a vector of variables equal to the number of edges in the tree (or a list of vectors if the \code{phylo} input is of class \code{"multiPhylo"}). Else it returns an \code{integer} vector for the selected edges.
 }
 \description{
 Match a vector of tips or tips and nodes with the an edge list from a \code{"phylo"} or \code{"multiPhylo"}.
@@ -47,6 +55,25 @@ edge_colors <- match.tip.edge(c(tip_values, node_values), tree)
 plot(tree, show.tip.label = FALSE, edge.color = edge_colors) 
 tiplabels(1:20, bg = tip_values)
 nodelabels(1:19, bg = node_values)
+
+## Matching the tips and nodes colours to the root
+data(bird.orders)
+
+## Getting the bird orders starting with a "C"
+some_orders <- sort(bird.orders$tip.label)[4:9]
+
+## Get the edges linking these orders
+edges_of_interest <- match.tip.edge(vector = some_orders,
+                                    phylo  = bird.orders)
+
+## Create a colour vector for all edges
+all_edges <- rep("grey", Nedge(bird.orders))
+## Replacing the edges of interest by another colour
+all_edges[edges_of_interest] <- "black"
+
+## Plot the results
+plot(bird.orders, edge.color = all_edges)
+
 }
 \author{
 Thomas Guillerme

@@ -40,7 +40,7 @@ test_that("get.plot.params works", {
     ## The plotting options
     expect_equal(plot_params$options$xlab, "Time (Mya)")
     expect_equal(plot_params$options$ylab, "c(median, centroids)")
-    expect_equal_round(plot_params$options$ylim, c(1.546577, 2.012542), 6)
+    expect_equal_round(plot_params$options$ylim, c(1.516207, 1.971640), 6)
     expect_equal(plot_params$options$col, c("black", "#BEBEBE", "#D3D3D3"))
     ## Observed data
     expect_equal(names(plot_params$observed_args), c("observed", "col", "names", "data", "pch", "cex"))
@@ -415,4 +415,19 @@ test_that("preview works with fuzzy matrices and trees", {
   expect_null(plot(data))
   expect_null(plot(data, specific.args = list(tree = TRUE)))
   expect_null(plot(data, specific.args = list(matrix = 1, tree = 1)))
+})
+
+test_that("get.center.scale.range gives the correct scales", {
+    set.seed(1)
+    ## X bigger
+    xrange <- range(rnorm(10))
+    yrange <- range(runif(10))
+    test <- get.center.scale.range(xrange, yrange)
+    expect_gt(diff(xrange), diff(yrange))
+    expect_equal(diff(test$xlim), diff(test$ylim))
+
+    yrange <- range(runif(10, max = 100))
+    test <- get.center.scale.range(xrange, yrange)
+    expect_lt(diff(xrange), diff(yrange))
+    expect_equal(diff(test$xlim), diff(test$ylim))
 })

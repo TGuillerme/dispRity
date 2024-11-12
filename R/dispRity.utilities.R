@@ -1,5 +1,5 @@
 #' @name make.dispRity
-#' @aliases make.dispRity fill.dispRity
+#' @aliases make.dispRity fill.dispRity remove.dispRity
 #' 
 #' @title Make and fill \code{dispRity}.
 #' 
@@ -7,13 +7,20 @@
 #'
 #' @usage make.dispRity(data, tree, call, subsets)
 #' @usage fill.dispRity(data, tree, check)
+#' @usage remove.dispRity(data, what)
 #' 
 #' @param data A \code{matrix}.
 #' @param tree Optional, a \code{phylo} or \code{multiPhylo} object.
 #' @param call Optional, a \code{list} to be a \code{dispRity} call.
 #' @param subsets Optional, a \code{list} to be a \code{dispRity} subsets list.
 #' @param check Logical, whether to check the data (\code{TRUE}; default, highly advised) or not (\code{FALSE}).
-#' 
+#' @param what Which elements to remove. Can be any of the following: \code{"subsets"}, \code{"bootstraps"}, \code{"covar"}, \code{"tree"}, \code{"disparity"}. See details.
+#'
+#' @details
+#' When using \code{remove.dispRity}, the function recursively removes any other data depending on \code{"what"}.
+#' For example, for a data with disparity calculated for bootstrapped subsets, removing the subsets (\code{what = "subsets"}) also removes the bootstraps and the disparity data.
+#' But removing the bootstraps (\code{what = "bootstraps"}) removes only the bootstraps draws and the disparity relating to the bootstraps (but keeps the subsets and the non-bootstrapped disparity values).
+#'
 #' @examples
 #' ## An empty dispRity object
 #' make.dispRity()
@@ -105,7 +112,62 @@ fill.dispRity <- function(data, tree, check = TRUE) {
     }
     return(data)
 }
+remove.dispRity <- function(data, what) {
+    check.class(data, "dispRity")
+    removables <- c("subsets", "bootstraps", "covar", "tree", "disparity")
+    check.method(what, removables, msg = "The what argument")
 
+    ## Remove the covar
+    if("covar" %in% what && !is.null(data$covar)) {
+        data$covar <- NULL
+        data$call$bootstrap <- NULL
+        data$call$subsets <- "customised" 
+        if(length(data$subsets) == 1) {
+            data$subsets <- NULL
+            data$call$subsets <- NULL
+        }
+    }
+
+    ## Remove the bootstraps
+    if("bootstraps" %in% what && !is.null(data$call$bootstrap)) {
+        if(!is.null(data$subsets)) {
+            ## Remove the non-elements parts of the subsets
+            data$subsets <- lapply(data$subsets, function(x) return(list("elements" = x$elements)))
+        }
+        if(!is.null(data$disparity)) {
+            ## Remove the non-element parts of the bootstraps
+            data$disparity <- lapply(data$disparity, function(x) return(list("elements" = x$elements)))
+        }
+        data$call$bootstrap <- NULL
+    }
+
+    ## Remove the subsets
+    if("subsets" %in% what && !is.null(data$subsets)) {
+        data$subsets <- NULL
+        data$call$subsets <- NULL
+        data$call$bootstrap <- NULL
+        data$disparity <- NULL
+        data$call$disparity <- NULL
+    }
+
+    ## Remove the tree
+    if("tree" %in% what && !is.null(data$tree)) {
+        data <- remove.tree(data)
+    }
+
+    ## Remove the disparity
+    if("disparity" %in% what && !is.null(data$disparity)) {
+        data$disparity <- NULL
+        data$call$disparity <- NULL
+    }
+
+    ## Add a null tree if missing
+    if(!("tree" %in% names(data))) {
+        data$tree <- list(NULL)
+    }
+
+    return(data)
+}
 
 #' @name get.matrix
 #' @aliases get.matrix get.disparity matrix.dispRity extract.dispRity
@@ -676,6 +738,7 @@ scale.dispRity <- function(x, center = FALSE, scale = TRUE, ...) {
     }
         
     data <- x
+    rm(x)
     match_call <- match.call()
 
     ## data
@@ -685,7 +748,7 @@ scale.dispRity <- function(x, center = FALSE, scale = TRUE, ...) {
     }
 
     ## Get the whole distribution
-    all_data <- unlist(get.disparity(data))
+    all_data <- unlist(get.disparity(data, concatenate = FALSE))
     if(!is.null(data$call$bootstrap)) {
         all_data <- c(all_data, unlist(get.disparity(data, observed = FALSE)))
     }
@@ -703,7 +766,7 @@ scale.dispRity <- function(x, center = FALSE, scale = TRUE, ...) {
     ## Getting the scale value
     if(is(scale, "logical")) {
         if(scale & use.all) {
-            scale <- max(all_data)
+            scale <- max(all_data, na.rm = TRUE)
         }
     } else {
         check.class(scale, c("numeric", "integer", "logical"))

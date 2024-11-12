@@ -405,6 +405,45 @@ selected$dim.list
 ## but both groups need 22 and 23 axes
 ```
 
+## `set.root.time`
+
+This function can be used to easily add a `$root.time` element to `"phylo"` or `"multiPhylo"` objects.
+This `$root.time` element is used by `dispRity` and several packages (e.g. `Claddis` and `paleotree`) to scale the branch length units of a tree allowing them to be usually expressed in million of years (Mya).
+
+For example, on a standard random tree, no `$root.time` exist so the edge lengths are not expressed in any specific unit:
+
+```{r}
+## A random tree with no root.time
+my_tree <- rtree(10)
+my_tree$root.time # is NULL
+```
+
+You can add a root time by either manually setting it:
+
+```{r}
+## Adding an arbitrary root time
+my_tree_arbitrary <- my_tree
+## Setting the age of the root to 42
+my_tree_arbitrary$root.time <- 42
+```
+
+Or by calculating it automatically from the cumulated branch length information (making the youngest tip age 0 and the oldest the total age/depth of the tree)
+
+```{r}
+## Calculating the root time from the present
+my_tree_aged <- my_tree 
+my_tree_aged <- set.root.time(my_tree)
+```
+
+If you want the youngest tip to not be of age 0, you can define an arbitrary age for it and recalculate the age of the root from there using the `present` argument (say the youngest tip is 42 Mya old):
+
+```{r}
+## Caculating the root time from 42 Mya 
+my_tree_age <- set.root.time(my_tree, present = 42)
+```
+
+This function also works with a distribution of trees (`"multiPhylo"`).
+
 ## `slice.tree`
 
 This function is a modification of the `paleotree::timeSliceTree` function that allows to make slices through a phylogenetic tree.
@@ -443,7 +482,7 @@ The function works by taking a node (or a list of nodes), a tree and a sliding v
 The node will be moved "up" (towards the tips) for the given sliding value.
 You can move the node "down" (towards the roots) using a negative value.
 
-```{r}
+```{r, fig.height = 12, fig.width = 4}
 set.seed(42)
 ## Generating simple coalescent tree
 tree <- rcoal(5)
@@ -463,7 +502,7 @@ The `remove.zero.brlen` is a "clever" wrapping function that uses the `slide.nod
 This function will slide nodes up or down in successive postorder traversals (i.e. going down the tree clade by clade) in order to minimise the number of nodes to slide while making sure there are no silly negative branch lengths produced!
 By default it is trying to slide the nodes using 1% of the minimum branch length to avoid changing the topology too much.
 
-```{r}
+```{r, fig.height = 12, fig.width = 4}
 set.seed(42)
 ## Generating a tree
 tree <- rtree(20)
@@ -516,7 +555,7 @@ tree.age(tree, order = "present")
 
 ## `multi.ace`
 
-This function allows to run the `ape::ace` function (ancestral characters estimations) on multiple trees.
+This function allows to run ancestral characters estimations on multiple trees.
 In it's most basic structure (e.g. using all default arguments) this function is using a mix of `ape::ace` and `castor::asr_mk_model` depending on the data and the situation and is generally faster than both functions when applied to a list of trees.
 However, this function provides also some more complex and modular functionalities, especially appropriate when using discrete morphological character data.
 
@@ -614,7 +653,7 @@ default_behaviour <- list(missing      <- function(x,y) y,
 ## Treating polymorphisms as all values present:
                           polymorphism <- function(x,y) strsplit(x, split = "\\&")[[1]],
 ## Treating uncertainties as all values present (like polymorphisms):
-                          uncertanity  <- function(x,y) strsplit(x, split = "\\&")[[1]])
+                          uncertanity  <- function(x,y) strsplit(x, split = "\\/")[[1]])
 ```
 
 We can then use these token description along with our complex matrix and our list of trees to run the ancestral states estimations as follows:
@@ -636,7 +675,7 @@ For example, you can use different models for each character via the `models` ar
 
 ### Feeding the results to `char.diff` to get distance matrices
 
-Finally, after running your ancestral states estimations, it is not uncommon to then use these resulting data to calculate the distances between taxa and then ordinate the results to measure disparity.
+After running your ancestral states estimations, it is not uncommon to then use these resulting data to calculate the distances between taxa and then ordinate the results to measure disparity.
 You can do that using the `char.diff` function [described above](#char.diff) but instead of measuring the distances between characters (columns) you can measure the distances between species (rows).
 You might notice that this function uses the same modular token and behaviour descriptions.
 That makes sense because they're using the same core C functions implemented in dispRity that greatly speed up distance calculations.
@@ -659,3 +698,64 @@ distances <- lapply(ancestral_states, char.diff, method = "mord", by.col = FALSE
 ```
 
 And we now have a list of distances matrices with ancestral states estimated!
+
+### Running ancestral states estimations for continuous characters
+
+You can also run `multi.ace` on continuous characters.
+The function detects any continuous characters as being of class `"numeric"` and runs them using the `ape::ace` function.
+
+```{r}
+set.seed(1)
+## Creating three coalescent trees
+my_trees <- replicate(3, rcoal(15), simplify = FALSE)
+## Adding node labels
+my_trees <- lapply(my_trees, makeNodeLabel)
+## Making into a multiPhylo object
+class(my_trees) <- "multiPhylo"
+
+## Creating a matrix of continuous characters
+data <- space.maker(elements = 15, dimensions = 5, distribution = rnorm,
+                    elements.name = my_trees[[1]]$tip.label)
+```
+
+With such data and trees you can easily run the `multi.ace` estimations. 
+By default, the estimations use the default arguments from `ape::ace`, knowingly a Brownian Motion (`model = "BM"`) with the REML method (`method = "REML"`; this method "first estimates the ancestral value at the root (aka, the phylogenetic mean), then the variance of the Brownian motion process is estimated by optimizing the residual log-likelihood" - from `?ape::ace`).
+
+```{r}
+## Running multi.ace on continuous data
+my_ancestral_states <- multi.ace(data, my_trees)
+## We end up with three matrices of node states estimates
+str(my_ancestral_states)
+```
+
+This results in three matrices with ancestral states for the nodes.
+When using continuous characters, however, you can output the results directly as a `dispRity` object that allows visualisation and other normal dispRity pipeline:
+
+```{r}
+## Running multi.ace on continuous data
+my_ancestral_states <- multi.ace(data, my_trees, output = "dispRity")
+## We end up with three matrices of node states estimates
+plot(my_ancestral_states)
+```
+
+You can also mix continuous and discrete characters together.
+By default the `multi.ace` detects which character is of which type and applies the correct estimations based on that.
+However you can always specify models or other details character per characters.
+
+
+```{r}
+## Adding two discrete characters
+data <- as.data.frame(data)
+data <- cbind(data, "new_char" = as.character(sample(1:2, 15, replace = TRUE)))
+data <- cbind(data, "new_char2" = as.character(sample(1:2, 15, replace = TRUE)))
+
+## Setting up different models for each characters
+## BM for all 5 continuous characters
+## and ER and ARD for the two discrete ones
+my_models <- c(rep("BM", 5), "ER", "ARD")
+
+## Running the estimation with the specified models
+my_ancestral_states <- multi.ace(data, my_trees, models = my_models)
+```
+
+Of course all the options discussed in the first part above also can apply here!

@@ -192,7 +192,7 @@ tree$node.label <- as.character(paste0("n",seq(1:5)))
 
 #Test
 test_that("slice.tree works properly", {
-
+    set.seed(1)
     #class
     expect_is(
         slice.tree(tree, 0, 'ACCTRAN'), 'phylo'
@@ -226,7 +226,6 @@ test_that("slice.tree works properly", {
     expect_equal(
         slice.edge(tree, 2, model = "random")
         ,"n2")
-
 })
 
 test_that("slice.tree proba works", {
@@ -316,6 +315,6 @@ test_that("example works with deep slice", {
                                 keep.all.ancestors = TRUE)
 
     expect_equal(deep_slice$tip.label, c("t10", "t14", "t20", "t7", "t9", "t15", "i", "l", "l", "o", "o", "t17"))
-    expect_equal(which(tree.age(deep_slice)$age == 1.5), 7:11)
+    expect_equal(which(round(tree.age(deep_slice, digits = 4)$ages, 1) == 1.5), 7:11)
     expect_equal(deep_slice$root.time, tree$root.time)
 })

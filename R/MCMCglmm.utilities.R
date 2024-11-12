@@ -49,11 +49,11 @@
 #' MCMCglmm.covars(model, sample = 42)
 #' ## Get two random samples from the model
 #' MCMCglmm.covars(model, n = 2)
-    
-## Get the variance for each terms in the model
-# terms_variance <- MCMCglmm.variance(model)
-# boxplot(terms_variance, horizontal = TRUE)
-
+#'
+#' ## Get the variance for each terms in the model
+#' terms_variance <- MCMCglmm.variance(model)
+#' boxplot(terms_variance, horizontal = TRUE, las = 1)
+#'
 #' @seealso \code{\link{MCMCglmm.subsets}}
 #' 
 #' @author Thomas Guillerme
@@ -193,10 +193,9 @@ MCMCglmm.covars <- function(MCMCglmm, n, sample){
         } else {
             check.class(sample, c("numeric", "integer"))
 
-            ## Check for incorect samples
+            ## Check for incorrect samples
             if(length(incorect_sample <- which(sample > length(MCMCglmm.sample(MCMCglmm)))) > 0) {
-                    #dispRity_export in: MAKE dispRity STOP STYLE
-                    stop("Some samples are not available in the MCMCglmm object.")#dispRity_export out: 
+                stop("Some samples are not available in the MCMCglmm object.", call. = FALSE)
             }
         }
     } else {

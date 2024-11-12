@@ -4,7 +4,7 @@
 \alias{tree.age}
 \title{Extracting the age of nodes and tips in a tree.}
 \usage{
-tree.age(tree, age, order = "past", fossil = TRUE, digits = 3)
+tree.age(tree, age, order = "past", fossil = TRUE, digits = 4)
 }
 \arguments{
 \item{tree}{A \code{phylo} object.}

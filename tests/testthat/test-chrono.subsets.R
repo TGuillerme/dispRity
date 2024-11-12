@@ -572,20 +572,20 @@ test_that("chrono.subsets works with multiPhylo", {
 
     expect_is(test, "dispRity")
     expect_equal(names(test), c("matrix", "tree", "call", "subsets"))
-    expect_equal(names(test$subsets), c("9.31", "4.66", "0"))
+    expect_equal(names(test$subsets), c("9.74", "4.87", "0"))
     expect_equal(unique(unlist(lapply(test$subsets, names), use.names = FALSE)), "elements")
     expect_equal(unlist(lapply(test$subsets, lapply, dim), use.names = FALSE), c(3, 2, 5, 2, 10, 2))
-    expect_equal(unique(c(test$subsets[[2]]$elements)), c(17, 22, 21, 26, NA, 2, 25, 27))
+    expect_equal(unique(c(test$subsets[[2]]$elements)), c(2, 17, 22, 25, 27, 21, 24))
 
     ## Works with discrete
     test <- chrono.subsets(data, tree, method = "discrete", time = 3, inc.nodes = TRUE)
     expect_is(test, "dispRity")
-    expect_equal(unlist(lapply(test$subsets, lapply, dim), use.names = FALSE), c(6, 2, 5, 2, 14, 2))
+    expect_equal(unlist(lapply(test$subsets, lapply, dim), use.names = FALSE), c(5, 2, 7, 2, 14, 2))
 
     ## Works with probabilities
     test <- chrono.subsets(data, tree, method = "continuous", time = 3, model = "gradual.split")
     expect_is(test, "dispRity")
-    expect_equal(unlist(lapply(test$subsets, lapply, dim), use.names = FALSE), c(3, 6, 7, 6, 10, 6))
+    expect_equal(unlist(lapply(test$subsets, lapply, dim), use.names = FALSE), c(3, 6, 6, 6, 10, 6))
 
     ## The output saves the tree
     expect_is(test$tree, "multiPhylo")
