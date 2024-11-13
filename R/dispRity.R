@@ -520,7 +520,7 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
     #     } else {
     #         ## Is bootstrapped
     #         for(one_subset in subset_names) {
-    #             disparity[[one_subset]] <- format.results.subsets(disparity[[one_subset]], disparities, one_subset) 
+    #             disparity[[one_subset]] <- .format.results.subsets(disparity[[one_subset]], disparities, one_subset) 
     #         }
     #     }
 

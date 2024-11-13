@@ -672,7 +672,7 @@ combine.pairs <- function(pairs, lapply_data) {
 # }
 
 ## Transform BAT results into dispRity format
-format.results.subsets <- function(one_subset_lapply, disparities, one_subset) {
+.format.results.subsets <- function(one_subset_lapply, disparities, one_subset) {
     ## Get the results
     results <- disparities[grepl(one_subset, rownames(disparities)), , drop = FALSE]
     rownames(results) <- unlist(lapply(strsplit(rownames(results), split = paste0(one_subset, ".")), `[[`, 2))
