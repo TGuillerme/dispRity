@@ -1,4 +1,4 @@
-dispRity v1.9 (2024-11-12)  *distant update*
+dispRity v1.9 (2024-11-13)  *distant update*
 =========================
 
 ### NEW FEATURES
