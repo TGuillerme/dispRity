@@ -62,6 +62,9 @@ MCMCglmm.subsets <- function(data, posteriors, group, tree, rename.groups, set.l
         if(any(classifier)) {
             group_classifier <- data[,which(!numerics)[which(classifier)], drop = FALSE]
         }
+        if(ncol(group_classifier) == 0) {
+            stop("Could not find any classifier in the data in the format for MCMCglmm. Make sure a classifier is provided and in a factor format.")
+        }
     } else {
         cleaned_data <- data
         group_classifier <- matrix(1, nrow = nrow(data), ncol = 1, dimnames = list(rownames(data)))
