@@ -75,7 +75,7 @@ Check out this paper on selecting the best metric for your specific question in 
 You can also find more information in the [`dispRity` manual](https://rawcdn.githack.com/TGuillerme/dispRity/c94452e6877fbb274eb0a4ff1363272a6297a9ee/inst/gitbook/_book/details-of-specific-functions.html#disparity-metrics).
 
 ## Latest major patch highlights
-### dispRity v1.9 (2024-11-12) *distance update*
+### dispRity v1.9 (2024-11-12) *distant update*
 [Read the full patch note here](https://github.com/TGuillerme/dispRity/blob/master/NEWS.md).
 
  * `dispRity` has been not greatly optimised for using distance matrices: 1) it's now much faster thanks to the `dist.helper` new optional argument (storing the distance matrix in the cache) and 2) it now allows direct analyses of distance matrices in a dispRity pipeline.
