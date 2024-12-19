@@ -1,0 +1,327 @@
+---
+title: "Select your own disparity metric"
+author: "Thomas Guillerme"
+date: "`r Sys.Date()`"
+bibliography: references.bib
+csl: mee.csl
+output:
+  html_document:
+    fig_width: 6
+    fig_height: 6
+---
+
+Here is a vignette to help you select a list of disparity metrics tailored to your own dataset and your own biological question.
+We will be doing that using the `dispRity` package @dispRity.
+You can find the slides introducing this vignette [here]().
+<!-- And a recording of the whole workshop [here](). -->
+
+```{r, eval = FALSE}
+## Installing the package
+install.packages("dispRity")
+## Loading the package
+library(dispRity)
+```
+
+```{r, echo = FALSE}
+## Loading the package without installing it
+library(dispRity)
+```
+
+> You feel uncomfortable with `R`? You can also follow this tutorial using the [`moms` graphical interface](https://tguillerme.shinyapps.io/moms/).
+
+# 2 - Select a dataset
+
+> Note that for the purpose of the exercise step 1 and 2 are reverted here.
+I would argue that having a biological question should be the first step but in practice, it's also often totally fine to start with the dataset and then figure out which question would be cool to study.
+
+For the purpose of this dataset, we will use one of the demo dataset from the `dispRity` package, but feel free to choose one of the other demo dataset or, even better, use your own dataset!
+
+```{r}
+## Loading the demo datasets
+data(demo_data)
+```
+
+Here is a summary of the demo datasets you can choose from:
+
+study | field | taxonomic group | traits | trait space | size | groups | question |
+----------|-----------|-----------|--------------|--------------|----------|--------------|----------------
+@beck2014 | Palaeontology | Mammalia | discrete morphological phylogenetic data | Ordination of a distance matrix (PCO) | 106x105 | 52 crown vs. 54 stem | Are living mammals and their ancestors more disparate than their stem mammals?  |
+@wright2017 | Palaeontology | Crinoidea | discrete morphological phylogenetic data | Ordination of a distance matrix (PCO) | 42x41 | 16 before vs. 23 after | Is there an effect of the mass Ordovician mass extinction on crinoids disparity?|
+@marcy2016 | Evolution | Rodentia | skull 2D landmark coordinates  | Ordination of a Procrustes Superimposition (PCA) | 454x134 | 225 *Megascapheus* vs. 229 *Thomomys* | Is there convergence in skull shape between these two genera of gophers?|
+@hopkins2016 | Evolution | Trilobita | 3D landmark coordinates | Ordination of a Procrustes Superimposition (PCA) | 46x46 | 36 adults vs. 10 juveniles | How are trilobites growing? |
+@jones2015 | Ecology | Plantae | Communities species compositions | Ordination of a Jaccard distance matrix (PCO) | 48x47 | 24 aspens vs. 24 grasslands | Are aspens and grasslands dispersing differently? |
+@healy2019 | Ecology | Animalia | Life history traits | Ordination of continuous traits (PCA) | 285*6 | 83 ecthotherms vs. 202 endotherms | Do endotherms have more diversified life history strategies than ectotherms? |
+
+For this example I will be using the dataset from @beck2014.
+
+```{r}
+## Selecting a dataset
+my_data <- demo_data$beck
+```
+
+> If you want to use your own data, you'll have to make it into a `dispRity` object to follow this tutorial easily.
+This can be easily done using `custom.subsets` or `chrono.subsets` depending if you want to group your data by a certain variable or through time.
+You can refer to the use of each function (and all other ones) using `?custom.subsets` or `?chrono.subsets`.
+
+> In `moms` select in the "Select the type of space to use:" menu (top left), choose "Demo" and select your favourite dataset in the "Select a demo matrix" list.
+You can also input your own matrix using choosing "Input" in the "Select the type of space to use:" menu (top left) and then choose a file.
+
+## Have a look at your dataset
+
+The rest of the choice of metrics will depend on the properties of your dataset.
+Although there is advanced ways to correctly measure properties of multidimensional dasets (homscedasticity, normality, etc.), visualising can already tell a lot.
+
+```{r}
+## Visualising the two first dimensions
+plot(my_data)
+```
+
+Note however that the dataset has `r dim(my_data$matrix[[1]])[2]-2` other dimensions so a 2 visualisation is often only superficial.
+
+# 1 - Identify the mechanism and the process
+
+With the dataset in mind, we can then identify the mechanism and the process at hand (or the other way around).
+In the chosen example, we can ask the question *"Do modern mammals (crown) evolve more disparate body shapes than archaic ones?"*.
+The mechanism here would be simply be **evolution** and the process here will be the age of the group.
+In other words, is there does "evolution has an effect (e.g. a different outcome) on the age of the group?".
+
+We can then choose a pattern: the disparity metric, function diversity metric, dissimilarity metric, space occupancy metric, etc. 
+
+# 3 - Select an aspect of the trait space that will answer your question
+
+In terms of disparity here, we might be interested in two aspects: the diversity of body shapes can be expressed as changes in:
+
+ * size: for example the more trait space occupied, the more diverse a group is.
+ * density: for example more densily packed a part of the trait space is, the more diverse a group is.
+
+In a very contrasting scenario, we'd have a group that has a big size and high density against one with a small size and low density.
+
+# 4 - Make a list of potential metrics
+
+There is no miracle recipe for making a list of metrics.
+One easy way is to first look at what has been done before (e.g. what are they using in your favourite paper).
+For example, we have tested and played around with a diversity of metrics in @guillerme2020 and @guillerme2024 (TL:DR; for both papers: different things measure things differently).
+
+## Changes in size of the trait space:
+
+ 1. sum of ranges? _The sum of the spreads of the data (spreads perimeter?)._
+ 2. product of ranges? _The surface/volume/hypervolume of the square/cube/hypercube that contains all the data._
+ 3. sum of variances? _Same as for the sum of ranges but using the squared standard deviation in the data rather than the spread._
+ 4. product of variances? _Same as for the product of ranges but using the squared standard deviation in the data rather than the spread._
+ 5. convex hull surface? _The surface of the smallest polygon that contains all the data._
+ 6. convex hull volume? _The volume of the smallest polygon that contains all the data._
+
+Note here that the sum and products pairs for the ranges and variances are effectively measuring either the "perimeter" or the "surface/volume" in _n_ dimensions.
+
+## Changes in density of the trait space:
+
+ 7. mean distance to centroid? _The average distance between the group center and each observation._
+ 8. mean nearest neighbor distance? _The average distance between each observation and it's closest relative._
+ 9. mean squared pairwise distance (like in `dtt`)? _The average pairwise distance - but squared?_
+ 10. minimum spanning tree average length? _The average branch length of the shortest tree that connects all observations._
+
+Alternatively, you can design your very own metric!
+We'll see a how to example later on.
+
+# 5 - Test which metric would best work for your dataset and question
+
+Once we have our list, we can test it using the `dispRity` package.
+
+To test the metric, it's relatively easy, you can just use the `test.metric` function.
+This function will gradually transform your trait space space following one of the implemented algorithm and show how your metric changes in response to the changes in trait space.
+
+The different transformations (called "shifts") that are currently implemented are:
+
+ * `"random"`: just randomly removing data:
+
+```{r, echo = FALSE}
+set.seed(1)
+## And example dataset for illustrating the changes
+test_data <- space.maker(elements = 200, distribution = rnorm, dimensions = 2)
+
+## Reducing the space randomly
+remove <- reduce.space(test_data, type = "random", remove = 0.5)
+
+## Plotting the removal
+plot(test_data, pch = 19, col = c("blue", "orange")[as.factor(remove)],
+     xlab = "Dimension 1", ylab = "Dimension 2")
+```
+
+ * `"size"`: removing data from the edges of the trait space:
+
+```{r, echo = FALSE}
+## Reducing the space randomly
+remove <- reduce.space(test_data, type = "size", remove = 0.5)
+
+## Plotting the removal
+plot(test_data, pch = 19, col = c("blue", "orange")[as.factor(remove)],
+     xlab = "Dimension 1", ylab = "Dimension 2")
+```
+
+ * `"density"`: removing data with the bigger nearest neigbhour distances:
+
+```{r, echo = FALSE}
+## Reducing the space randomly
+remove <- reduce.space(test_data, type = "density", remove = 0.5)
+
+## Plotting the removal
+plot(test_data, pch = 19, col = c("blue", "orange")[as.factor(remove)],
+     xlab = "Dimension 1", ylab = "Dimension 2")
+```
+
+ * `"evenness"`: pseudo-randomly removing data in proportions with higher density ("flattening the curve")
+
+```{r, echo = FALSE}
+## Reducing the space randomly
+remove <- reduce.space(test_data, type = "evenness", remove = 0.5)
+
+## Plotting the removal
+plot(test_data, pch = 19, col = c("blue", "orange")[as.factor(remove)],
+     xlab = "Dimension 1", ylab = "Dimension 2")
+```
+
+ * `"position"`: removing data from a side of the trait space:
+
+```{r, echo = FALSE}
+## Reducing the space randomly
+remove <- reduce.space(test_data, type = "position", remove = 0.5)
+
+## Plotting the removal
+plot(test_data, pch = 19, col = c("blue", "orange")[as.factor(remove)],
+     xlab = "Dimension 1", ylab = "Dimension 2")
+```
+
+Choosing one of these reduction algorithm (ideally along side with the `"random"` one to understand the null results), we can then test how does the metric reacts to the requested changes.
+For example, let's test the sum of ranges.
+
+```{r}
+set.seed(1)
+## Testing the sum of ranges
+test_sum_ranges <- test.metric(my_data,
+                               metric = c(sum, ranges),
+                               shifts = c("random", "size"))
+```
+
+By default, the replicates the space reduction ("shifts") 3 times but you can increase it using the `replicates` option.
+You can summarise and plot the results using the generic S3 `plot` and `summary` funcctions:
+
+```{r, fig.height = 10, fig.width = 5}
+## How did the sum of ranges capture random changes and changes in size?
+summary(test_sum_ranges)
+plot(test_sum_ranges)
+```
+
+So here it seems that whether we randomly or specifically remove data from the trait space, the sum of ranges just increases in relation to the percentage of data considered (not the best behaviour!).
+We can then do the same for all the other metrics:
+
+```{r}
+set.seed(1)
+## Testing the sum of ranges
+test_prod_ranges <- test.metric(my_data,
+                                metric = c(prod, ranges),
+                                shifts = c("random", "size"),
+                                save.steps = TRUE)
+```
+
+> Note here we used the `save.steps` function that saves the different removal stages for making fancy plots:
+
+```{r}
+plot(test_prod_ranges)
+```
+
+Note that here the results seem very bad!
+We get a lot of zeros basically.
+This is because of the curse of multidimensionality (= the more dimensions, the more the emptiness - find out more about that in [this course](https://github.com/TGuillerme/Morphological_traits), [chapter 3.2](https://githubraw.com/TGuillerme/Morphological_traits/main/gitbook/_book/from-trait spaces-to-disparity.html#the-curse-of-dimensionality)).
+
+
+And finally a third example of a metric that seems to work alright:
+
+```{r, fig.height = 10, fig.width = 5}
+set.seed(1)
+## Testing the sum of ranges
+test_sum_variances <- test.metric(my_data,
+                                  metric = c(sum, variances),
+                                  shifts = c("random", "size"))
+
+## How did the sum of variances capture random changes and changes in size?
+plot(test_sum_variances)
+```
+
+
+> In `moms` you can select the different metrics by selecting them in the top right corner. They are loosely sorted by categories. Alternatively, you can enter your own metric by choosing "User" in the "Metric type" menu (top right corner). This allows to either mix and match metrics from the list or by writing it yourself (tick "Show metric code" and then "Edit metric").
+Note that if you've been using `moms` but you want to make your work reproducible, you click on the "Export code" button on the lower right corner to save all your work as a repeatable `R` script.
+
+## _Finally_ making the list
+
+And that's it! We can use this algorithm to test all of our metrics and then choose the one that seems the most appropriate to our question (what mechanism are we interested in?) and to our dataset (how is our data distributed, etc.).
+
+# Bonus - design your own metrics
+
+Here I've been demonstrating how to test metrics using a very restricted category of disparity metrics, they are all implemented in the `dispRity` package (which is a very small subset of the types of metrics that can exist!) and they are all "dimension level 1" metric.
+That means that when you calculate the metric you get one statistic summarising the trait space (e.g. one trait space = one value).
+This is fine for a lot of cases but nothing stops you from using "dimension level 2" metrics. 
+These metrics describe the trait space using a distribution of statistics rather than a single one.
+For example, why not use the distributions of distances to the centroid rather than just the _median_ distance to the centroid?
+Once you know how to compare point estimates, it's not that complicated to compare distributions...
+More info about using disparity as distributions [here](https://raw.githack.com/TGuillerme/dispRity/master/inst/gitbook/_book/details-of-specific-functions.html#disparity-distribution).
+
+But even better than using disparity a distribution is designing your own disparity metric!
+For example, a colleague here at Sheffield (Rob MacDonald - doing his PhD on bird color evolution) wanted to understand the "clumpiness" of his data.
+In the example dataset chosen here, that'd be about measuring whether they are some kind of isolated "islands" of elements compared to the rest of the distribution.
+We had a think and he quickly came up with a really nice solution: counting the number of neighbours for each element using this following function:
+
+```{r}
+## Counting neighbours
+counting.neighbours <- function(matrix, radius) {
+    ## Calculating the distance matrix
+    distances <- as.matrix(dist(matrix))
+    ## Counting the neigbhours per elements
+    counts <- apply(distances, 1, function(one_row, radius) sum(one_row <= radius), radius = radius) - 1
+    ## That's it
+    return(counts)
+}
+```
+
+Which we can explore using the `dispRity` function:
+
+```{r}
+## Count the neigbhours in our dataset
+count_neighbours <- dispRity(my_data, metric = counting.neighbours, radius = 8.8)
+summary(count_neighbours)
+```
+
+And test using the `test.metric` function (expecting it captures changes in density):
+
+```{r, fig.height = 10, fig.width = 5}
+## Testing the metric
+testing_counts <- test.metric(my_data,
+                              metric = counting.neighbours, radius = 8.8,
+                              shifts = c("random", "density"))
+plot(testing_counts)
+```
+
+This metric does seem capture a change in density in the dataset at hand.
+But maybe it's also slightly sensitive to the number of species? Easy fix, let's make it relative
+
+```{r}
+## Counting neighbours
+counting.neighbours2 <- function(matrix, radius) {
+    ## Calculating the distance matrix
+    distances <- as.matrix(dist(matrix))
+    ## Counting the neigbhours per elements
+    counts <- apply(distances, 1, function(one_row, radius) sum(one_row <= radius), radius = radius) - 1
+    ## That's it
+    return(counts/nrow(distances))
+}
+```
+
+```{r, fig.height = 10, fig.width = 5}
+## Testing the metric
+testing_counts2 <- test.metric(my_data,
+                               metric = counting.neighbours2, radius = 8.8,
+                               shifts = c("random", "density"))
+plot(testing_counts2)
+```
+
+
+# References
