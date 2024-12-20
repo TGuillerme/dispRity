@@ -13,7 +13,7 @@ output:
 Here is a vignette to help you select a list of disparity metrics tailored to your own dataset and your own biological question.
 We will be doing that using the `dispRity` package @dispRity.
 You can find the slides introducing this vignette [here](https://tguillerme.github.io/Top_10_disparity_metrics.pdf).
-<!-- And a recording of the whole workshop [here](). -->
+And a recording of the whole workshop [here](https://www.youtube.com/watch?v=JKpUQbxID9A).
 
 ```{r, eval = FALSE}
 ## Installing the package
