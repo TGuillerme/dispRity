@@ -50,6 +50,7 @@ The type of reductions algorithms select the proportion of elements to remove (f
      \item \code{"size"} for selecting the proportion of data points closer to the centre.
      \item \code{"density"} for selecting the proportion of data points with the lower nearest neigbhour distances.
      \item \code{"evenness"} for randomly selecting the proportion of data points from the regions with most density.
+     \item \code{"position"} for selecting the proportion of data closer to a corner of the the space.
 }
 
 The parameters for each reduction type algorithms are:
