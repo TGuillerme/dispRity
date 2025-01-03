@@ -1,3 +1,10 @@
+dispRity v1.9.1 (2025-01-03)
+=========================
+
+### BUG FIXES
+
+ * Fixed retro-compatibility for S3 behaviours (`plot` and `summary`) for `dispRity` objects made before `1.9`.
+
 dispRity v1.9 (2024-11-13)  *distant update*
 =========================
 

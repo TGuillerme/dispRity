@@ -266,7 +266,11 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
     boot_col <- FALSE
     if(bootstrapped) {
         ## Check if by columns
-        boot_col <- !is.null(data$call$bootstrap[[4]]) && data$call$bootstrap[[4]] == "columns"
+        if(length(data$call$bootstrap) < 4) { ## Legacy check for version <1.9 (before that, bootstrap is always by rows)
+            boot_col <- FALSE
+        } else {
+            boot_col <- !is.null(data$call$bootstrap[[4]]) && data$call$bootstrap[[4]] == "columns"
+        }
     }
 
     ## Get the elements per subsets
