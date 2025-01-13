@@ -39,7 +39,7 @@ install.packages("dispRity")
 library(dispRity)
 ```
 
-The package is also available in the [phylotastic r-universe](https://phylotastic.r-universe.dev/ui#packages) [![dispRity status badge](https://phylotastic.r-universe.dev/badges/dispRity)](https://phylotastic.r-universe.dev) or through the [phylogenetics](https://cran.r-project.org/web/views/Phylogenetics.html) or [Paleontology](https://cran.r-project.org/web/views/Paleontology.html) CRAN Task Views. 
+The package is also available in the [phylotastic r-universe](https://phylotastic.r-universe.dev/ui#packages) [![dispRity status badge](https://phylotastic.r-universe.dev/badges/dispRity)](https://phylotastic.r-universe.dev) or through the [phylogenetics](https://cran.r-project.org/web/views/Phylogenetics.html) or [paleontology](https://cran.r-project.org/web/views/Paleontology.html) CRAN Task Views. 
 
 
 You can also install the piping hot development version (not always recommended!) by installing the package directly through github:
