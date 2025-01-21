@@ -74,6 +74,8 @@ Not sure what a disparity metric is in the first place?
 Check out this paper on selecting the best metric for your specific question in [Ecology and Evolution](https://onlinelibrary.wiley.com/doi/full/10.1002/ece3.6452) or the [`moms` shiny app](https://tguillerme.shinyapps.io/moms/).
 You can also find more information in the [`dispRity` manual](https://rawcdn.githack.com/TGuillerme/dispRity/c94452e6877fbb274eb0a4ff1363272a6297a9ee/inst/gitbook/_book/details-of-specific-functions.html#disparity-metrics).
 
+You can also check this [lecture](https://www.youtube.com/watch?v=JKpUQbxID9A) on how to choose disparity metrics.
+
 ## Latest major patch highlights
 ### dispRity v1.9 (2024-11-12) *distant update*
 [Read the full patch note here](https://github.com/TGuillerme/dispRity/blob/master/NEWS.md).
