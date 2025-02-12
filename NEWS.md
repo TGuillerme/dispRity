@@ -1,4 +1,4 @@
-dispRity v1.9.1 (2025-01-03)
+dispRity v1.10 (2050-01-03) *fuzzy data*
 =========================
 
 ### BUG FIXES

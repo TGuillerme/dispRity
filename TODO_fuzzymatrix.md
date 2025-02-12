@@ -2,14 +2,12 @@ in `dispRity`: trait sampler
 
  * [ ] create a trait sampling structure that replaces matrices.
  This should be two functions: 1 that is converting a list of matrices to a matrix_sampler structure
- `fuzz.data` 
- `sample.fuzz`
+ `fuzz.make` 
+ `fuzz.sample`
 
-trait sampler:
+`"fuzzy.matrix"` structure:
 
-trait_matrix structure:
-
-Matrix$
+fuzzy.matrix$
     Trait1$
         fun
         param
@@ -20,3 +18,9 @@ Matrix$
             sp2$
                 fun
                 param
+
+ * [ ] integrate the fuzzy structure throughout the package:
+  - [ ] dispRity
+  - [ ] plot
+  - [ ] chrono.subsets
+  - [ ] custom.subsets
