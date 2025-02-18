@@ -335,3 +335,24 @@ make.list <- function(results) {
     return(unlist(apply(results, 1, list), recursive = FALSE))
 }
 ## Make the dispRity object out of the results (only for continuous)
+
+
+
+
+
+# Samples a single estimate from an ace output
+#' @param ace the ace output
+#' @param sample.fun a list with two elements: fun the sampling function and param a named list of parameters and how to sample them
+#' @param samples the number of samples (default is 1)
+sample.ace <- function(ace, sample.fun, samples = 1) {
+    ## Generate the parameters list
+    make.param <- function(one_node, sample.fun, samples) {
+        params <- lapply(sample.fun$param, function(fun, data) return(fun(data)), data = one_node)
+        return(list(fun = sample.fun$fun, param = c(n = samples, params)))
+    }
+    fun_list <- apply(ace$CI95, 1, make.param, sample.fun, samples)
+
+    ## Sample all the values
+    return(lapply(fun_list, function(x) do.call(what = x$fun, args = x$param)))
+}
+

@@ -473,3 +473,31 @@ test_that("multi.ace works with continuous and mix", {
     expect_is(test, "data.frame")
     expect_equal(dim(test), c(14,9))
 })
+
+
+test_that("sample.ace works", {
+    ## Create a quick ace
+    set.seed(1)
+    ## The tree
+    tree <- rcoal(15)
+    tree <- makeNodeLabel(tree)
+    ## The matrix
+    data <- space.maker(elements = 15, dimensions = 5, distribution = rnorm, elements.name = tree$tip.label)
+    ## The sampling function
+    sample.fun <- list(fun = runif, param = list(min = min, max = max))
+
+    expect_warning(ace <- ape::ace(x = data[,1], phy = tree))
+    
+    ## Sample the ace output
+    set.seed(1)
+    out <- sample.ace(ace, sample.fun, samples = 2)
+    expect_equal(length(out), Nnode(tree))
+    expect_equal(length(out[[1]]), 2)
+    ## Sampling works
+    for(i in 1:Nnode(tree)) {
+        expect_true(all(out[[i]] > ace$CI95[i,1]))
+        expect_true(all(out[[i]] < ace$CI95[i,2]))
+    }
+
+
+})
