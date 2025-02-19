@@ -71,8 +71,7 @@
 #'
 #' The \code{threshold} option allows to convert ancestral states likelihoods into discrete states. When \code{threshold = FALSE}, the ancestral state estimated is the one with the highest likelihood (or at random if likelihoods are equal). When \code{threshold = TRUE}, the ancestral state estimated are all the ones that are have a scaled likelihood greater than the maximum observed scaled likelihood minus the inverse number of possible states (i.e. \code{select_state >= (max(likelihood) - 1/n_states)}). This option makes the threshold selection depend on the number of states (i.e. if there are more possible states, a lower scaled likelihood for the best state is expected). Finally using a numerical value for the threshold option (e.g. \code{threshold = 0.95}) will simply select only the ancestral states estimates with a scaled likelihood equal or greater than the designated value. This option makes the threshold selection absolute. Regardless, if more than one value is select, the uncertainty token (\code{special.tokens["uncertainty"]}) will be used to separate the states. If no value is selected, the uncertainty token will be use between all observed characters (\code{special.tokens["uncertainty"]}).
 #'
-#' The \code{sample.fun} option allows to specify a function for the sampling of the continuous traits (default is \code{runif}) or a list of sampling functions in order for each individual character (e.g. \code{list(runif, rnorm, rlnorm)} will use a uniform, normal and log normal distribution for respectively the first, second and third character). 
-#TODO: allow for optional arguments.
+#' The \code{sample.fun} option allows to specify a function and parameters for the sampling of the continuous traits. The default is \code{sample.fun = list(fun = runif, param = list(min = min, max = max))} for applying a random uniform sampling (\code{runif}) with the parameters (the minimum and the maximum are applied using respectively the \code{min} and \code{max} functions on the estimated data). For applying different samplings to different traits, you can use a list of arguments in the sample format as \code{sample.fun} (e.g. \code{sample.fun = list(trait_uniform = list(fun = runif, param = list(min = min, max = max)), trait_normal = list(fun = rnorm, param = list(mean = mean, sd = function(x)return(diff(range(x))/4)))} - here the standard deviation is calculated as a quarter of the 95% CI range).
 #' 
 #' @return
 #' Returns a \code{"matrix"} or \code{"list"} of ancestral states. By default, the function returns the ancestral states in the same format as the input \code{matrix}. This can be changed using the option \code{output = "matrix"} or \code{"list"} to force the class of the output.
@@ -157,7 +156,7 @@
 #' @author Thomas Guillerme
 #' @export
 
-multi.ace <- function(data, tree, models, sample = 1, sample.fun = runif, threshold = TRUE, special.tokens, special.behaviours, brlen.multiplier, verbose = FALSE, parallel = FALSE, output, options.args, estimation.details = NULL) {
+multi.ace <- function(data, tree, models, sample = 1, sample.fun = list(fun = runif, param = list(min = min, max = max)), threshold = TRUE, special.tokens, special.behaviours, brlen.multiplier, verbose = FALSE, parallel = FALSE, output, options.args, estimation.details = NULL) {
 
     match_call <- match.call()
 
@@ -263,6 +262,10 @@ multi.ace <- function(data, tree, models, sample = 1, sample.fun = runif, thresh
         cores <- parallel
     }
 
+    ## Sampling
+    check.class(sample, c("integer", "numeric"))
+    do_sample <- sample > 1
+    
     #########
     ## Handle the characters
     #########
@@ -272,6 +275,7 @@ multi.ace <- function(data, tree, models, sample = 1, sample.fun = runif, thresh
 
     ## Detecting the continuous or discrete characters    
     character_is_continuous <- logical()
+
     ## Looping to allow dropping the levels from matrix
     for(col in 1:ncol(matrix)) {
         character_is_continuous <- c(character_is_continuous, is.numeric(matrix[, col, drop = TRUE]))
@@ -286,6 +290,17 @@ multi.ace <- function(data, tree, models, sample = 1, sample.fun = runif, thresh
         n_characters_continuous <- sum(character_is_continuous)
         do_continuous <- TRUE
         continuous_char_ID <- which(character_is_continuous)
+
+        ## Check the sampling (if required)
+        if(do_sample) {
+            sample.fun_class <- check.class(sample.fun, "list")
+            ## TODO: check names and types of arguments
+            if(names(sample.fun)[1] == "fun") {
+                sample_funs <- replicate(length(continuous_char_ID), sample.fun, simplify = FALSE)
+                
+            }
+            ## TODO if it's a list of sample.fun, check length and arguments.
+        }
     }
     if(any(!character_is_continuous)) {
         ## Split the matrix for discrete characters
@@ -656,6 +671,7 @@ multi.ace <- function(data, tree, models, sample = 1, sample.fun = runif, thresh
         }
     }
 
+
     #########
     ##
     ## run the calls
@@ -751,25 +767,6 @@ multi.ace <- function(data, tree, models, sample = 1, sample.fun = runif, thresh
             continuous_estimates <- lapply(tree_character_continuous_args, lapply, function(x) do.call(fun_continuous, x))
             ## Remove the ugly call
             continuous_estimates <- lapply(continuous_estimates, lapply, function(x) {x$call <- "ape::ace"; return(x)})
-            ## Add node labels
-            # TODO: to be removed if ape update
-            add.nodes <- function(obj, phy) {
-                ## Adding node labels to $ace and $CI95 (if available)
-                options(warn = -1)
-                names <- as.integer(names(obj$ace))
-                options(warn = 0)
-                if(!is.null(phy$node.label) && !is.na(names[1])) {
-                    ordered_node_labels <- phy$node.label[c(as.integer(names(obj$ace))- Ntip(phy))]
-                    names(obj$ace) <- ordered_node_labels
-                    if(!is.null(obj$CI95)) {
-                        rownames(obj$CI95) <- ordered_node_labels
-                    }
-                }
-                return(obj)
-            }
-            for(one_tree in 1:length(tree)) {
-                continuous_estimates[[one_tree]] <- lapply(continuous_estimates[[one_tree]], add.nodes, phy = tree[[one_tree]])
-            }
         }
         ## Run the discrete characters
         if(do_discrete) {
@@ -787,8 +784,20 @@ multi.ace <- function(data, tree, models, sample = 1, sample.fun = runif, thresh
 
     ## Handle the continuous characters
     if(do_continuous) {
-        ## Get the results in a matrix format
-        results_continuous <- lapply(lapply(continuous_estimates, lapply, `[[`, "ace"), function(x) do.call(cbind, x))
+        
+        if(!do_sample) {
+            ## Get the results in a matrix format
+            results_continuous <- lapply(lapply(continuous_estimates, lapply, `[[`, "ace"), function(x) do.call(cbind, x))
+        } else {
+            ## Sample the results for n_matrices
+            sample.ace.per.tree <- function(tree_estimate, sample_funs, sample) {
+                ## Sample all characters
+                samples_list <- mapply(sample.ace, tree_estimate, sample_funs, MoreArgs = list(samples = sample), SIMPLIFY = FALSE)
+                ## Return a list of samples for all characters
+                return(lapply(as.list(1:sample), function(one_sample, character) do.call(cbind, lapply(sample_chars, function(x, one_sample) x[, one_sample, drop = FALSE], one_sample = one_sample)), character = sample_chars))
+            }
+            results_continuous <- lapply(continuous_estimates, sample.ace.per.tree, sample_funs = sample_funs, sample = sample)
+        }
         
         ## Get the details for continuous
         if(any(return_args_continuous %in% estimation.details)) {
@@ -840,13 +849,23 @@ multi.ace <- function(data, tree, models, sample = 1, sample.fun = runif, thresh
     }
     
     ## Handle output
-    output_return <- switch(output,
-        matrix          = results_out,
-        list            = lapply(results_out, make.list),
-        combined.matrix = lapply(results_out, add.tips, matrix = matrix),
-        combined.list   = lapply(lapply(results_out, add.tips, matrix = matrix), make.list),
-        dispRity        = make.dispRity(data = lapply(results_out, add.tips, matrix = matrix), tree = tree)
-        )
+    if(!do_sample) {
+        output_return <- switch(output,
+            matrix          = results_out,
+            list            = lapply(results_out, make.list),
+            combined.matrix = lapply(results_out, add.tips, matrix = matrix),
+            combined.list   = lapply(lapply(results_out, add.tips, matrix = matrix), make.list),
+            dispRity        = make.dispRity(data = lapply(results_out, add.tips, matrix = matrix), tree = tree)
+            )
+    } else {
+        output_return <- switch(output,
+            matrix          = results_out,
+            list            = lapply(results_out, lapply, make.list),
+            combined.matrix = lapply(results_out, lapply, add.tips, matrix = matrix),
+            combined.list   = lapply(lapply(results_out, lapply, add.tips, matrix = matrix), lapply, make.list),
+            dispRity        = make.dispRity(data = lapply(results_out, lapply, add.tips, matrix = matrix), tree = tree)
+            )
+    }
 
     ## Results out
     if(is.null(estimation.details)) {

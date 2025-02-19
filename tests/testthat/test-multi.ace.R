@@ -501,3 +501,34 @@ test_that("sample.ace works", {
 
 
 })
+
+
+test_that("multi.ace works with sample", {
+    set.seed(1)
+    ## The tree
+    tree <- rcoal(10)
+    tree <- makeNodeLabel(tree)
+    ## The matrix
+    data <- cbind(runif(10, 0, 1), runif(10, 10, 20), runif(10, 100, 200))
+    rownames(data) <- tree$tip.label
+
+    expect_warning(test <- multi.ace(data = data, tree = tree, sample = 2, output = "combined.matrix", verbose = FALSE))
+    expect_is(test, "list")
+    ## Correct number of samples
+    expect_equal(length(test), 2)
+    ## Correct rows
+    expect_equal(rownames(test[[1]]), c(tree$tip.label, tree$node.label))
+    ## Correct character estimates
+    expect_true(all(test[[1]][,1] < 2))
+    expect_true(all(test[[1]][,2] < 50))
+    expect_true(all(test[[1]][,2] > -5))
+    expect_true(all(test[[1]][,3] > 100))
+
+    ## TODO: need to test with sample.fun option
+
+
+    ## TODO: need to test with discrete characters
+
+
+    ## TODO: need to test with mixed characters
+})
