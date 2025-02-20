@@ -213,6 +213,7 @@ multi.ace <- function(data, tree, models, sample = 1, sample.fun = list(fun = ru
         ## Use an absolute threshold
         threshold.type <- "absolute"
     }
+
     
     ## brlen multiplier
     if(!missing(brlen.multiplier)) {
@@ -794,7 +795,7 @@ multi.ace <- function(data, tree, models, sample = 1, sample.fun = list(fun = ru
                 ## Sample all characters
                 samples_list <- mapply(sample.ace, tree_estimate, sample_funs, MoreArgs = list(samples = sample), SIMPLIFY = FALSE)
                 ## Return a list of samples for all characters
-                return(lapply(as.list(1:sample), function(one_sample, character) do.call(cbind, lapply(sample_chars, function(x, one_sample) x[, one_sample, drop = FALSE], one_sample = one_sample)), character = sample_chars))
+                return(lapply(as.list(1:sample), function(one_sample, character) do.call(cbind, lapply(character, function(x, one_sample) do.call(rbind, x)[, one_sample, drop = FALSE], one_sample = one_sample)), character = samples_list))
             }
             results_continuous <- lapply(continuous_estimates, sample.ace.per.tree, sample_funs = sample_funs, sample = sample)
         }
