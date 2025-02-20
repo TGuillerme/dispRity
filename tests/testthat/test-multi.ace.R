@@ -509,7 +509,7 @@ test_that("multi.ace works with sample", {
     tree <- rcoal(10)
     tree <- makeNodeLabel(tree)
     ## The matrix
-    data <- cbind(runif(10, 0, 1), runif(10, 10, 20), runif(10, 100, 200))
+    data <- data_continuous <- cbind(runif(10, 0, 1), runif(10, 10, 20), runif(10, 100, 200))
     rownames(data) <- tree$tip.label
 
     expect_warning(test <- multi.ace(data = data, tree = tree, sample = 2, output = "combined.matrix", verbose = FALSE))
@@ -527,8 +527,33 @@ test_that("multi.ace works with sample", {
     ## TODO: need to test with sample.fun option
 
 
-    ## TODO: need to test with discrete characters
+    ## Test with discrete characters
+    set.seed(8) 
+    data <- data_discrete <- sim.morpho(tree, characters = 2, model = "ER", rates = c(rgamma, rate = 10, shape = 5), invariant = FALSE)
+    data[,2] <- data_discrete[,2] <- as.character(sample(c(1,2,3), 10, replace = TRUE))
 
+    test <- multi.ace(data = data, tree = tree, sample = 20, output = "combined.matrix", verbose = FALSE)
+    expect_is(test, "list")
+    ## Correct number of samples
+    expect_equal(length(test), 20)
+    ## Correct rows
+    expect_equal(rownames(test[[1]]), c(tree$tip.label, tree$node.label))
+    ## Correct character estimates
+    expect_true(all(as.numeric(test[[1]][,1]) %in% c(0,1)))
+    expect_true(all(as.numeric(test[[1]][,2]) %in% c(1,2,3)))
 
-    ## TODO: need to test with mixed characters
+    ## Test with mixed characters
+    data <- data.frame(data_discrete, data_continuous)
+    expect_warning(test <- multi.ace(data = data, tree = tree, sample = 5, output = "matrix", verbose = FALSE))
+    ## Correct number of samples
+    expect_equal(length(test), 5)
+    ## Correct rows
+    expect_equal(rownames(test[[1]]), c(tree$tip.label, tree$node.label))
+    ## Correct character estimates
+    expect_true(all(as.numeric(test[[1]][,1]) %in% c(0,1)))
+    expect_true(all(as.numeric(test[[1]][,2]) %in% c(1,2,3)))
+    expect_true(all(test[[1]][,3] < 2))
+    expect_true(all(test[[1]][,4] < 50))
+    expect_true(all(test[[1]][,4] > -5))
+    expect_true(all(test[[1]][,5] > 100))
 })

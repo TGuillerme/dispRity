@@ -266,6 +266,11 @@ multi.ace <- function(data, tree, models, sample = 1, sample.fun = list(fun = ru
     ## Sampling
     check.class(sample, c("integer", "numeric"))
     do_sample <- sample > 1
+    if(do_sample) {
+        ## Override the threshold arguments (no threshold used)
+        threshold.type <- "sample"
+        threshold <- sample
+    }
     
     #########
     ## Handle the characters
@@ -706,7 +711,8 @@ multi.ace <- function(data, tree, models, sample = 1, sample.fun = list(fun = ru
                                        "threshold",
                                        "verbose",
                                        "characters_states",
-                                       "invariant_characters_states")
+                                       "invariant_characters_states",
+                                       "do_sample")
             export_functions_list <- c("one.tree.ace",
                                        "castor.ace",
                                        "tree.data.update",
@@ -723,31 +729,12 @@ multi.ace <- function(data, tree, models, sample = 1, sample.fun = list(fun = ru
 
         ## Call the cluster
         if(do_discrete) {
-            discrete_estimates <- parLapply(cl = cluster, tree_character_discrete_args, one.tree.ace, special.tokens, invariants, characters_states, threshold.type, threshold, invariant_characters_states, verbose)
+            discrete_estimates <- parLapply(cl = cluster, tree_character_discrete_args, one.tree.ace, special.tokens, invariants, characters_states, threshold.type, threshold, invariant_characters_states, verbose, do_sample)
         }
         if(do_continuous) {
             continuous_estimates <- parLapply(cl = cluster, tree_character_continuous_args, lapply, function(x) do.call(fun_continuous, x))
             ## Remove the ugly call
             continuous_estimates <- lapply(continuous_estimates, lapply, function(x) {x$call <- "ape::ace"; return(x)})
-            ## Add node labels
-            # TODO: to be removed if ape update
-            add.nodes <- function(obj, phy) {
-                ## Adding node labels to $ace and $CI95 (if available)
-                options(warn = -1)
-                names <- as.integer(names(obj$ace))
-                options(warn = 0)
-                if(!is.null(phy$node.label) && !is.na(names[1])) {
-                    ordered_node_labels <- phy$node.label[c(as.integer(names(obj$ace))- Ntip(phy))]
-                    names(obj$ace) <- ordered_node_labels
-                    if(!is.null(obj$CI95)) {
-                        rownames(obj$CI95) <- ordered_node_labels
-                    }
-                }
-                return(obj)
-            }
-            for(one_tree in 1:length(tree)) {
-                continuous_estimates[[one_tree]] <- lapply(continuous_estimates[[one_tree]], add.nodes, phy = tree[[one_tree]])
-            }
         }
 
         ## Stop the cluster
@@ -772,7 +759,7 @@ multi.ace <- function(data, tree, models, sample = 1, sample.fun = list(fun = ru
         ## Run the discrete characters
         if(do_discrete) {
             ## Run all the ace for discrete
-            discrete_estimates <- lapply(tree_character_discrete_args, one.tree.ace, special.tokens, invariants, characters_states, threshold.type, threshold, invariant_characters_states, verbose)
+            discrete_estimates <- lapply(tree_character_discrete_args, one.tree.ace, special.tokens, invariants, characters_states, threshold.type, threshold, invariant_characters_states, verbose, do_sample)
         }
         if(verbose) cat("Done.\n")
     }
@@ -813,8 +800,20 @@ multi.ace <- function(data, tree, models, sample = 1, sample.fun = list(fun = ru
     }
 
     if(do_discrete) {
-        ## Get the results in a matrix format
-        results_discrete <- lapply(lapply(discrete_estimates, `[[`, 1), function(x) do.call(cbind, x))
+
+        if(!do_sample) {
+            ## Get the results in a matrix format
+            results_discrete <- lapply(lapply(discrete_estimates, `[[`, 1), function(x) do.call(cbind, x))
+        } else {
+            ## Split the results into n matrices
+
+            discrete_estimates[[one_tree]]$results
+
+            split.per.tree <- function(tree_estimate, sample) {
+                return(lapply(as.list(1:sample), function(one_sample, tree_estimate) t(do.call(rbind, lapply(tree_estimate, function(x, one_sample) return(x[one_sample, , drop = FALSE]), one_sample = one_sample))), tree_estimate = tree_estimate$results))
+            }
+            results_discrete <- lapply(discrete_estimates, split.per.tree, sample = sample)
+        }
 
         ## Get the details
         details_discrete <- lapply(discrete_estimates, `[[`, 2)
@@ -825,7 +824,7 @@ multi.ace <- function(data, tree, models, sample = 1, sample.fun = list(fun = ru
     if(do_discrete && do_continuous) {
         ## Combine the traits
         results_out <- mapply(bind.characters, results_continuous, results_discrete,
-            MoreArgs = list(order = list("continuous" = continuous_char_ID, "discrete" = unique(c(discrete_char_ID, invariants_ID)))),
+            MoreArgs = list(order = list("continuous" = continuous_char_ID, "discrete" = unique(c(discrete_char_ID, invariants_ID))), do_sample = do_sample),
             SIMPLIFY = FALSE)
         ## Return the details per characters
         if(is.null(details_continuous)) {
