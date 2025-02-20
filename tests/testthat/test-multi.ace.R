@@ -548,7 +548,7 @@ test_that("multi.ace works with sample", {
     ## Correct number of samples
     expect_equal(length(test), 5)
     ## Correct rows
-    expect_equal(rownames(test[[1]]), c(tree$tip.label, tree$node.label))
+    expect_equal(rownames(test[[1]]), c(tree$node.label))
     ## Correct character estimates
     expect_true(all(as.numeric(test[[1]][,1]) %in% c(0,1)))
     expect_true(all(as.numeric(test[[1]][,2]) %in% c(1,2,3)))
