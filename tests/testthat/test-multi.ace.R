@@ -1,4 +1,3 @@
-#context("multi.ace")
 test_that("model internals works", {
 
     ## with corStruc
@@ -15,7 +14,6 @@ test_that("model internals works", {
     expect_equal(check.model.class(one_model = 1, available_models = available_models_continuous), "numeric")
 })
 
-## Test
 test_that("multi.ace works", {
 
     ## Sanitizing works
@@ -419,7 +417,6 @@ test_that("multi.ace works", {
     # expect_is(results$details[[1]]$transition_matrix[[9]], "matrix")
     # expect_equal(rownames(results$details[[1]]$transition_matrix[[9]]), c("0","1","2"))
     # expect_is(results$details[[2]]$loglikelihood[[1]], "numeric")
-
 })
 
 test_that("multi.ace works with continuous and mix", {
@@ -474,7 +471,6 @@ test_that("multi.ace works with continuous and mix", {
     expect_equal(dim(test), c(14,9))
 })
 
-
 test_that("sample.ace works", {
     ## Create a quick ace
     set.seed(1)
@@ -498,10 +494,7 @@ test_that("sample.ace works", {
         expect_true(all(out[[i]] > ace$CI95[i,1]))
         expect_true(all(out[[i]] < ace$CI95[i,2]))
     }
-
-
 })
-
 
 test_that("multi.ace works with sample", {
     set.seed(1)
@@ -512,6 +505,7 @@ test_that("multi.ace works with sample", {
     data <- data_continuous <- cbind(runif(10, 0, 1), runif(10, 10, 20), runif(10, 100, 200))
     rownames(data) <- tree$tip.label
 
+    # Test with continuous
     expect_warning(test <- multi.ace(data = data, tree = tree, sample = 2, output = "combined.matrix", verbose = FALSE))
     expect_is(test, "list")
     ## Correct number of samples
@@ -541,6 +535,19 @@ test_that("multi.ace works with sample", {
     ## Correct character estimates
     expect_true(all(as.numeric(test[[1]][,1]) %in% c(0,1)))
     expect_true(all(as.numeric(test[[1]][,2]) %in% c(1,2,3)))
+
+    ## test with an invariant
+    data <- cbind(data, rep("0", 10))
+    expect_warning(test <- multi.ace(data = data, tree = tree, sample = 20, output = "combined.matrix", verbose = FALSE))
+    expect_is(test, "list")
+    ## Correct number of samples
+    expect_equal(length(test), 20)
+    ## Correct rows
+    expect_equal(rownames(test[[1]]), c(tree$tip.label, tree$node.label))
+    ## Correct character estimates
+    expect_true(all(as.numeric(test[[1]][,1]) %in% c(0,1)))
+    expect_true(all(as.numeric(test[[1]][,2]) %in% c(1,2,3)))
+    expect_true(all(test[[1]][,3] == "0"))
 
     ## Test with mixed characters
     data <- data.frame(data_discrete, data_continuous)
