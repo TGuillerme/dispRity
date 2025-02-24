@@ -214,33 +214,6 @@ multi.ace <- function(data, tree, models, sample = 1, sample.fun = list(fun = ru
         threshold.type <- "absolute"
     }
     
-    ## brlen multiplier
-    if(!missing(brlen.multiplier)) {
-        ## Check class
-        brlen.multiplier_class <- check.class(brlen.multiplier, c("numeric", "list", "integer"))
-
-        if(brlen.multiplier_class == "list") {
-            ## Check the class and length of each list element
-            for(one_tree in 1:length(tree)) {
-                check.class(brlen.multiplier[[one_tree]], c("numeric", "integer"), msg = paste0(": brlen.multiplier[[", one_tree, "]] must contain ", Nedge(tree[[one_tree]]), " numeric values (number of edges)."))
-                check.length(brlen.multiplier[[one_tree]],  Nedge(tree[[one_tree]]), msg = paste0(": brlen.multiplier[[", one_tree, "]] must contain ", Nedge(tree[[one_tree]]), " numeric values (number of edges)."))
-            }
-        } else {
-            ## check the length
-            check.length(brlen.multiplier, Nedge(tree[[1]]), msg = paste0(" must contain ", Nedge(tree[[1]]), " values (number of edges)."))
-            ## Replicate it for each tree
-            brlen.multiplier <- replicate(length(tree), brlen.multiplier, simplify = FALSE)
-        }
-
-        ## Multiply the branch lengths
-        multiply.brlen <- function(tree, multiplier) {
-            tree$edge.length <- tree$edge.length * multiplier
-            return(tree)
-        }
-        tree <- mapply(multiply.brlen, tree, brlen.multiplier, SIMPLIFY = FALSE)
-        class(tree) <- "multiPhylo"
-    }
-
     ## verbose
     check.class(verbose, "logical")
 
@@ -271,6 +244,33 @@ multi.ace <- function(data, tree, models, sample = 1, sample.fun = list(fun = ru
         threshold <- sample
     }
     
+    ## brlen multiplier
+    if(!missing(brlen.multiplier)) {
+        ## Check class
+        brlen.multiplier_class <- check.class(brlen.multiplier, c("numeric", "list", "integer"))
+
+        if(brlen.multiplier_class == "list") {
+            ## Check the class and length of each list element
+            for(one_tree in 1:length(tree)) {
+                check.class(brlen.multiplier[[one_tree]], c("numeric", "integer"), msg = paste0(": brlen.multiplier[[", one_tree, "]] must contain ", Nedge(tree[[one_tree]]), " numeric values (number of edges)."))
+                check.length(brlen.multiplier[[one_tree]],  Nedge(tree[[one_tree]]), msg = paste0(": brlen.multiplier[[", one_tree, "]] must contain ", Nedge(tree[[one_tree]]), " numeric values (number of edges)."))
+            }
+        } else {
+            ## check the length
+            check.length(brlen.multiplier, Nedge(tree[[1]]), msg = paste0(" must contain ", Nedge(tree[[1]]), " values (number of edges)."))
+            ## Replicate it for each tree
+            brlen.multiplier <- replicate(length(tree), brlen.multiplier, simplify = FALSE)
+        }
+
+        ## Multiply the branch lengths
+        multiply.brlen <- function(tree, multiplier) {
+            tree$edge.length <- tree$edge.length * multiplier
+            return(tree)
+        }
+        tree <- mapply(multiply.brlen, tree, brlen.multiplier, SIMPLIFY = FALSE)
+        class(tree) <- "multiPhylo"
+    }
+
     #########
     ## Handle the characters
     #########
@@ -798,9 +798,6 @@ multi.ace <- function(data, tree, models, sample = 1, sample.fun = list(fun = ru
             results_discrete <- lapply(lapply(discrete_estimates, `[[`, 1), function(x) do.call(cbind, x))
         } else {
             ## Split the results into n matrices
-
-            discrete_estimates[[one_tree]]$results
-
             split.per.tree <- function(tree_estimate, sample) {
                 return(lapply(as.list(1:sample), function(one_sample, tree_estimate) t(do.call(rbind, lapply(tree_estimate, function(x, one_sample) return(x[one_sample, , drop = FALSE]), one_sample = one_sample))), tree_estimate = tree_estimate$results))
             }
