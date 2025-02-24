@@ -213,7 +213,6 @@ multi.ace <- function(data, tree, models, sample = 1, sample.fun = list(fun = ru
         ## Use an absolute threshold
         threshold.type <- "absolute"
     }
-
     
     ## brlen multiplier
     if(!missing(brlen.multiplier)) {
@@ -566,12 +565,6 @@ multi.ace <- function(data, tree, models, sample = 1, sample.fun = list(fun = ru
                 ## Format correctly
                 models_continuous <- lapply(models_continuous, function(x) do.call(set.continuous.args.ace, x))
             }
-        }
-
-        ## Remove invariant characters
-        if(do_discrete && has_invariants) {
-            ## Remove the models
-            models_discrete <- models_discrete[-invariants]
         }
     }
     if(do_discrete && has_invariants) {
