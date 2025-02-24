@@ -800,7 +800,6 @@ multi.ace <- function(data, tree, models, sample = 1, sample.fun = list(fun = ru
     }
 
     if(do_discrete) {
-
         if(!do_sample) {
             ## Get the results in a matrix format
             results_discrete <- lapply(lapply(discrete_estimates, `[[`, 1), function(x) do.call(cbind, x))

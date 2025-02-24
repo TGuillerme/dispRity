@@ -322,8 +322,7 @@ bind.characters <- function(continuous, discrete, order, do_sample) {
     }
 
     ## Reorder the characters to match the input order
-    n_col <- ifelse(do_sample, ncol(bound[[1]]), ncol(bound))
-    ordering <- matrix(c(1:n_col, c(order$continuous, order$discrete)), ncol = 2, byrow = FALSE, dimnames = list(c(cont_names, disc_names), c("out", "in")))
+    ordering <- matrix(c(1:ncol(bound[[1]]), c(order$continuous, order$discrete)), ncol = 2, byrow = FALSE, dimnames = list(c(cont_names, disc_names), c("out", "in")))
     ordered_characters <- lapply(bound, function(x, ordering) x[, names(sort(ordering[, 2, drop = TRUE]))], ordering = ordering)
 
     ## Output
