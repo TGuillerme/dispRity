@@ -268,21 +268,30 @@ one.tree.ace <- function(args_list, special.tokens, invariants, characters_state
     ## Add invariants characters back in place
     if(length(invariants) > 0) {
         ## Replicate the invariant characters
-        invariant_ancestral <- lapply(invariant_characters_states, function(x, n) rep(ifelse(length(x == 0), special.tokens["missing"], x), n), args_list[[1]]$tree$Nnode)
+        invariant_ancestral <- lapply(invariant_characters_states, function(x, n) rep(ifelse(length(x) == 0, special.tokens["missing"], x), n),n = args_list[[1]]$tree$Nnode)
 
         ## Combine the final dataset
         output <- replicate(length(args_list)+length(invariants), list())
         ## Fill the final dataset
-        output[invariants] <- invariant_ancestral
+        if(!do_sample) {
+            output[invariants] <- invariant_ancestral
+        } else {
+            output[invariants] <- list(matrix(invariant_ancestral[[1]][1], ncol = length(invariant_ancestral[[1]]), nrow = threshold))
+        }
         output[-invariants] <- ancestral_states
         ancestral_states <- output
     }
 
     ## Replace NAs
-    replace.NA <- function(character, characters_states, special.tokens) {
-        return(sapply(character, function(x) ifelse(x[[1]] == "NA", paste0(characters_states, collapse = sub("\\\\", "", special.tokens["uncertainty"])), x)))
+    replace.NA <- function(character, characters_states, special.tokens, do_sample) {
+        na_removed <- sapply(character, function(x) ifelse(x[[1]] == "NA", paste0(characters_states, collapse = sub("\\\\", "", special.tokens["uncertainty"])), x))
+        if(do_sample) {
+            return(matrix(na_removed, nrow = dim(character)[1], ncol = dim(character)[2], byrow = TRUE, dimnames = dimnames(character)))
+        } else {
+            return(na_removed)
+        }
     }
-    ancestral_states[-invariants] <- mapply(replace.NA, ancestral_states[-invariants], characters_states, MoreArgs = list(special.tokens = special.tokens), SIMPLIFY = FALSE)
+    ancestral_states[-invariants] <- mapply(replace.NA, ancestral_states[-invariants], characters_states, MoreArgs = list(special.tokens = special.tokens, do_sample = do_sample), SIMPLIFY = FALSE)
 
     ## Sort the details list
     if(!is.null(args_list[[1]]$details)) {
