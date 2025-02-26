@@ -30,9 +30,9 @@ multi.ace(
 
 \item{sample}{An \code{integer} for the number of matrices to sample per tree (default is \code{1}). See details.}
 
-\item{sample.fun}{If \code{sample > 1}, the sampling distribution for continuous characters (default is \code{runif}) See details.}
+\item{sample.fun}{If \code{sample > 1}, a named list containing the following elements: \code{fun} the sampling distribution for continuous characters; and \code{param} (optional) a named list of parameters and their estimation function (default is \code{sample.fun = list(fun = runif, param = list(min = min, max = max))}). See details.}
 
-\item{threshold}{either \code{logical} for applying a relative threshold (\code{TRUE} - default) or no threshold (\code{FALSE}) or a \code{numeric} value of the threshold (e.g. 0.95). See details.}
+\item{threshold}{Is ignored if \code{sample > 1}, else either a \code{logical} for applying a relative threshold (\code{TRUE} - default) or no threshold (\code{FALSE}) or a \code{numeric} value of the threshold (e.g. 0.95). See details.}
 
 \item{special.tokens}{optional, a named \code{vector} of special tokens to be passed to \code{\link[base]{grep}} (make sure to protect the character with \code{"\\\\"}). By default \code{special.tokens <- c(missing = "\\\\?", inapplicable = "\\\\-", polymorphism = "\\\\&", uncertainty = "\\\\/")}. Note that \code{NA} values are not compared and that the symbol "@" is reserved and cannot be used.}
 

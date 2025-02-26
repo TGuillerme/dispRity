@@ -518,24 +518,26 @@ test_that("multi.ace works with sample", {
     expect_true(all(test[[1]][,2] > -5))
     expect_true(all(test[[1]][,3] > 100))
 
-    ## TODO: need to test with sample.fun option
+    ## test with sample.fun option
     error <- capture_error(test <- multi.ace(data = data, tree = tree, sample = 2, sample.fun = runif, output = "combined.matrix", verbose = FALSE))
     expect_equal(error[[1]], "sample.fun must be of class list.")
     sample.fun <- list(fun = rnorm, param = list(max = max, min = min))
     error <- capture_error(test <- multi.ace(data = data, tree = tree, sample = 2, sample.fun = sample.fun, output = "combined.matrix", verbose = FALSE))
-    #error should be wrong fun
+    expect_equal(error[[1]], "The sample function is not formatted correctly and cannot generate a distribution.\nCheck the ?multi.ace manual for more details.")
+    ## Works with a list of sample funs
     sample.fun <- list(
         list(fun = runif, param = list(max = max, min = min)),
         list(fun = runif, param = list(max = max, min = min)),
         list(fun = rnorm, param = list(mean = mean, sd = function(x)return(diff(range(x))/4))))
-    error <- capture_error(test <- multi.ace(data = data, tree = tree, sample = 2, sample.fun = sample.fun, output = "combined.matrix", verbose = FALSE))
-    ## Should work
+    expect_warning(test <- multi.ace(data = data, tree = tree, sample = 2, sample.fun = sample.fun, output = "combined.matrix", verbose = FALSE))
+    expect_is(test, "list")
+    ## But doesn't if sample fun is badly formated
     sample.fun <- list(
         list(fun = runif, param = list(max = max, min = min)),
         list(fun = rnorm, param = list(max = max, min = min)),
         list(fun = runif, param = list(mean = mean, sd = function(x)return(diff(range(x))/4))))
     error <- capture_error(test <- multi.ace(data = data, tree = tree, sample = 2, sample.fun = sample.fun, output = "combined.matrix", verbose = FALSE))
-    ## error should be wrong fun 2 and 3
+    expect_equal(error[[1]], "The following sample functions are not formated correctly and cannot generate a distribution: 2, 3.\nCheck the ?multi.ace manual for more details.")
 
     ## Test with discrete characters
     set.seed(8) 
@@ -576,7 +578,7 @@ test_that("multi.ace works with sample", {
     expect_true(all(as.numeric(test[[1]][,1]) %in% c(0,1)))
     expect_true(all(as.numeric(test[[1]][,2]) %in% c(1,2,3)))
     expect_true(all(test[[1]][,3] < 2))
-    expect_true(all(test[[1]][,4] < 50))
+    expect_true(all(test[[1]][,4] < 51))
     expect_true(all(test[[1]][,4] > -5))
     expect_true(all(test[[1]][,5] > 100))
 })

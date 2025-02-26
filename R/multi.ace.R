@@ -7,7 +7,7 @@
 #' @param models A \code{character} vector, unambiguous named \code{list} or \code{matrix} to be passed as model arguments to \code{castor::asr_mk_model} or \code{ape::ace} (see details).
 #' @param sample An \code{integer} for the number of matrices to sample per tree (default is \code{1}). See details.
 #' @param sample.fun If \code{sample > 1}, a named list containing the following elements: \code{fun} the sampling distribution for continuous characters; and \code{param} (optional) a named list of parameters and their estimation function (default is \code{sample.fun = list(fun = runif, param = list(min = min, max = max))}). See details.
-#' @param threshold either \code{logical} for applying a relative threshold (\code{TRUE} - default) or no threshold (\code{FALSE}) or a \code{numeric} value of the threshold (e.g. 0.95). See details.
+#' @param threshold Is ignored if \code{sample > 1}, else either a \code{logical} for applying a relative threshold (\code{TRUE} - default) or no threshold (\code{FALSE}) or a \code{numeric} value of the threshold (e.g. 0.95). See details.
 #' @param special.tokens optional, a named \code{vector} of special tokens to be passed to \code{\link[base]{grep}} (make sure to protect the character with \code{"\\\\"}). By default \code{special.tokens <- c(missing = "\\\\?", inapplicable = "\\\\-", polymorphism = "\\\\&", uncertainty = "\\\\/")}. Note that \code{NA} values are not compared and that the symbol "@" is reserved and cannot be used.
 #' @param special.behaviours optional, a \code{list} of one or more functions for a special behaviour for \code{special.tokens}. See details.
 #' @param brlen.multiplier optional, a vector of branch length modifiers (e.g. to convert time branch length in changes branch length) or a list of vectors (the same length as \code{tree}).
@@ -300,12 +300,12 @@ multi.ace <- function(data, tree, models, sample = 1, sample.fun = list(fun = ru
         if(do_sample) {
             sample.fun_class <- check.class(sample.fun, "list")
             ## If sample.fun is a single list
-            if(names(sample.fun)[1] == "fun") {
+            if(!is.null(names(sample.fun)) && names(sample.fun)[1] == "fun") {
                 ## Apply it to everything
                 sample_funs <- replicate(length(continuous_char_ID), sample.fun, simplify = FALSE)
                 ## Check it
                 if(!test.sample.fun(sample_funs[[1]])) {
-                    stop(paste0("The sample function is not formated correctly and cannot generate a distribution.\nCheck the ?multi.ace manual for more details."), call. = FALSE)
+                    stop(paste0("The sample function is not formatted correctly and cannot generate a distribution.\nCheck the ?multi.ace manual for more details."), call. = FALSE)
                 }
             } else {
                 sample_funs <- sample.fun

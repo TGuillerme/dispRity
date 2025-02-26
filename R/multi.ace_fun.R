@@ -397,14 +397,14 @@ sample.ace <- function(ace, sample.fun, samples = 1) {
 ## Testing the sample.fun argument. returns FALSE if fail, TRUE if OK
 test.sample.fun <- function(one_sample, n = 1) {
     ## Sample the parameters
-    test <- try(params <- lapply(one_sample$param, function(x) do.call(x, args = list(c(1,2,3)))))
+    test <- try(params <- lapply(one_sample$param, function(x) do.call(x, args = list(c(1,2,3)))), silent = TRUE)
     if(is(test, "try-error")) {
         return(FALSE)
     }
     ## Add n
     params$n <- n
     ## Test the function
-    test <- try(do.call(one_sample$fun, args = params))
+    test <- try(do.call(one_sample$fun, args = params), silent = TRUE)
     if(is(test, "try-error")) {
         return(FALSE)
     }
