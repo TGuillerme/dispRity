@@ -5,7 +5,9 @@
 #' @param data A \code{matrix}, \code{data.frame} or \code{list} with the characters for each taxa.
 #' @param tree A \code{phylo} or \code{mutiPhylo} object (if the \code{tree} argument contains node labels, they will be used to name the output).
 #' @param models A \code{character} vector, unambiguous named \code{list} or \code{matrix} to be passed as model arguments to \code{castor::asr_mk_model} or \code{ape::ace} (see details).
-#' @param threshold either \code{logical} for applying a relative threshold (\code{TRUE} - default) or no threshold (\code{FALSE}) or a \code{numeric} value of the threshold (e.g. 0.95). See details.
+#' @param sample An \code{integer} for the number of matrices to sample per tree (default is \code{1}). See details.
+#' @param sample.fun If \code{sample > 1}, a named list containing the following elements: \code{fun} the sampling distribution for continuous characters; and \code{param} (optional) a named list of parameters and their estimation function (default is \code{sample.fun = list(fun = runif, param = list(min = min, max = max))}). See details.
+#' @param threshold Is ignored if \code{sample > 1}, else either a \code{logical} for applying a relative threshold (\code{TRUE} - default) or no threshold (\code{FALSE}) or a \code{numeric} value of the threshold (e.g. 0.95). See details.
 #' @param special.tokens optional, a named \code{vector} of special tokens to be passed to \code{\link[base]{grep}} (make sure to protect the character with \code{"\\\\"}). By default \code{special.tokens <- c(missing = "\\\\?", inapplicable = "\\\\-", polymorphism = "\\\\&", uncertainty = "\\\\/")}. Note that \code{NA} values are not compared and that the symbol "@" is reserved and cannot be used.
 #' @param special.behaviours optional, a \code{list} of one or more functions for a special behaviour for \code{special.tokens}. See details.
 #' @param brlen.multiplier optional, a vector of branch length modifiers (e.g. to convert time branch length in changes branch length) or a list of vectors (the same length as \code{tree}).
@@ -23,7 +25,7 @@
 #'      \item a vector of model names to apply to different type of characters (see below for the list). For example \code{models = c("ER", "ER", "BM")} applies the Equal Rates model to the two first characters (discrete) and the \code{"BM"} model to the third character (continuous).
 #'      \item a transition \code{"matrix"} to be applied to all characters (if discrete). For example \code{models = matrix(0.2, 2, 2)}.
 #'      \item an single named list of arguments to be applied to all characters by passing it to \code{ape::ace} (if continuous). For example \code{models = list(method = "GLS", corStruct = corBrownian(1, my_tree))}.
-#'      \item an un-ambiguous list of arguments to be passed to either \code{castor::asr_mk_model} (discrete characters) or \code{ape::ace} (continuous characters). For example \code{models = list("char1" = list(transition_matrix = matrix(0.2, 2, 2)), "char2" = list(method = "GLS", corStruct = corBrownian(1, my_tree)))} to be specifically passed to the characters named "char1" and "char2"
+#'      \item an un-ambiguous list of arguments to be passed to either \code{castor::asr_mk_model} (discrete characters) or \code{ape::ace} (continuous characters). For example \code{models = list("char1" = list(transition_matrix = matrix(0.2, 2, 2)), "char2" = list(method = "GLS", corStruct = corBrownian(1, my_tree)))} to be specifically passed to the characters named "char1" and "char2".
 #'}
 #'
 #' The available built-in models for discrete characters in \code{castor::asr_mk_model} are:
@@ -44,8 +46,6 @@
 #'  \item \code{"pic"} method: for a default Brownian Motion with the "pic" (least squared) method    
 #'}
 #' 
-#' The \code{threshold} option allows to convert ancestral states likelihoods into discrete states. When \code{threshold = FALSE}, the ancestral state estimated is the one with the highest likelihood (or at random if likelihoods are equal). When \code{threshold = TRUE}, the ancestral state estimated are all the ones that are have a scaled likelihood greater than the maximum observed scaled likelihood minus the inverse number of possible states (i.e. \code{select_state >= (max(likelihood) - 1/n_states)}). This option makes the threshold selection depend on the number of states (i.e. if there are more possible states, a lower scaled likelihood for the best state is expected). Finally using a numerical value for the threshold option (e.g. \code{threshold = 0.95}) will simply select only the ancestral states estimates with a scaled likelihood equal or greater than the designated value. This option makes the threshold selection absolute. Regardless, if more than one value is select, the uncertainty token (\code{special.tokens["uncertainty"]}) will be used to separate the states. If no value is selected, the uncertainty token will be use between all observed characters (\code{special.tokens["uncertainty"]}).
-#' 
 #' \code{special.behaviours} allows to generate a special rule for the \code{special.tokens}. The functions should can take the arguments \code{character, all_states} with \code{character} being the character that contains the special token and \code{all_states} for the character (which is automatically detected by the function). By default, missing data returns and inapplicable returns all states, and polymorphisms and uncertainties return all present states.
 #' \itemize{
 #'      \item{\code{missing = function(x,y) y}}
@@ -57,6 +57,21 @@
 #' Functions in the list must be named following the special token of concern (e.g. \code{missing}), have only \code{x, y} as inputs and a single output a single value (that gets coerced to \code{integer} automatically). For example, the special behaviour for the special token \code{"?"} can be coded as: \code{special.behaviours = list(missing = function(x, y) return(NA)} to make ignore the character for taxa containing \code{"?"}. 
 #' 
 #' When using the parallel option (either through using \code{parallel = TRUE} by using the number of available cores minus on or manually setting the number of cores - e.g. \code{parallel = 5}), the \code{castor::asr_mk_model} function will use the designated number of cores (using the option \code{Nthreads = <requested_number_of_cores>}). Additionally, if the input \code{tree} is a \code{"multiPhylo"} object, the trees will be run in parallel for each number of cores, thus decreasing computation time accordingly (e.g. if 3 cores are requested and \code{tree} contains 12 \code{"phylo"} objects, 4 different \code{"phylo"} objects will be run in parallel on the 3 cores making the calculation around 3 times faster).
+#'
+#' When using the default \code{sample = 1}, only one estimation is sampled per tree:
+#' \itemize{
+#'      \item For continuous characters, this estimation is the average estimated ancestral value;
+#'      \item For discrete characters, this estimation is the one calculated using the \code{threshold} option (see details below). 
+#' }
+#' When using \code{sample > 1}, multiple estimations are sampled per tree:
+#' \itemize{
+#'      \item For continuous characters, this estimation is sample from the 95% confidence interval using the sampling probability function provided by \code{sample.fun}. By default (\code{runif}), the function samples from a uniform bounded by the 95% confidence interval estimation (see below for modifications).;
+#'      \item For discrete characters, the estimations are sampled using their scaled likelihood.
+#' }
+#'
+#' The \code{threshold} option allows to convert ancestral states likelihoods into discrete states. When \code{threshold = FALSE}, the ancestral state estimated is the one with the highest likelihood (or at random if likelihoods are equal). When \code{threshold = TRUE}, the ancestral state estimated are all the ones that are have a scaled likelihood greater than the maximum observed scaled likelihood minus the inverse number of possible states (i.e. \code{select_state >= (max(likelihood) - 1/n_states)}). This option makes the threshold selection depend on the number of states (i.e. if there are more possible states, a lower scaled likelihood for the best state is expected). Finally using a numerical value for the threshold option (e.g. \code{threshold = 0.95}) will simply select only the ancestral states estimates with a scaled likelihood equal or greater than the designated value. This option makes the threshold selection absolute. Regardless, if more than one value is select, the uncertainty token (\code{special.tokens["uncertainty"]}) will be used to separate the states. If no value is selected, the uncertainty token will be use between all observed characters (\code{special.tokens["uncertainty"]}).
+#'
+#' The \code{sample.fun} option allows to specify a function and parameters for the sampling of the continuous traits. The default is \code{sample.fun = list(fun = runif, param = list(min = min, max = max))} for applying a random uniform sampling (\code{runif}) with the parameters (the minimum and the maximum are applied using respectively the \code{min} and \code{max} functions on the estimated data). For applying different samplings to different traits, you can use a list of arguments in the sample format as \code{sample.fun} (e.g. \code{sample.fun = list(trait_uniform = list(fun = runif, param = list(min = min, max = max)), trait_normal = list(fun = rnorm, param = list(mean = mean, sd = function(x)return(diff(range(x))/4)))} - here the standard deviation is calculated as a quarter of the 95% CI range).
 #' 
 #' @return
 #' Returns a \code{"matrix"} or \code{"list"} of ancestral states. By default, the function returns the ancestral states in the same format as the input \code{matrix}. This can be changed using the option \code{output = "matrix"} or \code{"list"} to force the class of the output.
@@ -79,8 +94,15 @@
 #' ## Run a basic ancestral states estimations
 #' ancestral_states <- multi.ace(matrix_simple, tree)
 #' ancestral_states[1:5, 1:5]
-#' 
-#' ## A more complex example
+#'
+#' ## A random continuous trait matrix
+#' matrix_continuous <- space.maker(elements = 10, dimensions = 2,
+#'                                  distribution = rnorm, 
+#'                                  elements.names = tree$tip.label)
+#' ## A basic estimations for discrete data
+#' ancestral_traits <- multi.ace(matrix_continuous, tree)
+#'
+#' ## A more complex example for discrete data
 #' ## Create a multiple list of 5 trees
 #' multiple_trees <- rmtree(5, 10)
 #' 
@@ -121,7 +143,7 @@
 #' 
 #' ## The results for the the two first characters for the first tree
 #' ancestral_states[[1]][, 1:2]
-#' 
+#'
 #' \dontrun{
 #' ## The same example but running in parallel
 #' ancestral_states <- multi.ace(matrix_complex, multiple_trees,
@@ -134,14 +156,35 @@
 #'                               output = "combined.matrix",
 #'                               parallel = TRUE)
 #' }
+#'
+#' ## Estimating ancestral states by sampling distributions
+#' ## Discrete characters:
+#' sampled_ancestors <- multi.ace(matrix_simple, multiple_trees, sample = 25)
+#' ## A list of 125 matrices sampled across 25 estimations and 5 trees
+#' sampled_ancestors <- unlist(sampled_ancestors, recursive = FALSE)
+#'
+#' ## Continuous characters:
+#' ## Sampling 100 matrices from the ancestral estimations
+#' sampled_traits <- multi.ace(matrix_continuous, tree, sample = 100)
+#' ## Setting up two specific sampling functions
+#' sample_fun <- list(
+#'      unif_sampl = list(fun = runif,
+#'                        param = list(min = min, max = max)),
+#'      norm_sampl = list(fun = rnorm,
+#'                        param = list(mean = mean,
+#'                                     sd = function(x)return(diff(range(x))/4)))
+#' )
+#' ## Sampling 100 matrices with different distribution functions
+#' sampled_traits <- multi.ace(matrix_continuous, tree, sample = 100,
+#'                             sample.fun = sample_fun)
+#' 
 #' @seealso
-#' \code{castor::asr_mk_model}, \code{char.diff}
-# \code{fit.ace.model}, 
+#' \code{char.diff}, \code{castor::asr_mk_model}, \code{ape::ace}
 #' 
 #' @author Thomas Guillerme
 #' @export
 
-multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, special.behaviours, brlen.multiplier, verbose = FALSE, parallel = FALSE, output, options.args, estimation.details = NULL) {
+multi.ace <- function(data, tree, models, sample = 1, sample.fun = list(fun = runif, param = list(min = min, max = max)), threshold = TRUE, special.tokens, special.behaviours, brlen.multiplier, verbose = FALSE, parallel = FALSE, output, options.args, estimation.details = NULL) {
 
     match_call <- match.call()
 
@@ -167,6 +210,9 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
 
     ## Check the tree and data
     cleaned_data <- clean.data(matrix, tree)
+    if(is.null(cleaned_data$tree[[1]]) || length(cleaned_data$data) == 0) {
+        stop("No match between the tips in the tree and the rows in the data.", call. = FALSE)
+    }
     if(!is.na(cleaned_data$dropped_tips) || !is.na(cleaned_data$dropped_rows)) {
         stop(paste0("Some names in the data or the tree(s) are not matching.\nYou can use dispRity::clean.data(", as.expression(match_call$data), ", ", as.expression(match_call$tree), ") to find out more."), call. = FALSE)
     }
@@ -199,6 +245,36 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
         threshold.type <- "absolute"
     }
     
+    ## verbose
+    check.class(verbose, "logical")
+
+    ## Set up parallel arguments
+    check.class(parallel, c("logical", "numeric", "integer"))
+    if(is.logical(parallel)) {
+        do_parallel <- ifelse(parallel, TRUE, FALSE)
+        ## Get the number of cores
+        if(do_parallel) {
+            cores <- parallel::detectCores() - 1
+        } else {
+            cores <- 1
+        }
+    } else {
+        check.class(parallel, "numeric")
+        check.length(parallel, 1, " must be logical or the number of cores to use.")
+        do_parallel <- TRUE
+        ## Get the number of cores
+        cores <- parallel
+    }
+
+    ## Sampling
+    check.class(sample, c("integer", "numeric"))
+    do_sample <- sample > 1
+    if(do_sample) {
+        ## Override the threshold arguments (no threshold used)
+        threshold.type <- "sample"
+        threshold <- sample
+    }
+    
     ## brlen multiplier
     if(!missing(brlen.multiplier)) {
         ## Check class
@@ -226,27 +302,6 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
         class(tree) <- "multiPhylo"
     }
 
-    ## verbose
-    check.class(verbose, "logical")
-
-    ## Set up parallel arguments
-    check.class(parallel, c("logical", "numeric", "integer"))
-    if(is.logical(parallel)) {
-        do_parallel <- ifelse(parallel, TRUE, FALSE)
-        ## Get the number of cores
-        if(do_parallel) {
-            cores <- parallel::detectCores() - 1
-        } else {
-            cores <- 1
-        }
-    } else {
-        check.class(parallel, "numeric")
-        check.length(parallel, 1, " must be logical or the number of cores to use.")
-        do_parallel <- TRUE
-        ## Get the number of cores
-        cores <- parallel
-    }
-
     #########
     ## Handle the characters
     #########
@@ -256,6 +311,7 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
 
     ## Detecting the continuous or discrete characters    
     character_is_continuous <- logical()
+
     ## Looping to allow dropping the levels from matrix
     for(col in 1:ncol(matrix)) {
         character_is_continuous <- c(character_is_continuous, is.numeric(matrix[, col, drop = TRUE]))
@@ -266,14 +322,37 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
     ## Split the matrices by character types
     if(any(character_is_continuous)) {
         ## Split the matrix for continuous characters
-        matrix_continuous <- matrix[, character_is_continuous]
+        matrix_continuous <- matrix[, character_is_continuous, drop = FALSE]
         n_characters_continuous <- sum(character_is_continuous)
         do_continuous <- TRUE
         continuous_char_ID <- which(character_is_continuous)
+
+        ## Check the sampling (if required)
+        if(do_sample) {
+            sample.fun_class <- check.class(sample.fun, "list")
+            ## If sample.fun is a single list
+            if(!is.null(names(sample.fun)) && names(sample.fun)[1] == "fun") {
+                ## Apply it to everything
+                sample_funs <- replicate(length(continuous_char_ID), sample.fun, simplify = FALSE)
+                ## Check it
+                if(!test.sample.fun(sample_funs[[1]])) {
+                    stop(paste0("The sample function is not formatted correctly and cannot generate a distribution.\nCheck the ?multi.ace manual for more details."), call. = FALSE)
+                }
+            } else {
+                sample_funs <- sample.fun
+                ## Check if the list is the same length.
+                check.length(sample_funs, length(continuous_char_ID), msg = paste0(" must be a list of sampling functions the same length as the number of continuous characters (", length(continuous_char_ID), ")."))
+                ## Check if each element can be read.
+                tests <- unlist(lapply(sample_funs, test.sample.fun))
+                if(any(!tests)) {
+                    stop(paste0("The following sample function", ifelse(sum(!tests) == 1, " is", "s are"), " not formated correctly and cannot generate a distribution: ", paste(which(!tests), collapse = ", "),".\nCheck the ?multi.ace manual for more details."), call. = FALSE)
+                }
+            }
+        }
     }
     if(any(!character_is_continuous)) {
         ## Split the matrix for discrete characters
-        matrix_discrete <- matrix[, !character_is_continuous]
+        matrix_discrete <- matrix[, !character_is_continuous, drop = FALSE]
         ## Convert into characters
         matrix_discrete <- apply(matrix_discrete, 2, as.character)
         rownames(matrix_discrete) <- rownames(matrix)
@@ -530,12 +609,6 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
                 models_continuous <- lapply(models_continuous, function(x) do.call(set.continuous.args.ace, x))
             }
         }
-
-        ## Remove invariant characters
-        if(do_discrete && has_invariants) {
-            ## Remove the models
-            models_discrete <- models_discrete[-invariants]
-        }
     }
     if(do_discrete && has_invariants) {
         models_discrete <- models_discrete[-invariants]
@@ -640,6 +713,7 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
         }
     }
 
+
     #########
     ##
     ## run the calls
@@ -673,7 +747,8 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
                                        "threshold",
                                        "verbose",
                                        "characters_states",
-                                       "invariant_characters_states")
+                                       "invariant_characters_states",
+                                       "do_sample")
             export_functions_list <- c("one.tree.ace",
                                        "castor.ace",
                                        "tree.data.update",
@@ -690,31 +765,12 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
 
         ## Call the cluster
         if(do_discrete) {
-            discrete_estimates <- parLapply(cl = cluster, tree_character_discrete_args, one.tree.ace, special.tokens, invariants, characters_states, threshold.type, threshold, invariant_characters_states, verbose)
+            discrete_estimates <- parLapply(cl = cluster, tree_character_discrete_args, one.tree.ace, special.tokens, invariants, characters_states, threshold.type, threshold, invariant_characters_states, verbose, do_sample)
         }
         if(do_continuous) {
             continuous_estimates <- parLapply(cl = cluster, tree_character_continuous_args, lapply, function(x) do.call(fun_continuous, x))
             ## Remove the ugly call
             continuous_estimates <- lapply(continuous_estimates, lapply, function(x) {x$call <- "ape::ace"; return(x)})
-            ## Add node labels
-            # TODO: to be removed if ape update
-            add.nodes <- function(obj, phy) {
-                ## Adding node labels to $ace and $CI95 (if available)
-                options(warn = -1)
-                names <- as.integer(names(obj$ace))
-                options(warn = 0)
-                if(!is.null(phy$node.label) && !is.na(names[1])) {
-                    ordered_node_labels <- phy$node.label[c(as.integer(names(obj$ace))- Ntip(phy))]
-                    names(obj$ace) <- ordered_node_labels
-                    if(!is.null(obj$CI95)) {
-                        rownames(obj$CI95) <- ordered_node_labels
-                    }
-                }
-                return(obj)
-            }
-            for(one_tree in 1:length(tree)) {
-                continuous_estimates[[one_tree]] <- lapply(continuous_estimates[[one_tree]], add.nodes, phy = tree[[one_tree]])
-            }
         }
 
         ## Stop the cluster
@@ -735,30 +791,11 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
             continuous_estimates <- lapply(tree_character_continuous_args, lapply, function(x) do.call(fun_continuous, x))
             ## Remove the ugly call
             continuous_estimates <- lapply(continuous_estimates, lapply, function(x) {x$call <- "ape::ace"; return(x)})
-            ## Add node labels
-            # TODO: to be removed if ape update
-            add.nodes <- function(obj, phy) {
-                ## Adding node labels to $ace and $CI95 (if available)
-                options(warn = -1)
-                names <- as.integer(names(obj$ace))
-                options(warn = 0)
-                if(!is.null(phy$node.label) && !is.na(names[1])) {
-                    ordered_node_labels <- phy$node.label[c(as.integer(names(obj$ace))- Ntip(phy))]
-                    names(obj$ace) <- ordered_node_labels
-                    if(!is.null(obj$CI95)) {
-                        rownames(obj$CI95) <- ordered_node_labels
-                    }
-                }
-                return(obj)
-            }
-            for(one_tree in 1:length(tree)) {
-                continuous_estimates[[one_tree]] <- lapply(continuous_estimates[[one_tree]], add.nodes, phy = tree[[one_tree]])
-            }
         }
         ## Run the discrete characters
         if(do_discrete) {
             ## Run all the ace for discrete
-            discrete_estimates <- lapply(tree_character_discrete_args, one.tree.ace, special.tokens, invariants, characters_states, threshold.type, threshold, invariant_characters_states, verbose)
+            discrete_estimates <- lapply(tree_character_discrete_args, one.tree.ace, special.tokens, invariants, characters_states, threshold.type, threshold, invariant_characters_states, verbose, do_sample)
         }
         if(verbose) cat("Done.\n")
     }
@@ -771,8 +808,20 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
 
     ## Handle the continuous characters
     if(do_continuous) {
-        ## Get the results in a matrix format
-        results_continuous <- lapply(lapply(continuous_estimates, lapply, `[[`, "ace"), function(x) do.call(cbind, x))
+        
+        if(!do_sample) {
+            ## Get the results in a matrix format
+            results_continuous <- lapply(lapply(continuous_estimates, lapply, `[[`, "ace"), function(x) do.call(cbind, x))
+        } else {
+            ## Sample the results for n_matrices
+            sample.ace.per.tree <- function(tree_estimate, sample_funs, sample) {
+                ## Sample all characters
+                samples_list <- mapply(sample.ace, tree_estimate, sample_funs, MoreArgs = list(samples = sample), SIMPLIFY = FALSE)
+                ## Return a list of samples for all characters
+                return(lapply(as.list(1:sample), function(one_sample, character) do.call(cbind, lapply(character, function(x, one_sample) do.call(rbind, x)[, one_sample, drop = FALSE], one_sample = one_sample)), character = samples_list))
+            }
+            results_continuous <- lapply(continuous_estimates, sample.ace.per.tree, sample_funs = sample_funs, sample = sample)
+        }
         
         ## Get the details for continuous
         if(any(return_args_continuous %in% estimation.details)) {
@@ -787,8 +836,16 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
     }
 
     if(do_discrete) {
-        ## Get the results in a matrix format
-        results_discrete <- lapply(lapply(discrete_estimates, `[[`, 1), function(x) do.call(cbind, x))
+        if(!do_sample) {
+            ## Get the results in a matrix format
+            results_discrete <- lapply(lapply(discrete_estimates, `[[`, 1), function(x) do.call(cbind, x))
+        } else {
+            ## Split the results into n matrices
+            split.per.tree <- function(tree_estimate, sample) {
+                return(lapply(as.list(1:sample), function(one_sample, tree_estimate) t(do.call(rbind, lapply(tree_estimate, function(x, one_sample) return(x[one_sample, , drop = FALSE]), one_sample = one_sample))), tree_estimate = tree_estimate$results))
+            }
+            results_discrete <- lapply(discrete_estimates, split.per.tree, sample = sample)
+        }
 
         ## Get the details
         details_discrete <- lapply(discrete_estimates, `[[`, 2)
@@ -799,7 +856,7 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
     if(do_discrete && do_continuous) {
         ## Combine the traits
         results_out <- mapply(bind.characters, results_continuous, results_discrete,
-            MoreArgs = list(order = list("continuous" = continuous_char_ID, "discrete" = unique(c(discrete_char_ID, invariants_ID)))),
+            MoreArgs = list(order = list("continuous" = continuous_char_ID, "discrete" = unique(c(discrete_char_ID, invariants_ID))), do_sample = do_sample),
             SIMPLIFY = FALSE)
         ## Return the details per characters
         if(is.null(details_continuous)) {
@@ -824,13 +881,23 @@ multi.ace <- function(data, tree, models, threshold = TRUE, special.tokens, spec
     }
     
     ## Handle output
-    output_return <- switch(output,
-        matrix          = results_out,
-        list            = lapply(results_out, make.list),
-        combined.matrix = lapply(results_out, add.tips, matrix = matrix),
-        combined.list   = lapply(lapply(results_out, add.tips, matrix = matrix), make.list),
-        dispRity        = make.dispRity(data = lapply(results_out, add.tips, matrix = matrix), tree = tree)
-        )
+    if(!do_sample) {
+        output_return <- switch(output,
+            matrix          = results_out,
+            list            = lapply(results_out, make.list),
+            combined.matrix = lapply(results_out, add.tips, matrix = matrix),
+            combined.list   = lapply(lapply(results_out, add.tips, matrix = matrix), make.list),
+            dispRity        = make.dispRity(data = lapply(results_out, add.tips, matrix = matrix), tree = tree)
+            )
+    } else {
+        output_return <- switch(output,
+            matrix          = results_out,
+            list            = lapply(results_out, lapply, make.list),
+            combined.matrix = lapply(results_out, lapply, add.tips, matrix = matrix),
+            combined.list   = lapply(lapply(results_out, lapply, add.tips, matrix = matrix), lapply, make.list),
+            dispRity        = make.dispRity(data = lapply(results_out, lapply, add.tips, matrix = matrix), tree = tree)
+            )
+    }
 
     ## Results out
     if(is.null(estimation.details)) {

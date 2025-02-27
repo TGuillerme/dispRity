@@ -1,9 +1,14 @@
-dispRity v1.9.1 (2025-01-03)
+dispRity v1.9.1 (2025-02-27)
 =========================
+
+### NEW FEATURES
+
+ * Revamped `multi.ace` to allow for sampling distribution of ancestral states instead of point estimates with the new argument `sample`.
 
 ### BUG FIXES
 
  * Fixed retro-compatibility for S3 behaviours (`plot` and `summary`) for `dispRity` objects made before `1.9`.
+ * Fixed bug with `multi.ace` that always returned missing data tokens for discrete invariant characters.
 
 dispRity v1.9 (2024-11-13)  *distant update*
 =========================
