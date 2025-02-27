@@ -130,7 +130,14 @@ matrix_simple <- sim.morpho(tree, characters = 50, model = "ER", rates = my_rate
 ancestral_states <- multi.ace(matrix_simple, tree)
 ancestral_states[1:5, 1:5]
 
-## A more complex example
+## A random continuous trait matrix
+matrix_continuous <- space.maker(elements = 10, dimensions = 2,
+                                 distribution = rnorm, 
+                                 elements.names = tree$tip.label)
+## A basic estimations for discrete data
+ancestral_traits <- multi.ace(matrix_continuous, tree)
+
+## A more complex example for discrete data
 ## Create a multiple list of 5 trees
 multiple_trees <- rmtree(5, 10)
 
@@ -184,9 +191,31 @@ ancestral_states <- multi.ace(matrix_complex, multiple_trees,
                               output = "combined.matrix",
                               parallel = TRUE)
 }
+
+## Estimating ancestral states by sampling distributions
+## Discrete characters:
+sampled_ancestors <- multi.ace(matrix_simple, multiple_trees, sample = 25)
+## A list of 125 matrices sampled across 25 estimations and 5 trees
+sampled_ancestors <- unlist(sampled_ancestors, recursive = FALSE)
+
+## Continuous characters:
+## Sampling 100 matrices from the ancestral estimations
+sampled_traits <- multi.ace(matrix_continuous, tree, sample = 100)
+## Setting up two specific sampling functions
+sample_fun <- list(
+     unif_sampl = list(fun = runif,
+                       param = list(min = min, max = max)),
+     norm_sampl = list(fun = rnorm,
+                       param = list(mean = mean,
+                                    sd = function(x)return(diff(range(x))/4)))
+)
+## Sampling 100 matrices with different distribution functions
+sampled_traits <- multi.ace(matrix_continuous, tree, sample = 100,
+                            sample.fun = sample_fun)
+
 }
 \seealso{
-\code{castor::asr_mk_model}, \code{char.diff}
+\code{char.diff}, \code{castor::asr_mk_model}, \code{ape::ace}
 }
 \author{
 Thomas Guillerme

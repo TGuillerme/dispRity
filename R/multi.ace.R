@@ -322,7 +322,7 @@ multi.ace <- function(data, tree, models, sample = 1, sample.fun = list(fun = ru
     ## Split the matrices by character types
     if(any(character_is_continuous)) {
         ## Split the matrix for continuous characters
-        matrix_continuous <- matrix[, character_is_continuous]
+        matrix_continuous <- matrix[, character_is_continuous, drop = FALSE]
         n_characters_continuous <- sum(character_is_continuous)
         do_continuous <- TRUE
         continuous_char_ID <- which(character_is_continuous)
@@ -352,7 +352,7 @@ multi.ace <- function(data, tree, models, sample = 1, sample.fun = list(fun = ru
     }
     if(any(!character_is_continuous)) {
         ## Split the matrix for discrete characters
-        matrix_discrete <- matrix[, !character_is_continuous]
+        matrix_discrete <- matrix[, !character_is_continuous, drop = FALSE]
         ## Convert into characters
         matrix_discrete <- apply(matrix_discrete, 2, as.character)
         rownames(matrix_discrete) <- rownames(matrix)
