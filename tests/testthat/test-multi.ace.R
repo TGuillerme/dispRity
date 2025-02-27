@@ -417,6 +417,13 @@ test_that("multi.ace works", {
     # expect_is(results$details[[1]]$transition_matrix[[9]], "matrix")
     # expect_equal(rownames(results$details[[1]]$transition_matrix[[9]]), c("0","1","2"))
     # expect_is(results$details[[2]]$loglikelihood[[1]], "numeric")
+
+
+    ## No match check
+    tree <- makeNodeLabel(rcoal(10))
+    matrix_continuous <- space.maker(elements = 9, dimensions = 3, distribution = rnorm, elements.names = tree$node.label)
+    expect_warning(error <- capture_error(multi.ace(matrix_continuous, tree)))
+    expect_equal(error[[1]], "No match between the tips in the tree and the rows in the data.")
 })
 
 test_that("multi.ace works with continuous and mix", {
