@@ -23,6 +23,21 @@ test_that("normal printing", {
         "Contains a matrix 1x1."
     ))
 
+    test <- make.dispRity(data = matrix(10, nrow = 5), tree = rtree(5))
+    expect_equal(capture.output(test), 
+        c(
+        " ---- dispRity object ---- ",
+        "Contains a matrix 5x1 and a tree."
+    ))
+
+    test <- make.dispRity(data = list(matrix(10, nrow = 5), matrix(10, nrow = 5)), tree = rmtree(5, 5))
+    expect_equal(capture.output(test), 
+        c(
+        " ---- dispRity object ---- ",
+        "Contains 2 matrices 5x1 and 5 trees."
+    ))
+
+
     ## Time subsets
     test <- chrono.subsets(BeckLee_mat50, time = c(100, 90, 50), method = "discrete", tree = BeckLee_tree)
 

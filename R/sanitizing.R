@@ -315,6 +315,11 @@ check.dispRity.data <- function(data = NULL, tree = NULL, bind.trees = FALSE, re
     if(!is.null(tree)) {
         tree <- check.tree(tree, data, bind.trees, match_call)
         is_multi <- any(is_multi, tree$multi)
+    } else {
+        if(is(data, "dispRity") && is(data$tree, "multiPhylo")) {
+            tree <- check.tree(data$tree, data, bind.trees, match_call)
+            is_multi <- any(is_multi, tree$multi)
+        }
     }
 
     ## Sort the output

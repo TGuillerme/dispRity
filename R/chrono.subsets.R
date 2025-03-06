@@ -3,8 +3,8 @@
 #'
 #' @description Splits the data into a chronological (time) subsets list.
 #'
-#' @param data A \code{matrix} or a \code{list} of matrices.
-#' @param tree \code{NULL} (default) or an optional \code{phylo} or \code{multiPhylo} object matching the data and with a \code{root.time} element. This argument can be left missing if \code{method = "discrete"} and all elements are present in the optional \code{FADLAD} argument.
+#' @param data A \code{matrix}, a \code{list} of matrices or a \code{dispRity} object.
+#' @param tree \code{NULL} (default) or an optional \code{phylo} or \code{multiPhylo} object matching the data and with a \code{root.time} element. This argument can be left missing if \code{method = "discrete"} and all elements are present in the optional \code{FADLAD} argument or if \code{data} has a \code{$tree} component.
 #' @param method The time subsampling method: either \code{"discrete"} (or \code{"d"}) or \code{"continuous"} (or \code{"c"}).
 #' @param time Either a single \code{integer} for the number of discrete or continuous samples or a \code{vector} containing the age of each sample.
 #' @param model One of the following models: \code{"acctran"}, \code{"deltran"}, \code{"random"}, \code{"proximity"}, \code{"equal.split"} or \code{"gradual.split"}. Is ignored if \code{method = "discrete"}.
@@ -108,7 +108,11 @@ chrono.subsets <- function(data, tree = NULL, method, time, model, inc.nodes = F
     if(!is.null(tree)) {
         data <- check.dispRity.data(data, tree, returns = c("matrix", "tree", "multi"))
     } else {
-        data <- check.dispRity.data(data, returns = c("matrix", "multi"))
+        if(is(data, "dispRity") && is(data$tree, "multiPhylo")) {
+            data <- check.dispRity.data(data, returns = c("matrix", "tree", "multi"))
+        } else {
+            data <- check.dispRity.data(data, returns = c("matrix", "multi"))
+        }
     }
 
     ## VERBOSE
@@ -155,9 +159,8 @@ chrono.subsets <- function(data, tree = NULL, method, time, model, inc.nodes = F
 
         if(verbose) message("Done.\n", appendLF = FALSE)
         return(output)
-
     } else {
-        if(!is.null(tree)) {
+        if(!is.null(tree) || !is.null(data$tree)) {
             tree <- data$tree
         }
         data <- data$matrix

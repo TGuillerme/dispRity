@@ -21,9 +21,9 @@ chrono.subsets(
 )
 }
 \arguments{
-\item{data}{A \code{matrix} or a \code{list} of matrices.}
+\item{data}{A \code{matrix}, a \code{list} of matrices or a \code{dispRity} object.}
 
-\item{tree}{\code{NULL} (default) or an optional \code{phylo} or \code{multiPhylo} object matching the data and with a \code{root.time} element. This argument can be left missing if \code{method = "discrete"} and all elements are present in the optional \code{FADLAD} argument.}
+\item{tree}{\code{NULL} (default) or an optional \code{phylo} or \code{multiPhylo} object matching the data and with a \code{root.time} element. This argument can be left missing if \code{method = "discrete"} and all elements are present in the optional \code{FADLAD} argument or if \code{data} has a \code{$tree} component.}
 
 \item{method}{The time subsampling method: either \code{"discrete"} (or \code{"d"}) or \code{"continuous"} (or \code{"c"}).}
 

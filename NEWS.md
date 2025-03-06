@@ -1,12 +1,17 @@
-dispRity v1.9.2 (2025-02-28)
+dispRity v1.9.3 (2025-03-06)
 =========================
 
 ### NEW FEATURES
 
  * Revamped `multi.ace` to allow for sampling distribution of ancestral states instead of point estimates with the new argument `sample`.
 
+### MINOR IMPROVEMENTS
+
+ * `chrono.subsets` now can recycle the `$tree` component of a `dispRity` object.
+
 ### BUG FIXES
 
+ * `print` now correctly prints the content of "empty" data.
  * Fixed retro-compatibility for S3 behaviours (`plot` and `summary`) for `dispRity` objects made before `1.9`.
  * Fixed bug with `multi.ace` that always returned missing data tokens for discrete invariant characters.
 
@@ -14,6 +19,7 @@ dispRity v1.9 (2024-11-13)  *distant update*
 =========================
 
 ### NEW FEATURES
+
  * Redesigned `multi.ace` to be more modular and handle both continuous and/or discrete characters. Changes include a **change in argument name** from `castor.options` to the generic `options.args` (the options can be provided the same way as before though); and a **change in default arguments** for `models` which can now be left missing (previously was `"ER"`) and applies `"ER"` and `"BM"` for respectively discrete and continuous characters by default.
  * New design when using distance matrices: `dist.helper` now allows to save distance matrices in the cache, saving a lot of RAM and speeding up calculations. You can use the helper using `dispRity(..., dist.helper = my_distance_function)` or `dispRity(..., dist.helper = my_distance_matrix)`.
  * *New `dispRity`, `custom.subsets` and `chrono.subsets` option*: these three functions can now use `dist.data = TRUE` to specify that the input data is a distance matrix (and handle it accordingly).

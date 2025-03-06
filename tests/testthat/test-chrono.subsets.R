@@ -401,6 +401,28 @@ test_that("Example works", {
     expect_equal(
         nrow(ex3$subsets[[3]]$elements)
         ,23)
+
+    ## Works with combined object
+    my_data <- make.dispRity(BeckLee_mat99, BeckLee_tree)
+    ex4 <- chrono.subsets(data = my_data, method = "continuous", model = "acctran", time = 5, FADLAD = BeckLee_ages)
+    expect_equal(
+        length(ex4)
+        , 4)
+    expect_is(
+        ex4$matrix[[1]]
+        ,"matrix")
+    expect_equal(
+        dim(ex4$matrix[[1]])
+        ,c(99,97))
+    expect_equal(
+        nrow(ex4$subsets[[1]]$elements)
+        ,3)
+    expect_equal(
+        nrow(ex4$subsets[[2]]$elements)
+        ,15)
+    expect_equal(
+        nrow(ex4$subsets[[3]]$elements)
+        ,23)
 })
 
 test_that("make.origin.subsets works (internal fun)", {
