@@ -589,3 +589,20 @@ test_that("multi.ace works with sample", {
     expect_true(all(test[[1]][,4] > -5))
     expect_true(all(test[[1]][,5] > 100))
 })
+
+# test_that("multi.ace works with recycling", {
+#     set.seed(1)
+#     ## The tree
+#     tree <- rcoal(10)
+#     tree <- makeNodeLabel(tree)
+#     ## The matrix
+#     data <- data_continuous <- cbind(runif(10, 0, 1), runif(10, 10, 20), runif(10, 100, 200))
+#     rownames(data) <- tree$tip.label
+#     set.seed(8) 
+#     data <- data_discrete <- sim.morpho(tree, characters = 2, model = "ER", rates = c(rgamma, rate = 10, shape = 5), invariant = FALSE)
+#     data[,2] <- data_discrete[,2] <- as.character(sample(c(1,2,3), 10, replace = TRUE))
+#     data <- data.frame(data_discrete, data_continuous)
+
+#     test <- multi.ace(data = data, tree = tree, output = "combined.matrix", verbose = TRUE, estimation.details = c("ancestral_likelihoods", "CI95"))
+# TODO: set sample to 1 and estimation.details to TRUE to save the whole models as multi.ace objects that can be re-read.
+# })

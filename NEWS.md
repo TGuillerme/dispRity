@@ -3,7 +3,7 @@ dispRity v1.9.3 (2025-03-06)
 
 ### NEW FEATURES
 
- * Revamped `multi.ace` to allow for sampling distribution of ancestral states instead of point estimates with the new argument `sample`.
+ * Revamped `multi.ace` to allow for sampling distribution of ancestral states instead of point estimates with the new argument `sample`. The function can now also re-analyse previous outputs to save time (if `estimation.details = TRUE` in previous calculations).
 
 ### MINOR IMPROVEMENTS
 
