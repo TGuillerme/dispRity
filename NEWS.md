@@ -11,6 +11,7 @@ dispRity v1.9.3 (2025-03-06)
 
 ### BUG FIXES
 
+ * `dispRity` now correctly handles multiple matrices and multiple trees for multiple metrics.
  * `print` now correctly prints the content of "empty" data.
  * Fixed retro-compatibility for S3 behaviours (`plot` and `summary`) for `dispRity` objects made before `1.9`.
  * Fixed bug with `multi.ace` that always returned missing data tokens for discrete invariant characters.

@@ -180,6 +180,33 @@ test_that("make.matrix", {
     expect_is(
         test6$tree[[1]]
         ,"phylo")    
+
+    ## Handles multi layered matrices
+    mat <- matrix(1, 5, 5)
+    test1 <- list(mat, mat)
+    test2 <- list(test1, test1)
+    test3 <- list(test2, test2)
+    test5 <- list(test1, "hahaha")
+
+    test <- make.dispRity(data = mat)
+    expect_is(test, "dispRity")
+    expect_equal(length(test$matrix), 1)
+
+    test <- make.dispRity(data = test1)
+    expect_is(test, "dispRity")
+    expect_equal(length(test$matrix), 2)
+
+    test <- make.dispRity(data = test2)
+    expect_is(test, "dispRity")
+    expect_equal(length(test$matrix), 4)
+
+    test <- make.dispRity(data = test3)
+    expect_is(test, "dispRity")
+    expect_equal(length(test$matrix), 8)
+
+    error <- capture_error(make.dispRity(data = test5))
+    expect_equal(error[[1]], "data must be a matrix or a list of matrices.")
+
 })
 
 ## fill.dispRity

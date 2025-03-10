@@ -400,6 +400,10 @@ decompose.matrix <- function(one_subsets_bootstrap, fun, data, nrow, use_tree, d
                             nrow       = nrow,
                             ...),
                       recursive = FALSE))
+
+        #TG: when multiple matrices and dimensions level2 this should return an array?
+        # decompose.base(data_list[[1]], bootstrap = bootstrap, dimensions = dimensions, fun = fun, nrow = nrow)
+
     } else {
         ## Check whether the number of trees and matrices match
         ## Applying the decomposition to all trees and all matrices
@@ -471,7 +475,7 @@ decompose.matrix.wrapper <- function(one_subsets_bootstrap, fun, data, use_array
         results_out <- apply(one_subsets_bootstrap, 2, decompose.matrix, fun = fun, data = data, nrow = nrow, use_tree = use_tree, dist_help = dist_help, dist.data = dist.data, by.col = by.col, ...)
 
         # one_subsets_bootstrap <- cbind(one_subsets_bootstrap, one_subsets_bootstrap)
-        # decompose.matrix(one_subsets_bootstrap[,1], fun = fun, data = data, nrow = nrow, use_tree = use_tree)
+        # decompose.matrix(one_subsets_bootstrap[,1], fun = fun, data = data, nrow = nrow, use_tree = use_tree, dist_help = dist_help, dist.data = dist.data, by.col = by.col)
 
 
         ## Return the results

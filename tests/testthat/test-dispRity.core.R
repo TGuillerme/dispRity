@@ -650,6 +650,7 @@ test_that("dispRity works with multiple matrices from chrono.subsets", {
     set.seed(1)
     test <- chrono.subsets(matrices, tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5, bind.data = TRUE)
 
+
     means <- dispRity(test, metric = mean, na.rm = TRUE)
     expect_is(means, "dispRity")
     expect_equal(as.vector(means$disparity[[1]]$elements),
@@ -667,6 +668,19 @@ test_that("dispRity works with multiple matrices from chrono.subsets", {
               mean(means$matrix[[2]][means$subsets[[3]]$elements[,2],]),
               mean(means$matrix[[3]][means$subsets[[3]]$elements[,3],]))
     )
+
+
+    ## Works with multiple matrices unbound
+    matrices2 <- c(matrices, matrices, matrices)
+    test <- chrono.subsets(matrices2, tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5, bind.data = FALSE)
+    expect_equal(dim(test$subsets[[1]]$elements)[2], length(trees))
+    level1 <- dispRity(test, metric = sum)
+    expect_equal(dim(level1$disparity[[1]]$elements), c(length(matrices2), length(trees)))
+    sum.var <- function(matrix, ...) return(sum(variances(matrix, ...)))
+    level1 <- dispRity(test, metric = sum.var)
+    expect_equal(dim(level1$disparity[[1]]$elements), c(length(matrices2), length(trees)))
+    level12 <- dispRity(test, metric = c(sum, variances))
+    expect_equal(dim(level12$disparity[[1]]$elements), c(length(matrices2), length(trees)))
 
     ## Works with unpaired number of trees and matrices
     test <- chrono.subsets(matrices[[1]], tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5, bind.data = FALSE)

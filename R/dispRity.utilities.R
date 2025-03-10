@@ -46,9 +46,22 @@ make.dispRity <- function(data, tree, call, subsets) {
     ## Add the matrix
     if(!missing(data)) {
         data_class <- check.class(data, c("matrix", "list"))
-        switch(data_class,
-            matrix = {dispRity_object$matrix <- list(data)},
-            list = {dispRity_object$matrix <- data})
+        if(data_class == "list") {
+            ## Check if it's a nested list of matrices
+            data_recurse <- data
+            bottom_class <- unique(unlist(lapply(data_recurse, class)))
+            while(any(bottom_class %in% "list")) {
+                data_recurse <- unlist(data_recurse, recursive = FALSE)
+                bottom_class <- unique(unlist(lapply(data_recurse, class)))
+            }
+            if(all(unique(unlist(lapply(data_recurse, class))) %in% c("matrix", "array"))) {
+                dispRity_object$matrix <- data_recurse
+            } else {
+                stop("data must be a matrix or a list of matrices.", call. = FALSE)
+            }
+        } else {
+            dispRity_object$matrix <- list(data)
+        }
     }
 
     ## Add the call
