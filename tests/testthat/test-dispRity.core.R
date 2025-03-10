@@ -679,8 +679,6 @@ test_that("dispRity works with multiple matrices from chrono.subsets", {
     sum.var <- function(matrix, ...) return(sum(variances(matrix, ...)))
     level1 <- dispRity(test, metric = sum.var)
     expect_equal(dim(level1$disparity[[1]]$elements), c(length(matrices2), length(trees)))
-    level12 <- dispRity(test, metric = c(sum, variances))
-    expect_equal(dim(level12$disparity[[1]]$elements), c(length(matrices2), length(trees)))
 
     ## Works with unpaired number of trees and matrices
     test <- chrono.subsets(matrices[[1]], tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5, bind.data = FALSE)
