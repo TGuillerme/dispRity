@@ -46,7 +46,7 @@ test_that("multi.ace works", {
                             verbose = FALSE,
                             parallel = FALSE,
                             output = "list"))
-    expect_equal(error[[1]], "matrix must be of class matrix or list or data.frame or multi.ace.")
+    expect_equal(error[[1]], "matrix must be of class matrix or list or data.frame or dispRity or multi.ace.")
 
     error <- capture_error(multi.ace(data = matrix_complex,
                             tree = "tree_test", 
@@ -591,20 +591,30 @@ test_that("multi.ace works with sample", {
     expect_true(all(test[[1]][,5] > 100))
 })
 
-# test_that("multi.ace works with recycling", {
-#     set.seed(1)
-#     ## The tree
-#     tree <- rcoal(10)
-#     tree <- makeNodeLabel(tree)
-#     ## The matrix
-#     data <- data_continuous <- cbind(runif(10, 0, 1), runif(10, 10, 20), runif(10, 100, 200))
-#     rownames(data) <- tree$tip.label
-#     set.seed(8) 
-#     data <- data_discrete <- sim.morpho(tree, characters = 2, model = "ER", rates = c(rgamma, rate = 10, shape = 5), invariant = FALSE)
-#     data[,2] <- data_discrete[,2] <- as.character(sample(c(1,2,3), 10, replace = TRUE))
-#     data <- data.frame(data_discrete, data_continuous)
+test_that("multi.ace works with recycling", {
+    set.seed(1)
+    ## The tree
+    tree <- rcoal(10)
+    tree <- makeNodeLabel(tree)
+    ## The matrix
+    data <- data_continuous <- cbind(runif(10, 0, 1), runif(10, 10, 20), runif(10, 100, 200))
+    rownames(data) <- tree$tip.label
+    set.seed(8) 
+    data <- data_discrete <- sim.morpho(tree, characters = 2, model = "ER", rates = c(rgamma, rate = 10, shape = 5), invariant = FALSE)
+    data[,2] <- data_discrete[,2] <- as.character(sample(c(1,2,3), 10, replace = TRUE))
+    data <- data.frame(data_discrete, data_continuous)
 
-#     test <- multi.ace(data = data, tree = tree, output = "multi.ace", verbose = TRUE, estimation.details = NULL, sample = 1)
+    data = data
+    tree = tree
+    output = "multi.ace"
+    verbose = TRUE
+    parallel = FALSE
+    threshold = TRUE
+    estimation.details = NULL
+    sample = 1
 
 
-# })
+    expect_warning(test <- multi.ace(data = data, tree = tree, output = "multi.ace", verbose = TRUE, estimation.details = NULL, sample = 1))
+
+
+})

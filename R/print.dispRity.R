@@ -251,7 +251,27 @@ print.dispRity <- function(x, all = FALSE, ...) {
                 multi = {
                     print.dispRity(dispRity.multi.merge.data(x), ...)
                     return(invisible())
-                }
+                },
+                multi.ace = {
+                    cat("Raw ancestral traits estimations for:\n")
+                    char_print <- character()
+                    if(!is.null(x$discrete)) {
+                        char_print <- paste0(length(x$discrete$IDs), " discrete")
+                        if(!is.null(x$invariants)) {
+                            char_print <- paste0(char_print, "(including ", length(x$invariants$IDs) ," invariants)")
+                        }
+                    }
+                    if(!is.null(x$continuous)) {
+                        char_print <- c(char_print, paste0(length(x$continuous$IDs), " continuous"))
+                    }
+                    char_print <- paste0(paste0(char_print, collapse = " and "), " characters")
+                    n_tree <- length(x$tree)
+                    tree_print <- paste0(" across ", n_tree, ifelse(n_tree == 1, " tree", " trees"), " for ", nrow(x$matrix), " taxa.")
+                    cat(char_print)
+                    cat(tree_print)
+                    cat("\nYou can use the multi.ace function to resample them and transform them in different outputs.")
+                    return(invisible())
+                } 
             )
         }
 
