@@ -46,7 +46,7 @@ test_that("multi.ace works", {
                             verbose = FALSE,
                             parallel = FALSE,
                             output = "list"))
-    expect_equal(error[[1]], "matrix must be of class matrix or list or data.frame.")
+    expect_equal(error[[1]], "matrix must be of class matrix or list or data.frame or multi.ace.")
 
     error <- capture_error(multi.ace(data = matrix_complex,
                             tree = "tree_test", 
@@ -154,7 +154,7 @@ test_that("multi.ace works", {
                             verbose = FALSE,
                             parallel = FALSE,
                             output = "something"))
-    expect_equal(error[[1]], "output option must be one of the following: matrix, list, combined, combined.list, combined.matrix, dispRity.")
+    expect_equal(error[[1]], "output option must be one of the following: matrix, list, combined, combined.list, combined.matrix, dispRity, multi.ace.")
 
     error <- capture_error(multi.ace(data = matrix_complex,
                             tree = tree_test, 
@@ -359,64 +359,65 @@ test_that("multi.ace works", {
     matrix_complex[sample(1:length(matrix_complex), 5)] <- "-"
     matrix_complex[sample(1:length(matrix_complex), 5)] <- "0%2"
     matrix_complex[sample(1:length(matrix_complex), 5)] <- "?"
-    # results <- multi.ace(data = matrix_complex,
-    #                         tree = tree_test, 
-    #                         models = "ER", 
-    #                         threshold = TRUE,
-    #                         special.tokens = c("weird" = "%"),
-    #                         special.behaviours = list(weirdtoken = function(x,y) return(c(1,2))),
-    #                         brlen.multiplier = rnorm(10),
-    #                         verbose = FALSE,
-    #                         parallel = FALSE,
-    #                         output = "matrix",
-    #                         estimation.details = c("loglikelihood", "transition_matrix"))
-    # expect_is(results, "list")
-    # expect_equal(names(results), c("estimations", "details"))
-    # expect_is(results$estimations, "list")
-    # expect_is(results$estimations[[1]], "matrix")
-    # expect_is(results$details[[1]]$transition_matrix[[9]], "matrix")
-    # expect_equal(rownames(results$details[[1]]$transition_matrix[[9]]), c("0","1","2"))
-    # expect_is(results$details[[2]]$loglikelihood[[1]], "numeric")
- 
+            
+    ## Breakable because of castor innit
+    results <- multi.ace(data = matrix_complex,
+                            tree = tree_test, 
+                            models = "ER", 
+                            threshold = TRUE,
+                            special.tokens = c("weird" = "%"),
+                            special.behaviours = list(weirdtoken = function(x,y) return(c(1,2))),
+                            brlen.multiplier = rnorm(10),
+                            verbose = FALSE,
+                            parallel = FALSE,
+                            output = "matrix",
+                            estimation.details = c("loglikelihood", "transition_matrix"))
+    expect_is(results, "list")
+    expect_equal(names(results), c("estimations", "details"))
+    expect_is(results$estimations, "list")
+    expect_is(results$estimations[[1]], "matrix")
+    expect_is(results$details[[1]][[1]]$transition_matrix, "matrix")
+    expect_equal(rownames(results$details[[1]][[9]]$transition_matrix), c("0","1","2"))
+    expect_is(results$details[[2]][[1]]$loglikelihood, "numeric")
+         
 
+    # Test1
+    set.seed(3)
+    test <- capture.output(results <- multi.ace(data = matrix_complex,
+                            tree = tree_test, 
+                            models = "ER", 
+                            threshold = FALSE,
+                            special.tokens = c("weird" = "%"),
+                            special.behaviours = list(weirdtoken = function(x,y) return(c(1,2))),
+                            brlen.multiplier = rnorm(10),
+                            verbose = TRUE,
+                            parallel = FALSE,
+                            output = "matrix",
+                            estimation.details = c("loglikelihood", "transition_matrix")))
+    expect_equal(test,
+              c("Preparing the data:.....Done." ,
+                "Running ancestral states estimations:....................Done."))
 
-    ## Test1
-    # set.seed(3)
-    # test <- capture.output(results <- multi.ace(data = matrix_complex,
-    #                         tree = tree_test, 
-    #                         models = "ER", 
-    #                         threshold = FALSE,
-    #                         special.tokens = c("weird" = "%"),
-    #                         special.behaviours = list(weirdtoken = function(x,y) return(c(1,2))),
-    #                         brlen.multiplier = rnorm(10),
-    #                         verbose = TRUE,
-    #                         parallel = FALSE,
-    #                         output = "matrix",
-    #                         estimation.details = c("loglikelihood", "transition_matrix")))
-    # expect_equal(test,
-    #           c("Preparing the data:.....Done." ,
-    #             "Running ancestral states estimations:....................Done."))
-
-    # set.seed(3)
-    # test <- capture.output(results <- multi.ace(data = matrix_complex,
-    #                         tree = tree_test, 
-    #                         models = "ER", 
-    #                         threshold = TRUE,
-    #                         special.tokens = c("weird" = "%"),
-    #                         special.behaviours = list(weirdtoken = function(x,y) return(c(1,2))),
-    #                         brlen.multiplier = rnorm(10),
-    #                         verbose = TRUE,
-    #                         parallel = 2,
-    #                         output = "matrix",
-    #                         estimation.details = c("loglikelihood", "transition_matrix")))
-    # expect_equal(length(test),2)
-    # expect_is(results, "list")
-    # expect_equal(names(results), c("estimations", "details"))
-    # expect_is(results$estimations, "list")
-    # expect_is(results$estimations[[1]], "matrix")
-    # expect_is(results$details[[1]]$transition_matrix[[9]], "matrix")
-    # expect_equal(rownames(results$details[[1]]$transition_matrix[[9]]), c("0","1","2"))
-    # expect_is(results$details[[2]]$loglikelihood[[1]], "numeric")
+    set.seed(3)
+    test <- capture.output(results <- multi.ace(data = matrix_complex,
+                            tree = tree_test, 
+                            models = "ER", 
+                            threshold = TRUE,
+                            special.tokens = c("weird" = "%"),
+                            special.behaviours = list(weirdtoken = function(x,y) return(c(1,2))),
+                            brlen.multiplier = rnorm(10),
+                            verbose = TRUE,
+                            parallel = 2,
+                            output = "matrix",
+                            estimation.details = c("loglikelihood", "transition_matrix")))
+    expect_equal(length(test),2)
+    expect_is(results, "list")
+    expect_equal(names(results), c("estimations", "details"))
+    expect_is(results$estimations, "list")
+    expect_is(results$estimations[[1]], "matrix")
+    expect_is(results$details[[1]][[9]]$transition_matrix, "matrix")
+    expect_equal(rownames(results$details[[1]][[9]]$transition_matrix), c("0","1","2"))
+    expect_is(results$details[[2]][[1]]$loglikelihood, "numeric")
 
 
     ## No match check
@@ -603,6 +604,7 @@ test_that("multi.ace works with sample", {
 #     data[,2] <- data_discrete[,2] <- as.character(sample(c(1,2,3), 10, replace = TRUE))
 #     data <- data.frame(data_discrete, data_continuous)
 
-#     test <- multi.ace(data = data, tree = tree, output = "combined.matrix", verbose = TRUE, estimation.details = c("ancestral_likelihoods", "CI95"))
-# TODO: set sample to 1 and estimation.details to TRUE to save the whole models as multi.ace objects that can be re-read.
+#     test <- multi.ace(data = data, tree = tree, output = "multi.ace", verbose = TRUE, estimation.details = NULL, sample = 1)
+
+
 # })

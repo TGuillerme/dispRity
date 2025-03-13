@@ -22,7 +22,7 @@ multi.ace(
 )
 }
 \arguments{
-\item{data}{A \code{matrix}, \code{data.frame} or \code{list} with the characters for each taxa.}
+\item{data}{A \code{matrix}, \code{data.frame} or \code{list} with the characters for each taxa. Or a \code{multi.ace} list (see details).}
 
 \item{tree}{A \code{phylo} or \code{mutiPhylo} object (if the \code{tree} argument contains node labels, they will be used to name the output).}
 
@@ -55,6 +55,8 @@ Returns a \code{"matrix"} or \code{"list"} of ancestral states. By default, the 
 To output the combined ancestral states and input, you can use \code{"combined"} (using the input format) or \code{"combined.matrix"} or \code{"combined.list"}.
 If using continuous characters only, you can use the output option \code{"dispRity"} to directly output a usable \code{dispRity} object with all trees and all the data (estimated and input).
 \emph{NOTE} that if the input data had multiple character types (continuous and discrete) and that \code{"matrix"} or \code{"combined.matrix"} output is requested, the function returns a \code{"data.frame"}.
+
+If using the option \code{output = "multi.ace"}, the function returns a \code{"multi.ace"} object that can be recycled in the \code{multi.ace} function. This can be useful for testing different sampling strategies of threshold methods without having to recalculate all the ancestral trait estimations.
 }
 \description{
 Fast ancestral states estimations run on multiple trees using the Mk model from castor::asr_mk_model.
@@ -113,6 +115,8 @@ When using \code{sample > 1}, multiple estimations are sampled per tree:
 The \code{threshold} option allows to convert ancestral states likelihoods into discrete states. When \code{threshold = FALSE}, the ancestral state estimated is the one with the highest likelihood (or at random if likelihoods are equal). When \code{threshold = TRUE}, the ancestral state estimated are all the ones that are have a scaled likelihood greater than the maximum observed scaled likelihood minus the inverse number of possible states (i.e. \code{select_state >= (max(likelihood) - 1/n_states)}). This option makes the threshold selection depend on the number of states (i.e. if there are more possible states, a lower scaled likelihood for the best state is expected). Finally using a numerical value for the threshold option (e.g. \code{threshold = 0.95}) will simply select only the ancestral states estimates with a scaled likelihood equal or greater than the designated value. This option makes the threshold selection absolute. Regardless, if more than one value is select, the uncertainty token (\code{special.tokens["uncertainty"]}) will be used to separate the states. If no value is selected, the uncertainty token will be use between all observed characters (\code{special.tokens["uncertainty"]}).
 
 The \code{sample.fun} option allows to specify a function and parameters for the sampling of the continuous traits. The default is \code{sample.fun = list(fun = runif, param = list(min = min, max = max))} for applying a random uniform sampling (\code{runif}) with the parameters (the minimum and the maximum are applied using respectively the \code{min} and \code{max} functions on the estimated data). For applying different samplings to different traits, you can use a list of arguments in the sample format as \code{sample.fun} (e.g. \code{sample.fun = list(trait_uniform = list(fun = runif, param = list(min = min, max = max)), trait_normal = list(fun = rnorm, param = list(mean = mean, sd = function(x)return(diff(range(x))/4)))} - here the standard deviation is calculated as a quarter of the 95% CI range).
+
+It is also possible to just run the estimations without sampling but for sampling later (i.e. just run the estimations; save them as a \code{multi.ace} object and then rerun them into the function). You can do that by using the option \code{output = "multi.ace"}. Using this option ignores the following options: \code{sample}, \code{sample.fun}, and \code{estimation.details}.
 }
 \examples{
 set.seed(42)

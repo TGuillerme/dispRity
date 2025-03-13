@@ -2,7 +2,7 @@
 #'
 #' @description Fast ancestral states estimations run on multiple trees using the Mk model from castor::asr_mk_model.
 #'
-#' @param data A \code{matrix}, \code{data.frame} or \code{list} with the characters for each taxa.
+#' @param data A \code{matrix}, \code{data.frame} or \code{list} with the characters for each taxa. Or a \code{multi.ace} list (see details).
 #' @param tree A \code{phylo} or \code{mutiPhylo} object (if the \code{tree} argument contains node labels, they will be used to name the output).
 #' @param models A \code{character} vector, unambiguous named \code{list} or \code{matrix} to be passed as model arguments to \code{castor::asr_mk_model} or \code{ape::ace} (see details).
 #' @param sample An \code{integer} for the number of matrices to sample per tree (default is \code{1}). See details.
@@ -73,11 +73,15 @@
 #'
 #' The \code{sample.fun} option allows to specify a function and parameters for the sampling of the continuous traits. The default is \code{sample.fun = list(fun = runif, param = list(min = min, max = max))} for applying a random uniform sampling (\code{runif}) with the parameters (the minimum and the maximum are applied using respectively the \code{min} and \code{max} functions on the estimated data). For applying different samplings to different traits, you can use a list of arguments in the sample format as \code{sample.fun} (e.g. \code{sample.fun = list(trait_uniform = list(fun = runif, param = list(min = min, max = max)), trait_normal = list(fun = rnorm, param = list(mean = mean, sd = function(x)return(diff(range(x))/4)))} - here the standard deviation is calculated as a quarter of the 95% CI range).
 #' 
+#' It is also possible to just run the estimations without sampling but for sampling later (i.e. just run the estimations; save them as a \code{multi.ace} object and then rerun them into the function). You can do that by using the option \code{output = "multi.ace"}. Using this option ignores the following options: \code{sample}, \code{sample.fun}, and \code{estimation.details}.
+#'
 #' @return
 #' Returns a \code{"matrix"} or \code{"list"} of ancestral states. By default, the function returns the ancestral states in the same format as the input \code{matrix}. This can be changed using the option \code{output = "matrix"} or \code{"list"} to force the class of the output.
 #' To output the combined ancestral states and input, you can use \code{"combined"} (using the input format) or \code{"combined.matrix"} or \code{"combined.list"}.
 #' If using continuous characters only, you can use the output option \code{"dispRity"} to directly output a usable \code{dispRity} object with all trees and all the data (estimated and input).
 #' \emph{NOTE} that if the input data had multiple character types (continuous and discrete) and that \code{"matrix"} or \code{"combined.matrix"} output is requested, the function returns a \code{"data.frame"}.
+#'
+#' If using the option \code{output = "multi.ace"}, the function returns a \code{"multi.ace"} object that can be recycled in the \code{multi.ace} function. This can be useful for testing different sampling strategies of threshold methods without having to recalculate all the ancestral trait estimations.
 #' 
 #' @examples
 #' set.seed(42)
@@ -192,7 +196,10 @@ multi.ace <- function(data, tree, models, sample = 1, sample.fun = list(fun = ru
 
     ## matrix
     matrix <- data
-    input_class <- check.class(matrix, c("matrix", "list", "data.frame"))
+    input_class <- check.class(matrix, c("matrix", "list", "data.frame", "multi.ace"))
+
+    ##TODO: if data is multi.ace skip a lot of steps. Just need to do sample, sample.fun, threshold and output.
+
     ## Convert the matrix if not a list
     class_matrix <- class(matrix)
     if(class_matrix[[1]] == "list") {
@@ -371,7 +378,7 @@ multi.ace <- function(data, tree, models, sample = 1, sample.fun = list(fun = ru
         output <- class(matrix)[1]
     } else {
         check.class(output, "character")
-        available_methods <- c("matrix", "list", "combined", "combined.list", "combined.matrix", "dispRity")
+        available_methods <- c("matrix", "list", "combined", "combined.list", "combined.matrix", "dispRity", "multi.ace")
         check.method(output, available_methods, "output option")
         ## Combined
         if(output == "combined") {
@@ -386,6 +393,7 @@ multi.ace <- function(data, tree, models, sample = 1, sample.fun = list(fun = ru
     if(output == "data.frame") {
         output <- "matrix"
     }
+    do_multi.ace.output <- output == "multi.ace"
 
     ## Handle the tokens
     # special.tokens <- character(); special.behaviours <- list() ; warning("DEBUG: multi.ace")
@@ -647,7 +655,7 @@ multi.ace <- function(data, tree, models, sample = 1, sample.fun = list(fun = ru
     }
 
     ## Check the estimation details
-    if(!is.null(estimation.details)) {
+    if(!is.null(estimation.details) && !do_multi.ace.output) {
         ## The return args from castor::asr_mk_model (1.6.6)
         return_args_discrete <- c("success", "Nstates", "transition_matrix", "loglikelihood", "ancestral_likelihoods")
         return_args_continuous <- c("CI95", "sigma2", "loglik")
@@ -711,8 +719,17 @@ multi.ace <- function(data, tree, models, sample = 1, sample.fun = list(fun = ru
         for(one_tree in 1:length(tree)) {
             tree_character_discrete_args[[one_tree]] <- lapply(character_discrete_args, function(character, tree) {character$tree <- tree; return(character)}, tree[[one_tree]])
         }
-    }
 
+        ## Set verbose fun
+        if(verbose) {
+            fun_discrete <- function(...) {
+                cat(".")
+                return(castor.ace(...))
+            }
+        } else {
+            fun_discrete <- castor.ace
+        }
+    }
 
     #########
     ##
@@ -738,22 +755,10 @@ multi.ace <- function(data, tree, models, sample = 1, sample.fun = list(fun = ru
 
         export_arguments_list <- export_functions_list <- character()
 
+        ## Get the export lists
         if(do_discrete) {
-            ## Get the export lists
-            export_arguments_list <- c("tree_character_discrete_args",
-                                       "special.tokens",
-                                       "invariants",
-                                       "threshold.type",
-                                       "threshold",
-                                       "verbose",
-                                       "characters_states",
-                                       "invariant_characters_states",
-                                       "do_sample")
-            export_functions_list <- c("one.tree.ace",
-                                       "castor.ace",
-                                       "tree.data.update",
-                                       "add.state.names",
-                                       "translate.likelihood")
+            export_arguments_list <- c(export_arguments_list, "tree_character_discrete_args")
+            export_functions_list <- c(export_functions_list, "fun_discrete", "castor.ace")
         }
         if(do_continuous) {
             export_arguments_list <- c(export_arguments_list, "tree_character_continuous_args")
@@ -765,7 +770,8 @@ multi.ace <- function(data, tree, models, sample = 1, sample.fun = list(fun = ru
 
         ## Call the cluster
         if(do_discrete) {
-            discrete_estimates <- parLapply(cl = cluster, tree_character_discrete_args, one.tree.ace, special.tokens, invariants, characters_states, threshold.type, threshold, invariant_characters_states, verbose, do_sample)
+            discrete_estimates <- parLapply(cl = cluster, tree_character_discrete_args, lapply, fun_discrete)
+            discrete_estimates <- lapply(discrete_estimates, clean.castor.estimates, characters_states)
         }
         if(do_continuous) {
             continuous_estimates <- parLapply(cl = cluster, tree_character_continuous_args, lapply, function(x) do.call(fun_continuous, x))
@@ -794,8 +800,9 @@ multi.ace <- function(data, tree, models, sample = 1, sample.fun = list(fun = ru
         }
         ## Run the discrete characters
         if(do_discrete) {
-            ## Run all the ace for discrete
-            discrete_estimates <- lapply(tree_character_discrete_args, one.tree.ace, special.tokens, invariants, characters_states, threshold.type, threshold, invariant_characters_states, verbose, do_sample)
+            ## Run all the castors
+            discrete_estimates <- lapply(tree_character_discrete_args, lapply, fun_discrete)
+            discrete_estimates <- lapply(discrete_estimates, clean.castor.estimates, characters_states)
         }
         if(verbose) cat("Done.\n")
     }
@@ -805,6 +812,10 @@ multi.ace <- function(data, tree, models, sample = 1, sample.fun = list(fun = ru
     ## handle the outputs
     ##
     #########
+
+    
+    ## PLACE HOLDER FOR EXIT FOR MULTI.ACE format
+
 
     ## Handle the continuous characters
     if(do_continuous) {
@@ -836,19 +847,65 @@ multi.ace <- function(data, tree, models, sample = 1, sample.fun = list(fun = ru
     }
 
     if(do_discrete) {
+
+        ## Get the results out
+        estimations_details <- lapply(discrete_estimates, lapply, function(estimation) return(estimation$details))
+        ancestral_estimations <- lapply(discrete_estimates, lapply, function(estimation) return(estimation$results))
+
+        ## Apply the selector
+        switch(threshold.type,
+            relative = {select.states <- function(taxon, threshold) {
+                                                  if(all(is.na(taxon))) {
+                                                    return(NA)
+                                                  } else {
+                                                    return(names(taxon[taxon >= (max(taxon) - 1/length(taxon))]))
+                                                  }
+                                                 }},
+            max      = {select.states <- function(taxon, threshold) {
+                                                  if(all(is.na(taxon))) {
+                                                    return(NA)
+                                                  } else {
+                                                    return(names(taxon[taxon >= (max(taxon))]))
+                                                  }
+                                                 }},
+            absolute = {select.states <- function(taxon, threshold) {
+                                                  if(all(is.na(taxon))) {
+                                                    return(NA)
+                                                  } else {
+                                                    return(names(taxon[taxon >= threshold]))
+                                                  }
+                                                 }},
+            sample  = {select.states <- function(taxon, threshold){
+                                                 if(all(is.na(taxon))) {
+                                                    return(NA)
+                                                 } else {
+                                                    return(sample(names(taxon), size = threshold, prob = taxon, replace = TRUE))
+                                                 }}}
+                                             )
+
+        ## Get the ancestral states
+        ancestral_states <- lapply(ancestral_estimations, lapply, translate.likelihood, threshold, select.states, special.tokens, do_sample)
+
+        ## Add the invariant characters
+        if(has_invariants) {
+            ancestral_states <- lapply(ancestral_states, add.invariants, invariants, invariant_characters_states, node_names = rownames(ancestral_estimations[[1]][[1]]), sample)
+        }
+
+        ## Get the results
         if(!do_sample) {
-            ## Get the results in a matrix format
-            results_discrete <- lapply(lapply(discrete_estimates, `[[`, 1), function(x) do.call(cbind, x))
+            ## Combine the characters into matrices
+            results_discrete <- lapply(ancestral_states, function(x) do.call(cbind, x))
         } else {
-            ## Split the results into n matrices
+            ## Split the results per tree and combine them into matrices
             split.per.tree <- function(tree_estimate, sample) {
-                return(lapply(as.list(1:sample), function(one_sample, tree_estimate) t(do.call(rbind, lapply(tree_estimate, function(x, one_sample) return(x[one_sample, , drop = FALSE]), one_sample = one_sample))), tree_estimate = tree_estimate$results))
+                return(lapply(as.list(1:sample), function(one_sample, tree_estimate) t(do.call(rbind, lapply(tree_estimate, function(x, one_sample) return(x[one_sample, , drop = FALSE]), one_sample = one_sample))), tree_estimate = tree_estimate))
             }
-            results_discrete <- lapply(discrete_estimates, split.per.tree, sample = sample)
+            results_discrete <- lapply(ancestral_states, split.per.tree, sample = sample)
         }
 
         ## Get the details
-        details_discrete <- lapply(discrete_estimates, `[[`, 2)
+        details_discrete <- lapply(discrete_estimates, lapply, `[[`, "details")
+
     }
 
     ## Handle output
