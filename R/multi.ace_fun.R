@@ -215,99 +215,34 @@ translate.likelihood <- function(character, threshold, select.states, special.to
     return(translated_states)
 }
 
-## Function for running ace on a single tree.
-one.tree.ace <- function(args_list, special.tokens, invariants, characters_states, threshold.type, threshold, invariant_characters_states, verbose, do_sample) {
-
-    if(verbose) body(castor.ace)[[2]] <- substitute(cat("."))
-    # if(verbose) cat("Running ancestral states estimations:\n")
-    ancestral_estimations <- lapply(args_list, castor.ace)
-    ancestral_estimations <- mapply(add.state.names, ancestral_estimations, characters_states, SIMPLIFY = FALSE)
+## Clean estimates from castor
+clean.castor.estimates <- function(one_tree_estimate, characters_states) {
+    ## Adding state names
+    ancestral_estimations <- mapply(add.state.names, one_tree_estimate, characters_states, SIMPLIFY = FALSE)
 
     ## Separating the estimations
     success <- unlist(lapply(ancestral_estimations, function(estimation) return(estimation$success)))
-    estimations_details <- lapply(ancestral_estimations, function(estimation) return(estimation$details))
-    ancestral_estimations <- lapply(ancestral_estimations, function(estimation) return(estimation$results))
     if(any(!success)) {
         warning(paste0("Impossible to fit the model for the following character(s): ", paste(which(!success), collapse = ", "), ".\nThe ancestral estimated values are set to uncertain (all states equiprobable)."))
     }
+    return(ancestral_estimations)
+}
 
-    ## Select the threshold type function
-    switch(threshold.type,
-        relative = {select.states <- function(taxon, threshold) {
-                                              if(all(is.na(taxon))) {
-                                                return(NA)
-                                              } else {
-                                                return(names(taxon[taxon >= (max(taxon) - 1/length(taxon))]))
-                                              }
-                                             }},
-        max      = {select.states <- function(taxon, threshold) {
-                                              if(all(is.na(taxon))) {
-                                                return(NA)
-                                              } else {
-                                                return(names(taxon[taxon >= (max(taxon))]))
-                                              }
-                                             }},
-        absolute = {select.states <- function(taxon, threshold) {
-                                              if(all(is.na(taxon))) {
-                                                return(NA)
-                                              } else {
-                                                return(names(taxon[taxon >= threshold]))
-                                              }
-                                             }},
-        sample  = {select.states <- function(taxon, threshold){
-                                             if(all(is.na(taxon))) {
-                                                return(NA)
-                                             } else {
-                                                return(sample(names(taxon), size = threshold, prob = taxon, replace = TRUE))
-                                             }}}
-                                         )
-    
-    ## Estimate the ancestral states
-    ancestral_states <- lapply(ancestral_estimations, translate.likelihood, threshold, select.states, special.tokens, do_sample)
+## Adding back invariant traits
+add.invariants <- function(one_tree_estimate, invariants, invariant_characters_states, node_names, sample) {
+    ## Create the invariant characters
+    invariant_ancestral <- lapply(invariant_characters_states, function(x, n) rep(as.character(x), n), n = length(node_names))
+    invariant_ancestral <- lapply(invariant_ancestral, function(x, names) {names(x) <- names; return(x)}, names = node_names)
 
-    ## Add invariants characters back in place
-    if(length(invariants) > 0) {
-        ## Replicate the invariant characters
-        invariant_ancestral <- lapply(invariant_characters_states, function(x, n) rep(ifelse(length(x) == 0, special.tokens["missing"], x), n),n = args_list[[1]]$tree$Nnode)
-
-        ## Combine the final dataset
-        output <- replicate(length(args_list)+length(invariants), list())
-        ## Fill the final dataset
-        if(!do_sample) {
-            output[invariants] <- invariant_ancestral
-        } else {
-            output[invariants] <- list(matrix(invariant_ancestral[[1]][1], ncol = length(invariant_ancestral[[1]]), nrow = threshold))
-        }
-        output[-invariants] <- ancestral_states
-        ancestral_states <- output
-    }
-
-    ## Replace NAs
-    replace.NA <- function(character, characters_states, special.tokens, do_sample) {
-        na_removed <- sapply(character, function(x) ifelse(x[[1]] == "NA", paste0(characters_states, collapse = sub("\\\\", "", special.tokens["uncertainty"])), x))
-        if(do_sample) {
-            return(matrix(na_removed, nrow = dim(character)[1], ncol = dim(character)[2], byrow = TRUE, dimnames = dimnames(character)))
-        } else {
-            return(na_removed)
-        }
-    }
-    ancestral_states[-invariants] <- mapply(replace.NA, ancestral_states[-invariants], characters_states, MoreArgs = list(special.tokens = special.tokens, do_sample = do_sample), SIMPLIFY = FALSE)
-
-    ## Sort the details list
-    if(!is.null(args_list[[1]]$details)) {
-        ## Extract the details into multiple lists
-        extracted_details <- names(estimations_details[[1]])
-        estimations_details_out <- list()
-        for(one_detail in 1:length(extracted_details)) {
-            estimations_details_out[[one_detail]] <- lapply(estimations_details, `[[`, one_detail)
-        }
-        names(estimations_details_out) <- extracted_details
+    ## Combined the invariants into the estimates
+    output <- replicate(length(one_tree_estimate)+length(invariants), list())
+    if(sample == 1) {
+        output[invariants] <- invariant_ancestral
     } else {
-        estimations_details_out <- NULL
+        output[invariants] <- list(matrix(invariant_ancestral[[1]][1], ncol = length(invariant_ancestral[[1]]), nrow = sample))
     }
-
-    # if(verbose) cat(" Done.\n")
-    return(list(results = ancestral_states, details = estimations_details_out))
+    output[-invariants] <- one_tree_estimate
+    return(output)
 }
 
 ## Bind the continuous and discrete characters and reorder them
@@ -365,6 +300,7 @@ bind.details <- function(continuous, discrete, order) {
 
 ## Combine the ace matrix with the tips
 add.tips <- function(ace, matrix) {
+    colnames(ace) <- colnames(matrix)
     return(rbind(matrix, ace))
 }
 ## Output a list from a matrix
@@ -393,6 +329,14 @@ sample.ace <- function(ace, sample.fun, samples = 1) {
     ## Sample all the values
     return(lapply(fun_list, function(x) do.call(what = x$fun, args = x$param)))
 }
+
+sample.castor <- function(castor_ace, samples = 1) {
+    ## TODO: sampling from the castor results
+}
+threshold.castor <- function(castor_ace, threshold) {
+    ## TODO: use the threshold method on the castor results
+}
+
 
 ## Testing the sample.fun argument. returns FALSE if fail, TRUE if OK
 test.sample.fun <- function(one_sample, n = 1) {

@@ -836,6 +836,16 @@ hist(node_1_estimates, main = "Distribution of estimates for Node 1")
 In this example we used the default and a specified `sample.fun` argument for a matrix with only one trait.
 However you can use any number of distributions for any number of traits: either just the one to be applied to all traits or a list of the same length as the number of traits with a list of `fun` and `param` for each.
 
+To play around with different sampling strategies, but if your estimations take a lot of time, you can save your estimations as a `"multi.ace"` object that you can then recycle and reuse very easily:
+
+```{r}
+## Saving the estimation without getting any estimate (raw):
+raw_estimates <- multi.ace(data, my_tree, output = "multi.ace`")
+
+## Sampling from the raw_estimates
+sampled_estimates <- multi.ace(raw_estimates, sample = 100)
+```
+
 #### Sampling discrete characters
 
 You can also use the `sample` option on discrete characters.

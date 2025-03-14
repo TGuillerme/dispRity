@@ -46,7 +46,7 @@ test_that("multi.ace works", {
                             verbose = FALSE,
                             parallel = FALSE,
                             output = "list"))
-    expect_equal(error[[1]], "matrix must be of class matrix or list or data.frame.")
+    expect_equal(error[[1]], "matrix must be of class matrix or list or data.frame or dispRity or multi.ace.")
 
     error <- capture_error(multi.ace(data = matrix_complex,
                             tree = "tree_test", 
@@ -154,7 +154,7 @@ test_that("multi.ace works", {
                             verbose = FALSE,
                             parallel = FALSE,
                             output = "something"))
-    expect_equal(error[[1]], "output option must be one of the following: matrix, list, combined, combined.list, combined.matrix, dispRity.")
+    expect_equal(error[[1]], "output option must be one of the following: matrix, list, combined, combined.list, combined.matrix, dispRity, multi.ace.")
 
     error <- capture_error(multi.ace(data = matrix_complex,
                             tree = tree_test, 
@@ -359,6 +359,8 @@ test_that("multi.ace works", {
     matrix_complex[sample(1:length(matrix_complex), 5)] <- "-"
     matrix_complex[sample(1:length(matrix_complex), 5)] <- "0%2"
     matrix_complex[sample(1:length(matrix_complex), 5)] <- "?"
+            
+    # ## Breakable because of castor innit
     # results <- multi.ace(data = matrix_complex,
     #                         tree = tree_test, 
     #                         models = "ER", 
@@ -374,13 +376,12 @@ test_that("multi.ace works", {
     # expect_equal(names(results), c("estimations", "details"))
     # expect_is(results$estimations, "list")
     # expect_is(results$estimations[[1]], "matrix")
-    # expect_is(results$details[[1]]$transition_matrix[[9]], "matrix")
-    # expect_equal(rownames(results$details[[1]]$transition_matrix[[9]]), c("0","1","2"))
-    # expect_is(results$details[[2]]$loglikelihood[[1]], "numeric")
- 
+    # expect_is(results$details[[1]][[1]]$transition_matrix, "matrix")
+    # expect_equal(rownames(results$details[[1]][[9]]$transition_matrix), c("0","1","2"))
+    # expect_is(results$details[[2]][[1]]$loglikelihood, "numeric")
+         
 
-
-    ## Test1
+    # # Test1
     # set.seed(3)
     # test <- capture.output(results <- multi.ace(data = matrix_complex,
     #                         tree = tree_test, 
@@ -414,9 +415,9 @@ test_that("multi.ace works", {
     # expect_equal(names(results), c("estimations", "details"))
     # expect_is(results$estimations, "list")
     # expect_is(results$estimations[[1]], "matrix")
-    # expect_is(results$details[[1]]$transition_matrix[[9]], "matrix")
-    # expect_equal(rownames(results$details[[1]]$transition_matrix[[9]]), c("0","1","2"))
-    # expect_is(results$details[[2]]$loglikelihood[[1]], "numeric")
+    # expect_is(results$details[[1]][[9]]$transition_matrix, "matrix")
+    # expect_equal(rownames(results$details[[1]][[9]]$transition_matrix), c("0","1","2"))
+    # expect_is(results$details[[2]][[1]]$loglikelihood, "numeric")
 
 
     ## No match check
@@ -526,10 +527,10 @@ test_that("multi.ace works with sample", {
     expect_true(all(test[[1]][,3] > 100))
 
     ## test with sample.fun option
-    error <- capture_error(test <- multi.ace(data = data, tree = tree, sample = 2, sample.fun = runif, output = "combined.matrix", verbose = FALSE))
+    expect_warning(error <- capture_error(test <- multi.ace(data = data, tree = tree, sample = 2, sample.fun = runif, output = "combined.matrix", verbose = FALSE)))
     expect_equal(error[[1]], "sample.fun must be of class list.")
     sample.fun <- list(fun = rnorm, param = list(max = max, min = min))
-    error <- capture_error(test <- multi.ace(data = data, tree = tree, sample = 2, sample.fun = sample.fun, output = "combined.matrix", verbose = FALSE))
+    expect_warning(error <- capture_error(test <- multi.ace(data = data, tree = tree, sample = 2, sample.fun = sample.fun, output = "combined.matrix", verbose = FALSE)))
     expect_equal(error[[1]], "The sample function is not formatted correctly and cannot generate a distribution.\nCheck the ?multi.ace manual for more details.")
     ## Works with a list of sample funs
     sample.fun <- list(
@@ -543,7 +544,7 @@ test_that("multi.ace works with sample", {
         list(fun = runif, param = list(max = max, min = min)),
         list(fun = rnorm, param = list(max = max, min = min)),
         list(fun = runif, param = list(mean = mean, sd = function(x)return(diff(range(x))/4))))
-    error <- capture_error(test <- multi.ace(data = data, tree = tree, sample = 2, sample.fun = sample.fun, output = "combined.matrix", verbose = FALSE))
+    expect_warning(error <- capture_error(test <- multi.ace(data = data, tree = tree, sample = 2, sample.fun = sample.fun, output = "combined.matrix", verbose = FALSE)))
     expect_equal(error[[1]], "The following sample functions are not formated correctly and cannot generate a distribution: 2, 3.\nCheck the ?multi.ace manual for more details.")
 
     ## Test with discrete characters
@@ -588,4 +589,52 @@ test_that("multi.ace works with sample", {
     expect_true(all(test[[1]][,4] < 51))
     expect_true(all(test[[1]][,4] > -5))
     expect_true(all(test[[1]][,5] > 100))
+})
+
+test_that("multi.ace works with recycling", {
+    set.seed(1)
+    ## The tree
+    tree <- rcoal(10)
+    tree <- makeNodeLabel(tree)
+    ## The matrix
+    data <- data_continuous <- cbind(runif(10, 0, 1), runif(10, 10, 20), runif(10, 100, 200))
+    rownames(data) <- tree$tip.label
+    set.seed(8) 
+    data <- data_discrete <- sim.morpho(tree, characters = 2, model = "ER", rates = c(rgamma, rate = 10, shape = 5), invariant = FALSE)
+    data[,2] <- data_discrete[,2] <- as.character(sample(c(1,2,3), 10, replace = TRUE))
+    data <- data.frame(data_discrete, data_continuous)
+    data <- cbind(data, rep("0", 10))
+
+    ## Generating the multi.ace
+    expect_warning(test <- multi.ace(data = data, tree = tree, output = "multi.ace", verbose = FALSE, estimation.details = NULL, sample = 1))
+    expect_is(test, c("dispRity", "multi.ace"))
+    expect_equal(names(test), c("tree", "matrix", "discrete", "continuous", "invariants"))
+    expect_is(test$tree, "multiPhylo")
+    expect_is(test$matrix, "data.frame")
+    expect_equal(names(test$discrete), c("estimates", "IDs", "special.tokens"))
+    expect_equal(unname(test$discrete$IDs), c(1,2,6))
+    expect_equal(length(test$discrete$estimates[[1]]), 2)
+    expect_equal(names(test$discrete$estimates[[1]][[1]]), c("results", "success", "dropped", "details"))
+    expect_equal(test$discrete$special.tokens, c("inapplicable" = "\\-", "missing" = "\\?", "polymorphism" = "\\&", "uncertainty" = "\\/"))
+    expect_equal(names(test$continuous), c("estimates", "IDs"))
+    expect_equal(unname(test$continuous$IDs), c(3,4,5))
+    expect_equal(length(test$continuous$estimates[[1]]), 3)
+    expect_equal(names(test$continuous$estimates[[1]][[1]]), c("resloglik", "ace", "sigma2", "CI95", "call"))
+    expect_equal(names(test$invariants), c("n", "states", "IDs"))
+    expect_equal(unname(test$invariants$n), 3)
+    expect_equal(unname(test$invariants$states), list(0))
+    expect_equal(unname(test$invariants$IDs), 6)
+
+    ## test the printing
+    expect_equal(capture.output(test), c("Raw ancestral traits estimations for:","3 discrete (including 1 invariant) and 3 continuous characters across 1 tree for 10 taxa.","You can use the multi.ace function to resample them and transform them in different outputs."))
+
+
+    ## Recycling the multi.ace
+    tust <- multi.ace(test, output = "combined.matrix", sample = 1, threshold = TRUE)
+    expect_equal(dim(tust), c(19, 6))
+
+    ## Works with sampling
+    tast <- multi.ace(test, output = "combined.matrix", sample = 10)
+    expect_equal(length(tast), 10)
+    expect_equal(unique(unlist(lapply(tast, dim))), c(19, 6))
 })
