@@ -196,11 +196,12 @@ ancestral_states <- multi.ace(matrix_complex, multiple_trees,
                               parallel = TRUE)
 }
 
+## Saving your estimations as a "multi.ace" object
+ancestor_estimates <- multi.ace(matrix_simple, multiple_trees, output = "multi.ace")
+
 ## Estimating ancestral states by sampling distributions
 ## Discrete characters:
-sampled_ancestors <- multi.ace(matrix_simple, multiple_trees, sample = 25)
-## A list of 125 matrices sampled across 25 estimations and 5 trees
-sampled_ancestors <- unlist(sampled_ancestors, recursive = FALSE)
+sampled_ancestors <- multi.ace(ancestor_estimates, sample = 25)
 
 ## Continuous characters:
 ## Sampling 100 matrices from the ancestral estimations
