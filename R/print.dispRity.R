@@ -258,7 +258,7 @@ print.dispRity <- function(x, all = FALSE, ...) {
                     if(!is.null(x$discrete)) {
                         char_print <- paste0(length(x$discrete$IDs), " discrete")
                         if(!is.null(x$invariants)) {
-                            char_print <- paste0(char_print, "(including ", length(x$invariants$IDs) ," invariants)")
+                            char_print <- paste0(char_print, " (including ", length(x$invariants$IDs) , ifelse(length(length(x$invariants$IDs)) == 1, " invariant)", " invariants)"))
                         }
                     }
                     if(!is.null(x$continuous)) {

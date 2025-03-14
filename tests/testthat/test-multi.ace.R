@@ -603,18 +603,38 @@ test_that("multi.ace works with recycling", {
     data <- data_discrete <- sim.morpho(tree, characters = 2, model = "ER", rates = c(rgamma, rate = 10, shape = 5), invariant = FALSE)
     data[,2] <- data_discrete[,2] <- as.character(sample(c(1,2,3), 10, replace = TRUE))
     data <- data.frame(data_discrete, data_continuous)
+    data <- cbind(data, rep("0", 10))
 
-    data = data
-    tree = tree
-    output = "multi.ace"
-    verbose = TRUE
-    parallel = FALSE
-    threshold = TRUE
-    estimation.details = NULL
-    sample = 1
+    ## Generating the multi.ace
+    expect_warning(test <- multi.ace(data = data, tree = tree, output = "multi.ace", verbose = FALSE, estimation.details = NULL, sample = 1))
+    expect_is(test, c("dispRity", "multi.ace"))
+    expect_equal(names(test), c("tree", "matrix", "discrete", "continuous", "invariants"))
+    expect_is(test$tree, "multiPhylo")
+    expect_is(test$matrix, "data.frame")
+    expect_equal(names(test$discrete), c("estimates", "IDs", "special.tokens"))
+    expect_equal(unname(test$discrete$IDs), c(1,2,6))
+    expect_equal(length(test$discrete$estimates[[1]]), 2)
+    expect_equal(names(test$discrete$estimates[[1]][[1]]), c("results", "success", "dropped", "details"))
+    expect_equal(test$discrete$special.tokens, c("inapplicable" = "\\-", "missing" = "\\?", "polymorphism" = "\\&", "uncertainty" = "\\/"))
+    expect_equal(names(test$continuous), c("estimates", "IDs"))
+    expect_equal(unname(test$continuous$IDs), c(3,4,5))
+    expect_equal(length(test$continuous$estimates[[1]]), 3)
+    expect_equal(names(test$continuous$estimates[[1]][[1]]), c("resloglik", "ace", "sigma2", "CI95", "call"))
+    expect_equal(names(test$invariants), c("n", "states", "IDs"))
+    expect_equal(unname(test$invariants$n), 3)
+    expect_equal(unname(test$invariants$states), list(0))
+    expect_equal(unname(test$invariants$IDs), 6)
+
+    ## test the printing
+    expect_equal(capture.output(test), "Raw ancestral traits estimations for:\n 3 discrete (including 1 invariants) and 3 continuous characters across 1 tree for 10 taxa.\nYou can use the multi.ace function to resample them and transform them in different outputs.")
 
 
-    expect_warning(test <- multi.ace(data = data, tree = tree, output = "multi.ace", verbose = TRUE, estimation.details = NULL, sample = 1))
+    ## Recycling the multi.ace
+    tust <- multi.ace(test, output = "combined.matrix", sample = 1, threshold = TRUE)
+    expect_equal(dim(tust), c(19, 6))
 
-
+    ## Works with sampling
+    tast <- multi.ace(test, output = "combined.matrix", sample = 10)
+    expect_equal(length(tast), 10)
+    expect_equal(unique(unlist(lapply(tast, dim))), c(19, 6))
 })

@@ -337,29 +337,6 @@ multi.ace <- function(data, tree, models, sample = 1, sample.fun = list(fun = ru
             n_characters_continuous <- sum(character_is_continuous)
             do_continuous <- TRUE
             continuous_char_ID <- which(character_is_continuous)
-
-            ## Check the sampling (if required)
-            if(do_sample) {
-                sample.fun_class <- check.class(sample.fun, "list")
-                ## If sample.fun is a single list
-                if(!is.null(names(sample.fun)) && names(sample.fun)[1] == "fun") {
-                    ## Apply it to everything
-                    sample_funs <- replicate(length(continuous_char_ID), sample.fun, simplify = FALSE)
-                    ## Check it
-                    if(!test.sample.fun(sample_funs[[1]])) {
-                        stop(paste0("The sample function is not formatted correctly and cannot generate a distribution.\nCheck the ?multi.ace manual for more details."), call. = FALSE)
-                    }
-                } else {
-                    sample_funs <- sample.fun
-                    ## Check if the list is the same length.
-                    check.length(sample_funs, length(continuous_char_ID), msg = paste0(" must be a list of sampling functions the same length as the number of continuous characters (", length(continuous_char_ID), ")."))
-                    ## Check if each element can be read.
-                    tests <- unlist(lapply(sample_funs, test.sample.fun))
-                    if(any(!tests)) {
-                        stop(paste0("The following sample function", ifelse(sum(!tests) == 1, " is", "s are"), " not formated correctly and cannot generate a distribution: ", paste(which(!tests), collapse = ", "),".\nCheck the ?multi.ace manual for more details."), call. = FALSE)
-                    }
-                }
-            }
         }
         if(any(!character_is_continuous)) {
             ## Split the matrix for discrete characters
@@ -853,6 +830,7 @@ multi.ace <- function(data, tree, models, sample = 1, sample.fun = list(fun = ru
             discrete_estimates <- matrix$discrete$estimates
             discrete_char_ID <- matrix$discrete$IDs
             special.tokens <-  matrix$discrete$special.tokens
+            n_characters_discrete <- length(matrix$discrete$IDs)
         } else {
             do_discrete <- FALSE
         }
@@ -860,6 +838,7 @@ multi.ace <- function(data, tree, models, sample = 1, sample.fun = list(fun = ru
             do_continuous <- TRUE
             continuous_estimates <- matrix$continuous$estimates
             continuous_char_ID <- matrix$continuous$IDs
+            n_characters_continuous <- length(matrix$continuous$IDs)
         } else {
             do_continuous <- FALSE
         }
@@ -872,16 +851,42 @@ multi.ace <- function(data, tree, models, sample = 1, sample.fun = list(fun = ru
             has_invariants <- FALSE
         }
         tree <- matrix$tree
-        matrix <- matrix$tree
+        matrix <- matrix$matrix
     }
-        
+
     ## Handle the continuous characters
     if(do_continuous) {
-        
+     
+
+
         if(!do_sample) {
             ## Get the results in a matrix format
             results_continuous <- lapply(lapply(continuous_estimates, lapply, `[[`, "ace"), function(x) do.call(cbind, x))
         } else {
+
+            ## Check the sampling (if required)
+            if(do_sample) {
+                sample.fun_class <- check.class(sample.fun, "list")
+                ## If sample.fun is a single list
+                if(!is.null(names(sample.fun)) && names(sample.fun)[1] == "fun") {
+                    ## Apply it to everything
+                    sample_funs <- replicate(length(continuous_char_ID), sample.fun, simplify = FALSE)
+                    ## Check it
+                    if(!test.sample.fun(sample_funs[[1]])) {
+                        stop(paste0("The sample function is not formatted correctly and cannot generate a distribution.\nCheck the ?multi.ace manual for more details."), call. = FALSE)
+                    }
+                } else {
+                    sample_funs <- sample.fun
+                    ## Check if the list is the same length.
+                    check.length(sample_funs, length(continuous_char_ID), msg = paste0(" must be a list of sampling functions the same length as the number of continuous characters (", length(continuous_char_ID), ")."))
+                    ## Check if each element can be read.
+                    tests <- unlist(lapply(sample_funs, test.sample.fun))
+                    if(any(!tests)) {
+                        stop(paste0("The following sample function", ifelse(sum(!tests) == 1, " is", "s are"), " not formated correctly and cannot generate a distribution: ", paste(which(!tests), collapse = ", "),".\nCheck the ?multi.ace manual for more details."), call. = FALSE)
+                    }
+                }
+            }
+
             ## Sample the results for n_matrices
             sample.ace.per.tree <- function(tree_estimate, sample_funs, sample) {
                 ## Sample all characters
@@ -963,7 +968,6 @@ multi.ace <- function(data, tree, models, sample = 1, sample.fun = list(fun = ru
 
         ## Get the details
         details_discrete <- lapply(discrete_estimates, lapply, `[[`, "details")
-
     }
 
     ## Handle output
@@ -978,7 +982,7 @@ multi.ace <- function(data, tree, models, sample = 1, sample.fun = list(fun = ru
             ## Make a list of nulls
             details_continuous <- replicate(length(tree), lapply(as.list(1:n_characters_continuous), function(x) return(NULL)), simplify = FALSE)
         }
-        if(is.null(details_discrete[[1]])) {
+        if(is.null(details_discrete[[1]][[1]])) {
             ## Make a list of nulls
             details_discrete <- replicate(length(tree), lapply(as.list(1:n_characters_discrete), function(x) return(NULL)), simplify = FALSE)
         }

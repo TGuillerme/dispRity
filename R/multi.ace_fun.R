@@ -300,6 +300,7 @@ bind.details <- function(continuous, discrete, order) {
 
 ## Combine the ace matrix with the tips
 add.tips <- function(ace, matrix) {
+    colnames(ace) <- colnames(matrix)
     return(rbind(matrix, ace))
 }
 ## Output a list from a matrix
