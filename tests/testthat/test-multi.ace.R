@@ -527,10 +527,10 @@ test_that("multi.ace works with sample", {
     expect_true(all(test[[1]][,3] > 100))
 
     ## test with sample.fun option
-    error <- capture_error(test <- multi.ace(data = data, tree = tree, sample = 2, sample.fun = runif, output = "combined.matrix", verbose = FALSE))
+    expect_warning(error <- capture_error(test <- multi.ace(data = data, tree = tree, sample = 2, sample.fun = runif, output = "combined.matrix", verbose = FALSE)))
     expect_equal(error[[1]], "sample.fun must be of class list.")
     sample.fun <- list(fun = rnorm, param = list(max = max, min = min))
-    error <- capture_error(test <- multi.ace(data = data, tree = tree, sample = 2, sample.fun = sample.fun, output = "combined.matrix", verbose = FALSE))
+    expect_warning(error <- capture_error(test <- multi.ace(data = data, tree = tree, sample = 2, sample.fun = sample.fun, output = "combined.matrix", verbose = FALSE)))
     expect_equal(error[[1]], "The sample function is not formatted correctly and cannot generate a distribution.\nCheck the ?multi.ace manual for more details.")
     ## Works with a list of sample funs
     sample.fun <- list(
@@ -544,7 +544,7 @@ test_that("multi.ace works with sample", {
         list(fun = runif, param = list(max = max, min = min)),
         list(fun = rnorm, param = list(max = max, min = min)),
         list(fun = runif, param = list(mean = mean, sd = function(x)return(diff(range(x))/4))))
-    error <- capture_error(test <- multi.ace(data = data, tree = tree, sample = 2, sample.fun = sample.fun, output = "combined.matrix", verbose = FALSE))
+    expect_warning(error <- capture_error(test <- multi.ace(data = data, tree = tree, sample = 2, sample.fun = sample.fun, output = "combined.matrix", verbose = FALSE)))
     expect_equal(error[[1]], "The following sample functions are not formated correctly and cannot generate a distribution: 2, 3.\nCheck the ?multi.ace manual for more details.")
 
     ## Test with discrete characters
@@ -626,7 +626,7 @@ test_that("multi.ace works with recycling", {
     expect_equal(unname(test$invariants$IDs), 6)
 
     ## test the printing
-    expect_equal(capture.output(test), "Raw ancestral traits estimations for:\n 3 discrete (including 1 invariants) and 3 continuous characters across 1 tree for 10 taxa.\nYou can use the multi.ace function to resample them and transform them in different outputs.")
+    expect_equal(capture.output(test), c("Raw ancestral traits estimations for:","3 discrete (including 1 invariant) and 3 continuous characters across 1 tree for 10 taxa.","You can use the multi.ace function to resample them and transform them in different outputs."))
 
 
     ## Recycling the multi.ace
