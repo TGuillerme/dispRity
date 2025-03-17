@@ -608,7 +608,7 @@ test_that("multi.ace works with recycling", {
     ## Generating the multi.ace
     expect_warning(test <- multi.ace(data = data, tree = tree, output = "multi.ace", verbose = FALSE, estimation.details = NULL, sample = 1))
     expect_is(test, c("dispRity", "multi.ace"))
-    expect_equal(names(test), c("tree", "matrix", "discrete", "continuous", "invariants"))
+    expect_equal(names(test), c("tree", "matrix", "discrete", "invariants", "continuous"))
     expect_is(test$tree, "multiPhylo")
     expect_is(test$matrix, "data.frame")
     expect_equal(names(test$discrete), c("estimates", "IDs", "special.tokens"))
@@ -627,7 +627,6 @@ test_that("multi.ace works with recycling", {
 
     ## test the printing
     expect_equal(capture.output(test), c("Raw ancestral traits estimations for:","3 discrete (including 1 invariant) and 3 continuous characters across 1 tree for 10 taxa.","You can use the multi.ace function to resample them and transform them in different outputs."))
-
 
     ## Recycling the multi.ace
     tust <- multi.ace(test, output = "combined.matrix", sample = 1, threshold = TRUE)

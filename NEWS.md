@@ -1,4 +1,4 @@
-dispRity v1.9.4 (2025-03-14)
+dispRity v1.9.5 (2025-03-17)
 =========================
 
 ### NEW FEATURES
@@ -16,6 +16,7 @@ dispRity v1.9.4 (2025-03-14)
  * `print` now correctly prints the content of "empty" data.
  * Fixed retro-compatibility for S3 behaviours (`plot` and `summary`) for `dispRity` objects made before `1.9`.
  * Fixed bug with `multi.ace` that always returned missing data tokens for discrete invariant characters.
+ * Fixed bug withe `chrono.subsets` for odd tree shapes (issue [#134](https://github.com/TGuillerme/dispRity/issues/134)).
 
 dispRity v1.9 (2024-11-13)  *distant update*
 =========================

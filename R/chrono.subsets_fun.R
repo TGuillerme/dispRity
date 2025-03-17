@@ -295,7 +295,7 @@ match.tree.data <- function(elements, tree, data) {
     if(dim(elements$elements)[2] == 1) {
         elements$elements <- matrix(matching(elements$elements, tree, data), ncol = 1)
     } else {
-        elements$elements[,c(1,2)] <- apply(elements$elements[,c(1,2)], 2, FUN = matching, tree, data)
+        elements$elements[,c(1,2)] <- apply(elements$elements[,c(1,2), drop = FALSE], 2, FUN = matching, tree, data)
     }
     return(elements)
 }
