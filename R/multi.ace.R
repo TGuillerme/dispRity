@@ -356,6 +356,12 @@ multi.ace <- function(data, tree, models, sample = 1, sample.fun = list(fun = ru
         }
     }
 
+    ## Detect do_discrete and do_continuous
+    if(skip_estimations) {
+        do_discrete <- !is.null(data$discrete)
+        do_continuous <- !is.null(data$continuous)
+    }
+
     ## output
     if(missing(output)) {
         if(skip_estimations) {
@@ -645,6 +651,7 @@ multi.ace <- function(data, tree, models, sample = 1, sample.fun = list(fun = ru
 
     ## Check the estimation details
     if(!is.null(estimation.details)) {
+
         ## The return args from castor::asr_mk_model (1.6.6)
         return_args_discrete <- c("success", "Nstates", "transition_matrix", "loglikelihood", "ancestral_likelihoods")
         return_args_continuous <- c("CI95", "sigma2", "loglik")
