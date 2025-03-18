@@ -721,8 +721,6 @@ multi.ace <- function(data, tree, models, sample = 1, sample.fun = list(fun = ru
                 fun_discrete <- castor.ace
             }
         }
-
-
         #########
         ##
         ## run the calls
@@ -810,15 +808,14 @@ multi.ace <- function(data, tree, models, sample = 1, sample.fun = list(fun = ru
 
             if(do_discrete) {
                 output_list$discrete <- list(estimates = discrete_estimates, IDs = discrete_char_ID, special.tokens = special.tokens)
+                if(has_invariants) {
+                    output_list$invariants <- list(n = invariants, states = invariant_characters_states, IDs = invariants_ID)
+                }
             }
             if(do_continuous) {
                 output_list$continuous <- list(estimates = continuous_estimates, IDs = continuous_char_ID)
             }
-            if(has_invariants) {
-                output_list$invariants <- list(n = invariants, states = invariant_characters_states, IDs = invariants_ID)
-            }
             ## Merge together discrete and continuous + returns + invariants + continuous_char_ID + discrete_char_ID
-
             class(output_list) <- c("dispRity", "multi.ace")
             return(output_list)
         }
@@ -857,14 +854,10 @@ multi.ace <- function(data, tree, models, sample = 1, sample.fun = list(fun = ru
 
     ## Handle the continuous characters
     if(do_continuous) {
-     
-
-
         if(!do_sample) {
             ## Get the results in a matrix format
             results_continuous <- lapply(lapply(continuous_estimates, lapply, `[[`, "ace"), function(x) do.call(cbind, x))
         } else {
-
             ## Check the sampling (if required)
             if(do_sample) {
                 sample.fun_class <- check.class(sample.fun, "list")
