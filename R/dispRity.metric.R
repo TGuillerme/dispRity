@@ -502,7 +502,8 @@ centroids <- function(matrix, centroid, method = "euclidean", ...) {
 ## Calculate the relative displacements
 displacements <- function(matrix, method = "euclidean", reference = 0, ...) {
     ## Get displacement
-    return(dispRity::centroids(matrix = matrix, centroid = reference, method = method)/dispRity::centroids(matrix = matrix, method = method))
+    val <- dispRity::centroids(matrix = matrix, centroid = reference, method = method)/dispRity::centroids(matrix = matrix, method = method)
+    return(ifelse(is.infinite(val), NA, val))
 }
 
 ## Calculate the neighbours distances

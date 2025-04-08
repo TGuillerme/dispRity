@@ -1,4 +1,4 @@
-dispRity v1.9.5 (2025-03-18)
+dispRity v1.9.6 (2025-04-08)
 =========================
 
 ### NEW FEATURES
@@ -12,6 +12,7 @@ dispRity v1.9.5 (2025-03-18)
 
 ### BUG FIXES
 
+ * `plot.dispRity` now handles infinite values for generating plot limits (thanks to Mario Corio for spotting that one).
  * `dispRity` now correctly handles multiple matrices and multiple trees for multiple metrics.
  * `print` now correctly prints the content of "empty" data.
  * Fixed retro-compatibility for S3 behaviours (`plot` and `summary`) for `dispRity` objects made before `1.9`.
