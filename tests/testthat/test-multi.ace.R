@@ -502,6 +502,22 @@ test_that("sample.ace works", {
         expect_true(all(out[[i]] > ace$CI95[i,1]))
         expect_true(all(out[[i]] < ace$CI95[i,2]))
     }
+
+    # ## Visual check if samples actually resamples the distributions correctly:
+    # normal.sample <- list(fun = rnorm, param = list(mean = mean, sd = function(x)return(diff(range(x))/4)))
+    # uniform.sample <- list(fun = runif, param = list(min = min, max = max))
+    # norm_data <- rnorm(1000, sd = 8, mean = -3)
+    # unif_data <- runif(1000, min = 7, max = 70)
+    # test_norm <- list(CI95 = matrix(quantile(norm_data, prob = c(0.025, 0.975)), nrow = 1))
+    # test_unif <- list(CI95 = matrix(quantile(unif_data, prob = c(0.025, 0.975)), nrow = 1))
+    # res_norm <- sample.ace(test_norm, sample.fun = normal.sample, samples = 1000)[[1]]
+    # res_unif <- sample.ace(test_unif, sample.fun = uniform.sample, samples = 1000)[[1]]
+    # plot(density(norm_data))
+    # lines(density(res_norm), col = "red")
+    # plot(density(unif_data))
+    # lines(density(res_unif), col = "red")
+
+
 })
 
 test_that("multi.ace works with sample", {

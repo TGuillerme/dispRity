@@ -794,7 +794,8 @@ summary(dispRity(dummy_groups, metric = centroids,
 
 The `displacements` distance is the ratio between the `centroids` distance and the `centroids` distance with `centroid = 0`.
 Note that it is possible to measure a ratio from another point than `0` using the `reference` argument.
-It gives indication of the relative displacement of elements in the multidimensional space: a score  >1 signifies a displacement *away* from the reference. A score of >1 signifies a displacement *towards* the reference.
+It gives indication of the relative displacement of elements in the multidimensional space: a score > 1 signifies a displacement away from the reference. A score of < 1 signifies a displacement *towards* the reference.
+
 
 ```{r}
 ## The relative displacement of the group in space to the centre

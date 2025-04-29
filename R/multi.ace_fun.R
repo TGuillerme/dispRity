@@ -277,7 +277,6 @@ bind.characters <- function(continuous, discrete, order, do_sample) {
     }
 }
 
-
 ## Bind the continuous and discrete details and reorder them
 bind.details <- function(continuous, discrete, order) {
     ## Reorder the details out per characters
@@ -295,9 +294,6 @@ bind.details <- function(continuous, discrete, order) {
     return(c(continuous, discrete)[c(order$continuous, order$discrete)])
 }
 
-
-
-
 ## Combine the ace matrix with the tips
 add.tips <- function(ace, matrix) {
     colnames(ace) <- colnames(matrix)
@@ -309,9 +305,6 @@ make.list <- function(results) {
     return(unlist(apply(results, 1, list), recursive = FALSE))
 }
 ## Make the dispRity object out of the results (only for continuous)
-
-
-
 
 
 # Samples a single estimate from an ace output
