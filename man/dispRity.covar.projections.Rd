@@ -86,7 +86,7 @@ elements_proj <- dispRity.covar.projections(my_covar, type = "elements", sample 
 plot(elements_proj)
 
 ## Visualising the correlation
-plot(elements_proj, speicfic.args = list(correlation.plot = c("position", "distance")))
+plot(elements_proj, specific.args = list(correlation.plot = c("position", "distance")))
 
 }
 \references{

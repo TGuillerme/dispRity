@@ -63,7 +63,7 @@
 #' plot(elements_proj)
 #' 
 #' ## Visualising the correlation
-#' plot(elements_proj, speicfic.args = list(correlation.plot = c("position", "distance")))
+#' plot(elements_proj, specific.args = list(correlation.plot = c("position", "distance")))
 #'
 #' @seealso \code{\link{projections}} \code{\link{projections.between}} \code{\link{axis.covar}} \code{\link{dispRity}} \code{\link{MCMCglmm.subsets}}
 #' 
