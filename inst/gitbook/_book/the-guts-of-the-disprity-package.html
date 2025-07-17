@@ -23,7 +23,7 @@
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie)" />
 
 
-<meta name="date" content="2024-03-08" />
+<meta name="date" content="2024-11-12" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -49,38 +49,38 @@
 
 
 
-<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
 <link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
 <link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
 <script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
-<script src="libs/htmlwidgets-1.6.2/htmlwidgets.js"></script>
-<script src="libs/rglWebGL-binding-1.2.8/rglWebGL.js"></script>
-<link href="libs/rglwidgetClass-1.2.8/rgl.css" rel="stylesheet" />
-<script src="libs/rglwidgetClass-1.2.8/rglClass.src.js"></script>
-<script src="libs/rglwidgetClass-1.2.8/utils.src.js"></script>
-<script src="libs/rglwidgetClass-1.2.8/buffer.src.js"></script>
-<script src="libs/rglwidgetClass-1.2.8/subscenes.src.js"></script>
-<script src="libs/rglwidgetClass-1.2.8/shaders.src.js"></script>
-<script src="libs/rglwidgetClass-1.2.8/shadersrc.src.js"></script>
-<script src="libs/rglwidgetClass-1.2.8/textures.src.js"></script>
-<script src="libs/rglwidgetClass-1.2.8/projection.src.js"></script>
-<script src="libs/rglwidgetClass-1.2.8/mouse.src.js"></script>
-<script src="libs/rglwidgetClass-1.2.8/init.src.js"></script>
-<script src="libs/rglwidgetClass-1.2.8/pieces.src.js"></script>
-<script src="libs/rglwidgetClass-1.2.8/draw.src.js"></script>
-<script src="libs/rglwidgetClass-1.2.8/controls.src.js"></script>
-<script src="libs/rglwidgetClass-1.2.8/selection.src.js"></script>
-<script src="libs/rglwidgetClass-1.2.8/rglTimer.src.js"></script>
-<script src="libs/rglwidgetClass-1.2.8/pretty.src.js"></script>
-<script src="libs/rglwidgetClass-1.2.8/axes.src.js"></script>
-<script src="libs/rglwidgetClass-1.2.8/animation.src.js"></script>
-<script src="libs/CanvasMatrix4-1.2.8/CanvasMatrix.src.js"></script>
+<script src="libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<script src="libs/rglWebGL-binding-1.3.12/rglWebGL.js"></script>
+<link href="libs/rglwidgetClass-1.3.12/rgl.css" rel="stylesheet" />
+<script src="libs/rglwidgetClass-1.3.12/rglClass.src.js"></script>
+<script src="libs/rglwidgetClass-1.3.12/utils.src.js"></script>
+<script src="libs/rglwidgetClass-1.3.12/buffer.src.js"></script>
+<script src="libs/rglwidgetClass-1.3.12/subscenes.src.js"></script>
+<script src="libs/rglwidgetClass-1.3.12/shaders.src.js"></script>
+<script src="libs/rglwidgetClass-1.3.12/shadersrc.src.js"></script>
+<script src="libs/rglwidgetClass-1.3.12/textures.src.js"></script>
+<script src="libs/rglwidgetClass-1.3.12/projection.src.js"></script>
+<script src="libs/rglwidgetClass-1.3.12/mouse.src.js"></script>
+<script src="libs/rglwidgetClass-1.3.12/init.src.js"></script>
+<script src="libs/rglwidgetClass-1.3.12/pieces.src.js"></script>
+<script src="libs/rglwidgetClass-1.3.12/draw.src.js"></script>
+<script src="libs/rglwidgetClass-1.3.12/controls.src.js"></script>
+<script src="libs/rglwidgetClass-1.3.12/selection.src.js"></script>
+<script src="libs/rglwidgetClass-1.3.12/rglTimer.src.js"></script>
+<script src="libs/rglwidgetClass-1.3.12/pretty.src.js"></script>
+<script src="libs/rglwidgetClass-1.3.12/axes.src.js"></script>
+<script src="libs/rglwidgetClass-1.3.12/animation.src.js"></script>
+<script src="libs/CanvasMatrix4-1.3.12/CanvasMatrix.src.js"></script>
 
 
 <style type="text/css">
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
 pre.sourceCode { margin: 0; }
 @media screen {
@@ -114,7 +114,7 @@ code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
 code span.at { color: #7d9029; } /* Attribute */
 code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
+code span.bu { color: #008000; } /* BuiltIn */
 code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
 code span.ch { color: #4070a0; } /* Char */
 code span.cn { color: #880000; } /* Constant */
@@ -127,7 +127,7 @@ code span.er { color: #ff0000; font-weight: bold; } /* Error */
 code span.ex { } /* Extension */
 code span.fl { color: #40a070; } /* Float */
 code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
+code span.im { color: #008000; font-weight: bold; } /* Import */
 code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 code span.kw { color: #007020; font-weight: bold; } /* Keyword */
 code span.op { color: #666666; } /* Operator */
@@ -144,6 +144,28 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <style type="text/css">
   
   div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
 </style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
@@ -205,7 +227,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.1.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#time-slicing"><i class="fa fa-check"></i><b>4.1.2</b> Time-slicing</a></li>
 </ul></li>
 <li class="chapter" data-level="4.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#custom-subsets"><i class="fa fa-check"></i><b>4.2</b> Customised subsets</a></li>
-<li class="chapter" data-level="4.3" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#bootstraps-and-rarefactions"><i class="fa fa-check"></i><b>4.3</b> Bootstraps and rarefactions</a></li>
+<li class="chapter" data-level="4.3" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#bootstraps-and-rarefactions"><i class="fa fa-check"></i><b>4.3</b> Bootstraps and rarefactions</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#bootstrapping-with-probabilities"><i class="fa fa-check"></i><b>4.3.1</b> Bootstrapping with probabilities</a></li>
+<li class="chapter" data-level="4.3.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#bootstrapping-dimensions"><i class="fa fa-check"></i><b>4.3.2</b> Bootstrapping dimensions</a></li>
+</ul></li>
 <li class="chapter" data-level="4.4" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-metrics"><i class="fa fa-check"></i><b>4.4</b> Disparity metrics</a>
 <ul>
 <li class="chapter" data-level="4.4.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#the-function-dimension-levels"><i class="fa fa-check"></i><b>4.4.1</b> The function dimension-levels</a></li>
@@ -246,6 +272,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.12.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#creating-a-disprity-object-with-a-covar-component"><i class="fa fa-check"></i><b>4.12.1</b> Creating a <code>dispRity</code> object with a <code>$covar</code> component</a></li>
 <li class="chapter" data-level="4.12.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#visualising-covar-objects"><i class="fa fa-check"></i><b>4.12.2</b> Visualising covar objects</a></li>
 <li class="chapter" data-level="4.12.3" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-analyses-with-a-covar-component"><i class="fa fa-check"></i><b>4.12.3</b> Disparity analyses with a <code>$covar</code> component</a></li>
+</ul></li>
+<li class="chapter" data-level="4.13" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-and-distances"><i class="fa fa-check"></i><b>4.13</b> Disparity and distances</a>
+<ul>
+<li class="chapter" data-level="4.13.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-data-is-a-distance"><i class="fa fa-check"></i><b>4.13.1</b> Disparity data is a distance</a></li>
+<li class="chapter" data-level="4.13.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-metric-is-a-distance"><i class="fa fa-check"></i><b>4.13.2</b> Disparity metric is a distance</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="making-stuff-up.html"><a href="making-stuff-up.html"><i class="fa fa-check"></i><b>5</b> Making stuff up!</a>
@@ -295,7 +326,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="7.3.1" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#matrix"><i class="fa fa-check"></i><b>7.3.1</b> <code>$matrix</code></a></li>
 <li class="chapter" data-level="7.3.2" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#call"><i class="fa fa-check"></i><b>7.3.2</b> <code>$call</code></a></li>
-<li class="chapter" data-level="7.3.3" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#subsets"><i class="fa fa-check"></i><b>7.3.3</b> <code>$subsets</code></a></li>
+<li class="chapter" data-level="7.3.3" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#subsets-1"><i class="fa fa-check"></i><b>7.3.3</b> <code>$subsets</code></a></li>
 <li class="chapter" data-level="7.3.4" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#disparity"><i class="fa fa-check"></i><b>7.3.4</b> <code>$disparity</code></a></li>
 </ul></li>
 </ul></li>
@@ -371,26 +402,26 @@ These objects allow users to use S3 method functions such as <code>summary.dispR
 <code>dispRity</code> also contains various utility functions that manipulate the <code>dispRity</code> object (e.g. <code>sort.dispRity</code>, <code>extract.dispRity</code> see the full list in the next section).
 These functions modify the <code>dispRity</code> object without having to delve into its complex structure!
 The full structure of a <code>dispRity</code> object is detailed <a href="https://github.com/TGuillerme/dispRity/blob/master/disparity_object.md">here</a>.</p>
-<div class="sourceCode" id="cb545"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb545-1"><a href="the-guts-of-the-disprity-package.html#cb545-1" aria-hidden="true"></a><span class="co">## Loading the example data</span></span>
-<span id="cb545-2"><a href="the-guts-of-the-disprity-package.html#cb545-2" aria-hidden="true"></a><span class="kw">data</span>(disparity)</span>
-<span id="cb545-3"><a href="the-guts-of-the-disprity-package.html#cb545-3" aria-hidden="true"></a></span>
-<span id="cb545-4"><a href="the-guts-of-the-disprity-package.html#cb545-4" aria-hidden="true"></a><span class="co">## What is the class of the median_centroids object?</span></span>
-<span id="cb545-5"><a href="the-guts-of-the-disprity-package.html#cb545-5" aria-hidden="true"></a><span class="kw">class</span>(disparity)</span></code></pre></div>
+<div class="sourceCode" id="cb563"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb563-1"><a href="the-guts-of-the-disprity-package.html#cb563-1" tabindex="-1"></a><span class="do">## Loading the example data</span></span>
+<span id="cb563-2"><a href="the-guts-of-the-disprity-package.html#cb563-2" tabindex="-1"></a><span class="fu">data</span>(disparity)</span>
+<span id="cb563-3"><a href="the-guts-of-the-disprity-package.html#cb563-3" tabindex="-1"></a></span>
+<span id="cb563-4"><a href="the-guts-of-the-disprity-package.html#cb563-4" tabindex="-1"></a><span class="do">## What is the class of the median_centroids object?</span></span>
+<span id="cb563-5"><a href="the-guts-of-the-disprity-package.html#cb563-5" tabindex="-1"></a><span class="fu">class</span>(disparity)</span></code></pre></div>
 <pre><code>## [1] &quot;dispRity&quot;</code></pre>
-<div class="sourceCode" id="cb547"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb547-1"><a href="the-guts-of-the-disprity-package.html#cb547-1" aria-hidden="true"></a><span class="co">## What does the object contain?</span></span>
-<span id="cb547-2"><a href="the-guts-of-the-disprity-package.html#cb547-2" aria-hidden="true"></a><span class="kw">names</span>(disparity)</span></code></pre></div>
+<div class="sourceCode" id="cb565"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb565-1"><a href="the-guts-of-the-disprity-package.html#cb565-1" tabindex="-1"></a><span class="do">## What does the object contain?</span></span>
+<span id="cb565-2"><a href="the-guts-of-the-disprity-package.html#cb565-2" tabindex="-1"></a><span class="fu">names</span>(disparity)</span></code></pre></div>
 <pre><code>## [1] &quot;matrix&quot;    &quot;tree&quot;      &quot;call&quot;      &quot;subsets&quot;   &quot;disparity&quot;</code></pre>
-<div class="sourceCode" id="cb549"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb549-1"><a href="the-guts-of-the-disprity-package.html#cb549-1" aria-hidden="true"></a><span class="co">## Summarising it using the S3 method print.dispRity</span></span>
-<span id="cb549-2"><a href="the-guts-of-the-disprity-package.html#cb549-2" aria-hidden="true"></a>disparity</span></code></pre></div>
+<div class="sourceCode" id="cb567"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb567-1"><a href="the-guts-of-the-disprity-package.html#cb567-1" tabindex="-1"></a><span class="do">## Summarising it using the S3 method print.dispRity</span></span>
+<span id="cb567-2"><a href="the-guts-of-the-disprity-package.html#cb567-2" tabindex="-1"></a>disparity</span></code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
 ## 7 continuous (acctran) time subsets for 99 elements in one matrix with 97 dimensions with 1 phylogenetic tree
 ##      90, 80, 70, 60, 50 ...
-## Data was bootstrapped 100 times (method:&quot;full&quot;) and rarefied to 20, 15, 10, 5 elements.
+## Rows were bootstrapped 100 times (method:&quot;full&quot;) and rarefied to 20, 15, 10, 5 elements.
 ## Disparity was calculated as: c(median, centroids).</code></pre>
 <p>Note that it is always possible to recall the full object using the argument <code>all = TRUE</code> in <code>print.dispRity</code>:</p>
-<div class="sourceCode" id="cb551"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb551-1"><a href="the-guts-of-the-disprity-package.html#cb551-1" aria-hidden="true"></a><span class="co">## Display the full object</span></span>
-<span id="cb551-2"><a href="the-guts-of-the-disprity-package.html#cb551-2" aria-hidden="true"></a><span class="kw">print</span>(disparity, <span class="dt">all =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb551-3"><a href="the-guts-of-the-disprity-package.html#cb551-3" aria-hidden="true"></a><span class="co">## This is more nearly ~ 5000 lines on my 13 inch laptop screen!</span></span></code></pre></div>
+<div class="sourceCode" id="cb569"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb569-1"><a href="the-guts-of-the-disprity-package.html#cb569-1" tabindex="-1"></a><span class="do">## Display the full object</span></span>
+<span id="cb569-2"><a href="the-guts-of-the-disprity-package.html#cb569-2" tabindex="-1"></a><span class="fu">print</span>(disparity, <span class="at">all =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb569-3"><a href="the-guts-of-the-disprity-package.html#cb569-3" tabindex="-1"></a><span class="do">## This is more nearly ~ 5000 lines on my 13 inch laptop screen!</span></span></code></pre></div>
 </div>
 <div id="utilities" class="section level2 hasAnchor" number="7.2">
 <h2><span class="header-section-number">7.2</span> <code>dispRity</code> utilities<a href="the-guts-of-the-disprity-package.html#utilities" class="anchor-section" aria-label="Anchor link to header"></a></h2>
@@ -401,28 +432,28 @@ The full structure of a <code>dispRity</code> object is detailed <a href="https:
 <div id="make.disprity" class="section level4 hasAnchor" number="7.2.1.1">
 <h4><span class="header-section-number">7.2.1.1</span> <code>make.dispRity</code><a href="the-guts-of-the-disprity-package.html#make.disprity" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>This function creates empty <code>dispRity</code> objects.</p>
-<div class="sourceCode" id="cb552"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb552-1"><a href="the-guts-of-the-disprity-package.html#cb552-1" aria-hidden="true"></a><span class="co">## Creating an empty dispRity object</span></span>
-<span id="cb552-2"><a href="the-guts-of-the-disprity-package.html#cb552-2" aria-hidden="true"></a><span class="kw">make.dispRity</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb570"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb570-1"><a href="the-guts-of-the-disprity-package.html#cb570-1" tabindex="-1"></a><span class="do">## Creating an empty dispRity object</span></span>
+<span id="cb570-2"><a href="the-guts-of-the-disprity-package.html#cb570-2" tabindex="-1"></a><span class="fu">make.dispRity</span>()</span></code></pre></div>
 <pre><code>## Empty dispRity object.</code></pre>
-<div class="sourceCode" id="cb554"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb554-1"><a href="the-guts-of-the-disprity-package.html#cb554-1" aria-hidden="true"></a><span class="co">## Creating an &quot;empty&quot; dispRity object with a matrix</span></span>
-<span id="cb554-2"><a href="the-guts-of-the-disprity-package.html#cb554-2" aria-hidden="true"></a>(disparity_obj &lt;-<span class="st"> </span><span class="kw">make.dispRity</span>(<span class="kw">matrix</span>(<span class="kw">rnorm</span>(<span class="dv">20</span>), <span class="dv">5</span>, <span class="dv">4</span>)))</span></code></pre></div>
+<div class="sourceCode" id="cb572"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb572-1"><a href="the-guts-of-the-disprity-package.html#cb572-1" tabindex="-1"></a><span class="do">## Creating an &quot;empty&quot; dispRity object with a matrix</span></span>
+<span id="cb572-2"><a href="the-guts-of-the-disprity-package.html#cb572-2" tabindex="-1"></a>(disparity_obj <span class="ot">&lt;-</span> <span class="fu">make.dispRity</span>(<span class="fu">matrix</span>(<span class="fu">rnorm</span>(<span class="dv">20</span>), <span class="dv">5</span>, <span class="dv">4</span>)))</span></code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
 ## Contains a matrix 5x4.</code></pre>
 </div>
 <div id="fill.disprity" class="section level4 hasAnchor" number="7.2.1.2">
 <h4><span class="header-section-number">7.2.1.2</span> <code>fill.dispRity</code><a href="the-guts-of-the-disprity-package.html#fill.disprity" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>This function initialises a <code>dispRity</code> object and generates its call properties.</p>
-<div class="sourceCode" id="cb556"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb556-1"><a href="the-guts-of-the-disprity-package.html#cb556-1" aria-hidden="true"></a><span class="co">## The dispRity object&#39;s call is indeed empty</span></span>
-<span id="cb556-2"><a href="the-guts-of-the-disprity-package.html#cb556-2" aria-hidden="true"></a>disparity_obj<span class="op">$</span>call</span></code></pre></div>
+<div class="sourceCode" id="cb574"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb574-1"><a href="the-guts-of-the-disprity-package.html#cb574-1" tabindex="-1"></a><span class="do">## The dispRity object&#39;s call is indeed empty</span></span>
+<span id="cb574-2"><a href="the-guts-of-the-disprity-package.html#cb574-2" tabindex="-1"></a>disparity_obj<span class="sc">$</span>call</span></code></pre></div>
 <pre><code>## list()</code></pre>
-<div class="sourceCode" id="cb558"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb558-1"><a href="the-guts-of-the-disprity-package.html#cb558-1" aria-hidden="true"></a><span class="co">## Filling an empty disparity object (that needs to contain at least a matrix)</span></span>
-<span id="cb558-2"><a href="the-guts-of-the-disprity-package.html#cb558-2" aria-hidden="true"></a>(disparity_obj &lt;-<span class="st"> </span><span class="kw">fill.dispRity</span>(disparity_obj))</span></code></pre></div>
+<div class="sourceCode" id="cb576"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb576-1"><a href="the-guts-of-the-disprity-package.html#cb576-1" tabindex="-1"></a><span class="do">## Filling an empty disparity object (that needs to contain at least a matrix)</span></span>
+<span id="cb576-2"><a href="the-guts-of-the-disprity-package.html#cb576-2" tabindex="-1"></a>(disparity_obj <span class="ot">&lt;-</span> <span class="fu">fill.dispRity</span>(disparity_obj))</span></code></pre></div>
 <pre><code>## Warning in check.data(data, match_call): Row names have been automatically
 ## added to data$matrix.</code></pre>
 <pre><code>##  ---- dispRity object ---- 
 ## 5 elements in one matrix with 4 dimensions.</code></pre>
-<div class="sourceCode" id="cb561"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb561-1"><a href="the-guts-of-the-disprity-package.html#cb561-1" aria-hidden="true"></a><span class="co">## The dipRity object has now the correct minimal attributes</span></span>
-<span id="cb561-2"><a href="the-guts-of-the-disprity-package.html#cb561-2" aria-hidden="true"></a>disparity_obj<span class="op">$</span>call</span></code></pre></div>
+<div class="sourceCode" id="cb579"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb579-1"><a href="the-guts-of-the-disprity-package.html#cb579-1" tabindex="-1"></a><span class="do">## The dipRity object has now the correct minimal attributes</span></span>
+<span id="cb579-2"><a href="the-guts-of-the-disprity-package.html#cb579-2" tabindex="-1"></a>disparity_obj<span class="sc">$</span>call</span></code></pre></div>
 <pre><code>## $dimensions
 ## [1] 1 2 3 4</code></pre>
 </div>
@@ -430,16 +461,16 @@ The full structure of a <code>dispRity</code> object is detailed <a href="https:
 <h4><span class="header-section-number">7.2.1.3</span> <code>get.matrix</code><a href="the-guts-of-the-disprity-package.html#get.matrix" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>This function extracts a specific matrix from a disparity object.
 The matrix can be one of the bootstrapped matrices or/and a rarefied matrix.</p>
-<div class="sourceCode" id="cb563"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb563-1"><a href="the-guts-of-the-disprity-package.html#cb563-1" aria-hidden="true"></a><span class="co">## Extracting the matrix containing the coordinates of the elements at time 50</span></span>
-<span id="cb563-2"><a href="the-guts-of-the-disprity-package.html#cb563-2" aria-hidden="true"></a><span class="kw">str</span>(<span class="kw">get.matrix</span>(disparity, <span class="st">&quot;50&quot;</span>))</span></code></pre></div>
-<pre><code>##  num [1:18, 1:97] -0.1036 0.4318 0.3371 0.0501 0.685 ...
+<div class="sourceCode" id="cb581"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb581-1"><a href="the-guts-of-the-disprity-package.html#cb581-1" tabindex="-1"></a><span class="do">## Extracting the matrix containing the coordinates of the elements at time 50</span></span>
+<span id="cb581-2"><a href="the-guts-of-the-disprity-package.html#cb581-2" tabindex="-1"></a><span class="fu">str</span>(<span class="fu">get.matrix</span>(disparity, <span class="st">&quot;50&quot;</span>))</span></code></pre></div>
+<pre><code>##  num [1:18, 1:97] -0.1 0.427 0.333 0.054 0.674 ...
 ##  - attr(*, &quot;dimnames&quot;)=List of 2
 ##   ..$ : chr [1:18] &quot;Leptictis&quot; &quot;Dasypodidae&quot; &quot;n24&quot; &quot;Potamogalinae&quot; ...
 ##   ..$ : NULL</code></pre>
-<div class="sourceCode" id="cb565"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb565-1"><a href="the-guts-of-the-disprity-package.html#cb565-1" aria-hidden="true"></a><span class="co">## Extracting the 3rd bootstrapped matrix with the 2nd rarefaction level</span></span>
-<span id="cb565-2"><a href="the-guts-of-the-disprity-package.html#cb565-2" aria-hidden="true"></a><span class="co">## (15 elements) from the second group (80 Mya)</span></span>
-<span id="cb565-3"><a href="the-guts-of-the-disprity-package.html#cb565-3" aria-hidden="true"></a><span class="kw">str</span>(<span class="kw">get.matrix</span>(disparity, <span class="dt">subsets =</span> <span class="dv">1</span>, <span class="dt">bootstrap =</span> <span class="dv">3</span>, <span class="dt">rarefaction =</span> <span class="dv">2</span>))</span></code></pre></div>
-<pre><code>##  num [1:15, 1:97] -0.12948 -0.57973 0.00361 0.27123 0.27123 ...
+<div class="sourceCode" id="cb583"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb583-1"><a href="the-guts-of-the-disprity-package.html#cb583-1" tabindex="-1"></a><span class="do">## Extracting the 3rd bootstrapped matrix with the 2nd rarefaction level</span></span>
+<span id="cb583-2"><a href="the-guts-of-the-disprity-package.html#cb583-2" tabindex="-1"></a><span class="do">## (15 elements) from the second group (80 Mya)</span></span>
+<span id="cb583-3"><a href="the-guts-of-the-disprity-package.html#cb583-3" tabindex="-1"></a><span class="fu">str</span>(<span class="fu">get.matrix</span>(disparity, <span class="at">subsets =</span> <span class="dv">1</span>, <span class="at">bootstrap =</span> <span class="dv">3</span>, <span class="at">rarefaction =</span> <span class="dv">2</span>))</span></code></pre></div>
+<pre><code>##  num [1:15, 1:97] -0.134942 -0.571937 0.000589 0.266188 0.266188 ...
 ##  - attr(*, &quot;dimnames&quot;)=List of 2
 ##   ..$ : chr [1:15] &quot;n15&quot; &quot;Maelestes&quot; &quot;n20&quot; &quot;n34&quot; ...
 ##   ..$ : NULL</code></pre>
@@ -447,139 +478,139 @@ The matrix can be one of the bootstrapped matrices or/and a rarefied matrix.</p>
 <div id="n.subsets" class="section level4 hasAnchor" number="7.2.1.4">
 <h4><span class="header-section-number">7.2.1.4</span> <code>n.subsets</code><a href="the-guts-of-the-disprity-package.html#n.subsets" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>This function simply counts the number of subsets in a <code>dispRity</code> object.</p>
-<div class="sourceCode" id="cb567"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb567-1"><a href="the-guts-of-the-disprity-package.html#cb567-1" aria-hidden="true"></a><span class="co">## How many subsets are in this object?</span></span>
-<span id="cb567-2"><a href="the-guts-of-the-disprity-package.html#cb567-2" aria-hidden="true"></a><span class="kw">n.subsets</span>(disparity)</span></code></pre></div>
+<div class="sourceCode" id="cb585"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb585-1"><a href="the-guts-of-the-disprity-package.html#cb585-1" tabindex="-1"></a><span class="do">## How many subsets are in this object?</span></span>
+<span id="cb585-2"><a href="the-guts-of-the-disprity-package.html#cb585-2" tabindex="-1"></a><span class="fu">n.subsets</span>(disparity)</span></code></pre></div>
 <pre><code>## [1] 7</code></pre>
 </div>
 <div id="name.subsets" class="section level4 hasAnchor" number="7.2.1.5">
 <h4><span class="header-section-number">7.2.1.5</span> <code>name.subsets</code><a href="the-guts-of-the-disprity-package.html#name.subsets" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>This function gets you the names of the subsets in a <code>dispRity</code> object as a vector.</p>
-<div class="sourceCode" id="cb569"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb569-1"><a href="the-guts-of-the-disprity-package.html#cb569-1" aria-hidden="true"></a><span class="co">## What are they called?</span></span>
-<span id="cb569-2"><a href="the-guts-of-the-disprity-package.html#cb569-2" aria-hidden="true"></a><span class="kw">name.subsets</span>(disparity)</span></code></pre></div>
+<div class="sourceCode" id="cb587"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb587-1"><a href="the-guts-of-the-disprity-package.html#cb587-1" tabindex="-1"></a><span class="do">## What are they called?</span></span>
+<span id="cb587-2"><a href="the-guts-of-the-disprity-package.html#cb587-2" tabindex="-1"></a><span class="fu">name.subsets</span>(disparity)</span></code></pre></div>
 <pre><code>## [1] &quot;90&quot; &quot;80&quot; &quot;70&quot; &quot;60&quot; &quot;50&quot; &quot;40&quot; &quot;30&quot;</code></pre>
 </div>
 <div id="size.subsets" class="section level4 hasAnchor" number="7.2.1.6">
 <h4><span class="header-section-number">7.2.1.6</span> <code>size.subsets</code><a href="the-guts-of-the-disprity-package.html#size.subsets" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>This function tells the number of elements in each subsets of a <code>dispRity</code> object.</p>
-<div class="sourceCode" id="cb571"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb571-1"><a href="the-guts-of-the-disprity-package.html#cb571-1" aria-hidden="true"></a><span class="co">## How many elements are there in each subset?</span></span>
-<span id="cb571-2"><a href="the-guts-of-the-disprity-package.html#cb571-2" aria-hidden="true"></a><span class="kw">size.subsets</span>(disparity)</span></code></pre></div>
+<div class="sourceCode" id="cb589"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb589-1"><a href="the-guts-of-the-disprity-package.html#cb589-1" tabindex="-1"></a><span class="do">## How many elements are there in each subset?</span></span>
+<span id="cb589-2"><a href="the-guts-of-the-disprity-package.html#cb589-2" tabindex="-1"></a><span class="fu">size.subsets</span>(disparity)</span></code></pre></div>
 <pre><code>## 90 80 70 60 50 40 30 
 ## 18 22 23 21 18 15 10</code></pre>
 </div>
 <div id="get.subsets" class="section level4 hasAnchor" number="7.2.1.7">
 <h4><span class="header-section-number">7.2.1.7</span> <code>get.subsets</code><a href="the-guts-of-the-disprity-package.html#get.subsets" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>This function creates a dispRity object that contains only elements from one specific subsets.</p>
-<div class="sourceCode" id="cb573"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb573-1"><a href="the-guts-of-the-disprity-package.html#cb573-1" aria-hidden="true"></a><span class="co">## Extracting all the data for the crown mammals</span></span>
-<span id="cb573-2"><a href="the-guts-of-the-disprity-package.html#cb573-2" aria-hidden="true"></a>(crown_mammals &lt;-<span class="st"> </span><span class="kw">get.subsets</span>(disp_crown_stemBS, <span class="st">&quot;Group.crown&quot;</span>))</span>
-<span id="cb573-3"><a href="the-guts-of-the-disprity-package.html#cb573-3" aria-hidden="true"></a></span>
-<span id="cb573-4"><a href="the-guts-of-the-disprity-package.html#cb573-4" aria-hidden="true"></a><span class="co">## The object keeps the properties of the parent object but is composed of only one subsets</span></span>
-<span id="cb573-5"><a href="the-guts-of-the-disprity-package.html#cb573-5" aria-hidden="true"></a><span class="kw">length</span>(crown_mammals<span class="op">$</span>subsets)</span></code></pre></div>
+<div class="sourceCode" id="cb591"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb591-1"><a href="the-guts-of-the-disprity-package.html#cb591-1" tabindex="-1"></a><span class="do">## Extracting all the data for the crown mammals</span></span>
+<span id="cb591-2"><a href="the-guts-of-the-disprity-package.html#cb591-2" tabindex="-1"></a>(crown_mammals <span class="ot">&lt;-</span> <span class="fu">get.subsets</span>(disp_crown_stemBS, <span class="st">&quot;Group.crown&quot;</span>))</span>
+<span id="cb591-3"><a href="the-guts-of-the-disprity-package.html#cb591-3" tabindex="-1"></a></span>
+<span id="cb591-4"><a href="the-guts-of-the-disprity-package.html#cb591-4" tabindex="-1"></a><span class="do">## The object keeps the properties of the parent object but is composed of only one subsets</span></span>
+<span id="cb591-5"><a href="the-guts-of-the-disprity-package.html#cb591-5" tabindex="-1"></a><span class="fu">length</span>(crown_mammals<span class="sc">$</span>subsets)</span></code></pre></div>
 </div>
 <div id="combine.subsets" class="section level4 hasAnchor" number="7.2.1.8">
 <h4><span class="header-section-number">7.2.1.8</span> <code>combine.subsets</code><a href="the-guts-of-the-disprity-package.html#combine.subsets" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>This function allows to merge different subsets.</p>
-<div class="sourceCode" id="cb574"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb574-1"><a href="the-guts-of-the-disprity-package.html#cb574-1" aria-hidden="true"></a><span class="co">## Combine the two first subsets in the dispRity data example</span></span>
-<span id="cb574-2"><a href="the-guts-of-the-disprity-package.html#cb574-2" aria-hidden="true"></a><span class="kw">combine.subsets</span>(disparity, <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb592"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb592-1"><a href="the-guts-of-the-disprity-package.html#cb592-1" tabindex="-1"></a><span class="do">## Combine the two first subsets in the dispRity data example</span></span>
+<span id="cb592-2"><a href="the-guts-of-the-disprity-package.html#cb592-2" tabindex="-1"></a><span class="fu">combine.subsets</span>(disparity, <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span></code></pre></div>
 <p>Note that the computed values (bootstrapped data + disparity metric) are not merge.</p>
 </div>
 <div id="get.disparity" class="section level4 hasAnchor" number="7.2.1.9">
 <h4><span class="header-section-number">7.2.1.9</span> <code>get.disparity</code><a href="the-guts-of-the-disprity-package.html#get.disparity" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>This function extracts the calculated disparity values of a specific matrix.</p>
-<div class="sourceCode" id="cb575"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb575-1"><a href="the-guts-of-the-disprity-package.html#cb575-1" aria-hidden="true"></a><span class="co">## Extracting the observed disparity (default)</span></span>
-<span id="cb575-2"><a href="the-guts-of-the-disprity-package.html#cb575-2" aria-hidden="true"></a><span class="kw">get.disparity</span>(disparity)</span>
-<span id="cb575-3"><a href="the-guts-of-the-disprity-package.html#cb575-3" aria-hidden="true"></a></span>
-<span id="cb575-4"><a href="the-guts-of-the-disprity-package.html#cb575-4" aria-hidden="true"></a><span class="co">## Extracting the disparity from the bootstrapped values from the</span></span>
-<span id="cb575-5"><a href="the-guts-of-the-disprity-package.html#cb575-5" aria-hidden="true"></a><span class="co">## 10th rarefaction level from the second subsets (80 Mya)</span></span>
-<span id="cb575-6"><a href="the-guts-of-the-disprity-package.html#cb575-6" aria-hidden="true"></a><span class="kw">get.disparity</span>(disparity, <span class="dt">observed =</span> <span class="ot">FALSE</span>, <span class="dt">subsets =</span> <span class="dv">2</span>, <span class="dt">rarefaction =</span> <span class="dv">10</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb593"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb593-1"><a href="the-guts-of-the-disprity-package.html#cb593-1" tabindex="-1"></a><span class="do">## Extracting the observed disparity (default)</span></span>
+<span id="cb593-2"><a href="the-guts-of-the-disprity-package.html#cb593-2" tabindex="-1"></a><span class="fu">get.disparity</span>(disparity)</span>
+<span id="cb593-3"><a href="the-guts-of-the-disprity-package.html#cb593-3" tabindex="-1"></a></span>
+<span id="cb593-4"><a href="the-guts-of-the-disprity-package.html#cb593-4" tabindex="-1"></a><span class="do">## Extracting the disparity from the bootstrapped values from the</span></span>
+<span id="cb593-5"><a href="the-guts-of-the-disprity-package.html#cb593-5" tabindex="-1"></a><span class="do">## 10th rarefaction level from the second subsets (80 Mya)</span></span>
+<span id="cb593-6"><a href="the-guts-of-the-disprity-package.html#cb593-6" tabindex="-1"></a><span class="fu">get.disparity</span>(disparity, <span class="at">observed =</span> <span class="cn">FALSE</span>, <span class="at">subsets =</span> <span class="dv">2</span>, <span class="at">rarefaction =</span> <span class="dv">10</span>)</span></code></pre></div>
 </div>
 <div id="scale.disprity" class="section level4 hasAnchor" number="7.2.1.10">
 <h4><span class="header-section-number">7.2.1.10</span> <code>scale.dispRity</code><a href="the-guts-of-the-disprity-package.html#scale.disprity" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>This is the modified S3 method for <code>scale</code> (scaling and/or centring) that can be applied to the disparity data of a <code>dispRity</code> object and can take optional arguments (for example the rescaling by dividing by a maximum value).</p>
-<div class="sourceCode" id="cb576"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb576-1"><a href="the-guts-of-the-disprity-package.html#cb576-1" aria-hidden="true"></a><span class="co">## Getting the disparity values of the time subsets</span></span>
-<span id="cb576-2"><a href="the-guts-of-the-disprity-package.html#cb576-2" aria-hidden="true"></a><span class="kw">head</span>(<span class="kw">summary</span>(disparity))</span>
-<span id="cb576-3"><a href="the-guts-of-the-disprity-package.html#cb576-3" aria-hidden="true"></a></span>
-<span id="cb576-4"><a href="the-guts-of-the-disprity-package.html#cb576-4" aria-hidden="true"></a><span class="co">## Scaling the same disparity values</span></span>
-<span id="cb576-5"><a href="the-guts-of-the-disprity-package.html#cb576-5" aria-hidden="true"></a><span class="kw">head</span>(<span class="kw">summary</span>(<span class="kw">scale.dispRity</span>(disparity, <span class="dt">scale =</span> <span class="ot">TRUE</span>)))</span>
-<span id="cb576-6"><a href="the-guts-of-the-disprity-package.html#cb576-6" aria-hidden="true"></a></span>
-<span id="cb576-7"><a href="the-guts-of-the-disprity-package.html#cb576-7" aria-hidden="true"></a><span class="co">## Scaling and centering:</span></span>
-<span id="cb576-8"><a href="the-guts-of-the-disprity-package.html#cb576-8" aria-hidden="true"></a><span class="kw">head</span>(<span class="kw">summary</span>(<span class="kw">scale.dispRity</span>(disparity, <span class="dt">scale =</span> <span class="ot">TRUE</span>, <span class="dt">center =</span> <span class="ot">TRUE</span>)))</span>
-<span id="cb576-9"><a href="the-guts-of-the-disprity-package.html#cb576-9" aria-hidden="true"></a></span>
-<span id="cb576-10"><a href="the-guts-of-the-disprity-package.html#cb576-10" aria-hidden="true"></a><span class="co">## Rescaling the value by dividing by a maximum value</span></span>
-<span id="cb576-11"><a href="the-guts-of-the-disprity-package.html#cb576-11" aria-hidden="true"></a><span class="kw">head</span>(<span class="kw">summary</span>(<span class="kw">scale.dispRity</span>(disparity, <span class="dt">max =</span> <span class="dv">10</span>)))</span></code></pre></div>
+<div class="sourceCode" id="cb594"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb594-1"><a href="the-guts-of-the-disprity-package.html#cb594-1" tabindex="-1"></a><span class="do">## Getting the disparity values of the time subsets</span></span>
+<span id="cb594-2"><a href="the-guts-of-the-disprity-package.html#cb594-2" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">summary</span>(disparity))</span>
+<span id="cb594-3"><a href="the-guts-of-the-disprity-package.html#cb594-3" tabindex="-1"></a></span>
+<span id="cb594-4"><a href="the-guts-of-the-disprity-package.html#cb594-4" tabindex="-1"></a><span class="do">## Scaling the same disparity values</span></span>
+<span id="cb594-5"><a href="the-guts-of-the-disprity-package.html#cb594-5" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">summary</span>(<span class="fu">scale.dispRity</span>(disparity, <span class="at">scale =</span> <span class="cn">TRUE</span>)))</span>
+<span id="cb594-6"><a href="the-guts-of-the-disprity-package.html#cb594-6" tabindex="-1"></a></span>
+<span id="cb594-7"><a href="the-guts-of-the-disprity-package.html#cb594-7" tabindex="-1"></a><span class="do">## Scaling and centering:</span></span>
+<span id="cb594-8"><a href="the-guts-of-the-disprity-package.html#cb594-8" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">summary</span>(<span class="fu">scale.dispRity</span>(disparity, <span class="at">scale =</span> <span class="cn">TRUE</span>, <span class="at">center =</span> <span class="cn">TRUE</span>)))</span>
+<span id="cb594-9"><a href="the-guts-of-the-disprity-package.html#cb594-9" tabindex="-1"></a></span>
+<span id="cb594-10"><a href="the-guts-of-the-disprity-package.html#cb594-10" tabindex="-1"></a><span class="do">## Rescaling the value by dividing by a maximum value</span></span>
+<span id="cb594-11"><a href="the-guts-of-the-disprity-package.html#cb594-11" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">summary</span>(<span class="fu">scale.dispRity</span>(disparity, <span class="at">max =</span> <span class="dv">10</span>)))</span></code></pre></div>
 </div>
 <div id="sort.disprity" class="section level4 hasAnchor" number="7.2.1.11">
 <h4><span class="header-section-number">7.2.1.11</span> <code>sort.dispRity</code><a href="the-guts-of-the-disprity-package.html#sort.disprity" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>This is the S3 method of <code>sort</code> for sorting the subsets alphabetically (default) or following a specific pattern.</p>
-<div class="sourceCode" id="cb577"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb577-1"><a href="the-guts-of-the-disprity-package.html#cb577-1" aria-hidden="true"></a><span class="co">## Sorting the disparity subsets in inverse alphabetic order</span></span>
-<span id="cb577-2"><a href="the-guts-of-the-disprity-package.html#cb577-2" aria-hidden="true"></a><span class="kw">head</span>(<span class="kw">summary</span>(<span class="kw">sort</span>(disparity, <span class="dt">decreasing =</span> <span class="ot">TRUE</span>)))</span>
-<span id="cb577-3"><a href="the-guts-of-the-disprity-package.html#cb577-3" aria-hidden="true"></a></span>
-<span id="cb577-4"><a href="the-guts-of-the-disprity-package.html#cb577-4" aria-hidden="true"></a><span class="co">## Customised sorting</span></span>
-<span id="cb577-5"><a href="the-guts-of-the-disprity-package.html#cb577-5" aria-hidden="true"></a><span class="kw">head</span>(<span class="kw">summary</span>(<span class="kw">sort</span>(disparity, <span class="dt">sort =</span> <span class="kw">c</span>(<span class="dv">7</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">2</span>, <span class="dv">6</span>))))</span></code></pre></div>
+<div class="sourceCode" id="cb595"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb595-1"><a href="the-guts-of-the-disprity-package.html#cb595-1" tabindex="-1"></a><span class="do">## Sorting the disparity subsets in inverse alphabetic order</span></span>
+<span id="cb595-2"><a href="the-guts-of-the-disprity-package.html#cb595-2" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">summary</span>(<span class="fu">sort</span>(disparity, <span class="at">decreasing =</span> <span class="cn">TRUE</span>)))</span>
+<span id="cb595-3"><a href="the-guts-of-the-disprity-package.html#cb595-3" tabindex="-1"></a></span>
+<span id="cb595-4"><a href="the-guts-of-the-disprity-package.html#cb595-4" tabindex="-1"></a><span class="do">## Customised sorting</span></span>
+<span id="cb595-5"><a href="the-guts-of-the-disprity-package.html#cb595-5" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">summary</span>(<span class="fu">sort</span>(disparity, <span class="at">sort =</span> <span class="fu">c</span>(<span class="dv">7</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">2</span>, <span class="dv">6</span>))))</span></code></pre></div>
 </div>
 <div id="get.tree-add.tree-and-remove.tree" class="section level4 hasAnchor" number="7.2.1.12">
 <h4><span class="header-section-number">7.2.1.12</span> <code>get.tree</code> <code>add.tree</code> and <code>remove.tree</code><a href="the-guts-of-the-disprity-package.html#get.tree-add.tree-and-remove.tree" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>These functions allow to manipulate the potential tree components of <code>dispRity</code> objects.</p>
-<div class="sourceCode" id="cb578"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb578-1"><a href="the-guts-of-the-disprity-package.html#cb578-1" aria-hidden="true"></a><span class="co">## Getting the tree component of a dispRity object</span></span>
-<span id="cb578-2"><a href="the-guts-of-the-disprity-package.html#cb578-2" aria-hidden="true"></a><span class="kw">get.tree</span>(disparity)</span>
-<span id="cb578-3"><a href="the-guts-of-the-disprity-package.html#cb578-3" aria-hidden="true"></a></span>
-<span id="cb578-4"><a href="the-guts-of-the-disprity-package.html#cb578-4" aria-hidden="true"></a><span class="co">## Removing the tree</span></span>
-<span id="cb578-5"><a href="the-guts-of-the-disprity-package.html#cb578-5" aria-hidden="true"></a><span class="kw">remove.tree</span>(disparity)</span>
-<span id="cb578-6"><a href="the-guts-of-the-disprity-package.html#cb578-6" aria-hidden="true"></a></span>
-<span id="cb578-7"><a href="the-guts-of-the-disprity-package.html#cb578-7" aria-hidden="true"></a><span class="co">## Adding a tree</span></span>
-<span id="cb578-8"><a href="the-guts-of-the-disprity-package.html#cb578-8" aria-hidden="true"></a><span class="kw">add.tree</span>(disparity, <span class="dt">tree =</span> BeckLee_tree)</span></code></pre></div>
+<div class="sourceCode" id="cb596"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb596-1"><a href="the-guts-of-the-disprity-package.html#cb596-1" tabindex="-1"></a><span class="do">## Getting the tree component of a dispRity object</span></span>
+<span id="cb596-2"><a href="the-guts-of-the-disprity-package.html#cb596-2" tabindex="-1"></a><span class="fu">get.tree</span>(disparity)</span>
+<span id="cb596-3"><a href="the-guts-of-the-disprity-package.html#cb596-3" tabindex="-1"></a></span>
+<span id="cb596-4"><a href="the-guts-of-the-disprity-package.html#cb596-4" tabindex="-1"></a><span class="do">## Removing the tree</span></span>
+<span id="cb596-5"><a href="the-guts-of-the-disprity-package.html#cb596-5" tabindex="-1"></a><span class="fu">remove.tree</span>(disparity)</span>
+<span id="cb596-6"><a href="the-guts-of-the-disprity-package.html#cb596-6" tabindex="-1"></a></span>
+<span id="cb596-7"><a href="the-guts-of-the-disprity-package.html#cb596-7" tabindex="-1"></a><span class="do">## Adding a tree</span></span>
+<span id="cb596-8"><a href="the-guts-of-the-disprity-package.html#cb596-8" tabindex="-1"></a><span class="fu">add.tree</span>(disparity, <span class="at">tree =</span> BeckLee_tree)</span></code></pre></div>
 <p>Note that <code>get.tree</code> can also be used to extract trees from different subsets (custom or continuous/discrete subsets).</p>
 <p>For example, if we have three time bins like in the example below we have three time bins and we can extract the subtrees for these three time bins in different ways using the option <code>subsets</code> and <code>to.root</code>:</p>
-<div class="sourceCode" id="cb579"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb579-1"><a href="the-guts-of-the-disprity-package.html#cb579-1" aria-hidden="true"></a><span class="co">## Load the Beck &amp; Lee 2014 data</span></span>
-<span id="cb579-2"><a href="the-guts-of-the-disprity-package.html#cb579-2" aria-hidden="true"></a><span class="kw">data</span>(BeckLee_tree) ; <span class="kw">data</span>(BeckLee_mat99) ; <span class="kw">data</span>(BeckLee_ages)</span>
-<span id="cb579-3"><a href="the-guts-of-the-disprity-package.html#cb579-3" aria-hidden="true"></a></span>
-<span id="cb579-4"><a href="the-guts-of-the-disprity-package.html#cb579-4" aria-hidden="true"></a><span class="co">## Time binning (discrete method)</span></span>
-<span id="cb579-5"><a href="the-guts-of-the-disprity-package.html#cb579-5" aria-hidden="true"></a><span class="co">## Generate two discrete time bins from 120 to 40 Ma every 20 Ma</span></span>
-<span id="cb579-6"><a href="the-guts-of-the-disprity-package.html#cb579-6" aria-hidden="true"></a>time_bins &lt;-<span class="st"> </span><span class="kw">chrono.subsets</span>(<span class="dt">data =</span> BeckLee_mat99, <span class="dt">tree =</span> BeckLee_tree,</span>
-<span id="cb579-7"><a href="the-guts-of-the-disprity-package.html#cb579-7" aria-hidden="true"></a>                            <span class="dt">method =</span> <span class="st">&quot;discrete&quot;</span>, <span class="dt">time =</span> <span class="kw">c</span>(<span class="dv">120</span>, <span class="dv">100</span>, <span class="dv">80</span>, <span class="dv">60</span>),</span>
-<span id="cb579-8"><a href="the-guts-of-the-disprity-package.html#cb579-8" aria-hidden="true"></a>                            <span class="dt">inc.nodes =</span> <span class="ot">TRUE</span>, <span class="dt">FADLAD =</span> BeckLee_ages)</span>
-<span id="cb579-9"><a href="the-guts-of-the-disprity-package.html#cb579-9" aria-hidden="true"></a></span>
-<span id="cb579-10"><a href="the-guts-of-the-disprity-package.html#cb579-10" aria-hidden="true"></a><span class="co">## Getting the subtrees all the way to the root</span></span>
-<span id="cb579-11"><a href="the-guts-of-the-disprity-package.html#cb579-11" aria-hidden="true"></a>root_subsets &lt;-<span class="st"> </span><span class="kw">get.tree</span>(time_bins, <span class="dt">subsets =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb579-12"><a href="the-guts-of-the-disprity-package.html#cb579-12" aria-hidden="true"></a></span>
-<span id="cb579-13"><a href="the-guts-of-the-disprity-package.html#cb579-13" aria-hidden="true"></a><span class="co">## Plotting the bin contents</span></span>
-<span id="cb579-14"><a href="the-guts-of-the-disprity-package.html#cb579-14" aria-hidden="true"></a>old_par &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">2</span>))</span>
-<span id="cb579-15"><a href="the-guts-of-the-disprity-package.html#cb579-15" aria-hidden="true"></a><span class="kw">plot</span>(BeckLee_tree, <span class="dt">main =</span> <span class="st">&quot;original tree&quot;</span>, <span class="dt">show.tip.label =</span> <span class="ot">FALSE</span>)</span>
-<span id="cb579-16"><a href="the-guts-of-the-disprity-package.html#cb579-16" aria-hidden="true"></a><span class="kw">axisPhylo</span>()</span>
-<span id="cb579-17"><a href="the-guts-of-the-disprity-package.html#cb579-17" aria-hidden="true"></a><span class="kw">abline</span>(<span class="dt">v =</span> BeckLee_tree<span class="op">$</span>root.time <span class="op">-</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">120</span>, <span class="dv">100</span>, <span class="dv">80</span>, <span class="dv">60</span>))</span>
-<span id="cb579-18"><a href="the-guts-of-the-disprity-package.html#cb579-18" aria-hidden="true"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>) {</span>
-<span id="cb579-19"><a href="the-guts-of-the-disprity-package.html#cb579-19" aria-hidden="true"></a>     <span class="kw">plot</span>(root_subsets[[i]], <span class="dt">main =</span> <span class="kw">names</span>(root_subsets)[i],</span>
-<span id="cb579-20"><a href="the-guts-of-the-disprity-package.html#cb579-20" aria-hidden="true"></a>          <span class="dt">show.tip.label =</span> <span class="ot">FALSE</span>)</span>
-<span id="cb579-21"><a href="the-guts-of-the-disprity-package.html#cb579-21" aria-hidden="true"></a>     <span class="kw">axisPhylo</span>()</span>
-<span id="cb579-22"><a href="the-guts-of-the-disprity-package.html#cb579-22" aria-hidden="true"></a>}</span></code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-210-1.png" width="672" /></p>
-<div class="sourceCode" id="cb580"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb580-1"><a href="the-guts-of-the-disprity-package.html#cb580-1" aria-hidden="true"></a><span class="kw">par</span>(old_par)</span></code></pre></div>
+<div class="sourceCode" id="cb597"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb597-1"><a href="the-guts-of-the-disprity-package.html#cb597-1" tabindex="-1"></a><span class="do">## Load the Beck &amp; Lee 2014 data</span></span>
+<span id="cb597-2"><a href="the-guts-of-the-disprity-package.html#cb597-2" tabindex="-1"></a><span class="fu">data</span>(BeckLee_tree) ; <span class="fu">data</span>(BeckLee_mat99) ; <span class="fu">data</span>(BeckLee_ages)</span>
+<span id="cb597-3"><a href="the-guts-of-the-disprity-package.html#cb597-3" tabindex="-1"></a></span>
+<span id="cb597-4"><a href="the-guts-of-the-disprity-package.html#cb597-4" tabindex="-1"></a><span class="do">## Time binning (discrete method)</span></span>
+<span id="cb597-5"><a href="the-guts-of-the-disprity-package.html#cb597-5" tabindex="-1"></a><span class="do">## Generate two discrete time bins from 120 to 40 Ma every 20 Ma</span></span>
+<span id="cb597-6"><a href="the-guts-of-the-disprity-package.html#cb597-6" tabindex="-1"></a>time_bins <span class="ot">&lt;-</span> <span class="fu">chrono.subsets</span>(<span class="at">data =</span> BeckLee_mat99, <span class="at">tree =</span> BeckLee_tree,</span>
+<span id="cb597-7"><a href="the-guts-of-the-disprity-package.html#cb597-7" tabindex="-1"></a>                            <span class="at">method =</span> <span class="st">&quot;discrete&quot;</span>, <span class="at">time =</span> <span class="fu">c</span>(<span class="dv">120</span>, <span class="dv">100</span>, <span class="dv">80</span>, <span class="dv">60</span>),</span>
+<span id="cb597-8"><a href="the-guts-of-the-disprity-package.html#cb597-8" tabindex="-1"></a>                            <span class="at">inc.nodes =</span> <span class="cn">TRUE</span>, <span class="at">FADLAD =</span> BeckLee_ages)</span>
+<span id="cb597-9"><a href="the-guts-of-the-disprity-package.html#cb597-9" tabindex="-1"></a></span>
+<span id="cb597-10"><a href="the-guts-of-the-disprity-package.html#cb597-10" tabindex="-1"></a><span class="do">## Getting the subtrees all the way to the root</span></span>
+<span id="cb597-11"><a href="the-guts-of-the-disprity-package.html#cb597-11" tabindex="-1"></a>root_subsets <span class="ot">&lt;-</span> <span class="fu">get.tree</span>(time_bins, <span class="at">subsets =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb597-12"><a href="the-guts-of-the-disprity-package.html#cb597-12" tabindex="-1"></a></span>
+<span id="cb597-13"><a href="the-guts-of-the-disprity-package.html#cb597-13" tabindex="-1"></a><span class="do">## Plotting the bin contents</span></span>
+<span id="cb597-14"><a href="the-guts-of-the-disprity-package.html#cb597-14" tabindex="-1"></a>old_par <span class="ot">&lt;-</span> <span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>))</span>
+<span id="cb597-15"><a href="the-guts-of-the-disprity-package.html#cb597-15" tabindex="-1"></a><span class="fu">plot</span>(BeckLee_tree, <span class="at">main =</span> <span class="st">&quot;original tree&quot;</span>, <span class="at">show.tip.label =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb597-16"><a href="the-guts-of-the-disprity-package.html#cb597-16" tabindex="-1"></a><span class="fu">axisPhylo</span>()</span>
+<span id="cb597-17"><a href="the-guts-of-the-disprity-package.html#cb597-17" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> BeckLee_tree<span class="sc">$</span>root.time <span class="sc">-</span> <span class="fu">c</span>(<span class="dv">120</span>, <span class="dv">100</span>, <span class="dv">80</span>, <span class="dv">60</span>))</span>
+<span id="cb597-18"><a href="the-guts-of-the-disprity-package.html#cb597-18" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>) {</span>
+<span id="cb597-19"><a href="the-guts-of-the-disprity-package.html#cb597-19" tabindex="-1"></a>     <span class="fu">plot</span>(root_subsets[[i]], <span class="at">main =</span> <span class="fu">names</span>(root_subsets)[i],</span>
+<span id="cb597-20"><a href="the-guts-of-the-disprity-package.html#cb597-20" tabindex="-1"></a>          <span class="at">show.tip.label =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb597-21"><a href="the-guts-of-the-disprity-package.html#cb597-21" tabindex="-1"></a>     <span class="fu">axisPhylo</span>()</span>
+<span id="cb597-22"><a href="the-guts-of-the-disprity-package.html#cb597-22" tabindex="-1"></a>}</span></code></pre></div>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-218-1.png" width="672" /></p>
+<div class="sourceCode" id="cb598"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb598-1"><a href="the-guts-of-the-disprity-package.html#cb598-1" tabindex="-1"></a><span class="fu">par</span>(old_par)</span></code></pre></div>
 <p>But we can also extract the subtrees containing only branch lengths for the actual bins using <code>to.root = FALSE</code>:</p>
-<div class="sourceCode" id="cb581"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb581-1"><a href="the-guts-of-the-disprity-package.html#cb581-1" aria-hidden="true"></a><span class="co">## Getting the subtrees all the way to the root</span></span>
-<span id="cb581-2"><a href="the-guts-of-the-disprity-package.html#cb581-2" aria-hidden="true"></a>bin_subsets &lt;-<span class="st"> </span><span class="kw">get.tree</span>(time_bins, <span class="dt">subsets =</span> <span class="ot">TRUE</span>, <span class="dt">to.root =</span> <span class="ot">FALSE</span>)</span>
-<span id="cb581-3"><a href="the-guts-of-the-disprity-package.html#cb581-3" aria-hidden="true"></a></span>
-<span id="cb581-4"><a href="the-guts-of-the-disprity-package.html#cb581-4" aria-hidden="true"></a><span class="co">## Plotting the bin contents</span></span>
-<span id="cb581-5"><a href="the-guts-of-the-disprity-package.html#cb581-5" aria-hidden="true"></a>old_par &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">2</span>))</span>
-<span id="cb581-6"><a href="the-guts-of-the-disprity-package.html#cb581-6" aria-hidden="true"></a><span class="kw">plot</span>(BeckLee_tree, <span class="dt">main =</span> <span class="st">&quot;original tree&quot;</span>, <span class="dt">show.tip.label =</span> <span class="ot">FALSE</span>)</span>
-<span id="cb581-7"><a href="the-guts-of-the-disprity-package.html#cb581-7" aria-hidden="true"></a><span class="kw">axisPhylo</span>()</span>
-<span id="cb581-8"><a href="the-guts-of-the-disprity-package.html#cb581-8" aria-hidden="true"></a><span class="kw">abline</span>(<span class="dt">v =</span> BeckLee_tree<span class="op">$</span>root.time <span class="op">-</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">120</span>, <span class="dv">100</span>, <span class="dv">80</span>, <span class="dv">60</span>))</span>
-<span id="cb581-9"><a href="the-guts-of-the-disprity-package.html#cb581-9" aria-hidden="true"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>) {</span>
-<span id="cb581-10"><a href="the-guts-of-the-disprity-package.html#cb581-10" aria-hidden="true"></a>     <span class="kw">plot</span>(bin_subsets[[i]], <span class="dt">main =</span> <span class="kw">names</span>(bin_subsets)[i],</span>
-<span id="cb581-11"><a href="the-guts-of-the-disprity-package.html#cb581-11" aria-hidden="true"></a>          <span class="dt">show.tip.label =</span> <span class="ot">FALSE</span>)</span>
-<span id="cb581-12"><a href="the-guts-of-the-disprity-package.html#cb581-12" aria-hidden="true"></a>     <span class="kw">axisPhylo</span>()</span>
-<span id="cb581-13"><a href="the-guts-of-the-disprity-package.html#cb581-13" aria-hidden="true"></a>}</span></code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-211-1.png" width="672" /></p>
-<div class="sourceCode" id="cb582"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb582-1"><a href="the-guts-of-the-disprity-package.html#cb582-1" aria-hidden="true"></a><span class="kw">par</span>(old_par)</span></code></pre></div>
+<div class="sourceCode" id="cb599"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb599-1"><a href="the-guts-of-the-disprity-package.html#cb599-1" tabindex="-1"></a><span class="do">## Getting the subtrees all the way to the root</span></span>
+<span id="cb599-2"><a href="the-guts-of-the-disprity-package.html#cb599-2" tabindex="-1"></a>bin_subsets <span class="ot">&lt;-</span> <span class="fu">get.tree</span>(time_bins, <span class="at">subsets =</span> <span class="cn">TRUE</span>, <span class="at">to.root =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb599-3"><a href="the-guts-of-the-disprity-package.html#cb599-3" tabindex="-1"></a></span>
+<span id="cb599-4"><a href="the-guts-of-the-disprity-package.html#cb599-4" tabindex="-1"></a><span class="do">## Plotting the bin contents</span></span>
+<span id="cb599-5"><a href="the-guts-of-the-disprity-package.html#cb599-5" tabindex="-1"></a>old_par <span class="ot">&lt;-</span> <span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>))</span>
+<span id="cb599-6"><a href="the-guts-of-the-disprity-package.html#cb599-6" tabindex="-1"></a><span class="fu">plot</span>(BeckLee_tree, <span class="at">main =</span> <span class="st">&quot;original tree&quot;</span>, <span class="at">show.tip.label =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb599-7"><a href="the-guts-of-the-disprity-package.html#cb599-7" tabindex="-1"></a><span class="fu">axisPhylo</span>()</span>
+<span id="cb599-8"><a href="the-guts-of-the-disprity-package.html#cb599-8" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> BeckLee_tree<span class="sc">$</span>root.time <span class="sc">-</span> <span class="fu">c</span>(<span class="dv">120</span>, <span class="dv">100</span>, <span class="dv">80</span>, <span class="dv">60</span>))</span>
+<span id="cb599-9"><a href="the-guts-of-the-disprity-package.html#cb599-9" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>) {</span>
+<span id="cb599-10"><a href="the-guts-of-the-disprity-package.html#cb599-10" tabindex="-1"></a>     <span class="fu">plot</span>(bin_subsets[[i]], <span class="at">main =</span> <span class="fu">names</span>(bin_subsets)[i],</span>
+<span id="cb599-11"><a href="the-guts-of-the-disprity-package.html#cb599-11" tabindex="-1"></a>          <span class="at">show.tip.label =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb599-12"><a href="the-guts-of-the-disprity-package.html#cb599-12" tabindex="-1"></a>     <span class="fu">axisPhylo</span>()</span>
+<span id="cb599-13"><a href="the-guts-of-the-disprity-package.html#cb599-13" tabindex="-1"></a>}</span></code></pre></div>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-219-1.png" width="672" /></p>
+<div class="sourceCode" id="cb600"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb600-1"><a href="the-guts-of-the-disprity-package.html#cb600-1" tabindex="-1"></a><span class="fu">par</span>(old_par)</span></code></pre></div>
 <p>This can be useful for example for calculating the branch lengths in each bin:</p>
-<div class="sourceCode" id="cb583"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb583-1"><a href="the-guts-of-the-disprity-package.html#cb583-1" aria-hidden="true"></a><span class="co">## How many cumulated phylogenetic diversity in each bin?</span></span>
-<span id="cb583-2"><a href="the-guts-of-the-disprity-package.html#cb583-2" aria-hidden="true"></a><span class="kw">lapply</span>(bin_subsets, <span class="cf">function</span>(tree) <span class="kw">sum</span>(tree<span class="op">$</span>edge.length))</span></code></pre></div>
+<div class="sourceCode" id="cb601"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb601-1"><a href="the-guts-of-the-disprity-package.html#cb601-1" tabindex="-1"></a><span class="do">## How many cumulated phylogenetic diversity in each bin?</span></span>
+<span id="cb601-2"><a href="the-guts-of-the-disprity-package.html#cb601-2" tabindex="-1"></a><span class="fu">lapply</span>(bin_subsets, <span class="cf">function</span>(tree) <span class="fu">sum</span>(tree<span class="sc">$</span>edge.length))</span></code></pre></div>
 <pre><code>## $`120 - 100`
-## [1] 189.2802
+## [1] 189.2829
 ## 
 ## $`100 - 80`
-## [1] 341.7199
+## [1] 341.7223
 ## 
 ## $`80 - 60`
-## [1] 426.7492</code></pre>
+## [1] 426.7486</code></pre>
 </div>
 </div>
 </div>
@@ -621,8 +652,8 @@ It is a <code>list</code> that can contain the following:</p>
 <li><code>$call$disparity</code>: this is a <code>list</code> containing one element, <code>$metric</code>, that is a <code>list</code> containing the different functions passed to the <code>metric</code> argument in <code>dispRity</code>. These are <code>call</code> elements and get modified each time the <code>dispRity</code> function is used (the first element is the first metric(s), the second, the second metric(s), etc.).</li>
 </ul>
 </div>
-<div id="subsets" class="section level3 hasAnchor" number="7.3.3">
-<h3><span class="header-section-number">7.3.3</span> <code>$subsets</code><a href="the-guts-of-the-disprity-package.html#subsets" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="subsets-1" class="section level3 hasAnchor" number="7.3.3">
+<h3><span class="header-section-number">7.3.3</span> <code>$subsets</code><a href="the-guts-of-the-disprity-package.html#subsets-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>This element contain the eventual subsets of the multidimensional space.
 It is a <code>list</code> of subset names.
 Each subset name is in turn a <code>list</code> of at least one element called <code>elements</code> which is in turn a <code>matrix</code>.

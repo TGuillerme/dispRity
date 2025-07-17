@@ -386,3 +386,9 @@ test_that("check.dispRity.data works", {
     expect_equal(names(test), c("matrix", "multi"))
 })
 
+test_that("matrix.to.dist works", {
+    data <- matrix(rnorm(90), 9, 10, dimnames = list(letters[1:9]))
+    dist <- dist(data)
+    dist_mat <- as.matrix(dist)
+    expect_equal(as.vector(matrix.to.dist(dist_mat)), as.vector(dist))
+}) 

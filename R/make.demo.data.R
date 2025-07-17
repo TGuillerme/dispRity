@@ -6,10 +6,11 @@
 #     file.remove("../data/BeckLee_mat50.rda")
 #     file.remove("../data/BeckLee_mat99.rda")
 
+#     set.seed(1)
 #     library(dispRity)
 #     library(paleotree)
 #     library(geiger)
-#     source("../tests/testthat/make.data/multi.ace.R")
+#     source("../tests/testthat/make.data/multi.ace_internal.R")
 #     source("../tests/testthat/make.data/convert.tokens.R")
 #     source("../tests/testthat/make.data/read.nexus.data.R")
 #     ## matrix
@@ -34,9 +35,8 @@
 #     FADLAD <- read.csv("../tests/testthat/make.data/Beck2014_FADLAD.csv", row.names = 1)
 #     FADLAD <- FADLAD[-which(is.na(match(rownames(FADLAD), tree$tip.label))),]
 
-
 #     ## Add the ancestral states estimates
-#     ancestral_states <- multi.ace(matrix, tree, models = "ER", verbose = TRUE)[[1]]
+#     ancestral_states <- multi.ace_internal(matrix, tree, models = "ER", verbose = TRUE)[[1]]
 #     rownames(ancestral_states) <- tree$node.labels
 
 #     ## Combine both
@@ -102,3 +102,7 @@
 #     ## save the data
 #     save(BeckLee_disparity, file = "../data/BeckLee_disparity.rda")
 # }
+
+# # make.demo.data_BeckLeeXXX()
+# # make.demo.data_disparity()
+# # make.demo.data_BeckLee_disparity()

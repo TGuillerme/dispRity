@@ -40,7 +40,7 @@ test_that("get.plot.params works", {
     ## The plotting options
     expect_equal(plot_params$options$xlab, "Time (Mya)")
     expect_equal(plot_params$options$ylab, "c(median, centroids)")
-    expect_equal_round(plot_params$options$ylim, c(1.546577, 2.012542), 6)
+    expect_equal_round(plot_params$options$ylim, c(1.516207, 1.971640), 6)
     expect_equal(plot_params$options$col, c("black", "#BEBEBE", "#D3D3D3"))
     ## Observed data
     expect_equal(names(plot_params$observed_args), c("observed", "col", "names", "data", "pch", "cex"))

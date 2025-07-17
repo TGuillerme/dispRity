@@ -16,13 +16,14 @@ chrono.subsets(
   FADLAD = NULL,
   verbose = FALSE,
   t0 = FALSE,
-  bind.data = FALSE
+  bind.data = FALSE,
+  dist.data = FALSE
 )
 }
 \arguments{
-\item{data}{A \code{matrix} or a \code{list} of matrices.}
+\item{data}{A \code{matrix}, a \code{list} of matrices or a \code{dispRity} object.}
 
-\item{tree}{\code{NULL} (default) or an optional \code{phylo} or \code{multiPhylo} object matching the data and with a \code{root.time} element. This argument can be left missing if \code{method = "discrete"} and all elements are present in the optional \code{FADLAD} argument.}
+\item{tree}{\code{NULL} (default) or an optional \code{phylo} or \code{multiPhylo} object matching the data and with a \code{root.time} element. This argument can be left missing if \code{method = "discrete"} and all elements are present in the optional \code{FADLAD} argument or if \code{data} has a \code{$tree} component.}
 
 \item{method}{The time subsampling method: either \code{"discrete"} (or \code{"d"}) or \code{"continuous"} (or \code{"c"}).}
 
@@ -39,6 +40,8 @@ chrono.subsets(
 \item{t0}{If \code{time} is a number of samples, whether to start the sampling from the \code{tree$root.time} (\code{TRUE}), or from the first sample containing at least three elements (\code{FALSE} - default) or from a fixed time point (if \code{t0} is a single \code{numeric} value).}
 
 \item{bind.data}{If \code{data} contains multiple matrices and \code{tree} contains the same number of trees, whether to bind the pairs of matrices and the trees (\code{TRUE}) or not (\code{FALSE} - default).}
+
+\item{dist.data}{A \code{logical} value indicating whether to treat the data as distance data (\code{TRUE}) or not (\code{FALSE} - default).}
 }
 \description{
 Splits the data into a chronological (time) subsets list.

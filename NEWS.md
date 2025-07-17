@@ -1,35 +1,65 @@
-dispRity v1.8.11 (2024-06-06) 
+dispRity v1.9.6 (2025-04-08)
 =========================
 
 ### NEW FEATURES
+
+
+ * Abundance
+
+<!--  * New interface for the `BAT` package with new generic metric function `BAT.metric`. This function allows to use any metric from the `BAT` function as a metric for `dispRity` using the synthax: `dispRity(data, metric = BAT.metric, BAT.fun = "name", ...)`
+ * New utility function: `dispRity.BAT` for converting some parts of `dispRity` objects into `BAT` argumen
+ -->
+
+ * Revamped `multi.ace` to allow for sampling distribution of ancestral states instead of point estimates with the new argument `sample`. The function can now also re-analyse previous outputs to save time by using the `output = "multi.ace"` option.
+
+### MINOR IMPROVEMENTS
+
+ * `chrono.subsets` now can recycle the `$tree` component of a `dispRity` object.
+ * The output of `multi.ace` using `estimation.details` with specific character arguments (e.g. `"detail_name"`) is now sorted in the order `output[[tree_ID]][[character_ID]]$detail_name`, rather than the previous version order that was `output[[tree_ID]]$detail_name[[character_ID]]`.
+
+### BUG FIXES
+
+ * `plot.dispRity` now handles infinite values for generating plot limits (thanks to Mario Corio for spotting that one).
+ * `dispRity` now correctly handles multiple matrices and multiple trees for multiple metrics.
+ * `print` now correctly prints the content of "empty" data.
+ * Fixed retro-compatibility for S3 behaviours (`plot` and `summary`) for `dispRity` objects made before `1.9`.
+ * Fixed bug with `multi.ace` that always returned missing data tokens for discrete invariant characters.
+ * Fixed bug withe `chrono.subsets` for odd tree shapes (issue [#134](https://github.com/TGuillerme/dispRity/issues/134)).
+
+dispRity v1.9 (2024-11-13)  *distant update*
+=========================
+
+### NEW FEATURES
+
  * Redesigned `multi.ace` to be more modular and handle both continuous and/or discrete characters. Changes include a **change in argument name** from `castor.options` to the generic `options.args` (the options can be provided the same way as before though); and a **change in default arguments** for `models` which can now be left missing (previously was `"ER"`) and applies `"ER"` and `"BM"` for respectively discrete and continuous characters by default.
+ * New design when using distance matrices: `dist.helper` now allows to save distance matrices in the cache, saving a lot of RAM and speeding up calculations. You can use the helper using `dispRity(..., dist.helper = my_distance_function)` or `dispRity(..., dist.helper = my_distance_matrix)`.
+ * *New `dispRity`, `custom.subsets` and `chrono.subsets` option*: these three functions can now use `dist.data = TRUE` to specify that the input data is a distance matrix (and handle it accordingly).
+ * *New bootstrap options*: you can now use `boot.by` to specify whether to bootstrap the rows (previous behaviour), the columns or both (for distance matrices).
  * *New utility function* `set.root.time` to add a root time to a tree (`"phylo"`), list of trees (`"multiPhylo"`) or `dispRity` object with trees.
  * *New utility function* `remove.dispRity` to cleanly remove specific parts of a `"dispRity"` object.
- <!-- Add to manual -->
- <!-- TODO: make a MCMCglmm related standalone vignette -->
- <!-- TODO: make a morpho disparity (Claddis) standalone vignette -->
- <!-- TODO: New argument to the `boot.matrix` function: `boot.dimensions` for bootstrapping the rows of the matrix as well (can be either `"full"` or `"single"`).  -->
- * New interface for the `BAT` package with new generic metric function `BAT.metric`. This function allows to use any metric from the `BAT` function as a metric for `dispRity` using the synthax: `dispRity(data, metric = BAT.metric, BAT.fun = "name", ...)`
- * New utility function: `dispRity.BAT` for converting some parts of `dispRity` objects into `BAT` arguments.
  * *New metric*: `count.neighbours` to count the number of neighbours for each elements within a certain radius (thanks to Rob MacDonald for the suggestion).
-    <!-- TODO: also add to manual -->
 
 ### MINOR IMPROVEMENTS
 
  * `custom.subsets` can now take a logical vector for the `group` argument.
+ * `custom.subsets` now recycles node names when using a tree to create clade groups.
  * `plot` functions doing scatter plot now centers them without changing the scale of both axes.
  * **changed default argument** for `tree.age`: the number of digits output by `tree.age` is now changed from 3 to 4 by default.
  * the random starting parameters in `reduce.space` are now drawn from the input data distribution which speeds up the function significantly.
  * `match.tip.edges` can now just work for colouring edges connecting a vector of tips.
  * remove deprecated internal requirements in `boot.matrix`.
- <!-- Make roundness work for non-VCV matrices (specify the axis function, e.g. variances or quantiles) -->
+ * improved RAM management for `make.metric` (now uses the largest requestable subset rather than the whole data for testing).
 
 ### BUG FIXES
 
  * `scale.dispRity` now correctly ignores `NA`s when scaling.
  * `multi.ace` now correctly handles invariant characters when looking for NAs.
  * `dispRity` objects with a `$covar` component are not interpreted as bootstrapped by `boot.matrix` anymore.
-<!-- Remove bug in macos tags from tests -->
+
+### DEPRECATED
+
+ * The `dimensions` argument from `boot.matrix` is now removed: it has been redundant with the `dimensions` argument in the `dispRity` since v0.3!
+
 
 dispRity v1.8 (2023-12-11) *dispRity.multi*
 =========================
@@ -39,8 +69,8 @@ dispRity v1.8 (2023-12-11) *dispRity.multi*
  * Added the _dispRity.multi_ internal architecture now allowing users to work with different matrices **and** different trees as inputs for `custom.subsets`, `chrono.subsets`, `boot.matrix` and `dispRity`. This change is not affecting the user level appart from now allowing to bypass some error messages (thanks to Mario Corio for that obvious suggestion).
  * *New utility function*: `name.subsets` for directly accessing the subsets names of a `dispRity` object (basically doing `names(my_dispRity$subsets)`).
  * *New utility function*: `MCMCglmm.variance` for calculating the variance for specific terms in a `"MCMCglmm"` model.
- * *New* statistical test: `pgls.dispRity` to run PGLS test on a `dispRity` object with a level-2 metric and a tree (using excellent [`phylolm`](https://CRAN.R-project.org/package=phylolm) algorithm). The new test comes with its own S3 print, summary and plot functions if the input `dispRity` data contains multiple trees or multiple matrices (running and handling the output of multiple `phylolm`).
- * *New* options to `get.tree` utility function to get the trees in each subsets (thanks to Jack Hadfield for this suggestion and help with implementation).
+ * *New* statistical test: `pgls.dispRity` to run PGLS test on a `dispRity` object with a level-2 metric and a tree (using the excellent [`phylolm`](https://CRAN.R-project.org/package=phylolm) algorithm). The new test comes with its own S3 print, summary and plot functions if the input `dispRity` data contains multiple trees or multiple matrices (running and handling the output of multiple `phylolm`).
+ * *New* options to `get.tree` utility function to get the trees in each subsets (thanks to Jack Hatfield for this suggestion and help with implementation).
  * *New vignette* compiling resources for developers to help people (and future me) to edit the package. 
  * *New metric*: `roundness` to measure the roundness of a variance-covariance matrix. 
 
@@ -87,7 +117,7 @@ dispRity v1.7 (2022-08-08) *MacMacGlimm*
 ### NEW FEATURES
 
  * *New* data function: `select.axes` for selecting and analysing the number of axes required to contain an arbitrary amount of variance.
- * *New* utility function: `randtest.dist` for measuring the distance between the observed statistic and a specific quantile of the simulated statistic (thanks to [Frane Babarovic](https://twitter.com/FBabarovic) for the inspiration).
+ * *New* utility function: `randtest.dist` for measuring the distance between the observed statistic and a specific quantile of the simulated statistic (thanks to Frane Babarovic for the inspiration).
  * `dispRity` objects can now contain covariance matrices as a `$covar` object. The `covar` part can be directly used for some specific metrics (usually `my_metric.covar`) and are handled by the `dispRity` function (and `plot`, `summary`, etc...) in a specific way. `$covar` contains a list of two elements `VCV` the variance covariance matrix and `loc` the coordinates of the centre of the `VCV` in space (can be left empty). `$covar` matrices are effectively treated as bootstraps.
  * *New function* `covar.plot` for plotting the `covar` content of `dispRity` objects (this is separated from `plot.dispRity` because of the many different options).
  * *New function*: `MCMCglmm.subsets` is a function that allows to convert a `MCMCglmm` object into a `dispRity` object.
@@ -150,7 +180,7 @@ dispRity v1.6.0 (2021-04-16) *dispRitree*
  * You can now save the shifts results in `test.metric` with `save.steps` and then visualise them with `plot.dispRity` along side the disparity metric test results.
  * *New* utility function `n.subsets` to directly get the number of subsets in a `dispRity` object.
  * *New* statistical test: `randtest.dispRity` that is a wrapper for `ade4::randtest` applied to `dispRity` objects (not dissimilar from `null.test`).
- * Six more demo datasets have been added to the package! These datasets are the ones used in [Guillerme et al. 2020](https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Shifting+spaces%3A+Which+disparity+or+dissimilarity+measurement+best+summarize+occupancy+in+multidimensional+spaces%3F&btnG=) and published originally in [Beck & Lee 2014](https://doi.org/10.1098/rspb.2014.1278) (that one was originally the only demo dataset in the package), [Wright 2017](https://www.cambridge.org/core/journals/journal-of-paleontology/article/bayesian-estimation-of-fossil-phylogenies-and-the-evolution-of-early-to-middle-paleozoic-crinoids-echinodermata/E37972902541CD0995AAD08A1122BD54), [Marcy et al. 2016](https://link.springer.com/article/10.1186/s12862-016-0782-1), [Hopkins & Pearson 2016](https://pdfs.semanticscholar.org/a3f0/50944d2aefa1df811ea94a3eea630d82c24f.pdf)), [Jones et al. 2015](https://scholar.google.co.uk/scholar?hl=en&as_sdt=0%2C5&q=Dispersal+mode+mediates+the+effect+of+patch+size+and+patch+connectivity+on+metacommunity+diversity&btnG=), [Healy et al. 2019](https://www.nature.com/articles/s41559-019-0938-7). Thanks to all these authors for their open science work!
+ * Six more demo datasets have been added to the package! These datasets are the ones used in [Guillerme et al. 2020](https://onlinelibrary.wiley.com/doi/full/10.1002/ece3.6452) and published originally in [Beck & Lee 2014](https://doi.org/10.1098/rspb.2014.1278) (that one was originally the only demo dataset in the package), [Wright 2017](https://www.cambridge.org/core/journals/journal-of-paleontology/article/bayesian-estimation-of-fossil-phylogenies-and-the-evolution-of-early-to-middle-paleozoic-crinoids-echinodermata/E37972902541CD0995AAD08A1122BD54), [Marcy et al. 2016](https://link.springer.com/article/10.1186/s12862-016-0782-1), [Hopkins & Pearson 2016](https://palaeo-electronica.org/content/2016/1621-3d-morphometrics-in-trilobites). Thanks to all these authors for their open science work!
  * `dispRity` objects now have a reserved `$tree` component that contain any number of trees attached to the data. This allows any function to use the reserved argument name `tree` to extract directly the relevant tree from the `dispRity` object, for functions like `chrono.subsets` or metrics like `ancestral.dist`! To help manipulate the `tree` component of the `dispRity` object, you can now use the new utility functions `add.tree`, `get.tree` and `remove.tree`.
 
 ### MINOR IMPROVEMENT
@@ -169,7 +199,7 @@ dispRity v1.6.0 (2021-04-16) *dispRitree*
 
 ### BUG FIXES
 
-  * `chrono.subsets` now automatically detects the number of digits to round for the internal time slicing functions (thanks to [Mario Corio](https://mariocoiro.blog/) for finding this one).
+  * `chrono.subsets` now automatically detects the number of digits to round for the internal time slicing functions (thanks to Mario Corio) for finding this one).
   * Fixed bug in `test.metric` plots that now display correctly the "top" and "bottom" changes for the "position" shift.
   * Fixed bug in `test.metric` plots that now display the R^2 values correctly.
   * Fixed bug in `tree.age` when the tree tips/node labels vector is longer than the actual number of tips/nodes in the tree.
@@ -186,7 +216,7 @@ dispRity v1.5.0 (2020-09-25) *between groups*
 ### NEW FEATURES
 
   * *New* function: `multi.ace` for performing fast ancestral character estimations on multiple matrices (based on `castor::asr_mk_model`).
-  * *New* function: `reduce.space`, a function to modify trait spaces imported from the [`moms` shiny app](https://github.com/TGuillerme/moms). This function comes with a new reduction algorithm: the "evenness" algorithm for flattening the curve (thanks to [Gavin Thomas](https://github.com/ghthomas) for the suggestion).
+  * *New* function: `reduce.space`, a function to modify trait spaces imported from the [`moms` shiny app](https://github.com/TGuillerme/moms). This function comes with a new reduction algorithm: the "evenness" algorithm for flattening the curve (thanks to Gavin Thomas) for the suggestion).
   * *New* function: `test.metric` (and associated `plot`, `print` and `summary` functions), to apply the `reduce.space` function on a specific space and metric to test whether a metric is picking up specific changes in trait space.
   * the `dispRity` function can now use `"between.groups"` metrics to calculate disparity between groups rather than within groups. The `make.metric` function is now modified to allow detection of metrics that can be applied between groups.
   * *New* metric: `group.dist`, a dimension level 1 metric for between groups that measures the distance between two groups. By default, this is the minimum distance but the function takes the `probs` argument allowing the distance to be between, says, the 95% CI (`probs = c(0.025, 0.975))`) or between the centroids (`probs = c(0.5)`).
@@ -209,8 +239,8 @@ dispRity v1.5.0 (2020-09-25) *between groups*
 
 ### BUG FIXES
 
-  * Updated all calls to the `Claddis` package to match version 0.6 (thanks to [Graeme Lloyd](http://graemetlloyd.com/) for fixing [this one](https://github.com/TGuillerme/dispRity/pull/104)!)
-  * Updated `Claddis.ordination` function to be compatible with the new `ape` version `5.4` (thanks to [Emmanuel Paradis](https://github.com/emmanuelparadis) for the pointing that out).
+  * Updated all calls to the `Claddis` package to match version 0.6 (thanks to Graeme Lloyd) for fixing [this one](https://github.com/TGuillerme/dispRity/pull/104)!)
+  * Updated `Claddis.ordination` function to be compatible with the new `ape` version `5.4` (thanks to Emmanuel Paradis) for the pointing that out).
   * Fixed a bug in `chrono.subsets` where ladder trees with no tip branch lengths an `method = "continuous"` option would get stuck in an infinite loop.
   * Fixed a bug in `chrono.subsets` where the `"*.split"` methods would bug if the last slice is through a single edge.
   * Fixed a bug in `dispRity` where some 1D matrices could loose their class for certain metrics.
@@ -325,7 +355,7 @@ dispRity v1.2 (2018-09-19) *model tests*
 
 ### BUG FIXES
 
-  * Corrected `char.diff` to properly reflect the probability of different splits between characters (thanks to [Abigail Pastore](https://github.com/aipastore)).
+  * Corrected `char.diff` to properly reflect the probability of different splits between characters (thanks to Abigail Pastore).
 
 
 dispRity v1.1 (2018-03-20) *got CRAN*

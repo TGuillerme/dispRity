@@ -201,30 +201,6 @@ boot.matrix(BeckLee_mat50, bootstraps = 20,
 
 > Note that using the `rarefaction` argument also bootstraps the data. In these examples, the function bootstraps the data (without rarefaction) AND also bootstraps the data with the different rarefaction levels.
 
-One other argument is `dimensions` that specifies how many dimensions from the matrix should be used for further analysis.
-When missing, all dimensions from the ordinated matrix are used.
-
-```{r, eval=TRUE}
-## Using the first 50% of the dimensions
-boot.matrix(BeckLee_mat50, dimensions = 0.5)
-
-## Using the first 10 dimensions
-boot.matrix(BeckLee_mat50, dimensions = 10)
-```
-
-It is also possible to specify the sampling probability in the bootstrap for each elements.
-This can be useful for weighting analysis for example (i.e. giving more importance to specific elements).
-These probabilities can be passed to the `prob` argument individually with a vector with the elements names or with a matrix with the rownames as elements names.
-The elements with no specified probability will be assigned a probability of 1 (or 1/maximum weight if the argument is weights rather than probabilities).
-
-```{r, eval=TRUE}
-## Attributing a weight of 0 to Cimolestes and 10 to Maelestes
-boot.matrix(BeckLee_mat50,
-            prob = c("Cimolestes" = 0, "Maelestes" = 10))
-```
-
-Of course, one could directly supply the subsets generated above (using `chrono.subsets` or `custom.subsets`) to this function.
-
 ```{r, eval=TRUE}
 ## Creating subsets of crown and stem mammals
 crown_stem <- custom.subsets(BeckLee_mat50,
@@ -244,6 +220,49 @@ time_slices <- chrono.subsets(data = BeckLee_mat99,
 ## Bootstrapping the time slice subsets
 boot.matrix(time_slices, bootstraps = 100)
 ```
+
+### Bootstrapping with probabilities
+
+It is also possible to specify the sampling probability in the bootstrap for each elements.
+This can be useful for weighting analysis for example (i.e. giving more importance to specific elements).
+These probabilities can be passed to the `prob` argument individually with a vector with the elements names or with a matrix with the rownames as elements names.
+The elements with no specified probability will be assigned a probability of 1 (or 1/maximum weight if the argument is weights rather than probabilities).
+
+```{r, eval=TRUE}
+## Attributing a weight of 0 to Cimolestes and 10 to Maelestes
+boot.matrix(BeckLee_mat50,
+            prob = c("Cimolestes" = 0, "Maelestes" = 10))
+```
+
+### Bootstrapping dimensions
+
+In some cases, you might also be interested in bootstrapping dimensions rather than observations.
+I.e. bootstrapping the columns of a matrix rather than the rows.
+
+It's pretty easy! By default, `boot.matrix` uses the option `boot.by = "rows"` which you can toggle to `boot.by = "columns"`
+
+```{r, eval = TRUE}
+## Bootstrapping the observations (default)
+set.seed(1)
+boot_obs <- boot.matrix(data = crown_stem, boot.by = "rows")
+
+## Bootstrapping the columns rather than the rows
+set.seed(1)
+boot_dim <- boot.matrix(data = crown_stem, boot.by = "columns")
+```
+
+In these two examples, the first one `boot_obs` bootstraps the rows as showed before (default behaviour).
+But the second one, `boot_dim` bootstraps the dimensions.
+That means that for each bootstrap sample, the value calculated is actually obtained by reshuffling the dimensions (columns) rather than the observations (rows).
+
+```{r, eval = TRUE}
+## Measuring disparity and summarising
+summary(dispRity(boot_obs, metric = sum))
+summary(dispRity(boot_dim, metric = sum))
+```
+
+Note here how the observed sum is the same (no bootstrapping) but the bootstrapping distributions are quiet different even though the same seed was used.
+
 
 ## Disparity metrics {#disparity-metrics}
 
@@ -492,6 +511,7 @@ Level | Name | Description | Source |
 2 | `centroids`<sup>1</sup> | The distance between each element and the centroid of the ordinated space | `dispRity` |
 1 | `convhull.surface` | The surface of the convex hull formed by all the elements | [`geometry`](https://cran.r-project.org/web/packages/geometry/index.html)`::convhulln$area` |
 1 | `convhull.volume` | The volume of the convex hull formed by all the elements | [`geometry`](https://cran.r-project.org/web/packages/geometry/index.html)`::convhulln$vol` |
+2 | `count.neighbours` | The number of neigbhours to each element in a specified radius | `dispRity` |
 2 | `deviations` | The minimal distance between each element and a hyperplane | `dispRity` |
 1 | `diagonal` | The longest distance in the ordinated space (like the diagonal in two dimensions) | `dispRity` |
 1 | `disalignment` | The rejection of the centroid of a matrix from the major axis of another (typically an `"as.covar"` metric) | `dispRity` |
@@ -635,7 +655,7 @@ Also note that they are really sensitive to the size of the dataset.
 
 > Cautionary note: measuring volumes in a high number of dimensions can be strongly affected by the [curse of dimensionality](https://en.wikipedia.org/wiki/Curse_of_dimensionality) that often results in near 0 disparity values. I strongly recommend reading [this really intuitive explanation](https://beta.observablehq.com/@tophtucker/theres-plenty-of-room-in-the-corners) from [Toph Tucker](https://github.com/tophtucker).
 
-#### Ranges, variances, quantiles, radius, pairwise distance, neighbours, modal value and diagonal
+#### Ranges, variances, quantiles, radius, pairwise distance, neighbours (and counting them), modal value and diagonal
 
 The functions `ranges`, `variances` `radius`, `pairwise.dist`, `mode.val` and `diagonal` all measure properties of the ordinated space based on its dimensional properties (they are also less affected by the "curse of dimensionality"):
 
@@ -706,6 +726,16 @@ summary(dispRity(dummy_space, metric = neighbours))
 ## The average furthest neighbour manhattan distances
 summary(dispRity(dummy_space, metric = neighbours,
                  which = max, method = "manhattan"))
+
+## The overall number of neighbours per point
+summary(dispRity(dummy_space, metric = count.neighbours,
+                 relative = FALSE))
+
+## The relative number of neigbhours
+## two standard deviations of each element
+summary(dispRity(dummy_space, metric = count.neighbours,
+                 radius = function(x)(sd(x)*2),
+                 relative = TRUE))
 ```
 
 Note that this function is a direct call to `vegan::vegdist(matrix, method = method, diag = FALSE, upper = FALSE, ...)`.
@@ -764,7 +794,8 @@ summary(dispRity(dummy_groups, metric = centroids,
 
 The `displacements` distance is the ratio between the `centroids` distance and the `centroids` distance with `centroid = 0`.
 Note that it is possible to measure a ratio from another point than `0` using the `reference` argument.
-It gives indication of the relative displacement of elements in the multidimensional space: a score  >1 signifies a displacement *away* from the reference. A score of >1 signifies a displacement *towards* the reference.
+It gives indication of the relative displacement of elements in the multidimensional space: a score > 1 signifies a displacement away from the reference. A score of < 1 signifies a displacement *towards* the reference.
+
 
 ```{r}
 ## The relative displacement of the group in space to the centre
@@ -1360,7 +1391,7 @@ This can be done by plotting `dispRity` objects with no calculated disparity!
 For example, we might be interested in looking at how the distribution of elements change as a function of the distributions of different sub-settings.
 For example custom subsets *vs.* time subsets:
 
-```{r, fig.width=8, fig.height=4}
+```{r, fig.width=12, fig.height=6}
 ## Making the different subsets
 cust_subsets <- custom.subsets(BeckLee_mat99,
                                crown.stem(BeckLee_tree,
@@ -1389,7 +1420,7 @@ Groups that don't overlap on two set dimensions can totally overlap in all other
 For `dispRity` objects that do contain disparity data, the default option is to plot your disparity data.
 However you can always force the `preview` option using the following:
 
-```{r, fig.height = 16, fig.width = 8}
+```{r, fig.height = 12, fig.width = 6}
 par(mfrow = c(2,1))
 ## Default plotting
 plot(disparity_time_slices, main = "Disparity through time")
@@ -1409,7 +1440,7 @@ But you can also decide to _only_ colour the circles in blue using `points.col =
 
 Here is an example with multiple elements (lines and points) taken from the [disparity with trees](#dispRitree) section below:
 
-```{r}
+```{r, fig.height = 12, fig.width = 12}
 ## Loading some demo data:
 ## An ordinated matrix with node and tip labels
 data(BeckLee_mat99)
@@ -1492,12 +1523,12 @@ In practice, the `test.dispRity` function will pass the calculated disparity dat
 
 ### NPMANOVA in `dispRity` {#adonis}
 
-One often useful test to apply to multidimensional data is the permutational multivariate analysis of variance based on distance matrices `vegan::adonis`.
+One often useful test to apply to multidimensional data is the permutational multivariate analysis of variance based on distance matrices `vegan::adonis2`.
 This can be done on `dispRity` objects using the `adonis.dispRity` wrapper function.
 Basically, this function takes the exact same arguments as `adonis` and a `dispRity` object for data and performs a PERMANOVA based on the distance matrix of the multidimensional space (unless the multidimensional space was already defined as a distance matrix).
 The `adonis.dispRity` function uses the information from the `dispRity` object to generate default formulas:
 
-  * If the object contains customised subsets, it applies the default formula `matrix ~ group` testing the effect of `group` as a predictor on `matrix` (called from the `dispRity` object as `data$matrix` see [`dispRitu` object details](#The-dispRity-object-content))
+  * If the object contains customised subsets, it applies the default formula `matrix ~ group` testing the effect of `group` as a predictor on `matrix` (called from the `dispRity` object as `data$matrix` see [`dispRity` object details](#The-dispRity-object-content))
   * If the object contains time subsets, it applies the default formula `matrix ~ time` testing the effect of `time` as a predictor (were the different levels of `time` are the different time slices/bins)
 
 ```{r}
@@ -1969,7 +2000,7 @@ Note that, as expected, this central tendency is the same in both metrics!
 
 Another, maybe more intuitive way, to compare both approaches for measuring disparity is to plot the distributions:
 
-```{r, fig.width=8, fig.height=8}
+```{r, fig.width=8, fig.height=4}
 ## Graphical parameters
 op <- par(bty = "n", mfrow = c(1, 2))
 
@@ -2185,7 +2216,7 @@ summary(dispRity(three_tree, metric = c(sum, variances)))
 
 This results show the effect of considering a tree distribution: in the first case (`one_tree`) the time slice at 3.95 Mya has a sum of variances of 2.9 but this values goes down to 0.256 in the second case (`three_tree`) which is due to the differences in branch lengths distributions:
 
-```{r, print = FALSE}
+```{r, print = FALSE, fig.width = 4, fig.height = 12}
 par(mfrow = c(3,1))
 slices <- c(7.9, 3.95, 0)
 fun.plot <- function(tree) {
@@ -2278,7 +2309,6 @@ plot(sum_edge_length)
 
 Of course this can be done with multiple trees and be combined with an approach using multiple matrices (see [here](#multi.input))!
 
-
 ## Disparity of variance-covariance matrices (covar) {#covar}
 
 Variance-covariance matrices are sometimes a useful way to summarise multidimensional data.
@@ -2289,6 +2319,7 @@ For example, you might have a multidimensional dataset where your observations h
 You can then analyse this data using a glmm with something like `my_data ~ observations + phylogeny + redisduals`.
 For more info on these models [start here](https://en.wikipedia.org/wiki/Generalized_linear_mixed_model).
 For more details on running these models, I suggest using the `MCMCglmm` package (@MCMCglmm) from @hadfield2010 (but see also @mulTree).
+For an example use of this code, see @guillerme2023innovation.
 
 ### Creating a `dispRity` object with a `$covar` component
 
@@ -2334,7 +2365,7 @@ One useful thing to do with these objects is then to visualise them in 2D.
 Here we can use the `covar.plot` function (that has many different options that just `plot.dispRity` for plotting covar objects) to plot the trait space, the 95% confidence interval ellipses of the variance-covariance matrices and the major axes from these ellipses.
 See the `?covar.plot` help page for all the options available:
 
-```{r}
+```{r, fig.height = 12, fig.width = 12}
 par(mfrow = c(2,2))
 ## The traitspace
 covar.plot(my_covar, col = c("orange", "darkgreen", "blue"), main = "Trait space")
@@ -2380,3 +2411,131 @@ as.covar(variances)(my_covar$covar[["gulls"]][[1]])
 ## The same but applied to the dispRity function
 summary(dispRity(my_covar, metric = as.covar(variances)))
 ```
+
+## Disparity and distances
+
+There are two ways to use distances in `dispRity`, either with your input data being directly a distance matrix or with your disparity metric involving some kind of distance calculations.
+
+### Disparity data is a distance
+
+If your disparity data is a distance matrix, you can use the option `dist.data = TRUE` in `dispRity` to make sure that all the operations done on your data take into account the fact that your disparity data has distance properties.
+For example, if you bootstrap the data, this will automatically bootstrap both rows AND columns (i.e. so that the bootstrapped matrices are still distances).
+This also improves speed on some calculations if you use [disparity metrics](#disparity-metrics) directly implemented in the package by avoiding recalculating distances (the full list can be seen in `?dispRity.metric` - they are usually the metrics with `dist` in their name).
+
+#### Subsets
+
+By default, the `dispRity` package does not treat any matrix as a distance matrix.
+It will however try to guess whether your input data is a distance matrix or not.
+This means that if you input a distance matrix, you might get a warning letting you know the input matrix might not be treated correctly (e.g. when bootstrapping or subsetting).
+For the functions `dispRity`, `custom.subsets` and `chrono.subsets` you can simply toggle the option `dist.data = TRUE` to make sure you treat your input data as a distance matrix throughout your analysis.
+
+```{r}
+## Creating a distance matrix
+distance_data <- as.matrix(dist(BeckLee_mat50))
+
+## Measuring the diagonal of the distance matrix
+dispRity(distance_data, metric = diag, dist.data = TRUE)
+```
+
+If you use a pipeline of any of these functions, you only need to specify it once and the data will be treated as a distance matrix throughout.
+
+```{r}
+## Creating a distance matrix
+distance_data <- as.matrix(dist(BeckLee_mat50))
+
+## Creating two subsets specifying that the data is a distance matrix
+subsets <- custom.subsets(distance_data, group = list(c(1:5), c(6:10)), dist.data = TRUE)
+## Measuring disparity treating the data as distance matrices
+dispRity(subsets, metric = diag)
+
+## Measuring disparity treating the data as a normal matrix (toggling the option to FALSE)
+dispRity(subsets, metric = diag, dist.data = FALSE)
+## Note that a warning appears but the function still runs
+```
+
+#### Bootstrapping
+
+The function `boot.matrix` also can deal with distance matrices by bootstrapping both rows and columns in a linked way (e.g. if a bootstrap pseudo-replicate draws the values 1, 2, and 5, it will select both columns 1, 2, and 5 and rows 1, 2, and 5 - keeping the distance structure of the data).
+You can do that by using the `boot.by = "dist"` function that will bootstrap the data in a distance matrix fashion:
+
+```{r}
+## Measuring the diagonal of a bootstrapped matrix
+boot.matrix(distance_data, boot.by = "dist")
+```
+
+Similarly to the `dispRity`, `custom.subsets` and `chrono.subsets` function above, the option to treat the input data as a distance matrix is recorded and recycled so there is no need to specify it each time.
+
+### Disparity metric is a distance
+
+On the other hand if your data is not a distance matrix but you are using a metric that uses some kind of distance calculations, you can use the option `dist.helper` to greatly speed up calculations.
+`dist.helper` can be either a pre-calculated distance matrix (or a list of distance matrices) or, better yet, a function to calculate distance matrices, like `stats::dist` or `vegan::vegdist`.
+This option directly stores the distance matrix separately in the RAM and allows the disparity metric to directly access it at every disparity calculation iteration, making it much faster.
+Note that if you provide a function for `dist.helper`, you can also provide any un-ambiguous optional argument to that function, for example `method = "euclidean"`.
+
+If you use a disparity metric implemented in `dispRity`, the `dist.helper` option is correctly loaded onto the RAM regardless of the argument you provide (a matrix, a list of matrix or any function to calculate a distance matrix).
+On the other hand, if you use your own function for the disparity metric, make sure that `dist.helper` exactly matches the internal distance calculation function.
+For example if you use the already implemented `pairwise.dist` metric all the following options will be using `dist.helper` optimally: 
+
+```{r, eval = FALSE}
+## Using the dist function from stats (specifying it comes from stats)
+dispRity(my_data, metric = pairwise.dist, dist.helper = stats::dist)
+
+## Using the dist function from vegdist function (without specifying its origin)
+dispRity(my_data, metric = pairwise.dist, dist.helper = vegdist)
+
+## Using some pre-calculated distance with a generic function
+my_distance_matrix <- dist(my_distance_data)
+dispRity(my_data, metric = pairwise.dist, dist.helper = my_distance_matrix)
+
+## Using some pre-calculated distance with a user function defined elsewhere
+my_distance_matrix <- my.personalised.function(my_distance_data)
+dispRity(my_data, metric = pairwise.dist, dist.helper = my_distance_matrix)
+```
+
+However, if you use a homemade metric for calculating distances like this:
+
+```{r, eval = FALSE}
+## a personalised distance function
+my.sum.of.dist <- function(matrix) {
+  return(sum(dist(matrix)))
+}
+```
+
+The `dist.helper` will only work if you specify the function using the same syntax as in the user function:
+
+```{r, eval = FALSE}
+## The following uses the helper correctly (as in saves a lot of calculation time)
+dispRity(my_data, metric = my.sum.of.dist, dist.helper = dist)
+
+## These ones however, work but don't use the dist.helper (don't save time)
+## The dist.helper is not a function
+dispRity(my_data, metric = my.sum.of.dist, dist.helper = dist(my_data))
+## The dist.helper is not the correct function (should be dist)
+dispRity(my_data, metric = my.sum.of.dist, dist.helper = vegdist)
+## The dist.helper is not the correct function (should be just dist)
+dispRity(my_data, metric = my.sum.of.dist, dist.helper = stats::dist)
+```
+<!-- 
+## Multi disparity: running disparity analyses on different data
+
+All the options and functions we've covered so far are running disparity analyses assuming that there is one unique trait space (although that trait space can be probabilistic and comprising multiple matrices).
+
+
+```{r}
+
+
+    tree <- rmtree(2, 10)
+    tree[[1]] <- makeNodeLabel(tree[[1]])
+    tree[[2]] <- makeNodeLabel(tree[[2]], prefix = "shnode")
+    tree[[1]]$root.time <- max(tree.age(tree[[1]])$ages)
+    tree[[2]]$root.time <- max(tree.age(tree[[2]])$ages)
+    data <- list(matrix(0, nrow = Ntip(tree[[1]]) + Nnode(tree[[1]]), dimnames = list(c(tree[[1]]$tip.label, tree[[1]]$node.label))),
+                 matrix(0, nrow = Ntip(tree[[2]]) + Nnode(tree[[2]]), dimnames = list(c(tree[[2]]$tip.label, tree[[2]]$node.label))))
+
+    ## Test working fine
+    test <- dispRity(data, metric = mean, tree = tree)
+    plot(test)
+    expect_equal(summary(test)$obs.median, 0)
+```
+
+ -->

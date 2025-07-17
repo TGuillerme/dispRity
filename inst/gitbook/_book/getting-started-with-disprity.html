@@ -23,7 +23,7 @@
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie)" />
 
 
-<meta name="date" content="2024-03-08" />
+<meta name="date" content="2024-11-12" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -49,38 +49,38 @@
 
 
 
-<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
 <link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
 <link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
 <script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
-<script src="libs/htmlwidgets-1.6.2/htmlwidgets.js"></script>
-<script src="libs/rglWebGL-binding-1.2.8/rglWebGL.js"></script>
-<link href="libs/rglwidgetClass-1.2.8/rgl.css" rel="stylesheet" />
-<script src="libs/rglwidgetClass-1.2.8/rglClass.src.js"></script>
-<script src="libs/rglwidgetClass-1.2.8/utils.src.js"></script>
-<script src="libs/rglwidgetClass-1.2.8/buffer.src.js"></script>
-<script src="libs/rglwidgetClass-1.2.8/subscenes.src.js"></script>
-<script src="libs/rglwidgetClass-1.2.8/shaders.src.js"></script>
-<script src="libs/rglwidgetClass-1.2.8/shadersrc.src.js"></script>
-<script src="libs/rglwidgetClass-1.2.8/textures.src.js"></script>
-<script src="libs/rglwidgetClass-1.2.8/projection.src.js"></script>
-<script src="libs/rglwidgetClass-1.2.8/mouse.src.js"></script>
-<script src="libs/rglwidgetClass-1.2.8/init.src.js"></script>
-<script src="libs/rglwidgetClass-1.2.8/pieces.src.js"></script>
-<script src="libs/rglwidgetClass-1.2.8/draw.src.js"></script>
-<script src="libs/rglwidgetClass-1.2.8/controls.src.js"></script>
-<script src="libs/rglwidgetClass-1.2.8/selection.src.js"></script>
-<script src="libs/rglwidgetClass-1.2.8/rglTimer.src.js"></script>
-<script src="libs/rglwidgetClass-1.2.8/pretty.src.js"></script>
-<script src="libs/rglwidgetClass-1.2.8/axes.src.js"></script>
-<script src="libs/rglwidgetClass-1.2.8/animation.src.js"></script>
-<script src="libs/CanvasMatrix4-1.2.8/CanvasMatrix.src.js"></script>
+<script src="libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<script src="libs/rglWebGL-binding-1.3.12/rglWebGL.js"></script>
+<link href="libs/rglwidgetClass-1.3.12/rgl.css" rel="stylesheet" />
+<script src="libs/rglwidgetClass-1.3.12/rglClass.src.js"></script>
+<script src="libs/rglwidgetClass-1.3.12/utils.src.js"></script>
+<script src="libs/rglwidgetClass-1.3.12/buffer.src.js"></script>
+<script src="libs/rglwidgetClass-1.3.12/subscenes.src.js"></script>
+<script src="libs/rglwidgetClass-1.3.12/shaders.src.js"></script>
+<script src="libs/rglwidgetClass-1.3.12/shadersrc.src.js"></script>
+<script src="libs/rglwidgetClass-1.3.12/textures.src.js"></script>
+<script src="libs/rglwidgetClass-1.3.12/projection.src.js"></script>
+<script src="libs/rglwidgetClass-1.3.12/mouse.src.js"></script>
+<script src="libs/rglwidgetClass-1.3.12/init.src.js"></script>
+<script src="libs/rglwidgetClass-1.3.12/pieces.src.js"></script>
+<script src="libs/rglwidgetClass-1.3.12/draw.src.js"></script>
+<script src="libs/rglwidgetClass-1.3.12/controls.src.js"></script>
+<script src="libs/rglwidgetClass-1.3.12/selection.src.js"></script>
+<script src="libs/rglwidgetClass-1.3.12/rglTimer.src.js"></script>
+<script src="libs/rglwidgetClass-1.3.12/pretty.src.js"></script>
+<script src="libs/rglwidgetClass-1.3.12/axes.src.js"></script>
+<script src="libs/rglwidgetClass-1.3.12/animation.src.js"></script>
+<script src="libs/CanvasMatrix4-1.3.12/CanvasMatrix.src.js"></script>
 
 
 <style type="text/css">
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
 pre.sourceCode { margin: 0; }
 @media screen {
@@ -114,7 +114,7 @@ code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
 code span.at { color: #7d9029; } /* Attribute */
 code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
+code span.bu { color: #008000; } /* BuiltIn */
 code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
 code span.ch { color: #4070a0; } /* Char */
 code span.cn { color: #880000; } /* Constant */
@@ -127,7 +127,7 @@ code span.er { color: #ff0000; font-weight: bold; } /* Error */
 code span.ex { } /* Extension */
 code span.fl { color: #40a070; } /* Float */
 code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
+code span.im { color: #008000; font-weight: bold; } /* Import */
 code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 code span.kw { color: #007020; font-weight: bold; } /* Keyword */
 code span.op { color: #666666; } /* Operator */
@@ -144,6 +144,28 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <style type="text/css">
   
   div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
 </style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
@@ -205,7 +227,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.1.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#time-slicing"><i class="fa fa-check"></i><b>4.1.2</b> Time-slicing</a></li>
 </ul></li>
 <li class="chapter" data-level="4.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#custom-subsets"><i class="fa fa-check"></i><b>4.2</b> Customised subsets</a></li>
-<li class="chapter" data-level="4.3" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#bootstraps-and-rarefactions"><i class="fa fa-check"></i><b>4.3</b> Bootstraps and rarefactions</a></li>
+<li class="chapter" data-level="4.3" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#bootstraps-and-rarefactions"><i class="fa fa-check"></i><b>4.3</b> Bootstraps and rarefactions</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#bootstrapping-with-probabilities"><i class="fa fa-check"></i><b>4.3.1</b> Bootstrapping with probabilities</a></li>
+<li class="chapter" data-level="4.3.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#bootstrapping-dimensions"><i class="fa fa-check"></i><b>4.3.2</b> Bootstrapping dimensions</a></li>
+</ul></li>
 <li class="chapter" data-level="4.4" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-metrics"><i class="fa fa-check"></i><b>4.4</b> Disparity metrics</a>
 <ul>
 <li class="chapter" data-level="4.4.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#the-function-dimension-levels"><i class="fa fa-check"></i><b>4.4.1</b> The function dimension-levels</a></li>
@@ -246,6 +272,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.12.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#creating-a-disprity-object-with-a-covar-component"><i class="fa fa-check"></i><b>4.12.1</b> Creating a <code>dispRity</code> object with a <code>$covar</code> component</a></li>
 <li class="chapter" data-level="4.12.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#visualising-covar-objects"><i class="fa fa-check"></i><b>4.12.2</b> Visualising covar objects</a></li>
 <li class="chapter" data-level="4.12.3" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-analyses-with-a-covar-component"><i class="fa fa-check"></i><b>4.12.3</b> Disparity analyses with a <code>$covar</code> component</a></li>
+</ul></li>
+<li class="chapter" data-level="4.13" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-and-distances"><i class="fa fa-check"></i><b>4.13</b> Disparity and distances</a>
+<ul>
+<li class="chapter" data-level="4.13.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-data-is-a-distance"><i class="fa fa-check"></i><b>4.13.1</b> Disparity data is a distance</a></li>
+<li class="chapter" data-level="4.13.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-metric-is-a-distance"><i class="fa fa-check"></i><b>4.13.2</b> Disparity metric is a distance</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="making-stuff-up.html"><a href="making-stuff-up.html"><i class="fa fa-check"></i><b>5</b> Making stuff up!</a>
@@ -295,7 +326,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="7.3.1" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#matrix"><i class="fa fa-check"></i><b>7.3.1</b> <code>$matrix</code></a></li>
 <li class="chapter" data-level="7.3.2" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#call"><i class="fa fa-check"></i><b>7.3.2</b> <code>$call</code></a></li>
-<li class="chapter" data-level="7.3.3" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#subsets"><i class="fa fa-check"></i><b>7.3.3</b> <code>$subsets</code></a></li>
+<li class="chapter" data-level="7.3.3" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#subsets-1"><i class="fa fa-check"></i><b>7.3.3</b> <code>$subsets</code></a></li>
 <li class="chapter" data-level="7.3.4" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#disparity"><i class="fa fa-check"></i><b>7.3.4</b> <code>$disparity</code></a></li>
 </ul></li>
 </ul></li>
@@ -381,17 +412,17 @@ You can also use distance matrices or any other matrix type that suits your ques
 <h3><span class="header-section-number">3.2.1</span> Ordination matrices from <code>geomorph</code><a href="getting-started-with-disprity.html#ordination-matrices-from-geomorph" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>You can also easily use data from <code>geomorph</code> using the <code>geomorph.ordination</code> function.
 This function simply takes Procrustes aligned data and performs an ordination:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="getting-started-with-disprity.html#cb5-1" aria-hidden="true"></a><span class="kw">require</span>(geomorph)</span>
-<span id="cb5-2"><a href="getting-started-with-disprity.html#cb5-2" aria-hidden="true"></a></span>
-<span id="cb5-3"><a href="getting-started-with-disprity.html#cb5-3" aria-hidden="true"></a><span class="co">## Loading the plethodon dataset</span></span>
-<span id="cb5-4"><a href="getting-started-with-disprity.html#cb5-4" aria-hidden="true"></a><span class="kw">data</span>(plethodon)</span>
-<span id="cb5-5"><a href="getting-started-with-disprity.html#cb5-5" aria-hidden="true"></a></span>
-<span id="cb5-6"><a href="getting-started-with-disprity.html#cb5-6" aria-hidden="true"></a><span class="co">## Performing a Procrustes transform on the landmarks</span></span>
-<span id="cb5-7"><a href="getting-started-with-disprity.html#cb5-7" aria-hidden="true"></a>procrustes &lt;-<span class="st"> </span><span class="kw">gpagen</span>(plethodon<span class="op">$</span>land, <span class="dt">PrinAxes =</span> <span class="ot">FALSE</span>,</span>
-<span id="cb5-8"><a href="getting-started-with-disprity.html#cb5-8" aria-hidden="true"></a>                     <span class="dt">print.progress =</span> <span class="ot">FALSE</span>)</span>
-<span id="cb5-9"><a href="getting-started-with-disprity.html#cb5-9" aria-hidden="true"></a></span>
-<span id="cb5-10"><a href="getting-started-with-disprity.html#cb5-10" aria-hidden="true"></a><span class="co">## Ordinating this data</span></span>
-<span id="cb5-11"><a href="getting-started-with-disprity.html#cb5-11" aria-hidden="true"></a><span class="kw">geomorph.ordination</span>(procrustes)[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="getting-started-with-disprity.html#cb5-1" tabindex="-1"></a><span class="fu">require</span>(geomorph)</span>
+<span id="cb5-2"><a href="getting-started-with-disprity.html#cb5-2" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="getting-started-with-disprity.html#cb5-3" tabindex="-1"></a><span class="do">## Loading the plethodon dataset</span></span>
+<span id="cb5-4"><a href="getting-started-with-disprity.html#cb5-4" tabindex="-1"></a><span class="fu">data</span>(plethodon)</span>
+<span id="cb5-5"><a href="getting-started-with-disprity.html#cb5-5" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="getting-started-with-disprity.html#cb5-6" tabindex="-1"></a><span class="do">## Performing a Procrustes transform on the landmarks</span></span>
+<span id="cb5-7"><a href="getting-started-with-disprity.html#cb5-7" tabindex="-1"></a>procrustes <span class="ot">&lt;-</span> <span class="fu">gpagen</span>(plethodon<span class="sc">$</span>land, <span class="at">PrinAxes =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb5-8"><a href="getting-started-with-disprity.html#cb5-8" tabindex="-1"></a>                     <span class="at">print.progress =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb5-9"><a href="getting-started-with-disprity.html#cb5-9" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="getting-started-with-disprity.html#cb5-10" tabindex="-1"></a><span class="do">## Ordinating this data</span></span>
+<span id="cb5-11"><a href="getting-started-with-disprity.html#cb5-11" tabindex="-1"></a><span class="fu">geomorph.ordination</span>(procrustes)[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>,<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span></code></pre></div>
 <pre><code>##                PC1        PC2           PC3          PC4          PC5
 ## [1,] -0.0369930887 0.05118246 -0.0016971586 -0.003128881 -0.010935739
 ## [2,] -0.0007493689 0.05942083  0.0001371682 -0.002768621 -0.008117767
@@ -401,12 +432,12 @@ This function simply takes Procrustes aligned data and performs an ordination:</
 <p>Options for the ordination (from <code>?prcomp</code>) can be directly passed to this function to perform customised ordinations.
 Additionally you can give the function a <code>geomorph.data.frame</code> object.
 If the latter contains sorting information (i.e. factors), they can be directly used to make a customised <code>dispRity</code> object <a href="#customised-subsets">customised <code>dispRity</code> object</a>!</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="getting-started-with-disprity.html#cb7-1" aria-hidden="true"></a><span class="co">## Using a geomorph.data.frame</span></span>
-<span id="cb7-2"><a href="getting-started-with-disprity.html#cb7-2" aria-hidden="true"></a>geomorph_df &lt;-<span class="st"> </span><span class="kw">geomorph.data.frame</span>(procrustes,</span>
-<span id="cb7-3"><a href="getting-started-with-disprity.html#cb7-3" aria-hidden="true"></a>     <span class="dt">species =</span> plethodon<span class="op">$</span>species, <span class="dt">site =</span> plethodon<span class="op">$</span>site)</span>
-<span id="cb7-4"><a href="getting-started-with-disprity.html#cb7-4" aria-hidden="true"></a></span>
-<span id="cb7-5"><a href="getting-started-with-disprity.html#cb7-5" aria-hidden="true"></a><span class="co">## Ordinating this data and making a dispRity object</span></span>
-<span id="cb7-6"><a href="getting-started-with-disprity.html#cb7-6" aria-hidden="true"></a><span class="kw">geomorph.ordination</span>(geomorph_df)</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="getting-started-with-disprity.html#cb7-1" tabindex="-1"></a><span class="do">## Using a geomorph.data.frame</span></span>
+<span id="cb7-2"><a href="getting-started-with-disprity.html#cb7-2" tabindex="-1"></a>geomorph_df <span class="ot">&lt;-</span> <span class="fu">geomorph.data.frame</span>(procrustes,</span>
+<span id="cb7-3"><a href="getting-started-with-disprity.html#cb7-3" tabindex="-1"></a>     <span class="at">species =</span> plethodon<span class="sc">$</span>species, <span class="at">site =</span> plethodon<span class="sc">$</span>site)</span>
+<span id="cb7-4"><a href="getting-started-with-disprity.html#cb7-4" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="getting-started-with-disprity.html#cb7-5" tabindex="-1"></a><span class="do">## Ordinating this data and making a dispRity object</span></span>
+<span id="cb7-6"><a href="getting-started-with-disprity.html#cb7-6" tabindex="-1"></a><span class="fu">geomorph.ordination</span>(geomorph_df)</span></code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
 ## 4 customised subsets for 40 elements in one matrix:
 ##     species.Jord, species.Teyah, site.Allo, site.Symp.</code></pre>
@@ -416,10 +447,10 @@ If the latter contains sorting information (i.e. factors), they can be directly
 <h3><span class="header-section-number">3.2.2</span> Ordination matrices from <code>Claddis</code><a href="getting-started-with-disprity.html#Claddis-ordination" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p><code>dispRity</code> package can also easily take data from the <code>Claddis</code> package using the <code>Claddis.ordination</code> function.
 For this, simply input a matrix in the <code>Claddis</code> format to the function and it will automatically calculate and ordinate the distances among taxa:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="getting-started-with-disprity.html#cb9-1" aria-hidden="true"></a><span class="kw">require</span>(Claddis)</span>
-<span id="cb9-2"><a href="getting-started-with-disprity.html#cb9-2" aria-hidden="true"></a></span>
-<span id="cb9-3"><a href="getting-started-with-disprity.html#cb9-3" aria-hidden="true"></a><span class="co">## Ordinating the example data from Claddis</span></span>
-<span id="cb9-4"><a href="getting-started-with-disprity.html#cb9-4" aria-hidden="true"></a><span class="kw">Claddis.ordination</span>(michaux_<span class="dv">1989</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="getting-started-with-disprity.html#cb9-1" tabindex="-1"></a><span class="fu">require</span>(Claddis)</span>
+<span id="cb9-2"><a href="getting-started-with-disprity.html#cb9-2" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="getting-started-with-disprity.html#cb9-3" tabindex="-1"></a><span class="do">## Ordinating the example data from Claddis</span></span>
+<span id="cb9-4"><a href="getting-started-with-disprity.html#cb9-4" tabindex="-1"></a><span class="fu">Claddis.ordination</span>(michaux_1989)</span></code></pre></div>
 <pre><code>##                      [,1]          [,2]       [,3]
 ## Ancilla      0.000000e+00  4.154578e-01  0.2534942
 ## Turrancilla -5.106645e-01 -1.304614e-16 -0.2534942
@@ -436,8 +467,8 @@ Here is how to do it for the following types of matrices:</p>
 <ul>
 <li>Multivariate matrices (principal components analysis; PCA)</li>
 </ul>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="getting-started-with-disprity.html#cb11-1" aria-hidden="true"></a><span class="co">## A multivariate matrix</span></span>
-<span id="cb11-2"><a href="getting-started-with-disprity.html#cb11-2" aria-hidden="true"></a><span class="kw">head</span>(USArrests)</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="getting-started-with-disprity.html#cb11-1" tabindex="-1"></a><span class="do">## A multivariate matrix</span></span>
+<span id="cb11-2"><a href="getting-started-with-disprity.html#cb11-2" tabindex="-1"></a><span class="fu">head</span>(USArrests)</span></code></pre></div>
 <pre><code>##            Murder Assault UrbanPop Rape
 ## Alabama      13.2     236       58 21.2
 ## Alaska       10.0     263       48 44.5
@@ -445,12 +476,12 @@ Here is how to do it for the following types of matrices:</p>
 ## Arkansas      8.8     190       50 19.5
 ## California    9.0     276       91 40.6
 ## Colorado      7.9     204       78 38.7</code></pre>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="getting-started-with-disprity.html#cb13-1" aria-hidden="true"></a><span class="co">## Ordinating the matrix using `prcomp` </span></span>
-<span id="cb13-2"><a href="getting-started-with-disprity.html#cb13-2" aria-hidden="true"></a>ordination &lt;-<span class="st"> </span><span class="kw">prcomp</span>(USArrests)</span>
-<span id="cb13-3"><a href="getting-started-with-disprity.html#cb13-3" aria-hidden="true"></a></span>
-<span id="cb13-4"><a href="getting-started-with-disprity.html#cb13-4" aria-hidden="true"></a><span class="co">## Selecting the ordinated matrix</span></span>
-<span id="cb13-5"><a href="getting-started-with-disprity.html#cb13-5" aria-hidden="true"></a>ordinated_matrix &lt;-<span class="st"> </span>ordination<span class="op">$</span>x</span>
-<span id="cb13-6"><a href="getting-started-with-disprity.html#cb13-6" aria-hidden="true"></a><span class="kw">head</span>(ordinated_matrix)</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="getting-started-with-disprity.html#cb13-1" tabindex="-1"></a><span class="do">## Ordinating the matrix using `prcomp` </span></span>
+<span id="cb13-2"><a href="getting-started-with-disprity.html#cb13-2" tabindex="-1"></a>ordination <span class="ot">&lt;-</span> <span class="fu">prcomp</span>(USArrests)</span>
+<span id="cb13-3"><a href="getting-started-with-disprity.html#cb13-3" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="getting-started-with-disprity.html#cb13-4" tabindex="-1"></a><span class="do">## Selecting the ordinated matrix</span></span>
+<span id="cb13-5"><a href="getting-started-with-disprity.html#cb13-5" tabindex="-1"></a>ordinated_matrix <span class="ot">&lt;-</span> ordination<span class="sc">$</span>x</span>
+<span id="cb13-6"><a href="getting-started-with-disprity.html#cb13-6" tabindex="-1"></a><span class="fu">head</span>(ordinated_matrix)</span></code></pre></div>
 <pre><code>##                  PC1        PC2        PC3        PC4
 ## Alabama     64.80216 -11.448007 -2.4949328 -2.4079009
 ## Alaska      92.82745 -17.982943 20.1265749  4.0940470
@@ -462,14 +493,14 @@ Here is how to do it for the following types of matrices:</p>
 <ul>
 <li>Distance matrices (classical multidimensional scaling; MDS)</li>
 </ul>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="getting-started-with-disprity.html#cb15-1" aria-hidden="true"></a><span class="co">## A matrix of distances between cities</span></span>
-<span id="cb15-2"><a href="getting-started-with-disprity.html#cb15-2" aria-hidden="true"></a><span class="kw">str</span>(eurodist)</span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="getting-started-with-disprity.html#cb15-1" tabindex="-1"></a><span class="do">## A matrix of distances between cities</span></span>
+<span id="cb15-2"><a href="getting-started-with-disprity.html#cb15-2" tabindex="-1"></a><span class="fu">str</span>(eurodist)</span></code></pre></div>
 <pre><code>##  &#39;dist&#39; num [1:210] 3313 2963 3175 3339 2762 ...
 ##  - attr(*, &quot;Size&quot;)= num 21
 ##  - attr(*, &quot;Labels&quot;)= chr [1:21] &quot;Athens&quot; &quot;Barcelona&quot; &quot;Brussels&quot; &quot;Calais&quot; ...</code></pre>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="getting-started-with-disprity.html#cb17-1" aria-hidden="true"></a><span class="co">## Ordinating the matrix using cmdscale() with k = 5 dimensions </span></span>
-<span id="cb17-2"><a href="getting-started-with-disprity.html#cb17-2" aria-hidden="true"></a>ordinated_matrix &lt;-<span class="st"> </span><span class="kw">cmdscale</span>(eurodist, <span class="dt">k =</span> <span class="dv">5</span>)</span>
-<span id="cb17-3"><a href="getting-started-with-disprity.html#cb17-3" aria-hidden="true"></a><span class="kw">head</span>(ordinated_matrix)</span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="getting-started-with-disprity.html#cb17-1" tabindex="-1"></a><span class="do">## Ordinating the matrix using cmdscale() with k = 5 dimensions </span></span>
+<span id="cb17-2"><a href="getting-started-with-disprity.html#cb17-2" tabindex="-1"></a>ordinated_matrix <span class="ot">&lt;-</span> <span class="fu">cmdscale</span>(eurodist, <span class="at">k =</span> <span class="dv">5</span>)</span>
+<span id="cb17-3"><a href="getting-started-with-disprity.html#cb17-3" tabindex="-1"></a><span class="fu">head</span>(ordinated_matrix)</span></code></pre></div>
 <pre><code>##                 [,1]      [,2]       [,3]       [,4]       [,5]
 ## Athens    2290.27468 1798.8029   53.79314 -103.82696 -156.95511
 ## Barcelona -825.38279  546.8115 -113.85842   84.58583  291.44076
@@ -499,31 +530,31 @@ See <a href="details-of-specific-functions.html#time-slicing"><code>chrono.subse
 Note that any of these default arguments can be changed within the <code>disparity.through.time</code> or <code>disparity.per.group</code> functions.</p>
 <div id="example-data" class="section level3 hasAnchor" number="3.3.1">
 <h3><span class="header-section-number">3.3.1</span> Example data<a href="getting-started-with-disprity.html#example-data" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>To illustrate these functions, we will use data from <span class="citation">Beck and Lee (<a href="#ref-beckancient2014" role="doc-biblioref">2014</a>)</span>.
+<p>To illustrate these functions, we will use data from <span class="citation">Beck and Lee (<a href="#ref-beckancient2014">2014</a>)</span>.
 This dataset contains an ordinated matrix of 50 discrete characters from mammals (<code>BeckLee_mat50</code>), another matrix of the same 50 mammals and the estimated discrete data characters of their descendants (thus 50 + 49 rows, <code>BeckLee_mat99</code>), a dataframe containing the ages of each taxon in the dataset (<code>BeckLee_ages</code>) and finally a phylogenetic tree with the relationships among the 50 mammals (<code>BeckLee_tree</code>).</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="getting-started-with-disprity.html#cb19-1" aria-hidden="true"></a><span class="co">## Loading the ordinated matrices</span></span>
-<span id="cb19-2"><a href="getting-started-with-disprity.html#cb19-2" aria-hidden="true"></a><span class="kw">data</span>(BeckLee_mat50)</span>
-<span id="cb19-3"><a href="getting-started-with-disprity.html#cb19-3" aria-hidden="true"></a><span class="kw">data</span>(BeckLee_mat99)</span>
-<span id="cb19-4"><a href="getting-started-with-disprity.html#cb19-4" aria-hidden="true"></a></span>
-<span id="cb19-5"><a href="getting-started-with-disprity.html#cb19-5" aria-hidden="true"></a><span class="co">## The first five taxa and dimensions of the 50 taxa matrix</span></span>
-<span id="cb19-6"><a href="getting-started-with-disprity.html#cb19-6" aria-hidden="true"></a><span class="kw">head</span>(BeckLee_mat50[, <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>])</span></code></pre></div>
-<pre><code>##                    [,1]        [,2]        [,3]       [,4]        [,5]
-## Cimolestes   -0.5613001  0.06006259  0.08414761 -0.2313084 -0.18825039
-## Maelestes    -0.4186019 -0.12186005  0.25556379  0.2737995 -0.28510479
-## Batodon      -0.8337640  0.28718501 -0.10594610 -0.2381511 -0.07132646
-## Bulaklestes  -0.7708261 -0.07629583  0.04549285 -0.4951160 -0.39962626
-## Daulestes    -0.8320466 -0.09559563  0.04336661 -0.5792351 -0.37385914
-## Uchkudukodon -0.5074468 -0.34273248  0.40410310 -0.1223782 -0.34857351</code></pre>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="getting-started-with-disprity.html#cb21-1" aria-hidden="true"></a><span class="co">## The first five taxa and dimensions of the 99 taxa + ancestors matrix</span></span>
-<span id="cb21-2"><a href="getting-started-with-disprity.html#cb21-2" aria-hidden="true"></a>BeckLee_mat99[<span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">98</span>, <span class="dv">99</span>), <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]</span></code></pre></div>
-<pre><code>##                  [,1]       [,2]        [,3]        [,4]        [,5]
-## Cimolestes -0.6794737 0.15658591  0.04918307  0.22509831 -0.38139436
-## Maelestes  -0.5797289 0.04223105 -0.20329542 -0.15453876 -0.06993258
-## n48         0.2614394 0.01712426  0.21997583 -0.05383777  0.07919679
-## n49         0.3881123 0.13771446  0.11966941  0.01856597 -0.15263921</code></pre>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="getting-started-with-disprity.html#cb23-1" aria-hidden="true"></a><span class="co">## Loading a list of first and last occurrence dates for the fossils</span></span>
-<span id="cb23-2"><a href="getting-started-with-disprity.html#cb23-2" aria-hidden="true"></a><span class="kw">data</span>(BeckLee_ages)</span>
-<span id="cb23-3"><a href="getting-started-with-disprity.html#cb23-3" aria-hidden="true"></a><span class="kw">head</span>(BeckLee_ages)</span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="getting-started-with-disprity.html#cb19-1" tabindex="-1"></a><span class="do">## Loading the ordinated matrices</span></span>
+<span id="cb19-2"><a href="getting-started-with-disprity.html#cb19-2" tabindex="-1"></a><span class="fu">data</span>(BeckLee_mat50)</span>
+<span id="cb19-3"><a href="getting-started-with-disprity.html#cb19-3" tabindex="-1"></a><span class="fu">data</span>(BeckLee_mat99)</span>
+<span id="cb19-4"><a href="getting-started-with-disprity.html#cb19-4" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="getting-started-with-disprity.html#cb19-5" tabindex="-1"></a><span class="do">## The first five taxa and dimensions of the 50 taxa matrix</span></span>
+<span id="cb19-6"><a href="getting-started-with-disprity.html#cb19-6" tabindex="-1"></a><span class="fu">head</span>(BeckLee_mat50[, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>])</span></code></pre></div>
+<pre><code>##                    [,1]        [,2]        [,3]       [,4]       [,5]
+## Cimolestes   -0.5613001  0.06006259  0.08414761 -0.2313084 0.18825039
+## Maelestes    -0.4186019 -0.12186005  0.25556379  0.2737995 0.28510479
+## Batodon      -0.8337640  0.28718501 -0.10594610 -0.2381511 0.07132646
+## Bulaklestes  -0.7708261 -0.07629583  0.04549285 -0.4951160 0.39962626
+## Daulestes    -0.8320466 -0.09559563  0.04336661 -0.5792351 0.37385914
+## Uchkudukodon -0.5074468 -0.34273248  0.40410310 -0.1223782 0.34857351</code></pre>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="getting-started-with-disprity.html#cb21-1" tabindex="-1"></a><span class="do">## The first five taxa and dimensions of the 99 taxa + ancestors matrix</span></span>
+<span id="cb21-2"><a href="getting-started-with-disprity.html#cb21-2" tabindex="-1"></a>BeckLee_mat99[<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">98</span>, <span class="dv">99</span>), <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span></code></pre></div>
+<pre><code>##                  [,1]         [,2]        [,3]        [,4]        [,5]
+## Cimolestes -0.6662114  0.152778203  0.04859246 -0.34158286  0.26817202
+## Maelestes  -0.5719365  0.051636855 -0.19877079 -0.08318416 -0.14166592
+## n48         0.2511551 -0.002014967  0.22408002  0.06857018 -0.05660113
+## n49         0.3860798  0.131742956  0.12604056 -0.14738050  0.05095751</code></pre>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="getting-started-with-disprity.html#cb23-1" tabindex="-1"></a><span class="do">## Loading a list of first and last occurrence dates for the fossils</span></span>
+<span id="cb23-2"><a href="getting-started-with-disprity.html#cb23-2" tabindex="-1"></a><span class="fu">data</span>(BeckLee_ages)</span>
+<span id="cb23-3"><a href="getting-started-with-disprity.html#cb23-3" tabindex="-1"></a><span class="fu">head</span>(BeckLee_ages)</span></code></pre></div>
 <pre><code>##             FAD  LAD
 ## Adapis     37.2 36.8
 ## Asioryctes 83.6 72.1
@@ -531,11 +562,11 @@ This dataset contains an ordinated matrix of 50 discrete characters from mammals
 ## Miacis     49.0 46.7
 ## Mimotona   61.6 59.2
 ## Notharctus 50.2 47.0</code></pre>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="getting-started-with-disprity.html#cb25-1" aria-hidden="true"></a><span class="co">## Loading and plotting the phylogeny</span></span>
-<span id="cb25-2"><a href="getting-started-with-disprity.html#cb25-2" aria-hidden="true"></a><span class="kw">data</span>(BeckLee_tree)</span>
-<span id="cb25-3"><a href="getting-started-with-disprity.html#cb25-3" aria-hidden="true"></a><span class="kw">plot</span>(BeckLee_tree, <span class="dt">cex =</span> <span class="fl">0.8</span>) </span>
-<span id="cb25-4"><a href="getting-started-with-disprity.html#cb25-4" aria-hidden="true"></a><span class="kw">axisPhylo</span>(<span class="dt">root =</span> <span class="dv">140</span>)</span>
-<span id="cb25-5"><a href="getting-started-with-disprity.html#cb25-5" aria-hidden="true"></a><span class="kw">nodelabels</span>(<span class="dt">cex =</span> <span class="fl">0.5</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="getting-started-with-disprity.html#cb25-1" tabindex="-1"></a><span class="do">## Loading and plotting the phylogeny</span></span>
+<span id="cb25-2"><a href="getting-started-with-disprity.html#cb25-2" tabindex="-1"></a><span class="fu">data</span>(BeckLee_tree)</span>
+<span id="cb25-3"><a href="getting-started-with-disprity.html#cb25-3" tabindex="-1"></a><span class="fu">plot</span>(BeckLee_tree, <span class="at">cex =</span> <span class="fl">0.8</span>) </span>
+<span id="cb25-4"><a href="getting-started-with-disprity.html#cb25-4" tabindex="-1"></a><span class="fu">axisPhylo</span>(<span class="at">root =</span> <span class="dv">140</span>)</span>
+<span id="cb25-5"><a href="getting-started-with-disprity.html#cb25-5" tabindex="-1"></a><span class="fu">nodelabels</span>(<span class="at">cex =</span> <span class="fl">0.5</span>)</span></code></pre></div>
 <p><img src="dispRity_manual_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 <p>Of course you can use your own data as detailed in the <a href="#What-sort-of-data-does-dispRity-work-with">previous section</a>.</p>
 </div>
@@ -552,34 +583,34 @@ Of course all the defaults can be changed if required, more on this later.</p>
 <li>Your favourite disparity metric (here the sum of variances)</li>
 </ul>
 <p>Using the Beck and Lee (2014) data described <a href="getting-started-with-disprity.html#example-data">above</a>:</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="getting-started-with-disprity.html#cb26-1" aria-hidden="true"></a><span class="co">## Measuring disparity through time</span></span>
-<span id="cb26-2"><a href="getting-started-with-disprity.html#cb26-2" aria-hidden="true"></a>disparity_data &lt;-<span class="st"> </span><span class="kw">dispRity.through.time</span>(BeckLee_mat50, BeckLee_tree,</span>
-<span id="cb26-3"><a href="getting-started-with-disprity.html#cb26-3" aria-hidden="true"></a>                                        <span class="dt">metric =</span> <span class="kw">c</span>(sum, variances),</span>
-<span id="cb26-4"><a href="getting-started-with-disprity.html#cb26-4" aria-hidden="true"></a>                                        <span class="dt">time =</span> <span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="getting-started-with-disprity.html#cb26-1" tabindex="-1"></a><span class="do">## Measuring disparity through time</span></span>
+<span id="cb26-2"><a href="getting-started-with-disprity.html#cb26-2" tabindex="-1"></a>disparity_data <span class="ot">&lt;-</span> <span class="fu">dispRity.through.time</span>(BeckLee_mat50, BeckLee_tree,</span>
+<span id="cb26-3"><a href="getting-started-with-disprity.html#cb26-3" tabindex="-1"></a>                                        <span class="at">metric =</span> <span class="fu">c</span>(sum, variances),</span>
+<span id="cb26-4"><a href="getting-started-with-disprity.html#cb26-4" tabindex="-1"></a>                                        <span class="at">time =</span> <span class="dv">3</span>)</span></code></pre></div>
 <p>This generates a <code>dispRity</code> object (see <a href="#guts">here</a> for technical details).
 When displayed, these <code>dispRity</code> objects provide us with information on the operations done to the matrix:</p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="getting-started-with-disprity.html#cb27-1" aria-hidden="true"></a><span class="co">## Print the disparity_data object</span></span>
-<span id="cb27-2"><a href="getting-started-with-disprity.html#cb27-2" aria-hidden="true"></a>disparity_data</span></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="getting-started-with-disprity.html#cb27-1" tabindex="-1"></a><span class="do">## Print the disparity_data object</span></span>
+<span id="cb27-2"><a href="getting-started-with-disprity.html#cb27-2" tabindex="-1"></a>disparity_data</span></code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
 ## 3 discrete time subsets for 50 elements in one matrix with 48 dimensions with 1 phylogenetic tree
 ##     133.51 - 89.01, 89.01 - 44.5, 44.5 - 0.
-## Data was bootstrapped 100 times (method:&quot;full&quot;).
+## Rows were bootstrapped 100 times (method:&quot;full&quot;).
 ## Disparity was calculated as: metric.</code></pre>
 <p>We asked for three subsets (evenly spread across the age of the tree), the data was bootstrapped 100 times (default) and the metric used was the sum of variances.</p>
 <p>We can now summarise or plot the <code>disparity_data</code> object, or perform statistical tests on it (e.g. a simple <code>lm</code>):</p>
-<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="getting-started-with-disprity.html#cb29-1" aria-hidden="true"></a><span class="co">## Summarising disparity through time</span></span>
-<span id="cb29-2"><a href="getting-started-with-disprity.html#cb29-2" aria-hidden="true"></a><span class="kw">summary</span>(disparity_data)</span></code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="getting-started-with-disprity.html#cb29-1" tabindex="-1"></a><span class="do">## Summarising disparity through time</span></span>
+<span id="cb29-2"><a href="getting-started-with-disprity.html#cb29-2" tabindex="-1"></a><span class="fu">summary</span>(disparity_data)</span></code></pre></div>
 <pre><code>##          subsets  n   obs bs.median  2.5%   25%   75% 97.5%
 ## 1 133.51 - 89.01  5 2.123     1.775 1.017 1.496 1.942 2.123
 ## 2   89.01 - 44.5 29 2.456     2.384 2.295 2.350 2.404 2.427
 ## 3       44.5 - 0 16 2.528     2.363 2.213 2.325 2.406 2.466</code></pre>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="getting-started-with-disprity.html#cb31-1" aria-hidden="true"></a><span class="co">## Plotting the results</span></span>
-<span id="cb31-2"><a href="getting-started-with-disprity.html#cb31-2" aria-hidden="true"></a><span class="kw">plot</span>(disparity_data, <span class="dt">type =</span> <span class="st">&quot;continuous&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="getting-started-with-disprity.html#cb31-1" tabindex="-1"></a><span class="do">## Plotting the results</span></span>
+<span id="cb31-2"><a href="getting-started-with-disprity.html#cb31-2" tabindex="-1"></a><span class="fu">plot</span>(disparity_data, <span class="at">type =</span> <span class="st">&quot;continuous&quot;</span>)</span></code></pre></div>
 <p><img src="dispRity_manual_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="getting-started-with-disprity.html#cb32-1" aria-hidden="true"></a><span class="co">## Testing for an difference among the time bins</span></span>
-<span id="cb32-2"><a href="getting-started-with-disprity.html#cb32-2" aria-hidden="true"></a>disp_lm &lt;-<span class="st"> </span><span class="kw">test.dispRity</span>(disparity_data, <span class="dt">test =</span> lm,</span>
-<span id="cb32-3"><a href="getting-started-with-disprity.html#cb32-3" aria-hidden="true"></a>                         <span class="dt">comparisons =</span> <span class="st">&quot;all&quot;</span>)</span>
-<span id="cb32-4"><a href="getting-started-with-disprity.html#cb32-4" aria-hidden="true"></a><span class="kw">summary</span>(disp_lm)</span></code></pre></div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="getting-started-with-disprity.html#cb32-1" tabindex="-1"></a><span class="do">## Testing for an difference among the time bins</span></span>
+<span id="cb32-2"><a href="getting-started-with-disprity.html#cb32-2" tabindex="-1"></a>disp_lm <span class="ot">&lt;-</span> <span class="fu">test.dispRity</span>(disparity_data, <span class="at">test =</span> lm,</span>
+<span id="cb32-3"><a href="getting-started-with-disprity.html#cb32-3" tabindex="-1"></a>                         <span class="at">comparisons =</span> <span class="st">&quot;all&quot;</span>)</span>
+<span id="cb32-4"><a href="getting-started-with-disprity.html#cb32-4" tabindex="-1"></a><span class="fu">summary</span>(disp_lm)</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## test(formula = data ~ subsets, data = data)
@@ -612,32 +643,32 @@ For example, you could ask if there is a difference in disparity between two gro
 <li>A list of group members: this list should be a list of numeric vectors or names corresponding to the row names in the matrix. For example <code>list("A" = c(1,2), "B" = c(3,4))</code> will create a group <em>A</em> containing elements 1 and 2 from the matrix and a group <em>B</em> containing elements 3 and 4. Note that elements can be present in multiple groups at once.</li>
 <li>Your favourite disparity metric (here the sum of variances)</li>
 </ul>
-<p>Using the <span class="citation">Beck and Lee (<a href="#ref-beckancient2014" role="doc-biblioref">2014</a>)</span> data described <a href="getting-started-with-disprity.html#example-data">above</a>:</p>
-<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="getting-started-with-disprity.html#cb34-1" aria-hidden="true"></a><span class="co">## Creating the two groups (crown versus stem) as a list</span></span>
-<span id="cb34-2"><a href="getting-started-with-disprity.html#cb34-2" aria-hidden="true"></a>mammal_groups &lt;-<span class="st"> </span><span class="kw">crown.stem</span>(BeckLee_tree, <span class="dt">inc.nodes =</span> <span class="ot">FALSE</span>)</span>
-<span id="cb34-3"><a href="getting-started-with-disprity.html#cb34-3" aria-hidden="true"></a></span>
-<span id="cb34-4"><a href="getting-started-with-disprity.html#cb34-4" aria-hidden="true"></a><span class="co">## Measuring disparity for each group</span></span>
-<span id="cb34-5"><a href="getting-started-with-disprity.html#cb34-5" aria-hidden="true"></a>disparity_data &lt;-<span class="st"> </span><span class="kw">dispRity.per.group</span>(BeckLee_mat50,</span>
-<span id="cb34-6"><a href="getting-started-with-disprity.html#cb34-6" aria-hidden="true"></a>                                     <span class="dt">group =</span> mammal_groups,</span>
-<span id="cb34-7"><a href="getting-started-with-disprity.html#cb34-7" aria-hidden="true"></a>                                     <span class="dt">metric =</span> <span class="kw">c</span>(sum, variances))</span></code></pre></div>
+<p>Using the <span class="citation">Beck and Lee (<a href="#ref-beckancient2014">2014</a>)</span> data described <a href="getting-started-with-disprity.html#example-data">above</a>:</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="getting-started-with-disprity.html#cb34-1" tabindex="-1"></a><span class="do">## Creating the two groups (crown versus stem) as a list</span></span>
+<span id="cb34-2"><a href="getting-started-with-disprity.html#cb34-2" tabindex="-1"></a>mammal_groups <span class="ot">&lt;-</span> <span class="fu">crown.stem</span>(BeckLee_tree, <span class="at">inc.nodes =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb34-3"><a href="getting-started-with-disprity.html#cb34-3" tabindex="-1"></a></span>
+<span id="cb34-4"><a href="getting-started-with-disprity.html#cb34-4" tabindex="-1"></a><span class="do">## Measuring disparity for each group</span></span>
+<span id="cb34-5"><a href="getting-started-with-disprity.html#cb34-5" tabindex="-1"></a>disparity_data <span class="ot">&lt;-</span> <span class="fu">dispRity.per.group</span>(BeckLee_mat50,</span>
+<span id="cb34-6"><a href="getting-started-with-disprity.html#cb34-6" tabindex="-1"></a>                                     <span class="at">group =</span> mammal_groups,</span>
+<span id="cb34-7"><a href="getting-started-with-disprity.html#cb34-7" tabindex="-1"></a>                                     <span class="at">metric =</span> <span class="fu">c</span>(sum, variances))</span></code></pre></div>
 <p>We can display the disparity of both groups by simply looking at the output variable (<code>disparity_data</code>) and then summarising the <code>disparity_data</code> object and plotting it, and/or by performing a statistical test to compare disparity across the groups (here a Wilcoxon test).</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="getting-started-with-disprity.html#cb35-1" aria-hidden="true"></a><span class="co">## Print the disparity_data object</span></span>
-<span id="cb35-2"><a href="getting-started-with-disprity.html#cb35-2" aria-hidden="true"></a>disparity_data</span></code></pre></div>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="getting-started-with-disprity.html#cb35-1" tabindex="-1"></a><span class="do">## Print the disparity_data object</span></span>
+<span id="cb35-2"><a href="getting-started-with-disprity.html#cb35-2" tabindex="-1"></a>disparity_data</span></code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
 ## 2 customised subsets for 50 elements in one matrix with 48 dimensions:
 ##     crown, stem.
-## Data was bootstrapped 100 times (method:&quot;full&quot;).
+## Rows were bootstrapped 100 times (method:&quot;full&quot;).
 ## Disparity was calculated as: metric.</code></pre>
-<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="getting-started-with-disprity.html#cb37-1" aria-hidden="true"></a><span class="co">## Summarising disparity in the different groups</span></span>
-<span id="cb37-2"><a href="getting-started-with-disprity.html#cb37-2" aria-hidden="true"></a><span class="kw">summary</span>(disparity_data)</span></code></pre></div>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="getting-started-with-disprity.html#cb37-1" tabindex="-1"></a><span class="do">## Summarising disparity in the different groups</span></span>
+<span id="cb37-2"><a href="getting-started-with-disprity.html#cb37-2" tabindex="-1"></a><span class="fu">summary</span>(disparity_data)</span></code></pre></div>
 <pre><code>##   subsets  n   obs bs.median  2.5%   25%   75% 97.5%
 ## 1   crown 30 2.526     2.446 2.380 2.429 2.467 2.498
 ## 2    stem 20 2.244     2.134 2.025 2.105 2.164 2.208</code></pre>
-<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="getting-started-with-disprity.html#cb39-1" aria-hidden="true"></a><span class="co">## Plotting the results</span></span>
-<span id="cb39-2"><a href="getting-started-with-disprity.html#cb39-2" aria-hidden="true"></a><span class="kw">plot</span>(disparity_data)</span></code></pre></div>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="getting-started-with-disprity.html#cb39-1" tabindex="-1"></a><span class="do">## Plotting the results</span></span>
+<span id="cb39-2"><a href="getting-started-with-disprity.html#cb39-2" tabindex="-1"></a><span class="fu">plot</span>(disparity_data)</span></code></pre></div>
 <p><img src="dispRity_manual_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
-<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="getting-started-with-disprity.html#cb40-1" aria-hidden="true"></a><span class="co">## Testing for a difference between the groups</span></span>
-<span id="cb40-2"><a href="getting-started-with-disprity.html#cb40-2" aria-hidden="true"></a><span class="kw">test.dispRity</span>(disparity_data, <span class="dt">test =</span> wilcox.test, <span class="dt">details =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="getting-started-with-disprity.html#cb40-1" tabindex="-1"></a><span class="do">## Testing for a difference between the groups</span></span>
+<span id="cb40-2"><a href="getting-started-with-disprity.html#cb40-2" tabindex="-1"></a><span class="fu">test.dispRity</span>(disparity_data, <span class="at">test =</span> wilcox.test, <span class="at">details =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 <pre><code>## $`crown : stem`
 ## $`crown : stem`[[1]]
 ## 
@@ -651,9 +682,9 @@ For example, you could ask if there is a difference in disparity between two gro
 </div>
 </div>
 <h3> References<a href="references-1.html#references-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div id="refs" class="references hanging-indent">
-<div id="ref-beckancient2014">
-<p>Beck, Robin M, and Michael S Lee. 2014. “Ancient Dates or Accelerated Rates? Morphological Clocks and the Antiquity of Placental Mammals.” <em>Proceedings of the Royal Society B: Biological Sciences</em> 281 (20141278): 1–10. <a href="https://doi.org/10.1098/rspb.2014.1278">https://doi.org/10.1098/rspb.2014.1278</a>.</p>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-beckancient2014" class="csl-entry">
+Beck, Robin M, and Michael S Lee. 2014. <span>“Ancient Dates or Accelerated Rates? <span>M</span>orphological Clocks and the Antiquity of Placental Mammals.”</span> <em>Proceedings of the Royal Society B: Biological Sciences</em> 281 (20141278): 1–10. <a href="https://doi.org/10.1098/rspb.2014.1278">https://doi.org/10.1098/rspb.2014.1278</a>.
 </div>
 </div>
             </section>

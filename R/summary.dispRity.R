@@ -263,9 +263,18 @@ summary.dispRity <- function(object, ..., quantiles = c(50, 95), cent.tend = med
 
     ## Check the bootstraps
     bootstrapped <- !is.null(data$call$bootstrap) && !(data$call$bootstrap[[2]] == "covar")
+    boot_col <- FALSE
+    if(bootstrapped) {
+        ## Check if by columns
+        if(length(data$call$bootstrap) < 4) { ## Legacy check for version <1.9 (before that, bootstrap is always by rows)
+            boot_col <- FALSE
+        } else {
+            boot_col <- !is.null(data$call$bootstrap[[4]]) && data$call$bootstrap[[4]] == "columns"
+        }
+    }
 
     ## Get the elements per subsets
-    elements <- lapply(data$subsets, lapply.get.elements, bootstrapped)
+    elements <- lapply(data$subsets, lapply.get.elements, bootstrapped, boot_col)
     nulls <- unlist(lapply(elements, is.null))
     if(any(nulls)) {
         for(null_elem in which(nulls)) {

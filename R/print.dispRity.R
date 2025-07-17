@@ -251,7 +251,27 @@ print.dispRity <- function(x, all = FALSE, ...) {
                 multi = {
                     print.dispRity(dispRity.multi.merge.data(x), ...)
                     return(invisible())
-                }
+                },
+                multi.ace = {
+                    cat("Raw ancestral traits estimations for:\n")
+                    char_print <- character()
+                    if(!is.null(x$discrete)) {
+                        char_print <- paste0(length(x$discrete$IDs), " discrete")
+                        if(!is.null(x$invariants)) {
+                            char_print <- paste0(char_print, " (including ", length(x$invariants$IDs) , ifelse(length(length(x$invariants$IDs)) == 1, " invariant)", " invariants)"))
+                        }
+                    }
+                    if(!is.null(x$continuous)) {
+                        char_print <- c(char_print, paste0(length(x$continuous$IDs), " continuous"))
+                    }
+                    char_print <- paste0(paste0(char_print, collapse = " and "), " characters")
+                    n_tree <- length(x$tree)
+                    tree_print <- paste0(" across ", n_tree, ifelse(n_tree == 1, " tree", " trees"), " for ", nrow(x$matrix), " taxa.")
+                    cat(char_print)
+                    cat(tree_print)
+                    cat("\nYou can use the multi.ace function to resample them and transform them in different outputs.")
+                    return(invisible())
+                } 
             )
         }
 
@@ -266,7 +286,13 @@ print.dispRity <- function(x, all = FALSE, ...) {
                 cat(" ---- dispRity object ---- \n")
                 dims <- dim(x$matrix[[1]])
                 n_matrices <- length(x$matrix)
-                cat(paste0("Contains ", ifelse(n_matrices > 1, paste0(n_matrices, " matrices "), "a matrix "), dims[1], "x", dims[2], "."))
+                cat(paste0("Contains ", ifelse(n_matrices > 1, paste0(n_matrices, " matrices "), "a matrix "), dims[1], "x", dims[2]))
+                ## And trees?
+                if(!is.null(x$tree[[1]])) {
+                    n_trees <- length(x$tree)
+                    cat(paste0(" and ", ifelse(n_trees > 1, paste0(n_trees, " trees"), "a tree")))
+                }
+                cat(".")
             } else {
                 cat("Empty dispRity object.\n")
             }
@@ -336,7 +362,11 @@ print.dispRity <- function(x, all = FALSE, ...) {
                 if(x$call$bootstrap[[2]] == "covar") {
                     cat(paste0("Data is based on ", length(x$covar[[1]]), " posterior sample", ifelse(length(x$covar[[1]]) > 1, "s","")))
                 } else {
-                    cat(paste("Data was bootstrapped ", x$call$bootstrap[[1]], " times (method:\"", x$call$bootstrap[[2]], "\")", sep = ""))
+                    if(length(x$call$bootstrap) > 3 && !is.null(x$call$bootstrap[[4]])) {
+                        cat(paste(ifelse(x$call$bootstrap[[4]] == "dist", "Rows and columns",paste(toupper(substr(x$call$bootstrap[[4]], 1, 1)), substr(x$call$bootstrap[[4]], 2, nchar(x$call$bootstrap[[4]])), sep="")), " were bootstrapped ", x$call$bootstrap[[1]], " times (method:\"", x$call$bootstrap[[2]], "\")", sep = ""))
+                    } else {
+                        cat(paste("Rows were bootstrapped ", x$call$bootstrap[[1]], " times (method:\"", x$call$bootstrap[[2]], "\")", sep = ""))
+                    }
                 }
             }
             if(!is.null(x$call$bootstrap[[3]])) {

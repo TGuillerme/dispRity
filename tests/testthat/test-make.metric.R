@@ -49,21 +49,21 @@ test_that("Output is correct", {
     test <- function(x) as.character(x)
     error <- capture_error(make.metric(test, verbose = TRUE))
     expect_equal(error[[1]],
-        "The provided metric function generated an error or a warning!\nDoes the following work?\n    test(matrix(rnorm(20), 5,4))\nThe problem may also come from the optional arguments (...) in test."
+        "The provided metric function generated an error or a warning!\nDoes the following work?\ntest(matrix(rnorm(5*4), 5, 4))\nThe problem may also come from the optional arguments (...)  in test. Try declaring the function as:\ntest <- function(matrix, ...)"
         )
 
     error <- capture_error(make.metric(test, silent = FALSE))
     expect_equal(error[[1]],
-        "The provided metric function generated an error or a warning!\nDoes the following work?\n    test(matrix(rnorm(20), 5,4))\nThe problem may also come from the optional arguments (...) in test."
+        "The provided metric function generated an error or a warning!\nDoes the following work?\ntest(matrix(rnorm(5*4), 5, 4))\nThe problem may also come from the optional arguments (...)  in test. Try declaring the function as:\ntest <- function(matrix, ...)"
         )
 
     expect_error(
         make.metric(lapply)
         )
 
-    expect_equal(make.metric(mean, silent=TRUE), list(type = "level1", tree = FALSE))
-    expect_equal(make.metric(ranges, silent=TRUE), list(type = "level2", tree = FALSE))
-    expect_equal(make.metric(var, silent=TRUE), list(type = "level3", tree = FALSE))
+    expect_equal(make.metric(mean, silent=TRUE), list(type = "level1", tree = FALSE, dist.help = NULL, reduce.dist = NULL))
+    expect_equal(make.metric(ranges, silent=TRUE), list(type = "level2", tree = FALSE, dist.help = NULL, reduce.dist = NULL))
+    expect_equal(make.metric(var, silent=TRUE), list(type = "level3", tree = FALSE, dist.help = NULL, reduce.dist = NULL))
     expect_equal(
         make.metric(function(x)mean(var(x)), silent=TRUE)$type, "level1"
         )
@@ -98,28 +98,27 @@ test_that("Output is correct", {
         c("variances outputs a matrix object.", "variances is detected as being a dimension-level 2 function."))
 
     error <- capture_error(make.metric(make.metric))
-    expect_equal(error[[1]], "The provided metric function generated an error or a warning!\nDoes the following work?\n    make.metric(matrix(rnorm(20), 5,4))\nThe problem may also come from the optional arguments (...) in make.metric.")
+    expect_equal(error[[1]], "The provided metric function generated an error or a warning!\nDoes the following work?\nmake.metric(matrix(rnorm(5*4), 5, 4))\nThe problem may also come from the optional arguments (...) or the tree in make.metric. Try declaring the function as:\nmake.metric <- function(matrix, ...)")
 
     ## With between.groups
     between.groups.metric <- function(matrix, matrix2) return(42)
     between.groups.metric2 <- function(matrix, matrix2, option = TRUE) return(c(1,2,3,4))
 
     expect_equal(make.metric(between.groups.metric, silent = TRUE)$type, "level1")
-    expect_equal(make.metric(between.groups.metric, silent = TRUE, check.between.groups = TRUE), list("type" = "level1", "between.groups" = TRUE, "tree" = FALSE))
+    expect_equal(make.metric(between.groups.metric, silent = TRUE, check.between.groups = TRUE), list("type" = "level1", "between.groups" = TRUE, "tree" = FALSE, "dist.help" = NULL, "reduce.dist" = NULL))
     expect_equal(make.metric(between.groups.metric2, option = FALSE, silent = TRUE)$type, "level2")
-    expect_equal(make.metric(between.groups.metric2, option = "bla", silent = TRUE, check.between.groups = TRUE), list("type" = "level2", "between.groups" = TRUE, "tree" = FALSE))
-    expect_equal(make.metric(mean, silent = TRUE, check.between.groups = TRUE), list("type" = "level1", "between.groups" = FALSE, "tree" = FALSE))
+    expect_equal(make.metric(between.groups.metric2, option = "bla", silent = TRUE, check.between.groups = TRUE), list("type" = "level2", "between.groups" = TRUE, "tree" = FALSE, "dist.help" = NULL, "reduce.dist" = NULL))
+    expect_equal(make.metric(mean, silent = TRUE, check.between.groups = TRUE), list("type" = "level1", "between.groups" = FALSE, "tree" = FALSE, "dist.help" = NULL, "reduce.dist" = NULL))
 
     ## Metrics with tree or phy argument
     between.groups.metric <- function(matrix, matrix2, tree = TRUE) return(c(1,2,3,4))
     between.groups.metric2 <- function(matrix, matrix2, phy = TRUE) return(c(1,2,3,4))
     normal.metric <- function(matrix, tree) return(42)
     normal.metric2 <- function(matrix, phy) return(42)
-    expect_equal(make.metric(normal.metric, tree = rtree(5), silent = TRUE), list(type = "level1", tree = TRUE))
-    expect_equal(make.metric(normal.metric2, phy = rtree(5), silent = TRUE), list(type = "level1", tree = FALSE))
-    expect_equal(make.metric(between.groups.metric, tree = rtree(5), silent = TRUE, check.between.groups = TRUE), list("type" = "level2", "between.groups" = TRUE, tree = TRUE))
-    expect_equal(make.metric(between.groups.metric2, phy = rtree(5), silent = TRUE, check.between.groups = TRUE), list("type" = "level2", "between.groups" = TRUE, tree = FALSE))
-    expect_equal(make.metric(normal.metric, silent = TRUE), list(type = "level1", tree = TRUE))
-    expect_equal(make.metric(normal.metric2, silent = TRUE), list(type = "level1", tree = FALSE))
-    
+    expect_equal(make.metric(normal.metric, tree = rtree(5), silent = TRUE), list(type = "level1", tree = TRUE, "dist.help" = NULL, "reduce.dist" = NULL))
+    expect_equal(make.metric(normal.metric2, phy = rtree(5), silent = TRUE), list(type = "level1", tree = FALSE, "dist.help" = NULL, "reduce.dist" = NULL))
+    expect_equal(make.metric(between.groups.metric, tree = rtree(5), silent = TRUE, check.between.groups = TRUE), list("type" = "level2", "between.groups" = TRUE, tree = TRUE, "dist.help" = NULL, "reduce.dist" = NULL))
+    expect_equal(make.metric(between.groups.metric2, phy = rtree(5), silent = TRUE, check.between.groups = TRUE), list("type" = "level2", "between.groups" = TRUE, tree = FALSE, "dist.help" = NULL, "reduce.dist" = NULL))
+    expect_equal(make.metric(normal.metric, silent = TRUE), list(type = "level1", tree = TRUE, "dist.help" = NULL, "reduce.dist" = NULL))
+    expect_equal(make.metric(normal.metric2, silent = TRUE), list(type = "level1", tree = FALSE, "dist.help" = NULL, "reduce.dist" = NULL))
 })

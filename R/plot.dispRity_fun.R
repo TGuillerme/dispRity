@@ -144,7 +144,7 @@ get.plot.params <- function(data, data_params, cent.tend, quantiles, rarefaction
     if(is.null(dots$ylim)) {
         if(type != "rarefaction") {
             ## Get the range of the data
-            options$ylim <- range(disparity$data, na.rm = TRUE)
+            options$ylim <- range(disparity$data, na.rm = TRUE, finite = TRUE)
             ## Add 2% on each side
             percent_change <- 0.02
             if(options$ylim[1] > 0) {

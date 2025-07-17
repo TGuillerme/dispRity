@@ -23,7 +23,7 @@
 <meta name="author" content="Thomas Guillerme (guillert@tcd.ie)" />
 
 
-<meta name="date" content="2024-03-08" />
+<meta name="date" content="2024-11-12" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -49,38 +49,38 @@
 
 
 
-<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
 <link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
 <link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
 <script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
-<script src="libs/htmlwidgets-1.6.2/htmlwidgets.js"></script>
-<script src="libs/rglWebGL-binding-1.2.8/rglWebGL.js"></script>
-<link href="libs/rglwidgetClass-1.2.8/rgl.css" rel="stylesheet" />
-<script src="libs/rglwidgetClass-1.2.8/rglClass.src.js"></script>
-<script src="libs/rglwidgetClass-1.2.8/utils.src.js"></script>
-<script src="libs/rglwidgetClass-1.2.8/buffer.src.js"></script>
-<script src="libs/rglwidgetClass-1.2.8/subscenes.src.js"></script>
-<script src="libs/rglwidgetClass-1.2.8/shaders.src.js"></script>
-<script src="libs/rglwidgetClass-1.2.8/shadersrc.src.js"></script>
-<script src="libs/rglwidgetClass-1.2.8/textures.src.js"></script>
-<script src="libs/rglwidgetClass-1.2.8/projection.src.js"></script>
-<script src="libs/rglwidgetClass-1.2.8/mouse.src.js"></script>
-<script src="libs/rglwidgetClass-1.2.8/init.src.js"></script>
-<script src="libs/rglwidgetClass-1.2.8/pieces.src.js"></script>
-<script src="libs/rglwidgetClass-1.2.8/draw.src.js"></script>
-<script src="libs/rglwidgetClass-1.2.8/controls.src.js"></script>
-<script src="libs/rglwidgetClass-1.2.8/selection.src.js"></script>
-<script src="libs/rglwidgetClass-1.2.8/rglTimer.src.js"></script>
-<script src="libs/rglwidgetClass-1.2.8/pretty.src.js"></script>
-<script src="libs/rglwidgetClass-1.2.8/axes.src.js"></script>
-<script src="libs/rglwidgetClass-1.2.8/animation.src.js"></script>
-<script src="libs/CanvasMatrix4-1.2.8/CanvasMatrix.src.js"></script>
+<script src="libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<script src="libs/rglWebGL-binding-1.3.12/rglWebGL.js"></script>
+<link href="libs/rglwidgetClass-1.3.12/rgl.css" rel="stylesheet" />
+<script src="libs/rglwidgetClass-1.3.12/rglClass.src.js"></script>
+<script src="libs/rglwidgetClass-1.3.12/utils.src.js"></script>
+<script src="libs/rglwidgetClass-1.3.12/buffer.src.js"></script>
+<script src="libs/rglwidgetClass-1.3.12/subscenes.src.js"></script>
+<script src="libs/rglwidgetClass-1.3.12/shaders.src.js"></script>
+<script src="libs/rglwidgetClass-1.3.12/shadersrc.src.js"></script>
+<script src="libs/rglwidgetClass-1.3.12/textures.src.js"></script>
+<script src="libs/rglwidgetClass-1.3.12/projection.src.js"></script>
+<script src="libs/rglwidgetClass-1.3.12/mouse.src.js"></script>
+<script src="libs/rglwidgetClass-1.3.12/init.src.js"></script>
+<script src="libs/rglwidgetClass-1.3.12/pieces.src.js"></script>
+<script src="libs/rglwidgetClass-1.3.12/draw.src.js"></script>
+<script src="libs/rglwidgetClass-1.3.12/controls.src.js"></script>
+<script src="libs/rglwidgetClass-1.3.12/selection.src.js"></script>
+<script src="libs/rglwidgetClass-1.3.12/rglTimer.src.js"></script>
+<script src="libs/rglwidgetClass-1.3.12/pretty.src.js"></script>
+<script src="libs/rglwidgetClass-1.3.12/axes.src.js"></script>
+<script src="libs/rglwidgetClass-1.3.12/animation.src.js"></script>
+<script src="libs/CanvasMatrix4-1.3.12/CanvasMatrix.src.js"></script>
 
 
 <style type="text/css">
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
 pre.sourceCode { margin: 0; }
 @media screen {
@@ -114,7 +114,7 @@ code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
 code span.at { color: #7d9029; } /* Attribute */
 code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
+code span.bu { color: #008000; } /* BuiltIn */
 code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
 code span.ch { color: #4070a0; } /* Char */
 code span.cn { color: #880000; } /* Constant */
@@ -127,7 +127,7 @@ code span.er { color: #ff0000; font-weight: bold; } /* Error */
 code span.ex { } /* Extension */
 code span.fl { color: #40a070; } /* Float */
 code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
+code span.im { color: #008000; font-weight: bold; } /* Import */
 code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 code span.kw { color: #007020; font-weight: bold; } /* Keyword */
 code span.op { color: #666666; } /* Operator */
@@ -144,6 +144,28 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <style type="text/css">
   
   div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
 </style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
@@ -205,7 +227,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.1.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#time-slicing"><i class="fa fa-check"></i><b>4.1.2</b> Time-slicing</a></li>
 </ul></li>
 <li class="chapter" data-level="4.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#custom-subsets"><i class="fa fa-check"></i><b>4.2</b> Customised subsets</a></li>
-<li class="chapter" data-level="4.3" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#bootstraps-and-rarefactions"><i class="fa fa-check"></i><b>4.3</b> Bootstraps and rarefactions</a></li>
+<li class="chapter" data-level="4.3" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#bootstraps-and-rarefactions"><i class="fa fa-check"></i><b>4.3</b> Bootstraps and rarefactions</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#bootstrapping-with-probabilities"><i class="fa fa-check"></i><b>4.3.1</b> Bootstrapping with probabilities</a></li>
+<li class="chapter" data-level="4.3.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#bootstrapping-dimensions"><i class="fa fa-check"></i><b>4.3.2</b> Bootstrapping dimensions</a></li>
+</ul></li>
 <li class="chapter" data-level="4.4" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-metrics"><i class="fa fa-check"></i><b>4.4</b> Disparity metrics</a>
 <ul>
 <li class="chapter" data-level="4.4.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#the-function-dimension-levels"><i class="fa fa-check"></i><b>4.4.1</b> The function dimension-levels</a></li>
@@ -246,6 +272,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.12.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#creating-a-disprity-object-with-a-covar-component"><i class="fa fa-check"></i><b>4.12.1</b> Creating a <code>dispRity</code> object with a <code>$covar</code> component</a></li>
 <li class="chapter" data-level="4.12.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#visualising-covar-objects"><i class="fa fa-check"></i><b>4.12.2</b> Visualising covar objects</a></li>
 <li class="chapter" data-level="4.12.3" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-analyses-with-a-covar-component"><i class="fa fa-check"></i><b>4.12.3</b> Disparity analyses with a <code>$covar</code> component</a></li>
+</ul></li>
+<li class="chapter" data-level="4.13" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-and-distances"><i class="fa fa-check"></i><b>4.13</b> Disparity and distances</a>
+<ul>
+<li class="chapter" data-level="4.13.1" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-data-is-a-distance"><i class="fa fa-check"></i><b>4.13.1</b> Disparity data is a distance</a></li>
+<li class="chapter" data-level="4.13.2" data-path="details-of-specific-functions.html"><a href="details-of-specific-functions.html#disparity-metric-is-a-distance"><i class="fa fa-check"></i><b>4.13.2</b> Disparity metric is a distance</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="making-stuff-up.html"><a href="making-stuff-up.html"><i class="fa fa-check"></i><b>5</b> Making stuff up!</a>
@@ -295,7 +326,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="7.3.1" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#matrix"><i class="fa fa-check"></i><b>7.3.1</b> <code>$matrix</code></a></li>
 <li class="chapter" data-level="7.3.2" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#call"><i class="fa fa-check"></i><b>7.3.2</b> <code>$call</code></a></li>
-<li class="chapter" data-level="7.3.3" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#subsets"><i class="fa fa-check"></i><b>7.3.3</b> <code>$subsets</code></a></li>
+<li class="chapter" data-level="7.3.3" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#subsets-1"><i class="fa fa-check"></i><b>7.3.3</b> <code>$subsets</code></a></li>
 <li class="chapter" data-level="7.3.4" data-path="the-guts-of-the-disprity-package.html"><a href="the-guts-of-the-disprity-package.html#disparity"><i class="fa fa-check"></i><b>7.3.4</b> <code>$disparity</code></a></li>
 </ul></li>
 </ul></li>
@@ -363,39 +394,39 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="palaeobiology-demo-disparity-through-time-and-within-groups" class="section level1 hasAnchor" number="9">
 <h1><span class="header-section-number">9</span> Palaeobiology demo: disparity-through-time and within groups<a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#palaeobiology-demo-disparity-through-time-and-within-groups" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p>This demo aims to give quick overview of the <code>dispRity</code> package (v.1.7) for palaeobiology analyses of disparity, including disparity through time analyses.</p>
-<p>This demo showcases a typical disparity-through-time analysis: we are going to test whether the disparity changed through time in a subset of eutherian mammals from the last 100 million years using a dataset from <span class="citation">Beck and Lee (<a href="#ref-beckancient2014" role="doc-biblioref">2014</a>)</span>.</p>
+<p>This demo showcases a typical disparity-through-time analysis: we are going to test whether the disparity changed through time in a subset of eutherian mammals from the last 100 million years using a dataset from <span class="citation">Beck and Lee (<a href="#ref-beckancient2014">2014</a>)</span>.</p>
 <div id="before-starting" class="section level2 hasAnchor" number="9.1">
 <h2><span class="header-section-number">9.1</span> Before starting<a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#before-starting" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <div id="the-morphospace" class="section level3 hasAnchor" number="9.1.1">
 <h3><span class="header-section-number">9.1.1</span> The morphospace<a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#the-morphospace" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>In this example, we are going to use a subset of the data from <span class="citation">Beck and Lee (<a href="#ref-beckancient2014" role="doc-biblioref">2014</a>)</span>.
+<p>In this example, we are going to use a subset of the data from <span class="citation">Beck and Lee (<a href="#ref-beckancient2014">2014</a>)</span>.
 See the <a href="getting-started-with-disprity.html#example-data">example data</a> description for more details.
 Briefly, this dataset contains an ordinated matrix of the Gower distance between 50 mammals based (<code>BeckLee_mat50</code>), another matrix of the same 50 mammals and the estimated discrete data characters of their descendants (thus 50 + 49 rows, <code>BeckLee_mat99</code>), a dataframe containing the ages of each taxon in the dataset (<code>BeckLee_ages</code>) and finally a phylogenetic tree with the relationships among the 50 mammals (<code>BeckLee_tree</code>).
 The ordinated matrix will represent our full morphospace, i.e. all the mammalian morphologies that ever existed through time (for this dataset).</p>
-<div class="sourceCode" id="cb616"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb616-1"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb616-1" aria-hidden="true"></a><span class="co">## Loading demo and the package data</span></span>
-<span id="cb616-2"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb616-2" aria-hidden="true"></a><span class="kw">library</span>(dispRity)</span>
-<span id="cb616-3"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb616-3" aria-hidden="true"></a></span>
-<span id="cb616-4"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb616-4" aria-hidden="true"></a><span class="co">## Setting the random seed for repeatability</span></span>
-<span id="cb616-5"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb616-5" aria-hidden="true"></a><span class="kw">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb616-6"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb616-6" aria-hidden="true"></a></span>
-<span id="cb616-7"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb616-7" aria-hidden="true"></a><span class="co">## Loading the ordinated matrix/morphospace:</span></span>
-<span id="cb616-8"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb616-8" aria-hidden="true"></a><span class="kw">data</span>(BeckLee_mat50)</span>
-<span id="cb616-9"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb616-9" aria-hidden="true"></a><span class="kw">data</span>(BeckLee_mat99)</span>
-<span id="cb616-10"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb616-10" aria-hidden="true"></a><span class="kw">head</span>(BeckLee_mat50[,<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>])</span></code></pre></div>
-<pre><code>##                    [,1]        [,2]        [,3]       [,4]        [,5]
-## Cimolestes   -0.5613001  0.06006259  0.08414761 -0.2313084 -0.18825039
-## Maelestes    -0.4186019 -0.12186005  0.25556379  0.2737995 -0.28510479
-## Batodon      -0.8337640  0.28718501 -0.10594610 -0.2381511 -0.07132646
-## Bulaklestes  -0.7708261 -0.07629583  0.04549285 -0.4951160 -0.39962626
-## Daulestes    -0.8320466 -0.09559563  0.04336661 -0.5792351 -0.37385914
-## Uchkudukodon -0.5074468 -0.34273248  0.40410310 -0.1223782 -0.34857351</code></pre>
-<div class="sourceCode" id="cb618"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb618-1"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb618-1" aria-hidden="true"></a><span class="kw">dim</span>(BeckLee_mat50)</span></code></pre></div>
+<div class="sourceCode" id="cb634"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb634-1"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb634-1" tabindex="-1"></a><span class="do">## Loading demo and the package data</span></span>
+<span id="cb634-2"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb634-2" tabindex="-1"></a><span class="fu">library</span>(dispRity)</span>
+<span id="cb634-3"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb634-3" tabindex="-1"></a></span>
+<span id="cb634-4"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb634-4" tabindex="-1"></a><span class="do">## Setting the random seed for repeatability</span></span>
+<span id="cb634-5"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb634-5" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb634-6"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb634-6" tabindex="-1"></a></span>
+<span id="cb634-7"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb634-7" tabindex="-1"></a><span class="do">## Loading the ordinated matrix/morphospace:</span></span>
+<span id="cb634-8"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb634-8" tabindex="-1"></a><span class="fu">data</span>(BeckLee_mat50)</span>
+<span id="cb634-9"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb634-9" tabindex="-1"></a><span class="fu">data</span>(BeckLee_mat99)</span>
+<span id="cb634-10"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb634-10" tabindex="-1"></a><span class="fu">head</span>(BeckLee_mat50[,<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>])</span></code></pre></div>
+<pre><code>##                    [,1]        [,2]        [,3]       [,4]       [,5]
+## Cimolestes   -0.5613001  0.06006259  0.08414761 -0.2313084 0.18825039
+## Maelestes    -0.4186019 -0.12186005  0.25556379  0.2737995 0.28510479
+## Batodon      -0.8337640  0.28718501 -0.10594610 -0.2381511 0.07132646
+## Bulaklestes  -0.7708261 -0.07629583  0.04549285 -0.4951160 0.39962626
+## Daulestes    -0.8320466 -0.09559563  0.04336661 -0.5792351 0.37385914
+## Uchkudukodon -0.5074468 -0.34273248  0.40410310 -0.1223782 0.34857351</code></pre>
+<div class="sourceCode" id="cb636"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb636-1"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb636-1" tabindex="-1"></a><span class="fu">dim</span>(BeckLee_mat50)</span></code></pre></div>
 <pre><code>## [1] 50 48</code></pre>
-<div class="sourceCode" id="cb620"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb620-1"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb620-1" aria-hidden="true"></a><span class="co">## The morphospace contains 50 taxa and has 48 dimensions (or axes)</span></span>
-<span id="cb620-2"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb620-2" aria-hidden="true"></a></span>
-<span id="cb620-3"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb620-3" aria-hidden="true"></a><span class="co">## Showing a list of first and last occurrences data for some fossils</span></span>
-<span id="cb620-4"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb620-4" aria-hidden="true"></a><span class="kw">data</span>(BeckLee_ages)</span>
-<span id="cb620-5"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb620-5" aria-hidden="true"></a><span class="kw">head</span>(BeckLee_ages)</span></code></pre></div>
+<div class="sourceCode" id="cb638"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb638-1"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb638-1" tabindex="-1"></a><span class="do">## The morphospace contains 50 taxa and has 48 dimensions (or axes)</span></span>
+<span id="cb638-2"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb638-2" tabindex="-1"></a></span>
+<span id="cb638-3"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb638-3" tabindex="-1"></a><span class="do">## Showing a list of first and last occurrences data for some fossils</span></span>
+<span id="cb638-4"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb638-4" tabindex="-1"></a><span class="fu">data</span>(BeckLee_ages)</span>
+<span id="cb638-5"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb638-5" tabindex="-1"></a><span class="fu">head</span>(BeckLee_ages)</span></code></pre></div>
 <pre><code>##             FAD  LAD
 ## Adapis     37.2 36.8
 ## Asioryctes 83.6 72.1
@@ -403,17 +434,17 @@ The ordinated matrix will represent our full morphospace, i.e. all the mammalia
 ## Miacis     49.0 46.7
 ## Mimotona   61.6 59.2
 ## Notharctus 50.2 47.0</code></pre>
-<div class="sourceCode" id="cb622"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb622-1"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb622-1" aria-hidden="true"></a><span class="co">## Plotting a phylogeny</span></span>
-<span id="cb622-2"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb622-2" aria-hidden="true"></a><span class="kw">data</span>(BeckLee_tree)</span>
-<span id="cb622-3"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb622-3" aria-hidden="true"></a><span class="kw">plot</span>(BeckLee_tree, <span class="dt">cex =</span> <span class="fl">0.7</span>)</span>
-<span id="cb622-4"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb622-4" aria-hidden="true"></a><span class="kw">axisPhylo</span>(<span class="dt">root =</span> <span class="dv">140</span>)</span></code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-226-1.png" width="576" /></p>
+<div class="sourceCode" id="cb640"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb640-1"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb640-1" tabindex="-1"></a><span class="do">## Plotting a phylogeny</span></span>
+<span id="cb640-2"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb640-2" tabindex="-1"></a><span class="fu">data</span>(BeckLee_tree)</span>
+<span id="cb640-3"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb640-3" tabindex="-1"></a><span class="fu">plot</span>(BeckLee_tree, <span class="at">cex =</span> <span class="fl">0.7</span>)</span>
+<span id="cb640-4"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb640-4" tabindex="-1"></a><span class="fu">axisPhylo</span>(<span class="at">root =</span> <span class="dv">140</span>)</span></code></pre></div>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-234-1.png" width="576" /></p>
 <blockquote>
 <p>You can have an even nicer looking tree if you use the <code>strap</code> package!</p>
 </blockquote>
-<div class="sourceCode" id="cb623"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb623-1"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb623-1" aria-hidden="true"></a><span class="cf">if</span>(<span class="op">!</span><span class="kw">require</span>(strap)) <span class="kw">install.packages</span>(<span class="st">&quot;strap&quot;</span>)</span>
-<span id="cb623-2"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb623-2" aria-hidden="true"></a>strap<span class="op">::</span><span class="kw">geoscalePhylo</span>(BeckLee_tree, <span class="dt">cex.tip =</span> <span class="fl">0.7</span>, <span class="dt">cex.ts =</span> <span class="fl">0.6</span>)</span></code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-227-1.png" width="672" /></p>
+<div class="sourceCode" id="cb641"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb641-1"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb641-1" tabindex="-1"></a><span class="cf">if</span>(<span class="sc">!</span><span class="fu">require</span>(strap)) <span class="fu">install.packages</span>(<span class="st">&quot;strap&quot;</span>)</span>
+<span id="cb641-2"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb641-2" tabindex="-1"></a>strap<span class="sc">::</span><span class="fu">geoscalePhylo</span>(BeckLee_tree, <span class="at">cex.tip =</span> <span class="fl">0.7</span>, <span class="at">cex.ts =</span> <span class="fl">0.6</span>)</span></code></pre></div>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-235-1.png" width="672" /></p>
 </div>
 <div id="setting-up-your-own-data" class="section level3 hasAnchor" number="9.1.2">
 <h3><span class="header-section-number">9.1.2</span> Setting up your own data<a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#setting-up-your-own-data" class="anchor-section" aria-label="Anchor link to header"></a></h3>
@@ -421,7 +452,7 @@ The ordinated matrix will represent our full morphospace, i.e. all the mammalia
 <blockquote>
 <p>What data can I use?</p>
 </blockquote>
-<p>You can use any type of morphospace in any dataset form (<code>"matrix"</code>, <code>"data.frame"</code>). Throughout this tutorial, you we assume you are using the (loose) morphospace definition from <span class="citation">Thomas Guillerme, Cooper, et al. (<a href="#ref-Guillerme2020" role="doc-biblioref">2020</a>)</span>: any matrix were columns are traits and rows are observations (in a distance matrix, columns are still trait, i.e. “distance to species A”, etc.).
+<p>You can use any type of morphospace in any dataset form (<code>"matrix"</code>, <code>"data.frame"</code>). Throughout this tutorial, you we assume you are using the (loose) morphospace definition from <span class="citation">Thomas Guillerme, Cooper, et al. (<a href="#ref-Guillerme2020">2020</a>)</span>: any matrix were columns are traits and rows are observations (in a distance matrix, columns are still trait, i.e. “distance to species A”, etc.).
 We won’t cover it here but you can also use lists of matrices and list of trees.</p>
 <blockquote>
 <p>How should I format my data for this tutorial?</p>
@@ -438,56 +469,56 @@ We won’t cover it here but you can also use lists of matrices and list of tree
 <p><strong>WARNING:</strong> the data generated by the functions <code>i.need.a.matrix</code>, <code>i.need.a.tree</code>, <code>i.need.node.data</code> and <code>i.need.FADLAD</code> are used to <strong>SIMULATE</strong> data for this tutorial. This is <em>not</em> to be used for publications or analysing real data!
 If you need a data matrix, a phylogenetic tree or FADLAD data, (<code>i.need.a.matrix</code>, <code>i.need.a.tree</code> and <code>i.need.FADLAD</code>), you will actually need to collect data from the literature or the field! If you need node data, you will need to use ancestral states estimations (e.g. using <code>estimate_ancestral_states</code> from the <a href="https://cran.r-project.org/web/packages/Claddis/index.html"><code>Claddis</code> package</a>).</p>
 </blockquote>
-<div class="sourceCode" id="cb624"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb624-1"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb624-1" aria-hidden="true"></a><span class="co">## Functions to get simulate a PCO looking like matrix from a tree</span></span>
-<span id="cb624-2"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb624-2" aria-hidden="true"></a>i.need.a.matrix &lt;-<span class="st"> </span><span class="cf">function</span>(tree) {</span>
-<span id="cb624-3"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb624-3" aria-hidden="true"></a>    matrix &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<span class="dt">elements =</span> <span class="kw">Ntip</span>(tree), <span class="dt">dimensions =</span> <span class="kw">Ntip</span>(tree), <span class="dt">distribution =</span> rnorm,</span>
-<span id="cb624-4"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb624-4" aria-hidden="true"></a>                          <span class="dt">scree =</span> <span class="kw">rev</span>(<span class="kw">cumsum</span>(<span class="kw">rep</span>(<span class="dv">1</span><span class="op">/</span><span class="kw">Ntip</span>(tree), <span class="kw">Ntip</span>(tree)))))</span>
-<span id="cb624-5"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb624-5" aria-hidden="true"></a>    <span class="kw">rownames</span>(matrix) &lt;-<span class="st"> </span>tree<span class="op">$</span>tip.label</span>
-<span id="cb624-6"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb624-6" aria-hidden="true"></a>    <span class="kw">return</span>(matrix)</span>
-<span id="cb624-7"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb624-7" aria-hidden="true"></a>}</span>
-<span id="cb624-8"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb624-8" aria-hidden="true"></a></span>
-<span id="cb624-9"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb624-9" aria-hidden="true"></a><span class="co">## Function to simulate a tree</span></span>
-<span id="cb624-10"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb624-10" aria-hidden="true"></a>i.need.a.tree &lt;-<span class="st"> </span><span class="cf">function</span>(matrix) {</span>
-<span id="cb624-11"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb624-11" aria-hidden="true"></a>    tree &lt;-<span class="st"> </span><span class="kw">rtree</span>(<span class="kw">nrow</span>(matrix))</span>
-<span id="cb624-12"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb624-12" aria-hidden="true"></a>    tree<span class="op">$</span>root.time &lt;-<span class="st"> </span><span class="kw">max</span>(<span class="kw">tree.age</span>(tree)<span class="op">$</span>age)</span>
-<span id="cb624-13"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb624-13" aria-hidden="true"></a>    tree<span class="op">$</span>tip.label &lt;-<span class="st"> </span><span class="kw">rownames</span>(matrix)</span>
-<span id="cb624-14"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb624-14" aria-hidden="true"></a>    tree<span class="op">$</span>node.label &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;n&quot;</span>, <span class="dv">1</span><span class="op">:</span>(<span class="kw">nrow</span>(matrix)<span class="op">-</span><span class="dv">1</span>))</span>
-<span id="cb624-15"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb624-15" aria-hidden="true"></a>    <span class="kw">return</span>(tree)</span>
-<span id="cb624-16"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb624-16" aria-hidden="true"></a>}</span>
-<span id="cb624-17"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb624-17" aria-hidden="true"></a></span>
-<span id="cb624-18"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb624-18" aria-hidden="true"></a><span class="co">## Function to simulate some &quot;node&quot; data</span></span>
-<span id="cb624-19"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb624-19" aria-hidden="true"></a>i.need.node.data &lt;-<span class="st"> </span><span class="cf">function</span>(matrix, tree) {</span>
-<span id="cb624-20"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb624-20" aria-hidden="true"></a>    matrix_node &lt;-<span class="st"> </span><span class="kw">space.maker</span>(<span class="dt">elements =</span> <span class="kw">Nnode</span>(tree), <span class="dt">dimensions =</span> <span class="kw">ncol</span>(matrix),</span>
-<span id="cb624-21"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb624-21" aria-hidden="true"></a>                               <span class="dt">distribution =</span> rnorm, <span class="dt">scree =</span> <span class="kw">apply</span>(matrix, <span class="dv">2</span>, var))</span>
-<span id="cb624-22"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb624-22" aria-hidden="true"></a>    <span class="cf">if</span>(<span class="op">!</span><span class="kw">is.null</span>(tree<span class="op">$</span>node.label)) {</span>
-<span id="cb624-23"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb624-23" aria-hidden="true"></a>        <span class="kw">rownames</span>(matrix_node) &lt;-<span class="st"> </span>tree<span class="op">$</span>node.label</span>
-<span id="cb624-24"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb624-24" aria-hidden="true"></a>    } <span class="cf">else</span> {</span>
-<span id="cb624-25"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb624-25" aria-hidden="true"></a>        <span class="kw">rownames</span>(matrix_node) &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;n&quot;</span>, <span class="dv">1</span><span class="op">:</span>(<span class="kw">nrow</span>(matrix)<span class="op">-</span><span class="dv">1</span>))</span>
-<span id="cb624-26"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb624-26" aria-hidden="true"></a>    }</span>
-<span id="cb624-27"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb624-27" aria-hidden="true"></a>    <span class="kw">return</span>(<span class="kw">rbind</span>(matrix, matrix_node))</span>
-<span id="cb624-28"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb624-28" aria-hidden="true"></a>}</span>
-<span id="cb624-29"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb624-29" aria-hidden="true"></a></span>
-<span id="cb624-30"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb624-30" aria-hidden="true"></a><span class="co">## Function to simulate some &quot;FADLAD&quot; data</span></span>
-<span id="cb624-31"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb624-31" aria-hidden="true"></a>i.need.FADLAD &lt;-<span class="st"> </span><span class="cf">function</span>(tree) {</span>
-<span id="cb624-32"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb624-32" aria-hidden="true"></a>    tree_ages &lt;-<span class="st"> </span><span class="kw">tree.age</span>(tree)[<span class="dv">1</span><span class="op">:</span><span class="kw">Ntip</span>(tree),]</span>
-<span id="cb624-33"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb624-33" aria-hidden="true"></a>    <span class="kw">return</span>(<span class="kw">data.frame</span>(<span class="dt">FAD =</span> tree_ages[,<span class="dv">1</span>], <span class="dt">LAD =</span> tree_ages[,<span class="dv">1</span>], <span class="dt">row.names =</span> tree_ages[,<span class="dv">2</span>]))</span>
-<span id="cb624-34"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb624-34" aria-hidden="true"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb642"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb642-1"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb642-1" tabindex="-1"></a><span class="do">## Functions to get simulate a PCO looking like matrix from a tree</span></span>
+<span id="cb642-2"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb642-2" tabindex="-1"></a>i.need.a.matrix <span class="ot">&lt;-</span> <span class="cf">function</span>(tree) {</span>
+<span id="cb642-3"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb642-3" tabindex="-1"></a>    matrix <span class="ot">&lt;-</span> <span class="fu">space.maker</span>(<span class="at">elements =</span> <span class="fu">Ntip</span>(tree), <span class="at">dimensions =</span> <span class="fu">Ntip</span>(tree), <span class="at">distribution =</span> rnorm,</span>
+<span id="cb642-4"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb642-4" tabindex="-1"></a>                          <span class="at">scree =</span> <span class="fu">rev</span>(<span class="fu">cumsum</span>(<span class="fu">rep</span>(<span class="dv">1</span><span class="sc">/</span><span class="fu">Ntip</span>(tree), <span class="fu">Ntip</span>(tree)))))</span>
+<span id="cb642-5"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb642-5" tabindex="-1"></a>    <span class="fu">rownames</span>(matrix) <span class="ot">&lt;-</span> tree<span class="sc">$</span>tip.label</span>
+<span id="cb642-6"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb642-6" tabindex="-1"></a>    <span class="fu">return</span>(matrix)</span>
+<span id="cb642-7"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb642-7" tabindex="-1"></a>}</span>
+<span id="cb642-8"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb642-8" tabindex="-1"></a></span>
+<span id="cb642-9"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb642-9" tabindex="-1"></a><span class="do">## Function to simulate a tree</span></span>
+<span id="cb642-10"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb642-10" tabindex="-1"></a>i.need.a.tree <span class="ot">&lt;-</span> <span class="cf">function</span>(matrix) {</span>
+<span id="cb642-11"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb642-11" tabindex="-1"></a>    tree <span class="ot">&lt;-</span> <span class="fu">rtree</span>(<span class="fu">nrow</span>(matrix))</span>
+<span id="cb642-12"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb642-12" tabindex="-1"></a>    tree<span class="sc">$</span>root.time <span class="ot">&lt;-</span> <span class="fu">max</span>(<span class="fu">tree.age</span>(tree)<span class="sc">$</span>age)</span>
+<span id="cb642-13"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb642-13" tabindex="-1"></a>    tree<span class="sc">$</span>tip.label <span class="ot">&lt;-</span> <span class="fu">rownames</span>(matrix)</span>
+<span id="cb642-14"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb642-14" tabindex="-1"></a>    tree<span class="sc">$</span>node.label <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">&quot;n&quot;</span>, <span class="dv">1</span><span class="sc">:</span>(<span class="fu">nrow</span>(matrix)<span class="sc">-</span><span class="dv">1</span>))</span>
+<span id="cb642-15"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb642-15" tabindex="-1"></a>    <span class="fu">return</span>(tree)</span>
+<span id="cb642-16"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb642-16" tabindex="-1"></a>}</span>
+<span id="cb642-17"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb642-17" tabindex="-1"></a></span>
+<span id="cb642-18"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb642-18" tabindex="-1"></a><span class="do">## Function to simulate some &quot;node&quot; data</span></span>
+<span id="cb642-19"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb642-19" tabindex="-1"></a>i.need.node.data <span class="ot">&lt;-</span> <span class="cf">function</span>(matrix, tree) {</span>
+<span id="cb642-20"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb642-20" tabindex="-1"></a>    matrix_node <span class="ot">&lt;-</span> <span class="fu">space.maker</span>(<span class="at">elements =</span> <span class="fu">Nnode</span>(tree), <span class="at">dimensions =</span> <span class="fu">ncol</span>(matrix),</span>
+<span id="cb642-21"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb642-21" tabindex="-1"></a>                               <span class="at">distribution =</span> rnorm, <span class="at">scree =</span> <span class="fu">apply</span>(matrix, <span class="dv">2</span>, var))</span>
+<span id="cb642-22"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb642-22" tabindex="-1"></a>    <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(tree<span class="sc">$</span>node.label)) {</span>
+<span id="cb642-23"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb642-23" tabindex="-1"></a>        <span class="fu">rownames</span>(matrix_node) <span class="ot">&lt;-</span> tree<span class="sc">$</span>node.label</span>
+<span id="cb642-24"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb642-24" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb642-25"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb642-25" tabindex="-1"></a>        <span class="fu">rownames</span>(matrix_node) <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">&quot;n&quot;</span>, <span class="dv">1</span><span class="sc">:</span>(<span class="fu">nrow</span>(matrix)<span class="sc">-</span><span class="dv">1</span>))</span>
+<span id="cb642-26"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb642-26" tabindex="-1"></a>    }</span>
+<span id="cb642-27"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb642-27" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">rbind</span>(matrix, matrix_node))</span>
+<span id="cb642-28"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb642-28" tabindex="-1"></a>}</span>
+<span id="cb642-29"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb642-29" tabindex="-1"></a></span>
+<span id="cb642-30"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb642-30" tabindex="-1"></a><span class="do">## Function to simulate some &quot;FADLAD&quot; data</span></span>
+<span id="cb642-31"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb642-31" tabindex="-1"></a>i.need.FADLAD <span class="ot">&lt;-</span> <span class="cf">function</span>(tree) {</span>
+<span id="cb642-32"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb642-32" tabindex="-1"></a>    tree_ages <span class="ot">&lt;-</span> <span class="fu">tree.age</span>(tree)[<span class="dv">1</span><span class="sc">:</span><span class="fu">Ntip</span>(tree),]</span>
+<span id="cb642-33"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb642-33" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">data.frame</span>(<span class="at">FAD =</span> tree_ages[,<span class="dv">1</span>], <span class="at">LAD =</span> tree_ages[,<span class="dv">1</span>], <span class="at">row.names =</span> tree_ages[,<span class="dv">2</span>]))</span>
+<span id="cb642-34"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb642-34" tabindex="-1"></a>}</span></code></pre></div>
 <p>You can use these functions for the generating the data you need. For example</p>
-<div class="sourceCode" id="cb625"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb625-1"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb625-1" aria-hidden="true"></a><span class="co">## Aaaaah I don&#39;t have FADLAD data!</span></span>
-<span id="cb625-2"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb625-2" aria-hidden="true"></a>my_FADLAD &lt;-<span class="st"> </span><span class="kw">i.need.FADLAD</span>(tree)</span>
-<span id="cb625-3"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb625-3" aria-hidden="true"></a><span class="co">## Sorted.</span></span></code></pre></div>
+<div class="sourceCode" id="cb643"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb643-1"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb643-1" tabindex="-1"></a><span class="do">## Aaaaah I don&#39;t have FADLAD data!</span></span>
+<span id="cb643-2"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb643-2" tabindex="-1"></a>my_FADLAD <span class="ot">&lt;-</span> <span class="fu">i.need.FADLAD</span>(tree)</span>
+<span id="cb643-3"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb643-3" tabindex="-1"></a><span class="do">## Sorted.</span></span></code></pre></div>
 <p>In the end this is what your data should be named to facilitate the rest of this tutorial (fill in yours here):</p>
-<div class="sourceCode" id="cb626"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb626-1"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb626-1" aria-hidden="true"></a><span class="co">## A matrix with tip data</span></span>
-<span id="cb626-2"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb626-2" aria-hidden="true"></a>my_matrix &lt;-<span class="st"> </span>BeckLee_mat50</span>
-<span id="cb626-3"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb626-3" aria-hidden="true"></a></span>
-<span id="cb626-4"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb626-4" aria-hidden="true"></a><span class="co">## A phylogenetic tree </span></span>
-<span id="cb626-5"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb626-5" aria-hidden="true"></a>my_tree &lt;-<span class="st"> </span>BeckLee_tree</span>
-<span id="cb626-6"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb626-6" aria-hidden="true"></a></span>
-<span id="cb626-7"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb626-7" aria-hidden="true"></a><span class="co">## A matrix with tip and node data</span></span>
-<span id="cb626-8"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb626-8" aria-hidden="true"></a>my_tip_node_matrix &lt;-<span class="st"> </span>BeckLee_mat99</span>
-<span id="cb626-9"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb626-9" aria-hidden="true"></a></span>
-<span id="cb626-10"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb626-10" aria-hidden="true"></a><span class="co">## A table of first and last occurrences data (FADLAD)</span></span>
-<span id="cb626-11"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb626-11" aria-hidden="true"></a>my_fadlad &lt;-<span class="st"> </span>BeckLee_ages</span></code></pre></div>
+<div class="sourceCode" id="cb644"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb644-1"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb644-1" tabindex="-1"></a><span class="do">## A matrix with tip data</span></span>
+<span id="cb644-2"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb644-2" tabindex="-1"></a>my_matrix <span class="ot">&lt;-</span> BeckLee_mat50</span>
+<span id="cb644-3"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb644-3" tabindex="-1"></a></span>
+<span id="cb644-4"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb644-4" tabindex="-1"></a><span class="do">## A phylogenetic tree </span></span>
+<span id="cb644-5"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb644-5" tabindex="-1"></a>my_tree <span class="ot">&lt;-</span> BeckLee_tree</span>
+<span id="cb644-6"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb644-6" tabindex="-1"></a></span>
+<span id="cb644-7"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb644-7" tabindex="-1"></a><span class="do">## A matrix with tip and node data</span></span>
+<span id="cb644-8"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb644-8" tabindex="-1"></a>my_tip_node_matrix <span class="ot">&lt;-</span> BeckLee_mat99</span>
+<span id="cb644-9"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb644-9" tabindex="-1"></a></span>
+<span id="cb644-10"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb644-10" tabindex="-1"></a><span class="do">## A table of first and last occurrences data (FADLAD)</span></span>
+<span id="cb644-11"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb644-11" tabindex="-1"></a>my_fadlad <span class="ot">&lt;-</span> BeckLee_ages</span></code></pre></div>
 </div>
 </div>
 <div id="a-disparity-through-time-analysis" class="section level2 hasAnchor" number="9.2">
@@ -499,21 +530,21 @@ Basically, the full morphospace represents the total number of morphologies acro
 <p>The <code>dispRity</code> package provides a <code>chrono.subsets</code> function that allows users to split the morphospace into time slices (using <code>method = continuous</code>) or into time bins (using <code>method = discrete</code>).
 In this example, we are going to split the morphospace into five equal time bins of 20 million years long from 100 million years ago to the present.
 We will also provide to the function a table containing the first and last occurrences dates for some fossils to take into account that some fossils might occur in several of our different time bins.</p>
-<div class="sourceCode" id="cb627"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb627-1"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb627-1" aria-hidden="true"></a><span class="co">## Creating the vector of time bins ages</span></span>
-<span id="cb627-2"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb627-2" aria-hidden="true"></a>time_bins &lt;-<span class="st"> </span><span class="kw">rev</span>(<span class="kw">seq</span>(<span class="dt">from =</span> <span class="dv">0</span>, <span class="dt">to =</span> <span class="dv">100</span>, <span class="dt">by =</span> <span class="dv">20</span>))</span>
-<span id="cb627-3"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb627-3" aria-hidden="true"></a></span>
-<span id="cb627-4"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb627-4" aria-hidden="true"></a><span class="co">## Splitting the morphospace using the chrono.subsets function</span></span>
-<span id="cb627-5"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb627-5" aria-hidden="true"></a>binned_morphospace &lt;-<span class="st"> </span><span class="kw">chrono.subsets</span>(<span class="dt">data =</span> my_matrix, <span class="dt">tree =</span> my_tree,</span>
-<span id="cb627-6"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb627-6" aria-hidden="true"></a>    <span class="dt">method =</span> <span class="st">&quot;discrete&quot;</span>, <span class="dt">time =</span> time_bins, <span class="dt">inc.nodes =</span> <span class="ot">FALSE</span>,</span>
-<span id="cb627-7"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb627-7" aria-hidden="true"></a>    <span class="dt">FADLAD =</span> my_fadlad)</span></code></pre></div>
+<div class="sourceCode" id="cb645"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb645-1"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb645-1" tabindex="-1"></a><span class="do">## Creating the vector of time bins ages</span></span>
+<span id="cb645-2"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb645-2" tabindex="-1"></a>time_bins <span class="ot">&lt;-</span> <span class="fu">rev</span>(<span class="fu">seq</span>(<span class="at">from =</span> <span class="dv">0</span>, <span class="at">to =</span> <span class="dv">100</span>, <span class="at">by =</span> <span class="dv">20</span>))</span>
+<span id="cb645-3"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb645-3" tabindex="-1"></a></span>
+<span id="cb645-4"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb645-4" tabindex="-1"></a><span class="do">## Splitting the morphospace using the chrono.subsets function</span></span>
+<span id="cb645-5"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb645-5" tabindex="-1"></a>binned_morphospace <span class="ot">&lt;-</span> <span class="fu">chrono.subsets</span>(<span class="at">data =</span> my_matrix, <span class="at">tree =</span> my_tree,</span>
+<span id="cb645-6"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb645-6" tabindex="-1"></a>    <span class="at">method =</span> <span class="st">&quot;discrete&quot;</span>, <span class="at">time =</span> time_bins, <span class="at">inc.nodes =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb645-7"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb645-7" tabindex="-1"></a>    <span class="at">FADLAD =</span> my_fadlad)</span></code></pre></div>
 <p>The output object is a <code>dispRity</code> object (see more about that <a href="#The-guts-of-the-dispRity-package">here</a>.
 In brief, <code>dispRity</code> objects are lists of different elements (i.e. disparity results, morphospace time subsets, morphospace attributes, etc.) that display only a summary of the object when calling the object to avoiding filling the <code>R</code> console with superfluous output.
 It also allows easy plotting/summarising/analysing for repeatability down the line but we will not go into this right now.</p>
-<div class="sourceCode" id="cb628"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb628-1"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb628-1" aria-hidden="true"></a><span class="co">## Printing the class of the object</span></span>
-<span id="cb628-2"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb628-2" aria-hidden="true"></a><span class="kw">class</span>(binned_morphospace)</span></code></pre></div>
+<div class="sourceCode" id="cb646"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb646-1"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb646-1" tabindex="-1"></a><span class="do">## Printing the class of the object</span></span>
+<span id="cb646-2"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb646-2" tabindex="-1"></a><span class="fu">class</span>(binned_morphospace)</span></code></pre></div>
 <pre><code>## [1] &quot;dispRity&quot;</code></pre>
-<div class="sourceCode" id="cb630"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb630-1"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb630-1" aria-hidden="true"></a><span class="co">## Printing the content of the object</span></span>
-<span id="cb630-2"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb630-2" aria-hidden="true"></a><span class="kw">str</span>(binned_morphospace)</span></code></pre></div>
+<div class="sourceCode" id="cb648"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb648-1"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb648-1" tabindex="-1"></a><span class="do">## Printing the content of the object</span></span>
+<span id="cb648-2"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb648-2" tabindex="-1"></a><span class="fu">str</span>(binned_morphospace)</span></code></pre></div>
 <pre><code>## List of 4
 ##  $ matrix :List of 1
 ##   ..$ : num [1:50, 1:48] -0.561 -0.419 -0.834 -0.771 -0.832 ...
@@ -546,10 +577,10 @@ It also allows easy plotting/summarising/analysing for repeatability down the li
 ##   ..$ 20 - 0  :List of 1
 ##   .. ..$ elements: int [1:10, 1] 36 37 38 32 33 34 50 48 29 30
 ##  - attr(*, &quot;class&quot;)= chr &quot;dispRity&quot;</code></pre>
-<div class="sourceCode" id="cb632"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb632-1"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb632-1" aria-hidden="true"></a><span class="kw">names</span>(binned_morphospace)</span></code></pre></div>
+<div class="sourceCode" id="cb650"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb650-1"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb650-1" tabindex="-1"></a><span class="fu">names</span>(binned_morphospace)</span></code></pre></div>
 <pre><code>## [1] &quot;matrix&quot;  &quot;tree&quot;    &quot;call&quot;    &quot;subsets&quot;</code></pre>
-<div class="sourceCode" id="cb634"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb634-1"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb634-1" aria-hidden="true"></a><span class="co">## Printing the object as a dispRity class</span></span>
-<span id="cb634-2"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb634-2" aria-hidden="true"></a>binned_morphospace</span></code></pre></div>
+<div class="sourceCode" id="cb652"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb652-1"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb652-1" tabindex="-1"></a><span class="do">## Printing the object as a dispRity class</span></span>
+<span id="cb652-2"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb652-2" tabindex="-1"></a>binned_morphospace</span></code></pre></div>
 <pre><code>##  ---- dispRity object ---- 
 ## 5 discrete time subsets for 50 elements in one matrix with 1 phylogenetic tree
 ##     100 - 80, 80 - 60, 60 - 40, 40 - 20, 20 - 0.</code></pre>
@@ -562,12 +593,12 @@ It also allows easy plotting/summarising/analysing for repeatability down the li
 <p>Once we obtain our different time subsets, we can bootstrap and rarefy them (i.e. pseudo-replicating the data).
 The bootstrapping allows us to make each subset more robust to outliers and the rarefaction allows us to compare subsets with the same number of taxa to remove sampling biases (i.e. more taxa in one subset than the others).
 The <code>boot.matrix</code> function bootstraps the <code>dispRity</code> object and the <code>rarefaction</code> option within performs rarefaction.</p>
-<div class="sourceCode" id="cb636"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb636-1"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb636-1" aria-hidden="true"></a><span class="co">## Getting the minimum number of rows (i.e. taxa) in the time subsets</span></span>
-<span id="cb636-2"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb636-2" aria-hidden="true"></a>minimum_size &lt;-<span class="st"> </span><span class="kw">min</span>(<span class="kw">size.subsets</span>(binned_morphospace))</span>
-<span id="cb636-3"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb636-3" aria-hidden="true"></a></span>
-<span id="cb636-4"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb636-4" aria-hidden="true"></a><span class="co">## Bootstrapping each time subset 100 times and rarefying them </span></span>
-<span id="cb636-5"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb636-5" aria-hidden="true"></a>rare_bin_morphospace &lt;-<span class="st"> </span><span class="kw">boot.matrix</span>(binned_morphospace, <span class="dt">bootstraps =</span> <span class="dv">100</span>,</span>
-<span id="cb636-6"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb636-6" aria-hidden="true"></a>    <span class="dt">rarefaction =</span> minimum_size)</span></code></pre></div>
+<div class="sourceCode" id="cb654"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb654-1"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb654-1" tabindex="-1"></a><span class="do">## Getting the minimum number of rows (i.e. taxa) in the time subsets</span></span>
+<span id="cb654-2"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb654-2" tabindex="-1"></a>minimum_size <span class="ot">&lt;-</span> <span class="fu">min</span>(<span class="fu">size.subsets</span>(binned_morphospace))</span>
+<span id="cb654-3"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb654-3" tabindex="-1"></a></span>
+<span id="cb654-4"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb654-4" tabindex="-1"></a><span class="do">## Bootstrapping each time subset 100 times and rarefying them </span></span>
+<span id="cb654-5"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb654-5" tabindex="-1"></a>rare_bin_morphospace <span class="ot">&lt;-</span> <span class="fu">boot.matrix</span>(binned_morphospace, <span class="at">bootstraps =</span> <span class="dv">100</span>,</span>
+<span id="cb654-6"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb654-6" tabindex="-1"></a>    <span class="at">rarefaction =</span> minimum_size)</span></code></pre></div>
 <blockquote>
 <p>Note how information is adding up to the <code>dispRity</code> object.</p>
 </blockquote>
@@ -579,35 +610,35 @@ Disparity can be calculated in many ways and this package allows users to come u
 For more details, please refer to the <a href="details-of-specific-functions.html#disparity-metrics"><code>dispRity</code> metric section</a> (or directly use <a href="https://tguillerme.shinyapps.io/moms/"><code>moms</code></a>).</p>
 <p>In this example, we are going to look at how the spread of the data in the morphospace through time.
 For that we are going to use the sum of the variance from each dimension of the morphospace in the morphospace.
-We highly recommend using a metric that makes sense for your specific analysis and for your specific dataset and not just because everyone uses it <span class="citation">(Thomas Guillerme, Puttick, et al. <a href="#ref-moms" role="doc-biblioref">2020</a>, @Guillerme2020)</span>!</p>
+We highly recommend using a metric that makes sense for your specific analysis and for your specific dataset and not just because everyone uses it <span class="citation">Thomas Guillerme, Cooper, et al. (<a href="#ref-Guillerme2020">2020</a>)</span>!</p>
 <blockquote>
 <p>How can I be sure that the metric is the most appropriate for my morphospace and question?</p>
 </blockquote>
 <p>This is not a straightforward question but you can use the <code>test.metric</code> function to check your assumptions (more details <a href="details-of-specific-functions.html#disparity-metrics">here</a>): basically what <code>test.metric</code> does is modifying your morphospace using a null process of interest (e.g. changes in size) and checks whether your metric does indeed pick up that change.
 For example here, let see if the sum of variances picks up changes in size but not random changes:</p>
-<div class="sourceCode" id="cb637"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb637-1"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb637-1" aria-hidden="true"></a>my_test &lt;-<span class="st"> </span><span class="kw">test.metric</span>(my_matrix, <span class="dt">metric =</span> <span class="kw">c</span>(sum, dispRity<span class="op">::</span>variances), <span class="dt">shifts =</span> <span class="kw">c</span>(<span class="st">&quot;random&quot;</span>, <span class="st">&quot;size&quot;</span>))</span>
-<span id="cb637-2"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb637-2" aria-hidden="true"></a><span class="kw">summary</span>(my_test)</span></code></pre></div>
+<div class="sourceCode" id="cb655"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb655-1"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb655-1" tabindex="-1"></a>my_test <span class="ot">&lt;-</span> <span class="fu">test.metric</span>(my_matrix, <span class="at">metric =</span> <span class="fu">c</span>(sum, dispRity<span class="sc">::</span>variances), <span class="at">shifts =</span> <span class="fu">c</span>(<span class="st">&quot;random&quot;</span>, <span class="st">&quot;size&quot;</span>))</span>
+<span id="cb655-2"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb655-2" tabindex="-1"></a><span class="fu">summary</span>(my_test)</span></code></pre></div>
 <pre><code>##                  10%  20%  30%  40%  50%  60%  70%  80%  90% 100%        slope
-## random          2.41 2.51 2.56 2.50 2.54 2.51 2.52 2.53 2.53 2.52 0.0006434981
-## size.increase   2.23 2.19 2.25 2.33 2.31 2.35 2.43 2.44 2.48 2.52 0.0036071419
-## size.hollowness 2.40 2.56 2.56 2.60 2.63 2.64 2.60 2.58 2.55 2.52 0.0006032204
+## random          2.53 2.50 2.56 2.50 2.54 2.51 2.52 2.53 2.53 2.52 0.0003234646
+## size.increase   2.23 2.17 2.25 2.26 2.31 2.35 2.39 2.47 2.50 2.52 0.0037712409
+## size.hollowness 2.40 2.50 2.59 2.65 2.63 2.62 2.60 2.57 2.55 2.52 0.0008954035
 ##                      p_value   R^2(adj)
-## random          3.046683e-02 0.12638784
-## size.increase   4.009847e-16 0.90601561
-## size.hollowness 1.324664e-01 0.04783366</code></pre>
-<div class="sourceCode" id="cb639"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb639-1"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb639-1" aria-hidden="true"></a><span class="kw">plot</span>(my_test)</span></code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-234-1.png" width="768" /></p>
-<p>We see that changes in the inner size (see <span class="citation">Thomas Guillerme, Puttick, et al. (<a href="#ref-moms" role="doc-biblioref">2020</a>)</span> for more details) is actually picked up by the sum of variances but not random changes or outer changes. Which is a good thing!</p>
+## random          9.689431e-02 0.06301936
+## size.increase   1.016309e-17 0.93443767
+## size.hollowness 6.630162e-02 0.08377594</code></pre>
+<div class="sourceCode" id="cb657"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb657-1"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb657-1" tabindex="-1"></a><span class="fu">plot</span>(my_test)</span></code></pre></div>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-242-1.png" width="768" /></p>
+<p>We see that changes in the inner size (see <span class="citation">Thomas Guillerme, Puttick, et al. (<a href="#ref-moms">2020</a>)</span> for more details) is actually picked up by the sum of variances but not random changes or outer changes. Which is a good thing!</p>
 <p>As you’ve noted, the sum of variances is defined in <code>test.metric</code> as <code>c(sum, variances)</code>. This is a core bit of the <code>dispRity</code> package were you can define your own metric as a function or a set of functions.
 You can find more info about this in the <a href="details-of-specific-functions.html#disparity-metrics"><code>dispRity</code> metric section</a> but in brief, the <code>dispRity</code> package considers metrics by their “dimensions” level which corresponds to what they output. For example, the function <code>sum</code> is a dimension level 1 function because no matter the input it outputs a single value (the sum), <code>variances</code> on the other hand is a dimension level 2 function because it will output the variance of each column in a matrix (an example of a dimensions level 3 would be the function <code>var</code> that outputs a matrix).
 The <code>dispRity</code> package always automatically sorts the dimensions levels: it will always run dimensions level 3 &gt; dimensions level 2 &gt; and dimensions level 1. In this case both <code>c(sum, variances)</code> and <code>c(variances, sum)</code> will result in actually running <code>sum(variances(matrix))</code>.</p>
 <p>Anyways, let’s calculate the sum of variances on our bootstrapped and rarefied morphospaces:</p>
-<div class="sourceCode" id="cb640"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb640-1"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb640-1" aria-hidden="true"></a><span class="co">## Calculating disparity for the bootstrapped and rarefied data</span></span>
-<span id="cb640-2"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb640-2" aria-hidden="true"></a>disparity &lt;-<span class="st"> </span><span class="kw">dispRity</span>(rare_bin_morphospace , <span class="dt">metric =</span> <span class="kw">c</span>(sum, dispRity<span class="op">::</span>variances))</span></code></pre></div>
+<div class="sourceCode" id="cb658"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb658-1"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb658-1" tabindex="-1"></a><span class="do">## Calculating disparity for the bootstrapped and rarefied data</span></span>
+<span id="cb658-2"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb658-2" tabindex="-1"></a>disparity <span class="ot">&lt;-</span> <span class="fu">dispRity</span>(rare_bin_morphospace , <span class="at">metric =</span> <span class="fu">c</span>(sum, dispRity<span class="sc">::</span>variances))</span></code></pre></div>
 <p>To display the actual calculated scores, we need to summarise the disparity object using the S3 method <code>summary</code> that is applied to a <code>dispRity</code> object (see <code>?summary.dispRity</code> for more details).
 By the way, as for any <code>R</code> package, you can refer to the help files for each individual function for more details.</p>
-<div class="sourceCode" id="cb641"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb641-1"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb641-1" aria-hidden="true"></a><span class="co">## Summarising the disparity results</span></span>
-<span id="cb641-2"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb641-2" aria-hidden="true"></a><span class="kw">summary</span>(disparity)</span></code></pre></div>
+<div class="sourceCode" id="cb659"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb659-1"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb659-1" tabindex="-1"></a><span class="do">## Summarising the disparity results</span></span>
+<span id="cb659-2"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb659-2" tabindex="-1"></a><span class="fu">summary</span>(disparity)</span></code></pre></div>
 <pre><code>##    subsets  n   obs bs.median  2.5%   25%   75% 97.5%
 ## 1 100 - 80  8 2.207     1.962 1.615 1.876 2.017 2.172
 ## 2 100 - 80  6    NA     1.923 1.477 1.768 2.065 2.222
@@ -626,15 +657,15 @@ By the way, as for any <code>R</code> package, you can refer to the help files f
 <h3><span class="header-section-number">9.2.4</span> Plotting the results<a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#plotting-the-results" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>It is sometimes easier to visualise the results in a plot than in a table.
 For that we can use the <code>plot</code> S3 function to plot the <code>dispRity</code> objects (see <code>?plot.dispRity</code> for more details).</p>
-<div class="sourceCode" id="cb643"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb643-1"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb643-1" aria-hidden="true"></a><span class="co">## Graphical options</span></span>
-<span id="cb643-2"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb643-2" aria-hidden="true"></a><span class="kw">quartz</span>(<span class="dt">width =</span> <span class="dv">10</span>, <span class="dt">height =</span> <span class="dv">5</span>) ; <span class="kw">par</span>(<span class="dt">mfrow =</span> (<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>)), <span class="dt">bty =</span> <span class="st">&quot;n&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb661"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb661-1"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb661-1" tabindex="-1"></a><span class="do">## Graphical options</span></span>
+<span id="cb661-2"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb661-2" tabindex="-1"></a><span class="fu">quartz</span>(<span class="at">width =</span> <span class="dv">10</span>, <span class="at">height =</span> <span class="dv">5</span>) ; <span class="fu">par</span>(<span class="at">mfrow =</span> (<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>)), <span class="at">bty =</span> <span class="st">&quot;n&quot;</span>)</span></code></pre></div>
 <pre><code>## Warning in quartz(width = 10, height = 5): Quartz device is not available on
 ## this platform</code></pre>
-<div class="sourceCode" id="cb645"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb645-1"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb645-1" aria-hidden="true"></a><span class="co">## Plotting the bootstrapped and rarefied results</span></span>
-<span id="cb645-2"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb645-2" aria-hidden="true"></a><span class="kw">plot</span>(disparity, <span class="dt">type =</span> <span class="st">&quot;continuous&quot;</span>, <span class="dt">main =</span> <span class="st">&quot;bootstrapped results&quot;</span>)</span>
-<span id="cb645-3"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb645-3" aria-hidden="true"></a><span class="kw">plot</span>(disparity, <span class="dt">type =</span> <span class="st">&quot;continuous&quot;</span>, <span class="dt">main =</span> <span class="st">&quot;rarefied results&quot;</span>,</span>
-<span id="cb645-4"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb645-4" aria-hidden="true"></a>     <span class="dt">rarefaction =</span> minimum_size)</span></code></pre></div>
-<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-237-1.png" width="1152" /></p>
+<div class="sourceCode" id="cb663"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb663-1"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb663-1" tabindex="-1"></a><span class="do">## Plotting the bootstrapped and rarefied results</span></span>
+<span id="cb663-2"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb663-2" tabindex="-1"></a><span class="fu">plot</span>(disparity, <span class="at">type =</span> <span class="st">&quot;continuous&quot;</span>, <span class="at">main =</span> <span class="st">&quot;bootstrapped results&quot;</span>)</span>
+<span id="cb663-3"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb663-3" tabindex="-1"></a><span class="fu">plot</span>(disparity, <span class="at">type =</span> <span class="st">&quot;continuous&quot;</span>, <span class="at">main =</span> <span class="st">&quot;rarefied results&quot;</span>,</span>
+<span id="cb663-4"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb663-4" tabindex="-1"></a>     <span class="at">rarefaction =</span> minimum_size)</span></code></pre></div>
+<p><img src="dispRity_manual_files/figure-html/unnamed-chunk-245-1.png" width="1152" /></p>
 <p>Nice. The curves look pretty similar.</p>
 <blockquote>
 <p>Same as for the <code>summary.dispRity</code> function, check out the <code>plot.dispRity</code> manual for the many, many options available.</p>
@@ -647,9 +678,9 @@ We can test, for example, if mammalian disparity changed significantly through t
 To do so, we can compare the means of each time-bin in a sequential manner to see whether the disparity in bin <em>n</em> is equal to the disparity in bin <em>n+1</em>, and whether this is in turn equal to the disparity in bin <em>n+2</em>, etc.
 Because our data is temporally autocorrelated (i.e. what happens in bin <em>n+1</em> depends on what happened in bin <em>n</em>) and pseudoreplicated (i.e. each bootstrap draw creates non-independent time subsets because they are all based on the same time subsets), we apply a non-parametric mean comparison: the <code>wilcox.test</code>.
 Also, we need to apply a p-value correction (e.g. Bonferroni correction) to correct for multiple testing (see <code>?p.adjust</code> for more details).</p>
-<div class="sourceCode" id="cb646"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb646-1"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb646-1" aria-hidden="true"></a><span class="co">## Testing the differences between bins in the bootstrapped dataset.</span></span>
-<span id="cb646-2"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb646-2" aria-hidden="true"></a><span class="kw">test.dispRity</span>(disparity, <span class="dt">test =</span> wilcox.test, <span class="dt">comparison =</span> <span class="st">&quot;sequential&quot;</span>,</span>
-<span id="cb646-3"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb646-3" aria-hidden="true"></a>    <span class="dt">correction =</span> <span class="st">&quot;bonferroni&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb664"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb664-1"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb664-1" tabindex="-1"></a><span class="do">## Testing the differences between bins in the bootstrapped dataset.</span></span>
+<span id="cb664-2"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb664-2" tabindex="-1"></a><span class="fu">test.dispRity</span>(disparity, <span class="at">test =</span> wilcox.test, <span class="at">comparison =</span> <span class="st">&quot;sequential&quot;</span>,</span>
+<span id="cb664-3"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb664-3" tabindex="-1"></a>    <span class="at">correction =</span> <span class="st">&quot;bonferroni&quot;</span>)</span></code></pre></div>
 <pre><code>## [[1]]
 ##                    statistic: W
 ## 100 - 80 : 80 - 60          730
@@ -663,9 +694,9 @@ Also, we need to apply a p-value correction (e.g. Bonferroni correction) to cor
 ## 80 - 60 : 60 - 40  1.593988e-07
 ## 60 - 40 : 40 - 20  1.000000e+00
 ## 40 - 20 : 20 - 0   9.115419e-01</code></pre>
-<div class="sourceCode" id="cb648"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb648-1"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb648-1" aria-hidden="true"></a><span class="co">## Testing the differences between bins in the rarefied dataset.</span></span>
-<span id="cb648-2"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb648-2" aria-hidden="true"></a><span class="kw">test.dispRity</span>(disparity, <span class="dt">test =</span> wilcox.test, <span class="dt">comparison =</span> <span class="st">&quot;sequential&quot;</span>,</span>
-<span id="cb648-3"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb648-3" aria-hidden="true"></a>    <span class="dt">correction =</span> <span class="st">&quot;bonferroni&quot;</span>, <span class="dt">rarefaction  =</span> minimum_size)</span></code></pre></div>
+<div class="sourceCode" id="cb666"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb666-1"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb666-1" tabindex="-1"></a><span class="do">## Testing the differences between bins in the rarefied dataset.</span></span>
+<span id="cb666-2"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb666-2" tabindex="-1"></a><span class="fu">test.dispRity</span>(disparity, <span class="at">test =</span> wilcox.test, <span class="at">comparison =</span> <span class="st">&quot;sequential&quot;</span>,</span>
+<span id="cb666-3"><a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#cb666-3" tabindex="-1"></a>    <span class="at">correction =</span> <span class="st">&quot;bonferroni&quot;</span>, <span class="at">rarefaction  =</span> minimum_size)</span></code></pre></div>
 <pre><code>## [[1]]
 ##                    statistic: W
 ## 100 - 80 : 80 - 60         1518
@@ -687,8 +718,8 @@ However, when looking at the rarefied results, there is no significant differenc
 <h2><span class="header-section-number">9.3</span> Some more advanced stuff<a href="palaeobiology-demo-disparity-through-time-and-within-groups.html#some-more-advanced-stuff" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>The previous section detailed some of the basic functionalities in the <code>dispRity</code> package but of course, you can do some much more advanced analysis, here is just a list of some specific tutorials from this manual that you might be interested in:</p>
 <ul>
-<li><a href="details-of-specific-functions.html#time-slicing">Time slicing</a>: an alternative method to look at disparity through time that allows you to specify evolutionary models <span class="citation">(Guillerme and Cooper <a href="#ref-time-slice" role="doc-biblioref">2018</a>)</span>.</li>
-<li><a href="details-of-specific-functions.html#disparity-metrics">Many more disparity metrics</a>: there are many, many different things you might be interested to measure in your morphospace! This manual has some extended documentation on what to use (or check <span class="citation">Thomas Guillerme, Puttick, et al. (<a href="#ref-moms" role="doc-biblioref">2020</a>)</span>).</li>
+<li><a href="details-of-specific-functions.html#time-slicing">Time slicing</a>: an alternative method to look at disparity through time that allows you to specify evolutionary models <span class="citation">(<a href="#ref-time-slice">T. Guillerme and Cooper 2018</a>)</span>.</li>
+<li><a href="details-of-specific-functions.html#disparity-metrics">Many more disparity metrics</a>: there are many, many different things you might be interested to measure in your morphospace! This manual has some extended documentation on what to use (or check <span class="citation">Thomas Guillerme, Puttick, et al. (<a href="#ref-moms">2020</a>)</span>).</li>
 <li>Many more ways to look at disparity: you can for example, <a href="details-of-specific-functions.html#disparity-distribution">use distributions rather than point estimates</a> for your disparity metric (e.g. the variances rather than the sum of variances); or calculate <a href="details-of-specific-functions.html#other-matrices">disparity from non ordinated matrices</a> or even <a href="details-of-specific-functions.html#multi.input">from multiple matrices and trees</a>.</li>
 <li>And finally there are much more advanced statistical tests you might be interested in using, such as the <a href="details-of-specific-functions.html#adonis">NPMANOVA</a>, the <a href="details-of-specific-functions.html#dtt">“disparity-through-time test”</a>, using a <a href="details-of-specific-functions.html#null-test">null model approach</a> or some <a href="details-of-specific-functions.html#model-fitting">model fitting</a>…</li>
 </ul>
@@ -697,18 +728,18 @@ However, when looking at the rarefied results, there is no significant differenc
 </div>
 </div>
 <h3> References<a href="references-1.html#references-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div id="refs" class="references hanging-indent">
-<div id="ref-beckancient2014">
-<p>Beck, Robin M, and Michael S Lee. 2014. “Ancient Dates or Accelerated Rates? Morphological Clocks and the Antiquity of Placental Mammals.” <em>Proceedings of the Royal Society B: Biological Sciences</em> 281 (20141278): 1–10. <a href="https://doi.org/10.1098/rspb.2014.1278">https://doi.org/10.1098/rspb.2014.1278</a>.</p>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-beckancient2014" class="csl-entry">
+Beck, Robin M, and Michael S Lee. 2014. <span>“Ancient Dates or Accelerated Rates? <span>M</span>orphological Clocks and the Antiquity of Placental Mammals.”</span> <em>Proceedings of the Royal Society B: Biological Sciences</em> 281 (20141278): 1–10. <a href="https://doi.org/10.1098/rspb.2014.1278">https://doi.org/10.1098/rspb.2014.1278</a>.
 </div>
-<div id="ref-time-slice">
-<p>Guillerme, T., and N. Cooper. 2018. “Time for a Rethink: Time Sub-Sampling Methods in Disparity-Through-Time Analyses.” <em>Palaeontology</em> 61 (4): 481–93. <a href="https://doi.org/10.1111/pala.12364">https://doi.org/10.1111/pala.12364</a>.</p>
+<div id="ref-time-slice" class="csl-entry">
+Guillerme, T., and N. Cooper. 2018. <span>“Time for a Rethink: Time Sub-Sampling Methods in Disparity-Through-Time Analyses.”</span> <em>Palaeontology</em> 61 (4): 481–93. <a href="https://doi.org/10.1111/pala.12364">https://doi.org/10.1111/pala.12364</a>.
 </div>
-<div id="ref-Guillerme2020">
-<p>Guillerme, Thomas, Natalie Cooper, Stephen L. Brusatte, Katie E. Davis, Andrew L. Jackson, Sylvain Gerber, Anjali Goswami, et al. 2020. “Disparities in the Analysis of Morphological Disparity.” <em>Biology Letters</em> 16 (7): 20200199. <a href="https://doi.org/10.1098/rsbl.2020.0199">https://doi.org/10.1098/rsbl.2020.0199</a>.</p>
+<div id="ref-Guillerme2020" class="csl-entry">
+Guillerme, Thomas, Natalie Cooper, Stephen L. Brusatte, Katie E. Davis, Andrew L. Jackson, Sylvain Gerber, Anjali Goswami, et al. 2020. <span>“Disparities in the Analysis of Morphological Disparity.”</span> <em>Biology Letters</em> 16 (7): 20200199. <a href="https://doi.org/10.1098/rsbl.2020.0199">https://doi.org/10.1098/rsbl.2020.0199</a>.
 </div>
-<div id="ref-moms">
-<p>Guillerme, Thomas, Mark N Puttick, Ariel E Marcy, and Vera Weisbecker. 2020. “Shifting Spaces: Which Disparity or Dissimilarity Measurement Best Summarize Occupancy in Multidimensional Spaces?” <em>Ecology and Evolution</em>.</p>
+<div id="ref-moms" class="csl-entry">
+Guillerme, Thomas, Mark N Puttick, Ariel E Marcy, and Vera Weisbecker. 2020. <span>“Shifting Spaces: Which Disparity or Dissimilarity Measurement Best Summarize Occupancy in Multidimensional Spaces?”</span> <em>Ecology and Evolution</em>.
 </div>
 </div>
             </section>

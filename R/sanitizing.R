@@ -95,7 +95,11 @@ check.dist.matrix <- function(matrix, method, just.check = FALSE, ...) {
 
     ## Check if distance
     if(is(matrix, "dist")) {
-        return(list(matrix, "was_dist" = TRUE))
+        if(just.check) {
+            return(TRUE)
+        } else {
+            return(list(matrix, "was_dist" = TRUE))            
+        }
     }
 
     ## Is the matrix square?
@@ -311,6 +315,11 @@ check.dispRity.data <- function(data = NULL, tree = NULL, bind.trees = FALSE, re
     if(!is.null(tree)) {
         tree <- check.tree(tree, data, bind.trees, match_call)
         is_multi <- any(is_multi, tree$multi)
+    } else {
+        if(is(data, "dispRity") && is(data$tree, "multiPhylo")) {
+            tree <- check.tree(data$tree, data, bind.trees, match_call)
+            is_multi <- any(is_multi, tree$multi)
+        }
     }
 
     ## Sort the output
@@ -331,4 +340,16 @@ check.dispRity.data <- function(data = NULL, tree = NULL, bind.trees = FALSE, re
     } else {
         return(output)
     }
+}
+
+
+## Fast switch from matrix to dist
+matrix.to.dist <- function(data) {
+    out <- as.numeric(data[lower.tri(data)])
+    attr(out, "Labels") <- rownames(data)
+    attr(out, "Size") <- dim(data)[1]
+    attr(out, "Diag") <-  FALSE
+    attr(out, "Upper") <- FALSE
+    class(out) <- "dist"
+    return(out)
 }

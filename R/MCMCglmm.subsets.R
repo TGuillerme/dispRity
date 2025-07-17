@@ -62,6 +62,12 @@ MCMCglmm.subsets <- function(data, posteriors, group, tree, rename.groups, set.l
         if(any(classifier)) {
             group_classifier <- data[,which(!numerics)[which(classifier)], drop = FALSE]
         }
+        if(ncol(group_classifier) == 0) {
+            stop("Could not find any classifier in the data in the format for MCMCglmm. Make sure a classifier is provided and in a factor format.")
+        }
+    } else {
+        cleaned_data <- data
+        group_classifier <- matrix(1, nrow = nrow(data), ncol = 1, dimnames = list(rownames(data)))
     }
     
     ## Checking the posteriors
@@ -69,6 +75,9 @@ MCMCglmm.subsets <- function(data, posteriors, group, tree, rename.groups, set.l
 
     ## Check which dimensions where used
     dimensions <- match(MCMCglmm.traits(posteriors), colnames(cleaned_data))
+    if(all(is.na(dimensions))) {
+        stop.call(msg = "Could not match any column in the data with the posterior samples. Make sure the data column names are the same as the one used in the MCMCglmm.", call = "")
+    }
 
     ## Extracting the residuals and randoms
     posterior_levels <- MCMCglmm.levels(posteriors)

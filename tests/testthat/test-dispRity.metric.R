@@ -353,7 +353,7 @@ test_that("ancestral.dist", {
     data(BeckLee_tree)
     data <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", model = "acctran", time = 5)
     test <- dispRity(data, metric = ancestral.dist)
-    expect_equal(summary(test)$obs.median, c(2.457, 2.538, 2.677, 2.746, 2.741))
+    expect_equal(summary(test)$obs.median, c(2.401, 2.486, 2.621, 2.701, 2.697))
 })
 
 test_that("span.tree.length", {
@@ -719,7 +719,7 @@ test_that("point.dist", {
     data(BeckLee_mat99)
     test <- chrono.subsets(BeckLee_mat99, BeckLee_tree, method = "continuous", model = "equal.split", time = 10)
     test2 <- dispRity(test, metric = point.dist, between.groups = TRUE)
-    expect_equal(summary(test2)$obs.median, c(1.594, 1.838, 1.843, 1.969, 1.828, 1.977, 1.934, 1.892, 1.950))
+    expect_equal(summary(test2)$obs.median, c(1.558, 1.799, 1.804, 1.930, 1.789, 1.940, 1.896, 1.858, 1.912))
 })
 
 test_that("projections", {
@@ -953,7 +953,6 @@ test_that("roudness works", {
     test <- roundness(var(dummy_matrix), vcv = FALSE)
     expect_equal_round(test, 0.1776007)
 })
-
 
 test_that("count.neighbours works", {
     set.seed(1)

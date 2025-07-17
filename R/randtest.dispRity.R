@@ -127,7 +127,7 @@ randtest.dispRity <- function(xtest, subsets, metric, replicates = 100, resample
         }
 
         ## Making the data into a dispRity like format
-        data <- list(matrix = list(data), call = list(dimensions = ncol(data)))
+        data <- list(matrix = list(data), call = list(dimensions = 1:ncol(data)))
     }
 
     if(!inherits_subsets) {

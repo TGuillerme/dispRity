@@ -196,12 +196,16 @@ add.state.names <- function(estimation, character_states, tree) {
 }
 
 ## Translating the likelihood table into a vector of characters
-translate.likelihood <- function(character, threshold, select.states, special.tokens) {
+translate.likelihood <- function(character, threshold, select.states, special.tokens, do_sample) {
     ## Translate the likelihood table
-    threshold.fun <- function(taxon, threshold, select.states, special.tokens) {
-        return(paste(select.states(taxon, threshold), collapse = sub("\\\\", "", special.tokens["uncertainty"])))
+    threshold.fun <- function(taxon, threshold, select.states, special.tokens, do_sample) {
+        if(!do_sample) {
+            return(paste(select.states(taxon, threshold), collapse = sub("\\\\", "", special.tokens["uncertainty"])))
+        } else {
+            return(select.states(taxon, threshold))
+        }
     }
-    translated_states <- apply(character, 1, threshold.fun, threshold, select.states, special.tokens)
+    translated_states <- apply(character, 1, threshold.fun, threshold, select.states, special.tokens, do_sample)
     ## Replace empty states by uncertainties
     replace.empty.states <- function(x, character, special.tokens) {
         return(ifelse(x == "", paste(colnames(character), collapse = sub("\\\\", "", special.tokens["uncertainty"])), x))
@@ -211,100 +215,68 @@ translate.likelihood <- function(character, threshold, select.states, special.to
     return(translated_states)
 }
 
-## Function for running ace on a single tree.
-one.tree.ace <- function(args_list, special.tokens, invariants, characters_states, threshold.type, threshold, invariant_characters_states, verbose) {
-
-    if(verbose) body(castor.ace)[[2]] <- substitute(cat("."))
-    # if(verbose) cat("Running ancestral states estimations:\n")
-    ancestral_estimations <- lapply(args_list, castor.ace)
-    ancestral_estimations <- mapply(add.state.names, ancestral_estimations, characters_states, SIMPLIFY = FALSE)
+## Clean estimates from castor
+clean.castor.estimates <- function(one_tree_estimate, characters_states) {
+    ## Adding state names
+    ancestral_estimations <- mapply(add.state.names, one_tree_estimate, characters_states, SIMPLIFY = FALSE)
 
     ## Separating the estimations
     success <- unlist(lapply(ancestral_estimations, function(estimation) return(estimation$success)))
-    estimations_details <- lapply(ancestral_estimations, function(estimation) return(estimation$details))
-    ancestral_estimations <- lapply(ancestral_estimations, function(estimation) return(estimation$results))
     if(any(!success)) {
         warning(paste0("Impossible to fit the model for the following character(s): ", paste(which(!success), collapse = ", "), ".\nThe ancestral estimated values are set to uncertain (all states equiprobable)."))
     }
+    return(ancestral_estimations)
+}
 
-    ## Select the threshold type function
-    switch(threshold.type,
-        relative = {select.states <- function(taxon, threshold) {
-                                              if(all(is.na(taxon))) {
-                                                return(NA)
-                                              } else {
-                                                return(names(taxon[taxon >= (max(taxon) - 1/length(taxon))]))
-                                              }
-                                             }},
-        max      = {select.states <- function(taxon, threshold) {
-                                              if(all(is.na(taxon))) {
-                                                return(NA)
-                                              } else {
-                                                return(names(taxon[taxon >= (max(taxon))]))
-                                              }
-                                             }},
-        absolute = {select.states <- function(taxon, threshold) {
-                                              if(all(is.na(taxon))) {
-                                                return(NA)
-                                              } else {
-                                                return(names(taxon[taxon >= threshold]))
-                                              }
-                                             }})
-    
-    ## Estimate the ancestral states
-    ancestral_states <- lapply(ancestral_estimations, translate.likelihood, threshold, select.states, special.tokens)
+## Adding back invariant traits
+add.invariants <- function(one_tree_estimate, invariants, invariant_characters_states, node_names, sample) {
+    ## Create the invariant characters
+    invariant_ancestral <- lapply(invariant_characters_states, function(x, n) rep(as.character(x), n), n = length(node_names))
+    invariant_ancestral <- lapply(invariant_ancestral, function(x, names) {names(x) <- names; return(x)}, names = node_names)
 
-    ## Add invariants characters back in place
-    if(length(invariants) > 0) {
-        ## Replicate the invariant characters
-        invariant_ancestral <- lapply(invariant_characters_states, function(x, n) rep(ifelse(length(x == 0), special.tokens["missing"], x), n), args_list[[1]]$tree$Nnode)
-
-        ## Combine the final dataset
-        output <- replicate(length(args_list)+length(invariants), list())
-        ## Fill the final dataset
+    ## Combined the invariants into the estimates
+    output <- replicate(length(one_tree_estimate)+length(invariants), list())
+    if(sample == 1) {
         output[invariants] <- invariant_ancestral
-        output[-invariants] <- ancestral_states
-        ancestral_states <- output
-    }
-
-    ## Replace NAs
-    replace.NA <- function(character, characters_states, special.tokens) {
-        return(sapply(character, function(x) ifelse(x[[1]] == "NA", paste0(characters_states, collapse = sub("\\\\", "", special.tokens["uncertainty"])), x)))
-    }
-    ancestral_states[-invariants] <- mapply(replace.NA, ancestral_states[-invariants], characters_states, MoreArgs = list(special.tokens = special.tokens), SIMPLIFY = FALSE)
-
-    ## Sort the details list
-    if(!is.null(args_list[[1]]$details)) {
-        ## Extract the details into multiple lists
-        extracted_details <- names(estimations_details[[1]])
-        estimations_details_out <- list()
-        for(one_detail in 1:length(extracted_details)) {
-            estimations_details_out[[one_detail]] <- lapply(estimations_details, `[[`, one_detail)
-        }
-        names(estimations_details_out) <- extracted_details
     } else {
-        estimations_details_out <- NULL
+        output[invariants] <- list(matrix(invariant_ancestral[[1]][1], ncol = length(invariant_ancestral[[1]]), nrow = sample))
     }
-
-    # if(verbose) cat(" Done.\n")
-    return(list(results = ancestral_states, details = estimations_details_out))
+    output[-invariants] <- one_tree_estimate
+    return(output)
 }
 
 ## Bind the continuous and discrete characters and reorder them
-bind.characters <- function(continuous, discrete, order) {
-    bound <- cbind(as.data.frame(continuous), as.data.frame(discrete))
+bind.characters <- function(continuous, discrete, order, do_sample) {
+
+    if(!do_sample) {
+        continuous <- list(continuous)
+        discrete <- list(discrete)
+    }
+
+    ## Bind the lists
+    bound <- mapply(function(x, y) cbind(as.data.frame(x), as.data.frame(y)), continuous, discrete, SIMPLIFY = FALSE)
     ## Get the new character IDs
-    cont_names <- colnames(bound)[1:ncol(continuous)]
-    disc_names <- colnames(bound)[-c(1:ncol(continuous))]
+    cont_names <- colnames(bound[[1]])[1:ncol(continuous[[1]])]
+    disc_names <- colnames(bound[[1]])[-c(1:ncol(continuous[[1]]))]
+
     ## Rename discrete if they have the names in common
     if(any(disc_names %in% cont_names)) {
         disc_names <- paste0("c", disc_names)
-        colnames(bound)[-c(1:ncol(continuous))] <- disc_names
+        bound <- lapply(bound, function(x, n_cont, disc_names) {colnames(x)[-c(1:n_cont)] <- disc_names; return(x)}, n_cont = ncol(continuous[[1]]), disc_names = disc_names)
     }
+
     ## Reorder the characters to match the input order
-    ordering <- matrix(c(1:ncol(bound), c(order$continuous, order$discrete)), ncol = 2, byrow = FALSE, dimnames = list(c(cont_names, disc_names), c("out", "in")))
-    return(bound[, names(sort(ordering[, 2, drop = TRUE]))])
+    ordering <- matrix(c(1:ncol(bound[[1]]), c(order$continuous, order$discrete)), ncol = 2, byrow = FALSE, dimnames = list(c(cont_names, disc_names), c("out", "in")))
+    ordered_characters <- lapply(bound, function(x, ordering) x[, names(sort(ordering[, 2, drop = TRUE]))], ordering = ordering)
+
+    ## Output
+    if(!do_sample) {
+        return(ordered_characters[[1]])
+    } else {
+        return(ordered_characters)
+    }
 }
+
 ## Bind the continuous and discrete details and reorder them
 bind.details <- function(continuous, discrete, order) {
     ## Reorder the details out per characters
@@ -322,11 +294,9 @@ bind.details <- function(continuous, discrete, order) {
     return(c(continuous, discrete)[c(order$continuous, order$discrete)])
 }
 
-
-
-
 ## Combine the ace matrix with the tips
 add.tips <- function(ace, matrix) {
+    colnames(ace) <- colnames(matrix)
     return(rbind(matrix, ace))
 }
 ## Output a list from a matrix
@@ -335,3 +305,45 @@ make.list <- function(results) {
     return(unlist(apply(results, 1, list), recursive = FALSE))
 }
 ## Make the dispRity object out of the results (only for continuous)
+
+
+# Samples a single estimate from an ace output
+#' @param ace the ace output
+#' @param sample.fun a list with two elements: fun the sampling function and param a named list of parameters and how to sample them
+#' @param samples the number of samples (default is 1)
+sample.ace <- function(ace, sample.fun, samples = 1) {
+    ## Generate the parameters list
+    make.param <- function(one_node, sample.fun, samples) {
+        params <- lapply(sample.fun$param, function(fun, data) return(fun(data)), data = one_node)
+        return(list(fun = sample.fun$fun, param = c(n = samples, params)))
+    }
+    fun_list <- apply(ace$CI95, 1, make.param, sample.fun, samples)
+
+    ## Sample all the values
+    return(lapply(fun_list, function(x) do.call(what = x$fun, args = x$param)))
+}
+
+sample.castor <- function(castor_ace, samples = 1) {
+    ## TODO: sampling from the castor results
+}
+threshold.castor <- function(castor_ace, threshold) {
+    ## TODO: use the threshold method on the castor results
+}
+
+
+## Testing the sample.fun argument. returns FALSE if fail, TRUE if OK
+test.sample.fun <- function(one_sample, n = 1) {
+    ## Sample the parameters
+    test <- try(params <- lapply(one_sample$param, function(x) do.call(x, args = list(c(1,2,3)))), silent = TRUE)
+    if(is(test, "try-error")) {
+        return(FALSE)
+    }
+    ## Add n
+    params$n <- n
+    ## Test the function
+    test <- try(do.call(one_sample$fun, args = params), silent = TRUE)
+    if(is(test, "try-error")) {
+        return(FALSE)
+    }
+    return(TRUE)
+}

@@ -3,7 +3,7 @@ Release:
 [![R-CMD-check](https://github.com/TGuillerme/dispRity/workflows/R-CMD-check/badge.svg)](https://github.com/TGuillerme/dispRity/actions)
 [![codecov](https://codecov.io/gh/TGuillerme/dispRity/branch/release/graph/badge.svg)](https://codecov.io/gh/TGuillerme/dispRity)
 [![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
-[![develVersion](https://img.shields.io/badge/devel%20version-1.8.0-green.svg?style=flat)](https://github.com/TGuillerme/dispRity)
+[![develVersion](https://img.shields.io/badge/devel%20version-1.9.1-green.svg?style=flat)](https://github.com/TGuillerme/dispRity)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1186467.svg)](https://doi.org/10.5281/zenodo.1186467)
 
 Development (master):
@@ -17,9 +17,8 @@ Development (master):
 CRAN:
 
 [![minimal R version](https://img.shields.io/badge/R%3E%3D-4.0.0-6666ff.svg)](https://cran.r-project.org/)
-[![cran version](http://www.r-pkg.org/badges/version/dispRity)](https://cran.r-project.org/package=dispRity)
-[![rstudio mirror downloads](http://cranlogs.r-pkg.org/badges/grand-total/dispRity)](https://github.com/metacran/cranlogs.app)
-![](http://cranlogs.r-pkg.org/badges/dispRity)
+<a href="https://CRAN.R-project.org/package=dispRity"><img src="https://www.r-pkg.org/badges/version/dispRity" alt="CRAN status"></a>
+<a href="https://cran.r-project.org/package=dispRity"><img src="https://cranlogs.r-pkg.org/badges/grand-total/dispRity" alt="CRAN downloads"></a>
 
 ### **`dispRity`** is a `R` modular package for measuring disparity in multidimensional spaces.
 
@@ -40,7 +39,7 @@ install.packages("dispRity")
 library(dispRity)
 ```
 
-The package is also available in the [phylotastic r-universe](https://phylotastic.r-universe.dev/ui#packages) [![dispRity status badge](https://phylotastic.r-universe.dev/badges/dispRity)](https://phylotastic.r-universe.dev) or through the [phylogenetics CRAN Task View](https://cran.r-project.org/web/views/Phylogenetics.html). 
+The package is also available in the [phylotastic r-universe](https://phylotastic.r-universe.dev/ui#packages) [![dispRity status badge](https://phylotastic.r-universe.dev/badges/dispRity)](https://phylotastic.r-universe.dev) or through the [phylogenetics](https://cran.r-project.org/web/views/Phylogenetics.html) or [paleontology](https://cran.r-project.org/web/views/Paleontology.html) CRAN Task Views. 
 
 
 You can also install the piping hot development version (not always recommended!) by installing the package directly through github:
@@ -75,15 +74,17 @@ Not sure what a disparity metric is in the first place?
 Check out this paper on selecting the best metric for your specific question in [Ecology and Evolution](https://onlinelibrary.wiley.com/doi/full/10.1002/ece3.6452) or the [`moms` shiny app](https://tguillerme.shinyapps.io/moms/).
 You can also find more information in the [`dispRity` manual](https://rawcdn.githack.com/TGuillerme/dispRity/c94452e6877fbb274eb0a4ff1363272a6297a9ee/inst/gitbook/_book/details-of-specific-functions.html#disparity-metrics).
 
+You can also check this [lecture](https://www.youtube.com/watch?v=JKpUQbxID9A) on how to choose disparity metrics.
+
 ## Latest major patch highlights
-### dispRity v1.8 (2023-12-11) *dispRity.multi*
+### dispRity v1.9 (2024-11-12) *distant update*
 [Read the full patch note here](https://github.com/TGuillerme/dispRity/blob/master/NEWS.md).
 
- * Added the _dispRity.multi_ internal architecture now allowing users to work with different matrices **and** different trees as inputs for `custom.subsets`, `chrono.subsets`, `boot.matrix` and `dispRity`. This change is not affecting the user level appart from now allowing to bypass some error messages (thanks to Mario Corio for that obvious suggestion).
- * *New* statistical test: `pgls.dispRity` to run PGLS test on a `dispRity` object with a level-2 metric and a tree (using excellent [`phylolm`](https://CRAN.R-project.org/package=phylolm) algorithm). The new test comes with its own S3 print, summary and plot functions if the input `dispRity` data contains multiple trees or multiple matrices (running and handling the output of multiple `phylolm`).
- * *New vignette* compiling resources for developers to help people (and future me) to edit the package. 
- * And many more new additions, improvements and couple of bug fixes!
- * **NOTE** there are now changes in the following function names: `ellipse.volume` is now `ellipsoid.volume`; `rescale.dispRity` is now `scale.dispRity` and `randtest.dist` is now `distance.randtest` (the old aliases still work).
+ * `dispRity` has been not greatly optimised for using distance matrices: 1) it's now much faster thanks to the `dist.helper` new optional argument (storing the distance matrix in the cache) and 2) it now allows direct analyses of distance matrices in a dispRity pipeline.
+ * `boot.matrix` function has now been generalised to be able to bootstrap any elements of a matrix. Previously it only allowed to bootstrap elements (rows) but now can work on dimensions (columns) or both (distances).
+ * Redesigned `multi.ace` to be more modular and better handle both continuous and/or discrete characters. This is secretly a pre-release for a future version that will greatly improve pipelines with ancestral state estimations ;).
+ * New utility functions (`set.root.time` to add root times to trees; `remove.dispRity` to cleanly remove parts of dispRity objects) and metrics (`count.neigbhours`).
+ * Loads of minor improvements and couple of bug fixes! Yay!
 
 Previous patch notes and notes for the *next version* can be seen [here](https://github.com/TGuillerme/dispRity/blob/master/NEWS.md).
 

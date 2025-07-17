@@ -6,7 +6,9 @@
 #' @param data A \code{matrix} or a \code{list} of matrices.
 #' @param group Either a \code{list} of row numbers or names to be used as different groups, a \code{data.frame} with the same \eqn{k} elements as in \code{data} as rownames, a \code{factor} or a \code{logical} vector. If \code{group} is a \code{phylo} object matching \code{data}, groups are automatically generated as clades (and the tree is attached to the resulting \code{dispRity} object).
 #' @param tree \code{NULL} (default) or an optional \code{phylo} or \code{multiPhylo} object to be attached to the data.
-#' 
+#' @param dist.data A \code{logical} value indicating whether to treat the data as distance data (\code{TRUE}) or not (\code{FALSE} - default).
+#'
+
 #' @details
 #' Note that every element from the input data can be assigned to multiple groups!
 #'
@@ -50,7 +52,7 @@
 # group2 <- list("A" = c("a", "b", "c", "d"), "B" = c(letters[5:10]))
 # group3 <- as.data.frame(matrix(data = c(rep(1,5), rep(2,5)), nrow = 10, ncol = 1, dimnames = list(letters[1:10])))
 
-custom.subsets <- function(data, group, tree = NULL) {
+custom.subsets <- function(data, group, tree = NULL, dist.data = FALSE) {
 
     ## Saving the call
     match_call <- match.call()
@@ -79,7 +81,7 @@ custom.subsets <- function(data, group, tree = NULL) {
             tree <- NULL
         }
         ## Apply the custom.subsets
-        return(dispRity.multi.apply(matrices, fun = custom.subsets, group = group, tree = tree))
+        return(dispRity.multi.apply(matrices, fun = custom.subsets, group = group, tree = tree, dist.data = dist.data))
     } else {
         if(!is.null(tree)) {
             tree <- data$tree
@@ -88,8 +90,8 @@ custom.subsets <- function(data, group, tree = NULL) {
     }
 
     ## Check whether it is a distance matrix
-    if(check.dist.matrix(data[[1]], just.check = TRUE)) {
-        warning("custom.subsets is applied on what seems to be a distance matrix.\nThe resulting matrices won't be distance matrices anymore!", call. = FALSE)
+    if(check.dist.matrix(data[[1]], just.check = TRUE) && !dist.data) {
+        warning("custom.subsets is applied on what seems to be a distance matrix.\nThe resulting matrices won't be distance matrices anymore!\nYou can use dist.data = TRUE, if you want to keep the data as a distance matrix.", call. = FALSE)
     }
 
     ## Sanitize the group variable
@@ -118,9 +120,9 @@ custom.subsets <- function(data, group, tree = NULL) {
     ## Attach the tree
     if(group_class == "phylo" || !is.null(tree)) {
         ## Output as a dispRity object (with tree)
-        return(make.dispRity(data = data, call = list("subsets" = "customised"), subsets = subsets_list, tree = tree))
+        return(make.dispRity(data = data, call = list("subsets" = "customised", "dist.data" = dist.data), subsets = subsets_list, tree = tree))
     } else {
         ## Output as a dispRity object
-        return(make.dispRity(data = data, call = list("subsets" = "customised"), subsets = subsets_list))
+        return(make.dispRity(data = data, call = list("subsets" = "customised", "dist.data" = dist.data), subsets = subsets_list))
     }
 }

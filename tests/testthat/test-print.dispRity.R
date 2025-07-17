@@ -23,6 +23,21 @@ test_that("normal printing", {
         "Contains a matrix 1x1."
     ))
 
+    test <- make.dispRity(data = matrix(10, nrow = 5), tree = rtree(5))
+    expect_equal(capture.output(test), 
+        c(
+        " ---- dispRity object ---- ",
+        "Contains a matrix 5x1 and a tree."
+    ))
+
+    test <- make.dispRity(data = list(matrix(10, nrow = 5), matrix(10, nrow = 5)), tree = rmtree(5, 5))
+    expect_equal(capture.output(test), 
+        c(
+        " ---- dispRity object ---- ",
+        "Contains 2 matrices 5x1 and 5 trees."
+    ))
+
+
     ## Time subsets
     test <- chrono.subsets(BeckLee_mat50, time = c(100, 90, 50), method = "discrete", tree = BeckLee_tree)
 
@@ -59,7 +74,7 @@ test_that("normal printing", {
         c(
         " ---- dispRity object ---- ",
         "50 elements in one matrix with 48 dimensions.",
-        "Data was bootstrapped 100 times (method:\"full\")."
+        "Rows were bootstrapped 100 times (method:\"full\")."
     ))
 
     ## Bootstrapped + subsets
@@ -70,7 +85,7 @@ test_that("normal printing", {
         " ---- dispRity object ---- ",
         "2 discrete time subsets for 50 elements in one matrix with 48 dimensions with 1 phylogenetic tree",
         "    100 - 90, 90 - 50.",
-        "Data was bootstrapped 100 times (method:\"full\")."
+        "Rows were bootstrapped 100 times (method:\"full\")."
     ))
 
     ## Disparity only    
@@ -90,7 +105,7 @@ test_that("normal printing", {
         " ---- dispRity object ---- ",
         "7 continuous (acctran) time subsets for 99 elements in one matrix with 97 dimensions with 1 phylogenetic tree",
         "     90, 80, 70, 60, 50 ...",
-        "Data was bootstrapped 100 times (method:\"full\") and rarefied to 20, 15, 10, 5 elements.",
+        "Rows were bootstrapped 100 times (method:\"full\") and rarefied to 20, 15, 10, 5 elements.",
         "Disparity was calculated as: c(median, centroids)."
     ))
 
@@ -99,7 +114,7 @@ test_that("normal printing", {
         c(
         " ---- dispRity object ---- ",
         "50 elements in one matrix with 48 dimensions.",
-        "Data was bootstrapped 100 times (method:\"full\") and fully rarefied.",
+        "Rows were bootstrapped 100 times (method:\"full\") and fully rarefied.",
         "Disparity was calculated as: mean."
     ))
 
@@ -127,7 +142,7 @@ test_that("randtest printing", {
         "", "Based on 100 replicates", 
         "Simulated p-value: 0.07920792 ", "Alternative hypothesis: two-sided ", 
         "", "    Std.Obs Expectation    Variance ",
-        "  -1.842882    5.338100    8.313070 "))
+        "  -1.747348    4.976530    8.031281 "))
 
   
     ## Running the test on multiple subsets (may take some time!)
@@ -155,7 +170,7 @@ test_that("randtest printing", {
         "Alternative hypothesis: two-sided "  ,
         ""                                    ,
         "    Std.Obs Expectation    Variance ",
-        " -34.623901   47.841400    1.744226 ",
+        " -32.757510   47.847500    1.949166 ",
         ""                                    ,
         "$V1.2"                               ,
         "Monte-Carlo test"                    ,
@@ -168,7 +183,7 @@ test_that("randtest printing", {
         "Alternative hypothesis: two-sided "  ,
         ""                                    ,
         "    Std.Obs Expectation    Variance ",
-        " -33.531312   48.068600    1.860014 ",
+        "  -33.76072    48.22930     1.84774 ",
         ""                                    ,
         "$V1.3"                               ,
         "Monte-Carlo test"                    ,
@@ -181,7 +196,7 @@ test_that("randtest printing", {
         "Alternative hypothesis: two-sided "  ,
         ""                                    ,
         "    Std.Obs Expectation    Variance ",
-        " -35.684854   48.116700    1.634665 ",
+        " -32.643250   48.010800    1.944426 ",
         ""                                    ,
         "$V1.4"                               ,
         "Monte-Carlo test"                    ,
@@ -194,7 +209,7 @@ test_that("randtest printing", {
         "Alternative hypothesis: two-sided "  ,
         ""                                    ,
         "    Std.Obs Expectation    Variance ",
-        " -32.322690   48.021700    1.976796 ",
+        " -32.035871   48.119200    2.020995 ",
         ""
         )
     )
@@ -270,8 +285,8 @@ test_that("print.dispRity with model.test data", {
          "Call: model.test(data = model_test_data, model = models, time.split = 65, fixed.optima = TRUE, verbose = FALSE) ",
          "",
          "        aicc delta_aicc weight_aicc",
-         "BM -31.29071   0.000000   0.7856167",
-         "OU -28.69331   2.597407   0.2143833",
+         "BM -32.69195   0.000000   0.7856167",
+         "OU -30.09454   2.597407   0.2143833",
          "",
          "Use x$full.details for displaying the models details",
          "or summary(x) for summarising them."
@@ -302,7 +317,7 @@ test_that("print.dispRity with model.test data", {
           "",
           "Model simulated (10 times):",
           "    aicc log.lik param ancestral state sigma squared",
-          "BM -31.3   17.92     2           3.099         0.002",
+          "BM -32.7   18.62     2           2.967         0.002",
           "",
           "Rank envelope test:",
           " p-value of the global test: 0.1818182 (ties method: erl)",
@@ -314,8 +329,8 @@ test_that("dispRitreats verbose", {
     ## Testing the placeholder trigger
     data(disparity)
     output <- capture_output(print(disparity))
-    expect_equal(output, " ---- dispRity object ---- \n7 continuous (acctran) time subsets for 99 elements in one matrix with 97 dimensions with 1 phylogenetic tree\n     90, 80, 70, 60, 50 ...\nData was bootstrapped 100 times (method:\"full\") and rarefied to 20, 15, 10, 5 elements.\nDisparity was calculated as: c(median, centroids).")
+    expect_equal(output, " ---- dispRity object ---- \n7 continuous (acctran) time subsets for 99 elements in one matrix with 97 dimensions with 1 phylogenetic tree\n     90, 80, 70, 60, 50 ...\nRows were bootstrapped 100 times (method:\"full\") and rarefied to 20, 15, 10, 5 elements.\nDisparity was calculated as: c(median, centroids).")
     disparity$call$dispRitreats <- TRUE
     output <- capture_output(print(disparity))
-    expect_equal(output, " ---- dispRity object ---- \n7 continuous (acctran) time subsets for 99 elements in one matrix with 97 dimensions with 1 phylogenetic tree\n     90, 80, 70, 60, 50 ...\nData was bootstrapped 100 times (method:\"full\") and rarefied to 20, 15, 10, 5 elements.\nDisparity was calculated as: c(median, centroids).\nDisparity was calculated from treats simulated data.")    
+    expect_equal(output, " ---- dispRity object ---- \n7 continuous (acctran) time subsets for 99 elements in one matrix with 97 dimensions with 1 phylogenetic tree\n     90, 80, 70, 60, 50 ...\nRows were bootstrapped 100 times (method:\"full\") and rarefied to 20, 15, 10, 5 elements.\nDisparity was calculated as: c(median, centroids).\nDisparity was calculated from treats simulated data.")    
 })

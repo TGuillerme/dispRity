@@ -54,7 +54,7 @@
 # test <- multi.ace(matrix, tree, models = "ER", use.poly = TRUE, use.uncertain = TRUE, verbose = TRUE)
 
 ##TODO: allow tree to be a multiPhylo object + a sample element that randomly samples a tree everytime and runs ACE on all trees?
-multi.ace <- function(matrix, tree, models, use.poly = FALSE, use.uncertain = FALSE, use.inapp = FALSE, threshold = TRUE, verbose, parallel = FALSE, special.tokens) {
+multi.ace_internal <- function(matrix, tree, models, use.poly = FALSE, use.uncertain = FALSE, use.inapp = FALSE, threshold = TRUE, verbose, parallel = FALSE, special.tokens) {
 
     ## SANITIZING
 
@@ -78,7 +78,7 @@ multi.ace <- function(matrix, tree, models, use.poly = FALSE, use.uncertain = FA
 
     ## Threshold
     #check.class(threshold, c("logical", "numeric"))
-    if(class(threshold) == "logical") {
+    if(is(threshold, "logical")) {
         if(threshold) {
             ## Use the relative threshold function
             threshold.type <- "relative"
@@ -92,7 +92,7 @@ multi.ace <- function(matrix, tree, models, use.poly = FALSE, use.uncertain = FA
     }
 
     #check.class(tree, c("phylo", "multiPhylo"))
-    if(class(tree) == "phylo") {
+    if(is(tree, "phylo")) {
         tree <- list(tree)
         class(tree) <- "multiPhylo"
     }
@@ -100,8 +100,8 @@ multi.ace <- function(matrix, tree, models, use.poly = FALSE, use.uncertain = FA
 
     #check.class(matrix, c("matrix", "list"))
     ## Convert the matrix if not a list
-    class_matrix <- class(matrix)
-    if(class_matrix == "list") {
+    class_matrix <- class(matrix)[[1]]
+    if(is(matrix, "list")) {
         matrix <- do.call(rbind, matrix)
     }
 

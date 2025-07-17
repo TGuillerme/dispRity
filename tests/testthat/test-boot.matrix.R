@@ -58,35 +58,30 @@ boot.type = "full"
 ## Sanitizing
 test_that("Sanitizing works correctly", {
     expect_error(
-        boot.matrix(data = "a", bootstraps, rarefaction, dimensions = FALSE, verbose = FALSE, boot.type = "full")
+        boot.matrix(data = "a", bootstraps, rarefaction, verbose = FALSE, boot.type = "full")
         )
     expect_error(
-        boot.matrix(data, bootstraps = FALSE, rarefaction, dimensions = FALSE, verbose = FALSE, boot.type = "full")
+        boot.matrix(data, bootstraps = FALSE, rarefaction, verbose = FALSE, boot.type = "full")
         )
     expect_error(
-        boot.matrix(data, bootstraps = "a", rarefaction, dimensions = FALSE, verbose = FALSE, boot.type = "full")
+        boot.matrix(data, bootstraps = "a", rarefaction, verbose = FALSE, boot.type = "full")
         )
     expect_error(
-        boot.matrix(data, bootstraps, rarefaction = "a", dimensions = FALSE, verbose = FALSE, boot.type = "full")
+        boot.matrix(data, bootstraps, rarefaction = "a", verbose = FALSE, boot.type = "full")
         )
     expect_error(
-        boot.matrix(data, bootstraps, rarefaction, dimensions = -1, verbose = FALSE, boot.type = "full")
+        boot.matrix(data, bootstraps, rarefaction, verbose = 8, boot.type = "full")
         )
     expect_error(
-        boot.matrix(data, bootstraps, rarefaction, dimensions = FALSE, verbose = 8, boot.type = "full")
+        boot.matrix(data, bootstraps, rarefaction, verbose = FALSE, boot.type = "rangers")
         )
     expect_error(
-        boot.matrix(data, bootstraps, rarefaction, dimensions = FALSE, verbose = FALSE, boot.type = "rangers")
+        boot.matrix(data, bootstraps, rarefaction, verbose = FALSE, boot.type = 2)
         )
     expect_error(
-        boot.matrix(data, bootstraps, rarefaction, dimensions = FALSE, verbose = FALSE, boot.type = 2)
+        boot.matrix(data, bootstraps, rarefaction, verbose = FALSE, boot.type = "full", parallel = TRUE)
         )
-    expect_error(
-        boot.matrix(data, bootstraps, rarefaction, dimensions = FALSE, verbose = FALSE, boot.type = "full", parallel = TRUE)
-        )
-    expect_error(
-        boot.matrix(data, bootstraps, rarefaction, dimensions = 49)
-        )
+
     ## Wrong data input
     dutu <- list(1,2,3) ; class(dutu) <- "dispRity"
     expect_error(
@@ -145,16 +140,6 @@ test_that("No bootstraps", {
         ,"matrix")
 })
 
-## No bootstrap but remove dimensions
-test_that("Remove dimensions", {
-    expect_equal(
-        boot.matrix(data, bootstraps = 0, dimensions = 0.5)$call$dimensions
-        ,1:24)
-    expect_equal(
-        boot.matrix(data, bootstraps = 0, dimensions = 24)$call$dimensions
-        , 24)
-})
-
 ## Bootstraps = 5
 test_that("5 bootstraps", {
     test <- boot.matrix(data, bootstraps = 5)
@@ -176,8 +161,6 @@ test_that("5 bootstraps", {
     expect_equal(
         length(test$subsets[[1]])
         ,2)
-
-
 })
 
 ## Bootstraps = 5 + Rarefaction = 5
@@ -353,7 +336,6 @@ test_that("boot.matrix deals with probabilities subsets", {
     expect_equal(dim(test2$subsets[[2]][[2]]), c(20,10))
 })
 
-
 test_that("boot.matrix works with the prob option (for probabilities sampling)", {
 
     ## Custom subsets
@@ -442,7 +424,7 @@ test_that("boot.matrix detects distance matrices", {
 
     expect_warning(boot.matrix(is_dist))
     msg <- capture_warnings(boot.matrix(is_dist))
-    expect_equal(msg, "boot.matrix is applied on what seems to be a distance matrix.\nThe resulting matrices won't be distance matrices anymore!")
+    expect_equal(msg, "boot.matrix is applied on what seems to be a distance matrix.\nThe resulting matrices won't be distance matrices anymore!\nIf this isn't the desired behavior, you can use the argument:\nboot.by = \"dist\"")
 })
 
 test_that("boot.matrix works with multiple trees AND probabilities", {
@@ -476,11 +458,11 @@ test_that("boot.matrix works with multiple trees AND probabilities", {
     test <- boot.matrix(time_slices_multree_proba, bootstraps = 7)
     expect_is(test, "dispRity")
     expect_equal(sort(unlist(lapply(test$subsets, lapply, length), use.name = FALSE)),
-                 c(18, 21, 42, 49, 60, 70))
+                 c(18, 21, 36, 42, 60, 70))
     test <- boot.matrix(time_slices_multree_proba, bootstraps = 7, rarefaction = TRUE)
     expect_is(test, "dispRity")
     expect_equal(sort(unlist(lapply(test$subsets, lapply, length), use.name = FALSE)),
-                 c(18, 21, 21, 21, 28, 28, 35, 35, 42, 42, 42, 49, 49, 56, 60, 63, 70))
+                 c(18, 21, 21, 21, 28, 28, 35, 35, 36, 42, 42, 49, 56, 60, 63, 70))
 
     warn <- capture_warning(boot.matrix(time_slices_multree_proba, bootstraps = 7, boot.type = "single"))
     expect_equal(warn[[1]], "Multiple trees where used in time_slices_multree_proba. The 'boot.type' option is set to \"full\".")
@@ -561,7 +543,6 @@ test_that("boot.matrix works with multiple matrices, multiple trees and multiple
     expect_equal(dim(test_rare$subsets[[1]][[4]]), c(5, 6))
     expect_equal(dim(test_rare$subsets[[1]][[5]]), c(4, 6))
     expect_equal(dim(test_rare$subsets[[1]][[6]]), c(3, 6))
-
 })
 
 test_that("boot.matrix null works", {
@@ -579,5 +560,104 @@ test_that("boot.matrix null works", {
     res <- boot.matrix(data, boot.type = "null", bootstraps = 500)
     expect_equal(c(res$subsets[[1]]$elements), 1:5)
     expect_equal(sort(unique(c(res$subsets[[1]][[2]]))), 1:10)
+})
 
+test_that("boot.matrix works for boot.type", {
+
+    data <- matrix(rnorm(50), 10, 5, dimnames = list(letters[1:10]))
+    dist <- as.matrix(dist(matrix(rnorm(45), 9, 5, dimnames = list(letters[1:9]))))
+
+    error <- capture_error(test <- boot.matrix(data, bootstraps = 3, boot.by = "brows"))
+    expect_equal(error[[1]], "boot.by must be one of the following: rows, columns, dist.")
+    error <- capture_error(test <- boot.matrix(data, bootstraps = 3, boot.by = c("rows", "columns")))
+    expect_equal(error[[1]], "boot.by must be one of the following: rows, columns, dist.")
+
+    ## Simple
+    test <- boot.matrix(data, bootstraps = 3, boot.by = "rows")
+    expect_equal(test$subsets[[1]]$elements, matrix(1:10, 10, 1))
+    expect_equal(dim(test$subsets[[1]][[2]]), c(10, 3))
+    expect_equal(test$call$bootstrap[[4]], "rows")
+    # By columns
+    test <- boot.matrix(data, bootstraps = 3, boot.by = "columns")
+    expect_equal(test$subsets[[1]]$elements, matrix(1:10, 10, 1))
+    expect_equal(dim(test$subsets[[1]][[2]]), c(5, 3))
+    expect_equal(test$call$bootstrap[[4]], "columns")
+    ## By both
+    warning <- capture_warning(boot.matrix(data, bootstraps = 3, boot.by = "dist"))
+    expect_equal(warning[[1]], "boot.matrix is applied to both rows and columns but the input data seems to not be a distance matrix.\nThe resulting bootstraps might not resample it correctly.")
+    test <- boot.matrix(dist, bootstraps = 3, boot.by = "dist")
+    expect_equal(test$subsets[[1]]$elements, matrix(1:9, 9, 1))
+    expect_equal(dim(test$subsets[[1]][[2]]), c(9, 3))
+    expect_equal(test$call$bootstrap[[4]], "dist")
+
+
+    ## With rarefaction
+    ## Simple
+    test <- boot.matrix(data, bootstraps = 3, boot.by = "rows", rarefaction = c(4,3))
+    expect_equal(test$subsets[[1]]$elements, matrix(1:10, 10, 1))
+    expect_equal(dim(test$subsets[[1]][[2]]), c(10, 3))
+    expect_equal(dim(test$subsets[[1]][[3]]), c(4, 3))
+    expect_equal(dim(test$subsets[[1]][[4]]), c(3, 3))
+    expect_equal(test$call$bootstrap[[4]], "rows")
+    # By columns
+    test <- boot.matrix(data, bootstraps = 3, boot.by = "columns", rarefaction = c(4,3))
+    expect_equal(test$subsets[[1]]$elements, matrix(1:10, 10, 1))
+    expect_equal(dim(test$subsets[[1]][[2]]), c(5, 3))
+    expect_equal(dim(test$subsets[[1]][[3]]), c(4, 3))
+    expect_equal(dim(test$subsets[[1]][[4]]), c(3, 3))
+    expect_equal(test$call$bootstrap[[4]], "columns")
+    ## By both
+    test <- boot.matrix(dist, bootstraps = 3, boot.by = "dist", rarefaction = c(4,3))
+    expect_equal(test$subsets[[1]]$elements, matrix(1:9, 9, 1))
+    expect_equal(dim(test$subsets[[1]][[2]]), c(9, 3))
+    expect_equal(dim(test$subsets[[1]][[3]]), c(4, 3))
+    expect_equal(dim(test$subsets[[1]][[4]]), c(3, 3))
+    expect_equal(test$call$bootstrap[[4]], "dist")
+
+
+    ## Works with probs
+    probs <- runif(10)
+    test <- boot.matrix(data, bootstraps = 3, boot.by = "rows", prob = probs)
+    expect_equal(dim(test$subsets[[1]]$elements), c(10, 3))
+    expect_equal(dim(test$subsets[[1]][[2]]), c(10, 3))
+
+    test <- boot.matrix(data, bootstraps = 3, boot.by = "columns", prob = runif(5))
+    expect_equal(dim(test$subsets[[1]]$elements), c(10, 1))
+    expect_equal(dim(test$subsets[[1]][[2]]), c(5, 3))
+
+    ## Works well by never selecting dimension 1, 2 and 3
+    test <- boot.matrix(data, bootstraps = 100, boot.by = "columns", prob = c(0,0,0,1,1))
+    expect_equal(dim(test$subsets[[1]]$elements), c(10, 1))
+    expect_equal(dim(test$subsets[[1]][[2]]), c(5, 100))
+    expect_true(all(c(test$subsets[[1]][[2]]) != 1))
+    expect_true(all(c(test$subsets[[1]][[2]]) != 2))
+    expect_true(all(c(test$subsets[[1]][[2]]) != 3))
+
+    ## Works with bound trees and matrices
+    load("bound_test_data.rda")
+    matrices <- bound_test_data$matrices
+    trees <- bound_test_data$trees
+
+    no_proba <- chrono.subsets(matrices, tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5, bind.data = TRUE)
+    proba <- chrono.subsets(matrices, tree = trees, time = 3, method = "continuous", model = "gradual.split", t0 = 5, bind.data = TRUE)
+    
+    set.seed(1)
+    test_proba <- boot.matrix(proba, bootstraps = 6, boot.by = "rows")
+    expect_equal(dim(test_proba$subsets[[1]][[1]]), c(7, 9))
+    expect_equal(dim(test_proba$subsets[[1]][[2]]), c(7, 6))
+    expect_equal(dim(test_proba$subsets[[2]][[1]]), c(8, 9))
+    expect_equal(dim(test_proba$subsets[[2]][[2]]), c(8, 6))
+    expect_equal(dim(test_proba$subsets[[3]][[1]]), c(10, 9))
+    expect_equal(dim(test_proba$subsets[[3]][[2]]), c(10, 6))
+    expect_equal(test_proba$call$bootstrap[[4]], "rows")
+
+    set.seed(1)
+    test_proba <- boot.matrix(proba, bootstraps = 6, boot.by = "columns")
+    expect_equal(dim(test_proba$subsets[[1]][[1]]), c(7, 9))
+    expect_equal(dim(test_proba$subsets[[1]][[2]]), c(3, 6))
+    expect_equal(dim(test_proba$subsets[[2]][[1]]), c(8, 9))
+    expect_equal(dim(test_proba$subsets[[2]][[2]]), c(3, 6))
+    expect_equal(dim(test_proba$subsets[[3]][[1]]), c(10, 9))
+    expect_equal(dim(test_proba$subsets[[3]][[2]]), c(3, 6))
+    expect_equal(test_proba$call$bootstrap[[4]], "columns")
 })

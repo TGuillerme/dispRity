@@ -1,7 +1,7 @@
 library(dispRity)
 library(paleotree)
 library(geiger)
-source("multi.ace.R")
+source("multi.ace_internal.R")
 source("convert.tokens.R")
 source("read.nexus.data.R")
 
@@ -35,7 +35,9 @@ divRate <- srRes[[1]][1]
 tree <- paleotree::cal3TimePaleoPhy(cladogram, rangesCont, brRate = divRate, extRate = divRate, sampRate = sRate, ntrees = 2, plot = FALSE)
 tree[[1]]$node.label <- tree[[2]]$node.label <- paste0("n", 1:Nnode(tree[[1]]))
 ## Scale the trees to have the same most recent root age
-tree[[1]]$root.time <- tree[[2]]$root.time <- tree[[2]]$root.time
+## Add extra branch length to the root edge
+tree[[1]]$edge.length[which(tree[[1]]$edge[,1] == Ntip(tree[[1]])+1)] <- tree[[1]]$edge.length[which(tree[[1]]$edge[,1] == Ntip(tree[[1]])+1)] + abs(tree[[1]]$root.time - tree[[2]]$root.time)
+tree[[1]]$root.time <- tree[[2]]$root.time
 ## Make the dummy data
 set.seed(1)
 data <- matrix(rnorm((Ntip(tree[[1]])+Nnode(tree[[1]]))*6), nrow = Ntip(tree[[1]])+Nnode(tree[[1]]), ncol = 6, dimnames = list(c(tree[[1]]$tip.label, tree[[1]]$node.label)))
@@ -62,7 +64,7 @@ set.seed(1)
 ## Matches the trees and the matrices
 ## A bunch of trees
 make.tree <- function(n, fun = rtree) {
-    ## Make the tree
+    ## Make the tree
     tree <- fun(n)
     tree <- chronos(tree, quiet = TRUE,
                     calibration = makeChronosCalib(tree, age.min = 10, age.max = 10))
@@ -91,7 +93,7 @@ do.ace <- function(tree, matrix) {
     return(rbind(matrix, apply(matrix, 2, fun.ace, tree = tree)))
 }
 
-## All matrices
+## All matrices
 matrices <- lapply(trees, do.ace, matrix_base)
 
 bound_test_data <- list("matrices" = matrices, "trees" = trees)

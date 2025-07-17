@@ -3,8 +3,8 @@
 #'
 #' @description Splits the data into a chronological (time) subsets list.
 #'
-#' @param data A \code{matrix} or a \code{list} of matrices.
-#' @param tree \code{NULL} (default) or an optional \code{phylo} or \code{multiPhylo} object matching the data and with a \code{root.time} element. This argument can be left missing if \code{method = "discrete"} and all elements are present in the optional \code{FADLAD} argument.
+#' @param data A \code{matrix}, a \code{list} of matrices or a \code{dispRity} object.
+#' @param tree \code{NULL} (default) or an optional \code{phylo} or \code{multiPhylo} object matching the data and with a \code{root.time} element. This argument can be left missing if \code{method = "discrete"} and all elements are present in the optional \code{FADLAD} argument or if \code{data} has a \code{$tree} component.
 #' @param method The time subsampling method: either \code{"discrete"} (or \code{"d"}) or \code{"continuous"} (or \code{"c"}).
 #' @param time Either a single \code{integer} for the number of discrete or continuous samples or a \code{vector} containing the age of each sample.
 #' @param model One of the following models: \code{"acctran"}, \code{"deltran"}, \code{"random"}, \code{"proximity"}, \code{"equal.split"} or \code{"gradual.split"}. Is ignored if \code{method = "discrete"}.
@@ -13,7 +13,8 @@
 #' @param verbose A \code{logical} value indicating whether to be verbose or not. Is ignored if \code{method = "discrete"}.
 #' @param t0 If \code{time} is a number of samples, whether to start the sampling from the \code{tree$root.time} (\code{TRUE}), or from the first sample containing at least three elements (\code{FALSE} - default) or from a fixed time point (if \code{t0} is a single \code{numeric} value).
 #' @param bind.data If \code{data} contains multiple matrices and \code{tree} contains the same number of trees, whether to bind the pairs of matrices and the trees (\code{TRUE}) or not (\code{FALSE} - default).
-#' 
+#' @param dist.data A \code{logical} value indicating whether to treat the data as distance data (\code{TRUE}) or not (\code{FALSE} - default).
+
 #' 
 #' 
 #'  
@@ -95,7 +96,7 @@
 # t0 = 5
 # bind.data = TRUE
 
-chrono.subsets <- function(data, tree = NULL, method, time, model, inc.nodes = FALSE, FADLAD = NULL, verbose = FALSE, t0 = FALSE, bind.data = FALSE) {
+chrono.subsets <- function(data, tree = NULL, method, time, model, inc.nodes = FALSE, FADLAD = NULL, verbose = FALSE, t0 = FALSE, bind.data = FALSE, dist.data = FALSE) {
     match_call <- match.call()
 
     ## ----------------------
@@ -107,7 +108,11 @@ chrono.subsets <- function(data, tree = NULL, method, time, model, inc.nodes = F
     if(!is.null(tree)) {
         data <- check.dispRity.data(data, tree, returns = c("matrix", "tree", "multi"))
     } else {
-        data <- check.dispRity.data(data, returns = c("matrix", "multi"))
+        if(is(data, "dispRity") && is(data$tree, "multiPhylo")) {
+            data <- check.dispRity.data(data, returns = c("matrix", "tree", "multi"))
+        } else {
+            data <- check.dispRity.data(data, returns = c("matrix", "multi"))
+        }
     }
 
     ## VERBOSE
@@ -150,13 +155,12 @@ chrono.subsets <- function(data, tree = NULL, method, time, model, inc.nodes = F
             if(verbose) message("Creating ", length(time), " time samples through ", length(matrices), " trees and matrices:", appendLF = FALSE)
         }
 
-        output <- dispRity.multi.apply(matrices, fun = chrono.subsets.call, tree = tree, method = method, time = time, model = model, inc.nodes = inc.nodes, FADLAD = FADLAD, verbose = verbose, t0 = t0, bind.data = bind.data)
+        output <- dispRity.multi.apply(matrices, fun = chrono.subsets.call, tree = tree, method = method, time = time, model = model, inc.nodes = inc.nodes, FADLAD = FADLAD, verbose = verbose, t0 = t0, bind.data = bind.data, dist.data = dist.data)
 
         if(verbose) message("Done.\n", appendLF = FALSE)
         return(output)
-
     } else {
-        if(!is.null(tree)) {
+        if(!is.null(tree) || !is.null(data$tree)) {
             tree <- data$tree
         }
         data <- data$matrix
