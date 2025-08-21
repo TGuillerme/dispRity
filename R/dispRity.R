@@ -500,7 +500,7 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
     if(verbose) message("Calculating disparity", appendLF = FALSE)
 
     # Running BAT.metrics with complex options (subsets)
-    if(match_call$metric == "BAT.metric" && !is.null(match_call$BAT.args) && !is.null(data$subsets)) {
+    # if(match_call$metric == "BAT.metric" && !is.null(match_call$BAT.args) && !is.null(data$subsets)) {
         # ## Convert the data
         # batted_data <- dispRity.BAT(data, inc.all = FALSE) # maybe add inc.all?
         # ## Run the metric
@@ -525,8 +525,8 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
     #     }
 
         ## Clean RAM
-        rm(disparities)
-    } else {
+        # rm(disparities)
+    # } else {
 
     ## Other disparity formats
     if(any( 
@@ -581,7 +581,7 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
                             ...)
         #TG: check out the file disparity_internal_logic.md (located on the root of the package) for explanation about the logic in this lapply
 
-    # }
+    }
     ## Free the loop memory
     rm(lapply_loop)
     if(verbose) message("Done.\n", appendLF = FALSE)
