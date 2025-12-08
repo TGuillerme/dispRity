@@ -2,7 +2,13 @@ dispRity v1.9.8 (2025-12-08)
 =========================
 
 ### NEW FEATURES
- * **Major restructure** of `multi.ace`: the `threshold` and `sample` arguments have been replaced by a single `ml.collapse` argument that takes a named list structure. This now combines the previously separate arguments `threshold` and `sample` under one banner. Use `ml.collapse = list(type = "majority")` (replaces `threshold = "max"`), `ml.collapse = list(type = "relative")` (replaces `threshold = TRUE`), `ml.collapse = list(type = "threshold", threshold = 0.95)` (replaces `threshold = 0.95`), or `ml.collapse = list(type = "sample", sample = 100)` (replaces `sample = 100`). This also includes a new tie-breaking option in `multi.ace`: `ml.collapse = list(type = "majority", tie.breaker = TRUE)` for randomly selecting one discrete state when highest scaled likelihoods are tied (alternative to default `tie.breaker = FALSE` which returns all tied states with uncertainty token).
+
+ * Added a new `$abundance` element to the `dispRity` object. This allows to use functional diversity metrics that take abundance into account (using metrics with a new `abundance` global argument) or modifying existing metrics to only take abundance into account (using a new metric transformer argument `as.abundance`.). This is associated with new plot options and streamlined to fit with all the other functionalities in the package.
+
+ <!-- TODO: also add and "metric transoformer" section in the manual for as.covar and as.abundance -->
+
+ * **Arguments restructure** for `multi.ace`: the `threshold` and `sample` arguments have been replaced by a single `ml.collapse` argument that takes a named list structure to deal with different options on how to collapse the distribution of marginal likelihood in specific trait values (or not).
+ <!-- ADD this to the manual: This now combines the previously separate arguments `threshold` and `sample` under one banner. Use `ml.collapse = list(type = "majority")` (replaces `threshold = "max"`), `ml.collapse = list(type = "relative")` (replaces `threshold = TRUE`), `ml.collapse = list(type = "threshold", threshold = 0.95)` (replaces `threshold = 0.95`), or `ml.collapse = list(type = "sample", sample = 100)` (replaces `sample = 100`). This also includes a new tie-breaking option in `multi.ace`: `ml.collapse = list(type = "majority", tie.breaker = TRUE)` for randomly selecting one discrete state when highest scaled likelihoods are tied (alternative to default `tie.breaker = FALSE` which returns all tied states with uncertainty token). -->
 
 ### MINOR IMPROVEMENTS
  * **Changed default argument** in `multi.ace`: `ml.collapse` default is now `list(type = "majority")` (previously `threshold = TRUE` which mapped to `"relative"`).
