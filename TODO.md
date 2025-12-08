@@ -29,6 +29,7 @@ some_data$abundance[[1]]$matrix <- abundance_data
 average1 <- function(matrix, ...) {
     sum(matrix)/length(matrix)
 }
+
 ## Toggling to abundance
 average2 <- as.abundance(average1)
 ## becomes:
