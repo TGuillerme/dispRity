@@ -1,3 +1,14 @@
+dispRity v1.9.8 (2025-12-037)
+=========================
+
+### NEW FEATURES
+ * **Major restructure** of `multi.ace`: the `threshold` and `sample` arguments have been replaced by a single `ml.collapse` argument that takes a named list structure. This now combines the previously separate arguments `threshold` and `sample` under one banner.
+ * Use `ml.collapse = list(type = "majority")` (replaces `threshold = "max"`), `ml.collapse = list(type = "relative")` (replaces `threshold = TRUE`), `ml.collapse = list(type = "threshold", threshold = 0.95)` (replaces `threshold = 0.95`), or `ml.collapse = list(type = "sample", sample = 100)` (replaces `sample = 100`).
+ * New tie-breaking option in `multi.ace`: `ml.collapse = list(type = "majority", tie.breaker = TRUE)` for randomly selecting one discrete state when highest scaled likelihoods are tied (alternative to default `tie.breaker = FALSE` which returns all tied states with uncertainty token).
+
+### MINOR IMPROVEMENTS
+ * **Changed default argument** in `multi.ace`: `ml.collapse` default is now `list(type = "majority")` (previously `threshold = TRUE` which mapped to `"relative"`).
+
 dispRity v1.9.7 (2025-08-22)
 =========================
 

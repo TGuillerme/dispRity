@@ -196,16 +196,16 @@ add.state.names <- function(estimation, character_states, tree) {
 }
 
 ## Translating the likelihood table into a vector of characters
-translate.likelihood <- function(character, threshold, select.states, special.tokens, do_sample) {
+translate.likelihood <- function(character, ml.collapse, select.states, special.tokens, do_sample) {
     ## Translate the likelihood table
-    threshold.fun <- function(taxon, threshold, select.states, special.tokens, do_sample) {
+    threshold.fun <- function(taxon, ml.collapse, select.states, special.tokens, do_sample) {
         if(!do_sample) {
-            return(paste(select.states(taxon, threshold), collapse = sub("\\\\", "", special.tokens["uncertainty"])))
+            return(paste(select.states(taxon, ml.collapse), collapse = sub("\\\\", "", special.tokens["uncertainty"])))
         } else {
-            return(select.states(taxon, threshold))
+            return(select.states(taxon, ml.collapse))
         }
     }
-    translated_states <- apply(character, 1, threshold.fun, threshold, select.states, special.tokens, do_sample)
+    translated_states <- apply(character, 1, threshold.fun, ml.collapse, select.states, special.tokens, do_sample)
     ## Replace empty states by uncertainties
     replace.empty.states <- function(x, character, special.tokens) {
         return(ifelse(x == "", paste(colnames(character), collapse = sub("\\\\", "", special.tokens["uncertainty"])), x))
