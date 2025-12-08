@@ -791,7 +791,9 @@ do.plot.preview <- function(data, specific.args, ...) {
         subsets <- lapply(data$subsets,`[[`, "elements")
         ## Make an empty classifier
         classifier <- rep(NA, nrow(data$matrix[[1]]))
-        for(class in match(sort(unlist(lapply(subsets, length)), decreasing = TRUE), unlist(lapply(subsets, length)))) {
+        ## Order the groups from largest to smallest
+        class_order <- match(names(sort(unlist(lapply(subsets, length)), decreasing = TRUE)), names(subsets))
+        for(class in class_order) {
             ## Store the selected subsets in the classifier (potentially overriding)
             if(dim(subsets[[1]])[2] == 1) {
                 classifier[c(subsets[[class]])] <- class 

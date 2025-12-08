@@ -39,7 +39,7 @@ test_that("multi.ace works", {
     error <- capture_error(multi.ace(data = "matrix_complex",
                             tree = tree_test, 
                             models = "ER", 
-                            threshold = TRUE,
+                            ml.collapse = list(type = "majority"),
                             special.tokens = c("weird" = "%"),
                             special.behaviours = list(weirdtoken = function(x,y) return(c(1,2))),
                             brlen.multiplier = rnorm(10),
@@ -51,7 +51,7 @@ test_that("multi.ace works", {
     error <- capture_error(multi.ace(data = matrix_complex,
                             tree = "tree_test", 
                             models = "ER", 
-                            threshold = TRUE,
+                            ml.collapse = list(type = "majority"),
                             special.tokens = c("weird" = "%"),
                             special.behaviours = list(weirdtoken = function(x,y) return(c(1,2))),
                             brlen.multiplier = rnorm(10),
@@ -63,7 +63,7 @@ test_that("multi.ace works", {
     error <- capture_error(multi.ace(data = matrix_complex,
                             tree = tree_test, 
                             models = tree_test, 
-                            threshold = TRUE,
+                            ml.collapse = list(type = "majority"),
                             special.tokens = c("weird" = "%"),
                             special.behaviours = list(weirdtoken = function(x,y) return(c(1,2))),
                             brlen.multiplier = rnorm(10),
@@ -75,19 +75,43 @@ test_that("multi.ace works", {
     error <- capture_error(multi.ace(data = matrix_complex,
                             tree = tree_test, 
                             models = "ER", 
-                            threshold = list(c(1,2,3)),
+                            ml.collapse = "majority",
                             special.tokens = c("weird" = "%"),
                             special.behaviours = list(weirdtoken = function(x,y) return(c(1,2))),
                             brlen.multiplier = rnorm(10),
                             verbose = FALSE,
                             parallel = FALSE,
                             output = "list"))
-    expect_equal(error[[1]], "threshold must be of class logical or numeric.")
-    
+    expect_equal(error[[1]], "ml.collapse must be of class list.")
+
     error <- capture_error(multi.ace(data = matrix_complex,
                             tree = tree_test, 
                             models = "ER", 
-                            threshold = TRUE,
+                            ml.collapse = list(),
+                            special.tokens = c("weird" = "%"),
+                            special.behaviours = list(weirdtoken = function(x,y) return(c(1,2))),
+                            brlen.multiplier = rnorm(10),
+                            verbose = FALSE,
+                            parallel = FALSE,
+                            output = "list"))
+    expect_equal(error[[1]], "Invalid ml.collapse option: must be a named list with $type")
+
+    error <- capture_error(multi.ace(data = matrix_complex,
+                            tree = tree_test, 
+                            models = "ER", 
+                            ml.collapse = list(type = "max"),
+                            special.tokens = c("weird" = "%"),
+                            special.behaviours = list(weirdtoken = function(x,y) return(c(1,2))),
+                            brlen.multiplier = rnorm(10),
+                            verbose = FALSE,
+                            parallel = FALSE,
+                            output = "list"))
+    expect_equal(error[[1]], "Invalid ml.collapse$type! Must be one of: majority, relative, threshold, sample")
+
+    error <- capture_error(multi.ace(data = matrix_complex,
+                            tree = tree_test, 
+                            models = "ER", 
+                            ml.collapse = list(type = "majority"),
                             special.tokens = mean,
                             special.behaviours = list(weirdtoken = function(x,y) return(c(1,2))),
                             brlen.multiplier = rnorm(10),
@@ -99,7 +123,7 @@ test_that("multi.ace works", {
     error <- capture_error(multi.ace(data = matrix_complex,
                             tree = tree_test, 
                             models = "ER", 
-                            threshold = TRUE,
+                            ml.collapse = list(type = "majority"),
                             special.tokens = c("weird" = "%"),
                             special.behaviours = c("weird" = "%"),
                             brlen.multiplier = rnorm(10),
@@ -111,7 +135,7 @@ test_that("multi.ace works", {
     error <- capture_error(multi.ace(data = matrix_complex,
                             tree = tree_test, 
                             models = "ER", 
-                            threshold = TRUE,
+                            ml.collapse = list(type = "majority"),
                             special.tokens = c("weird" = "%"),
                             special.behaviours = list(weirdtoken = function(x,y) return(c(1,2))),
                             brlen.multiplier = c(1,2,3),
@@ -123,7 +147,7 @@ test_that("multi.ace works", {
     error <- capture_error(multi.ace(data = matrix_complex,
                             tree = tree_test, 
                             models = "ER", 
-                            threshold = TRUE,
+                            ml.collapse = list(type = "majority"),
                             special.tokens = c("weird" = "%"),
                             special.behaviours = list(weirdtoken = function(x,y) return(c(1,2))),
                             brlen.multiplier = rnorm(10),
@@ -135,7 +159,7 @@ test_that("multi.ace works", {
     error <- capture_error(multi.ace(data = matrix_complex,
                             tree = tree_test, 
                             models = "ER", 
-                            threshold = TRUE,
+                            ml.collapse = list(type = "majority"),
                             special.tokens = c("weird" = "%"),
                             special.behaviours = list(weirdtoken = function(x,y) return(c(1,2))),
                             brlen.multiplier = rnorm(10),
@@ -147,7 +171,7 @@ test_that("multi.ace works", {
     error <- capture_error(multi.ace(data = matrix_complex,
                             tree = tree_test, 
                             models = "ER", 
-                            threshold = TRUE,
+                            ml.collapse = list(type = "majority"),
                             special.tokens = c("weird" = "%"),
                             special.behaviours = list(weirdtoken = function(x,y) return(c(1,2))),
                             brlen.multiplier = rnorm(10),
@@ -159,7 +183,7 @@ test_that("multi.ace works", {
     error <- capture_error(multi.ace(data = matrix_complex,
                             tree = tree_test, 
                             models = "ER", 
-                            threshold = TRUE,
+                            ml.collapse = list(type = "majority"),
                             special.tokens = c("weird" = "%"),
                             special.behaviours = list(weirdtoken = function(x,y) return(c(1,2))),
                             brlen.multiplier = rnorm(10),
@@ -168,6 +192,51 @@ test_that("multi.ace works", {
                             output = "list",
                             estimation.details = c("bob")))
     expect_equal(error[[1]], "estimation.details must be one of the following: success, Nstates, transition_matrix, loglikelihood, ancestral_likelihoods.")
+
+    ## tiebreaker test
+    test_tie <- multi.ace(data = matrix_complex,
+                            tree = tree_test, 
+                            models = "ER", 
+                            ml.collapse = list(type = "majority"),
+                            special.tokens = c("weird" = "%"),
+                            special.behaviours = list(weirdtoken = function(x,y) return(c(1,2))),
+                            output = "combined.matrix")
+    
+    ## Test 2: With tie.breaker should NOT have uncertainty tokens
+    test_tie_breaker <- multi.ace(data = matrix_complex,
+                            tree = tree_test, 
+                            models = "ER", 
+                            ml.collapse = list(type = "majority", tie.breaker = TRUE),
+                            special.tokens = c("weird" = "%"),
+                            special.behaviours = list(weirdtoken = function(x,y) return(c(1,2))),
+                            output = "combined.matrix")
+
+    uncertainty_count_tiebreaker <- sum(grepl("/", test_tie_breaker))
+    uncertainty_count_tie <- sum(grepl("/", test_tie))
+    ## With tie.breaker, there should be no uncertainty tokens
+    expect_equal(uncertainty_count_tiebreaker, 0)
+
+    ## randomness of tiebreaker tested
+    set.seed(456)
+    test_tie_1 <- multi.ace(data = matrix_complex,
+                            tree = tree_test, 
+                            models = "ER", 
+                            ml.collapse = list(type = "majority", tie.breaker = TRUE),
+                            special.tokens = c("weird" = "%"),
+                            special.behaviours = list(weirdtoken = function(x,y) return(c(1,2))),
+                            output = "combined.matrix")
+    
+    set.seed(789)
+    test_tie_2 <- multi.ace(data = matrix_complex,
+                            tree = tree_test, 
+                            models = "ER", 
+                            ml.collapse = list(type = "majority", tie.breaker = TRUE),
+                            special.tokens = c("weird" = "%"),
+                            special.behaviours = list(weirdtoken = function(x,y) return(c(1,2))),
+                            output = "combined.matrix")
+
+    expect_equal(sum(grepl("/", test_tie_1)), 0)
+    expect_equal(sum(grepl("/", test_tie_2)), 0)
 
 
     # expect_is(results, "list") #bug in macos
@@ -245,16 +314,17 @@ test_that("multi.ace works", {
                         options.args = list(2)))
     expect_equal(error[[1]], "options.args must be an unambiguous named list of options for castor::asr_mk_model() or ape::ace().")
 
-    ## Threshold works well
+
+    ## Relative method works well
     results <- multi.ace(data = list_matrix,
                         tree = tree_test[[1]],
                         models = specific_model,
                         verbose = FALSE,
                         parallel = FALSE,
                         output = "list",
-                        threshold = FALSE)
+                        ml.collapse = list(type = "relative"))
     expect_is(results, "list")
-    expect_is(results[[1]], "character")
+    expect_true(any(grepl("/", unlist(results))))
 
     ## Special tokens check
     error <- capture_error(results <- multi.ace(data = list_matrix,
@@ -293,7 +363,7 @@ test_that("multi.ace works", {
 
     invariant_matrix <- matrix_test
     invariant_matrix[,1:3] <- "0"
-    warnings <- capture_warning(multi.ace(data = invariant_matrix, tree = tree_test, threshold = FALSE))
+    warnings <- capture_warning(multi.ace(data = invariant_matrix, tree = tree_test, ml.collapse = list(type = "majority")))
     expect_equal(warnings[[1]], "The characters 1, 2, 3 are invariant (using the current special behaviours for special characters) and are simply duplicated for each node.")
     expect_is(results, "list")
     expect_is(results[[1]], "list")
@@ -471,10 +541,10 @@ test_that("multi.ace works with continuous and mix", {
     }
     expect_equal(unique(classes), c("numeric", "character"))
 
-    ## Works with invariant characters and absolute threshold model
+    ## Works with invariant characters and threshold method
     data <- cbind(data, "invar1" = as.character(rep(1, 15, replace = TRUE)))
     data <- cbind(data, "invar2" = as.character(rep(2, 15,  replace = TRUE)))
-    expect_warning(test <- multi.ace(data = data, tree = tree, threshold = 0.75))
+    expect_warning(test <- multi.ace(data = data, tree = tree, ml.collapse = list(type = "threshold", threshold = 0.75)))
     expect_is(test, "data.frame")
     expect_equal(dim(test), c(14,9))
 })
@@ -530,7 +600,7 @@ test_that("multi.ace works with sample", {
     rownames(data) <- tree$tip.label
 
     # Test with continuous
-    expect_warning(test <- multi.ace(data = data, tree = tree, sample = 2, output = "combined.matrix", verbose = FALSE))
+    expect_warning(test <- multi.ace(data = data, tree = tree, ml.collapse = list(type = "sample", sample = 2), output = "combined.matrix", verbose = FALSE))
     expect_is(test, "list")
     ## Correct number of samples
     expect_equal(length(test), 2)
@@ -542,25 +612,30 @@ test_that("multi.ace works with sample", {
     expect_true(all(test[[1]][,2] > -5))
     expect_true(all(test[[1]][,3] > 100))
 
+    ## test missing sample = 
+    error <- capture_error(multi.ace(data = data, tree = tree, ml.collapse = list(type = "sample"), output = "combined.matrix", verbose = FALSE))
+    expect_equal(error[[1]], "ml.collapse$sample must be specified when using type = 'sample'")
+
+
     ## test with sample.fun option
-    expect_warning(error <- capture_error(test <- multi.ace(data = data, tree = tree, sample = 2, sample.fun = runif, output = "combined.matrix", verbose = FALSE)))
+    expect_warning(error <- capture_error(test <- multi.ace(data = data, tree = tree, ml.collapse = list(type = "sample", sample = 2, sample.fun = runif), output = "combined.matrix", verbose = FALSE)))
     expect_equal(error[[1]], "sample.fun must be of class list.")
     sample.fun <- list(fun = rnorm, param = list(max = max, min = min))
-    expect_warning(error <- capture_error(test <- multi.ace(data = data, tree = tree, sample = 2, sample.fun = sample.fun, output = "combined.matrix", verbose = FALSE)))
+    expect_warning(error <- capture_error(test <- multi.ace(data = data, tree = tree, ml.collapse = list(type = "sample", sample = 2, sample.fun = sample.fun), output = "combined.matrix", verbose = FALSE)))
     expect_equal(error[[1]], "The sample function is not formatted correctly and cannot generate a distribution.\nCheck the ?multi.ace manual for more details.")
     ## Works with a list of sample funs
     sample.fun <- list(
         list(fun = runif, param = list(max = max, min = min)),
         list(fun = runif, param = list(max = max, min = min)),
         list(fun = rnorm, param = list(mean = mean, sd = function(x)return(diff(range(x))/4))))
-    expect_warning(test <- multi.ace(data = data, tree = tree, sample = 2, sample.fun = sample.fun, output = "combined.matrix", verbose = FALSE))
+    expect_warning(test <- multi.ace(data = data, tree = tree, ml.collapse = list(type = "sample", sample = 2, sample.fun = sample.fun), output = "combined.matrix", verbose = FALSE))
     expect_is(test, "list")
     ## But doesn't if sample fun is badly formated
     sample.fun <- list(
         list(fun = runif, param = list(max = max, min = min)),
         list(fun = rnorm, param = list(max = max, min = min)),
         list(fun = runif, param = list(mean = mean, sd = function(x)return(diff(range(x))/4))))
-    expect_warning(error <- capture_error(test <- multi.ace(data = data, tree = tree, sample = 2, sample.fun = sample.fun, output = "combined.matrix", verbose = FALSE)))
+    expect_warning(error <- capture_error(test <- multi.ace(data = data, tree = tree, ml.collapse = list(type = "sample", sample = 2, sample.fun = sample.fun), output = "combined.matrix", verbose = FALSE)))
     expect_equal(error[[1]], "The following sample functions are not formated correctly and cannot generate a distribution: 2, 3.\nCheck the ?multi.ace manual for more details.")
 
     ## Test with discrete characters
@@ -568,7 +643,7 @@ test_that("multi.ace works with sample", {
     data <- data_discrete <- sim.morpho(tree, characters = 2, model = "ER", rates = c(rgamma, rate = 10, shape = 5), invariant = FALSE)
     data[,2] <- data_discrete[,2] <- as.character(sample(c(1,2,3), 10, replace = TRUE))
 
-    test <- multi.ace(data = data, tree = tree, sample = 20, output = "combined.matrix", verbose = FALSE)
+    test <- multi.ace(data = data, tree = tree,  ml.collapse = list(type = "sample", sample = 20), output = "combined.matrix", verbose = FALSE)
     expect_is(test, "list")
     ## Correct number of samples
     expect_equal(length(test), 20)
@@ -580,7 +655,7 @@ test_that("multi.ace works with sample", {
 
     ## test with an invariant
     data <- cbind(data, rep("0", 10))
-    expect_warning(test <- multi.ace(data = data, tree = tree, sample = 20, output = "combined.matrix", verbose = FALSE))
+    expect_warning(test <- multi.ace(data = data, tree = tree, ml.collapse = list(type = "sample", sample = 20), output = "combined.matrix", verbose = FALSE))
     expect_is(test, "list")
     ## Correct number of samples
     expect_equal(length(test), 20)
@@ -593,7 +668,7 @@ test_that("multi.ace works with sample", {
 
     ## Test with mixed characters
     data <- data.frame(data_discrete, data_continuous)
-    expect_warning(test <- multi.ace(data = data, tree = tree, sample = 5, output = "matrix", verbose = FALSE))
+    expect_warning(test <- multi.ace(data = data, tree = tree, ml.collapse = list(type = "sample", sample = 5), output = "matrix", verbose = FALSE))
     ## Correct number of samples
     expect_equal(length(test), 5)
     ## Correct rows
@@ -622,7 +697,7 @@ test_that("multi.ace works with recycling", {
     data <- cbind(data, rep("0", 10))
 
     ## Generating the multi.ace
-    expect_warning(test <- multi.ace(data = data, tree = tree, output = "multi.ace", verbose = FALSE, estimation.details = NULL, sample = 1))
+    expect_warning(test <- multi.ace(data = data, tree = tree, output = "multi.ace", verbose = FALSE, estimation.details = NULL, ml.collapse = list(type = "sample", sample = 1)))
     expect_is(test, c("dispRity", "multi.ace"))
     expect_equal(names(test), c("tree", "matrix", "discrete", "invariants", "continuous"))
     expect_is(test$tree, "multiPhylo")
@@ -645,11 +720,11 @@ test_that("multi.ace works with recycling", {
     expect_equal(capture.output(test), c("Raw ancestral traits estimations for:","3 discrete (including 1 invariant) and 3 continuous characters across 1 tree for 10 taxa.","You can use the multi.ace function to resample them and transform them in different outputs."))
 
     ## Recycling the multi.ace
-    tust <- multi.ace(test, output = "combined.matrix", sample = 1, threshold = TRUE)
+    tust <- multi.ace(test, output = "combined.matrix", ml.collapse = list(type = "sample", sample = 1))
     expect_equal(dim(tust), c(19, 6))
 
     ## Works with sampling
-    tast <- multi.ace(test, output = "combined.matrix", sample = 10)
+    tast <- multi.ace(test, output = "combined.matrix", ml.collapse = list(type = "sample", sample = 10))
     expect_equal(length(tast), 10)
     expect_equal(unique(unlist(lapply(tast, dim))), c(19, 6))
 })
