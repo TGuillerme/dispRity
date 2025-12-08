@@ -353,3 +353,51 @@ matrix.to.dist <- function(data) {
     class(out) <- "dist"
     return(out)
 }
+
+## Check matching abundance data
+check.abundance.match <- function(one_disp, one_abundance) {
+    ## Check if abundance is named data
+    if(is.null(rownames(one_abundance))) {
+        stop(paste0("Abundance data must have row names."), call. = FALSE)
+    }
+    if(is.null(colnames(one_abundance))) {
+        stop(paste0("Abundance data must have column names."), call. = FALSE)
+    }
+
+    ## Check if the names match
+    if(nrow(one_abundance) != nrow(one_disp)) {
+        stop("Both the abundance data and the trait data should have the same number of rows.", call. = FALSE)
+    }
+
+    if(!all(no_match <- rownames(one_abundance) %in% rownames(one_disp))) {
+        ## Get the non matching
+        no_match <- !no_match
+        no_match_names <- rownames(one_abundance)[no_match]
+        stop(paste0("The following rownames in the abundance data are not matching the ones in the trait data: ", paste0(no_match_names, collapse = ", "), "."), call. = FALSE)
+    }
+}
+
+## Check abundance data
+check.abundance <- function(disparity_data, abundance_data) {
+    ## Get the class
+    input_class <- check.class(abundance_data, c("matrix", "list", "data.frame"))
+
+    ## Check the labels
+    if(input_class !=  "list") {
+        checks <- lapply(disparity_data, check.abundance.match, abundance_data)
+        ## Output as a dispRity standard list
+        return(list("matrix" = abundance_data))
+    } else {
+        ## Should be matrices
+        checks <- lapply(abundance_data, check.class, c("matrix", "data.frame"))
+
+        ## Should be the same length as the number of matrices
+        if(length(abundance_data) != length(disparity_data)) {
+            stop("Both abundance data and trait data should be lists with the same number of matrices.", .call = FALSE)
+        }
+
+        ## Check everything
+        checks <- mapply(check.abundance.match, disparity_data, abundance_data)
+        return(abundance_data)
+    }
+}

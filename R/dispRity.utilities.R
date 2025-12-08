@@ -9,14 +9,17 @@
 #' @usage fill.dispRity(data, tree, check)
 #' @usage remove.dispRity(data, what)
 #' 
-#' @param data A \code{matrix}.
+#' @param data A \code{matrix} (or a list of matrices).
 #' @param tree Optional, a \code{phylo} or \code{multiPhylo} object.
 #' @param call Optional, a \code{list} to be a \code{dispRity} call.
+#' @param abundance Optional, a \code{matrix} (or a list of matrices) that contains abundance data (see details).
 #' @param subsets Optional, a \code{list} to be a \code{dispRity} subsets list.
 #' @param check Logical, whether to check the data (\code{TRUE}; default, highly advised) or not (\code{FALSE}).
 #' @param what Which elements to remove. Can be any of the following: \code{"subsets"}, \code{"bootstraps"}, \code{"covar"}, \code{"tree"}, \code{"disparity"}. See details.
 #'
 #' @details
+#' Abundance matrices should be a matrix with rownames matching \code{data} and at least one named column. Each cell corresponds to the number of elements present in a column (e.g. number of individuals of species X in a field site, number of fossils in a geological layer, etc.).
+#' 
 #' When using \code{remove.dispRity}, the function recursively removes any other data depending on \code{"what"}.
 #' For example, for a data with disparity calculated for bootstrapped subsets, removing the subsets (\code{what = "subsets"}) also removes the bootstraps and the disparity data.
 #' But removing the bootstraps (\code{what = "bootstraps"}) removes only the bootstraps draws and the disparity relating to the bootstraps (but keeps the subsets and the non-bootstrapped disparity values).
@@ -36,7 +39,7 @@
 #' fill.dispRity(empty, tree = my_tree)
 #' 
 #' @author Thomas Guillerme
-make.dispRity <- function(data, tree, call, subsets) {
+make.dispRity <- function(data, tree, abundance, subsets, call) {
     ## Make the empty object
     dispRity_object <- list("matrix" = list(NULL) ,
                             "tree" = list(NULL),
@@ -86,6 +89,12 @@ make.dispRity <- function(data, tree, call, subsets) {
     if(!missing(subsets)) {
         check.class(subsets, "list")
         dispRity_object$subsets <- subsets
+    }
+
+    ## Add the abundance
+    if(!missing(abundance)) {
+        abundance <- check.abundance(dispRity_object$matrix, abundance)
+        dispRity_object$abundance <- abundance 
     }
 
     class(dispRity_object) <- "dispRity"
@@ -323,7 +332,7 @@ matrix.dispRity <- function(...) {
 }
 extract.dispRity <- function(...) {
     warning("The function extract.dispRity is deprecated. Use get.disparity instead.")
-    return(get.matrix(...))
+    return(get.disparity(...))
 }
 
 
