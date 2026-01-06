@@ -13,13 +13,15 @@ fill.dispRity(data, tree, check)
 remove.dispRity(data, what)
 }
 \arguments{
-\item{data}{A \code{matrix}.}
+\item{data}{A \code{matrix} (or a list of matrices).}
 
 \item{tree}{Optional, a \code{phylo} or \code{multiPhylo} object.}
 
-\item{call}{Optional, a \code{list} to be a \code{dispRity} call.}
+\item{abundance}{Optional, a \code{matrix} (or a list of matrices) that contains abundance data (see details).}
 
 \item{subsets}{Optional, a \code{list} to be a \code{dispRity} subsets list.}
+
+\item{call}{Optional, a \code{list} to be a \code{dispRity} call.}
 
 \item{check}{Logical, whether to check the data (\code{TRUE}; default, highly advised) or not (\code{FALSE}).}
 
@@ -29,6 +31,8 @@ remove.dispRity(data, what)
 Creating an empty \code{dispRity} object from a matrix
 }
 \details{
+Abundance matrices should be a matrix with rownames matching \code{data} and at least one named column. Each cell corresponds to the number of elements present in a column (e.g. number of individuals of species X in a field site, number of fossils in a geological layer, etc.).
+
 When using \code{remove.dispRity}, the function recursively removes any other data depending on \code{"what"}.
 For example, for a data with disparity calculated for bootstrapped subsets, removing the subsets (\code{what = "subsets"}) also removes the bootstraps and the disparity data.
 But removing the bootstraps (\code{what = "bootstraps"}) removes only the bootstraps draws and the disparity relating to the bootstraps (but keeps the subsets and the non-bootstrapped disparity values).
