@@ -29,6 +29,15 @@ check.covar <- function(metric, data) {
     return(list(is_covar = is_covar, data.dim = dim_out))
 }
 
+## Check abundance metric
+check.abundance <- function(metric, data) {
+    is_abundance <- any(names(formals(metric)) %in% c("abundance", "abundance2"))
+    if(is_abundance && is.null(data$abundance)) {
+        stop.call(msg = "Impossible to use a metric with abundance if the data has no $abundance component.", call = "")
+    }
+    return(is_abundance)
+}
+
 ## Checks the levels and extras for one metric
 check.one.metric <- function(metric, data, tree, ...) {
     
