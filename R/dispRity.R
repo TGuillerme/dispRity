@@ -161,6 +161,9 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
             if(is.null(data$matrix[[1]])) {
                 stop.call(match_call$data, " must contain a matrix or a list of matrices.")
             }
+            if(length(data$subsets) == 0) {
+                data <- fill.dispRity(data)
+            }
         }
        
         ## Adding tree (if possible)
@@ -254,7 +257,7 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
 
     ## Get the metric list
     metrics_list <- get.dispRity.metric.handle(metric, match_call, data = data, tree = tree, ...)
-    # metrics_list <- get.dispRity.metric.handle(metric, match_call, data = data, tree = NULL); warning("DEBUG: dispRity 257")
+    # metrics_list <- get.dispRity.metric.handle(metric, match_call, data = data, tree = NULL); warning("DEBUG: dispRity.R l.260")
     dist_help <- metrics_list$dist.help
     metric_is_between.groups <- unlist(metrics_list$between.groups)
     metric_has_tree <- unlist(metrics_list$tree)
