@@ -985,7 +985,7 @@ test_that("remove.dispRity works", {
 
     ## Wrong remove
     error <- capture_error(remove.dispRity(disparity, what = "data"))
-    expect_equal(error[[1]], "The what argument must be one of the following: subsets, bootstraps, covar, tree, disparity.")
+    expect_equal(error[[1]], "The what argument must be one of the following: subsets, bootstraps, covar, tree, disparity, abundance.")
 
     ## Remove the subsets
     expect_false(is.null(disparity$subsets))

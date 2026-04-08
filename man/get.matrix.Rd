@@ -22,6 +22,8 @@ get.disparity(data, subsets, rarefaction, observed, concatenate)
 
 \item{matrix}{A \code{numeric} value of which matrix to select (default is \code{1}).}
 
+\item{abundance}{\code{logical}, if abundance data is present whether to only extract the specific abundance matrix(ces) (\code{TRUE}) or not (\code{FALSE}; default). The specific abundance matrix(ces) to return is provided by the \code{matrix} argument above.}
+
 \item{observed}{A \code{logical} value indicating whether to output the observed (\code{TRUE} (default)) or the bootstrapped values (\code{FALSE}).}
 
 \item{concatenate}{When the disparity metric is a distribution, whether to concatenate it returning the median (\code{TRUE}; default) or to return each individual values.}

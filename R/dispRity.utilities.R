@@ -12,10 +12,10 @@
 #' @param data A \code{matrix} (or a list of matrices).
 #' @param tree Optional, a \code{phylo} or \code{multiPhylo} object.
 #' @param call Optional, a \code{list} to be a \code{dispRity} call.
-#' @param abundance Optional, a \code{matrix} (or a list of matrices) that contains abundance data (see details).
+#' @param abundance Optional, a \code{matrix} or \code{data.frame} (or a list of matrices/data.frames) that contains abundance data (see details).
 #' @param subsets Optional, a \code{list} to be a \code{dispRity} subsets list.
 #' @param check Logical, whether to check the data (\code{TRUE}; default, highly advised) or not (\code{FALSE}).
-#' @param what Which elements to remove. Can be any of the following: \code{"subsets"}, \code{"bootstraps"}, \code{"covar"}, \code{"tree"}, \code{"disparity"}. See details.
+#' @param what Which elements to remove. Can be any of the following: \code{"subsets"}, \code{"bootstraps"}, \code{"covar"}, \code{"tree"}, \code{"disparity"}, code{"abundance"}. See details.
 #'
 #' @details
 #' Abundance matrices should be a matrix with rownames matching \code{data} and at least one named column. Each cell corresponds to the number of elements present in a column (e.g. number of individuals of species X in a field site, number of fossils in a geological layer, etc.).
@@ -101,7 +101,7 @@ make.dispRity <- function(data, tree, abundance, subsets, call) {
 
     return(dispRity_object)
 }
-fill.dispRity <- function(data, tree, check = TRUE) {
+fill.dispRity <- function(data, tree, abundance, check = TRUE) {
 
     ## Data have a matrix
     if(!is.null(data)) {
@@ -132,11 +132,16 @@ fill.dispRity <- function(data, tree, check = TRUE) {
             data$tree <- tree
         }
     }
+    ## Add the abundance
+    if(!missing(abundance)) {
+        abundance <- check.abundance(data$matrix, abundance)
+        data$abundance <- abundance 
+    }
     return(data)
 }
 remove.dispRity <- function(data, what) {
     check.class(data, "dispRity")
-    removables <- c("subsets", "bootstraps", "covar", "tree", "disparity")
+    removables <- c("subsets", "bootstraps", "covar", "tree", "disparity", "abundance")
     check.method(what, removables, msg = "The what argument")
 
     ## Remove the covar
@@ -183,7 +188,12 @@ remove.dispRity <- function(data, what) {
         data$call$disparity <- NULL
     }
 
-    ## Add a null tree if missing
+    ## Remove the abundance
+    if("abundance" %in% what && !is.null(data$abundance)) {
+        data$abundance <- NULL
+    }
+
+     ## Add a null tree if missing
     if(!("tree" %in% names(data))) {
         data$tree <- list(NULL)
     }
@@ -193,8 +203,6 @@ remove.dispRity <- function(data, what) {
 
 #' @name get.matrix
 #' @aliases get.matrix get.disparity matrix.dispRity extract.dispRity
-#' 
-#' 
 #' 
 #' @title Extract elements from a \code{dispRity} object.
 #' 
@@ -210,6 +218,7 @@ remove.dispRity <- function(data, what) {
 #' @param matrix A \code{numeric} value of which matrix to select (default is \code{1}).
 #' @param observed A \code{logical} value indicating whether to output the observed (\code{TRUE} (default)) or the bootstrapped values (\code{FALSE}).
 #' @param concatenate When the disparity metric is a distribution, whether to concatenate it returning the median (\code{TRUE}; default) or to return each individual values.
+#' @param abundance \code{logical}, if abundance data is present whether to only extract the specific abundance matrix(ces) (\code{TRUE}) or not (\code{FALSE}; default). The specific abundance matrix(ces) to return is provided by the \code{matrix} argument above.
 #' 
 #' @examples
 #' ## Load the disparity data based on Beck & Lee 2014
@@ -237,10 +246,28 @@ remove.dispRity <- function(data, what) {
 #' 
 #' @seealso \code{\link{dispRity}}, \code{\link{get.subsets}}.
 #' @author Thomas Guillerme
-get.matrix <- function(data, subsets, rarefaction, bootstrap, matrix = 1){
+get.matrix <- function(data, subsets, rarefaction, bootstrap, matrix = 1, abundance = FALSE){
 
     ## Sanitizing
+    match_call <- match.call()
     check.class(data, "dispRity")
+
+    ## Get abundance first
+    if(abundance) {
+        if(is.null(data$abundance)) {
+            stop.call(match_call$data, " does not contain abundance data.")
+        }
+        if(max(matrix) > length(data$abundance)) {
+            stop.call(match_call$data, paste0(" contains less than ", length(data$abundance)+1, " abundance matrices."))
+        }
+        if(length(matrix) == 1) {
+            ## Return a matrix
+            return(data$abundance[[matrix]])
+        } else {
+            ## Return a list
+            return(data$abundance[matrix])
+        }
+    }
 
     ## Add the dimensions if missing
     if(is.null(data$call$dimensions)) {

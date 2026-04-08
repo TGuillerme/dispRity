@@ -17,7 +17,7 @@ remove.dispRity(data, what)
 
 \item{tree}{Optional, a \code{phylo} or \code{multiPhylo} object.}
 
-\item{abundance}{Optional, a \code{matrix} (or a list of matrices) that contains abundance data (see details).}
+\item{abundance}{Optional, a \code{matrix} or \code{data.frame} (or a list of matrices/data.frames) that contains abundance data (see details).}
 
 \item{subsets}{Optional, a \code{list} to be a \code{dispRity} subsets list.}
 
@@ -25,7 +25,7 @@ remove.dispRity(data, what)
 
 \item{check}{Logical, whether to check the data (\code{TRUE}; default, highly advised) or not (\code{FALSE}).}
 
-\item{what}{Which elements to remove. Can be any of the following: \code{"subsets"}, \code{"bootstraps"}, \code{"covar"}, \code{"tree"}, \code{"disparity"}. See details.}
+\item{what}{Which elements to remove. Can be any of the following: \code{"subsets"}, \code{"bootstraps"}, \code{"covar"}, \code{"tree"}, \code{"disparity"}, code{"abundance"}. See details.}
 }
 \description{
 Creating an empty \code{dispRity} object from a matrix

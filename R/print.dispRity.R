@@ -287,6 +287,10 @@ print.dispRity <- function(x, all = FALSE, ...) {
                 dims <- dim(x$matrix[[1]])
                 n_matrices <- length(x$matrix)
                 cat(paste0("Contains ", ifelse(n_matrices > 1, paste0(n_matrices, " matrices "), "a matrix "), dims[1], "x", dims[2]))
+                ## And abundance?
+                if(!is.null(x$abundance)) {
+                    cat(paste0(" with ", length(x$abundance), " associated abundance matri", ifelse(length(x$abundance) > 1, "ces", "x")))
+                }
                 ## And trees?
                 if(!is.null(x$tree[[1]])) {
                     n_trees <- length(x$tree)
@@ -327,6 +331,11 @@ print.dispRity <- function(x, all = FALSE, ...) {
                 }
                 if(length(x$call$dimensions) != 0) cat(paste(" with", length(x$call$dimensions), "dimensions"), sep = "")
                 
+                ## Print the abundance (if needed)
+                if(!is.null(x$abundance)) {
+                    cat(paste0(" with ", length(x$abundance), " associated abundance matri", ifelse(length(x$abundance) > 1, "ces", "x")))
+                }
+
                 ## Print the number of trees
                 if(!is.null(x$tree[[1]])) {
                     cat(" with ") ; print(x$tree)
@@ -353,6 +362,12 @@ print.dispRity <- function(x, all = FALSE, ...) {
                 cat(paste0(" in one matrix"), sep = "")
             }
             if(length(x$call$dimensions) != 0) cat(paste(" with", length(x$call$dimensions), "dimensions"), sep = "")
+            
+            ## Print the abundance (if needed)
+            if(!is.null(x$abundance)) {
+                cat(paste0(" with ", length(x$abundance), " associated abundance matri", ifelse(length(x$abundance) > 1, "ces", "x")))
+            }
+
             if(!is.null(x$tree[[1]])) {cat(" with ") ; print(x$tree)} else {cat(".\n")}
         }
     
