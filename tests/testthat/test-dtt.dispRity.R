@@ -78,7 +78,7 @@ test_that("dispRity and dtt give the same results", {
     ## two-sided
     set.seed(1)
     dispRity_dtt <- dtt.dispRity(data = BeckLee_mat50, metric = average.sq, tree = BeckLee_tree, nsim = 10, alternative = "two-sided")
-    expect_equal(dispRity_dtt$p_value, 1)
+    expect_equal(dispRity_dtt$p_value, 0.9)
     ## lesser
     set.seed(1)
     dispRity_dtt <- dtt.dispRity(data = BeckLee_mat50, metric = average.sq, tree = BeckLee_tree, nsim = 10, alternative = "lesser")

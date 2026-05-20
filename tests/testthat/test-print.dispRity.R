@@ -240,15 +240,15 @@ test_that("dtt printing", {
         "Disparity-through-time test (modified from geiger::dtt)" ,
         "Call: dtt.dispRity(data = data, metric = average.sq, tree = tree, nsim = 10, model = \"BM\", alternative = \"two-sided\") ",
         "",
-        "Observation: 0.100298654808419",
+        "Observation: 0.152187407083886",
         "",
         "Model: BM",
         "Based on 10 replicates",
-        "Simulated p-value: 1",
+        "Simulated p-value: 0.8",
         "Alternative hypothesis: two-sided",
         "",
         "    Mean.dtt Mean.sim_MDI  var.sim_MDI ",
-        "  0.65302742   0.08453948   0.03519623 ",
+        "  0.65302742   0.11278857   0.02235082 ",
         "",
         "Use plot.dispRity() to visualise." 
         ))

@@ -5,23 +5,20 @@ geiger.dtt.dispRity <- function(phy, data, metric){
     ## Combining the tree and the data
     phy$node.label <- NULL
     td <- list("phy" = phy, "data" = data) #TG: data is already cleaned prior to the function
-    phy2 <- td$phy
-    ## Converting to old phylo format
-    phy <- new2old.phylo(td$phy)
 
     ## Getting the node depth from ape if no attributes
-    if(is.null(phy2$root.time)){
-        node.depth <- branching.times(phy2)
+    if(is.null(td$phy$root.time)){
+        node.depth <- branching.times(td$phy)
     } else {
-        node.depth <- tree.age(phy2)$ages[-c(1:Ntip(phy2))]
-        names(node.depth) <- 1:length(node.depth) + Ntip(phy2)
+        node.depth <- tree.age(td$phy)$ages[-c(1:Ntip(td$phy))]
+        names(node.depth) <- 1:length(node.depth) + Ntip(td$phy)
     }
 
     stem.depth <- numeric()
     stem.depth[1] <- node.depth[1]
-    for(i in 2:phy2$Nnode) {
-        anc <- which(as.numeric(phy$edge[,2]) == -i)
-        stem.depth[i] <- node.depth[names(node.depth) == phy2$edge[anc,1]]
+    for(i in 2:td$phy$Nnode) {
+       anc <- which(as.numeric(td$phy$edge[, 2]) == i+Ntip(td$phy))
+       stem.depth[i] <- node.depth[names(node.depth) == td$phy$edge[anc,1]]
     }
 
     ## Lineages through time
@@ -38,8 +35,9 @@ geiger.dtt.dispRity <- function(phy, data, metric){
     if(length(dim(td$data)) == 2) {
 
         ## Calculate disparity per clade
-        disparity <- as.vector(summary(dispRity(custom.subsets(td$data, phy2), metric = metric), digits = 10)$obs)
-        names(disparity) <- 1:length(node.depth) + Ntip(phy2)
+        disparity <- unlist(get.disparity(dispRity(custom.subsets(td$data, td$phy), metric = metric)))
+        # disparity <- as.vector(summary(dispRity(custom.subsets(td$data, td$phy), metric = metric), digits = 10)$obs)
+        names(disparity) <- 1:length(node.depth) + Ntip(td$phy)
         
         ## Disparity at the root
         result[1] <- disparity[1]
@@ -75,7 +73,7 @@ geiger.dtt.dispRity <- function(phy, data, metric){
             one_matrix <- as.matrix(td$data[,,i])
 
             ## Calculate disparity per clade
-            disparity <- summary(dispRity(custom.subsets(one_matrix, phy2), metric = metric), digits = 10)$obs
+            disparity <- summary(dispRity(custom.subsets(one_matrix, td$phy), metric = metric), digits = 10)$obs
             
 
             y <- numeric()
