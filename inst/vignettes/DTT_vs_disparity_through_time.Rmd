@@ -1,0 +1,179 @@
+---
+title: "Differences between disparity through time in the `geiger` and `dispRity` packages."
+author: "Thomas Guillerme"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    fig_width: 12
+    fig_height: 6
+---
+
+
+```{r}
+library(dispRity)
+library(geiger)
+
+## Setting up the data
+geo  <- get(data(geospiza))
+tree <- geo$phy
+data <- geo$dat
+cleaned <- clean.data(data, tree)
+tree <- cleaned$tree
+data <- cleaned$data
+tree <- makeNodeLabel(tree, prefix = "n")
+tree$root.time <- max(tree.age(tree)$age)
+
+## running ancestral state estimations
+ace_data <- multi.ace(data, tree)
+full_data <- rbind(data, ace_data)
+
+## the metric from geiger
+average.sq <- function(X) mean(pairwise.dist(X)^2)
+```
+
+## `geiger::dtt` vs. `dispRity::dtt.dispRity`
+
+First let's look at the two implementations of `dtt`: `geiger::dtt` and `disprity::dtt.dispRity`.
+The second one is just a wrapper for the first one with a modified modularity for the metrics arguments.
+Basically `geiger::dtt` is limited three disparity metrics (provided by the `index` argument) while the `dispRity` version generalises that to any metric valid for the `dispRity` package.
+For example, it could work with the `c(sum, variances)` one or, here, the `average.sq` one which is defined above the same way as `"avg.sq"`.
+
+```{r}
+## dtt from geiger
+dtt_geiger <- geiger::dtt(phy = tree, data = data, nsim = 20, plot = TRUE, index = "avg.sq")
+
+## dtt from dispRity (a wrapper for geiger:dtt but with modularity for metrics in the dispRity format)
+dtt_dispRity <- dispRity::dtt.dispRity(data = data, tree = tree, metric = average.sq)
+
+## Adding the dispRity wrapper version of dtt
+lines(x = dtt_geiger$times, y = dtt_dispRity$dtt, col = "green", lwd = 1, lty = 1)
+legend("topleft", lwd = 2, col = c("black", "green"),
+       legend = c("DTT (geiger::dtt)", "disparity through time\n(dispRity::chrono.subsets)"))
+```
+
+They're exactly the same, as expected.
+
+## disparity-through-time (`dtt`) vs. disparity through time (`chrono.subsets`)
+
+Now let's see the difference between the DTT version and the one in implemented in `chrono.subsets` in `dispRity` (with a `"proximity"` model just for illustration, note that the results are the same for each different model).
+
+```{r}
+## dtt from geiger
+dtt_geiger <- geiger::dtt(phy = tree, data = data, nsim = 20, plot = TRUE, index = "avg.sq")
+
+## disparity through time from dispRity
+## Get the time slices to correspond to the ones in DTT
+time_slices <- ((1-dtt_dispRity$times) * tree$root.time)[-1]
+time_subsets <- chrono.subsets(full_data, tree = tree, method = "continuous", model = "proximity", time = time_slices)
+## Get the disparity through time
+disparity_through_time <- dispRity(time_subsets, metric = average.sq)
+## Scale the disparity through time
+disparity_through_time <- unlist(get.disparity(disparity_through_time))
+disparity_through_time <- disparity_through_time[-1]/max(disparity_through_time[-1])
+
+## And here is the difference (remove the two first time points that don't have enough data for chrono.subsets)
+lines(x = dtt_geiger$times[-c(1,2)], y = disparity_through_time, col = "orange", lwd = 2)
+legend("topleft", lwd = 2, col = c("black", "orange"),
+       legend = c("DTT (geiger::dtt)", "disparity through time\n(dispRity::chrono.subsets)"))
+```
+
+The results are pretty much very different here.
+How comes?
+This is because of the difference in how either methods are measuring disparity through time.
+ 
+ * `dispRity::chrono.subsets` are actually measuring disparity through time in a commonly understood way: the x axis represents time and the y axis represents disparity at that point in time. I say "commonly understood" because this matches more to the way we are measuring a variable through time (e.g. population size through time for a region, height through time for an individual, available budget through time, etc...)
+ * `geiger::dtt` measures disparity through time in the sense of clade disparity through time. In other words, for each node, it's looking at the proportion of disparity of the clade (i.e. the node's descendants) to the overall disparity. It then calculates at each point (the age of the nodes), the average disparity in the subclades present at that time.
+
+Here's a way to visualise the decomposition of what `geiger::dtt` is doing.
+
+```{r}
+## Creating the groups of all nodes and their descendants.
+clade_groups <- custom.subsets(data, group = tree)
+## Note here that providing group = tree generates a group for each node
+## i.e. node 1 (n1) contains the 13 species (the root of the tree),
+## node 2 (n2) 12 species, n3, 11 sp, etc.
+size.subsets(clade_groups)
+
+## We can then calculate the disparity for these groups
+clade_disparity <- dispRity(clade_groups, metric = average.sq)
+disparity_per_clade <- unlist(get.disparity(clade_disparity))
+## And scale these values by the biggest disparity value
+disparity_per_clade <- disparity_per_clade/max(disparity_per_clade) 
+
+## And here is what it looks like
+dtt_geiger <- geiger::dtt(phy = tree, data = data, nsim = 20, plot = TRUE, index = "avg.sq")
+lines(x = dtt_geiger$times[-c(1)], y = disparity_per_clade, col = "blue", lwd = 2)
+
+## Adding the legend
+legend("topleft", lwd = 2, col = c("black", "blue"),
+       legend = c("DTT (geiger::dtt)", "disparity per clade (dispRity)"))
+```
+
+Note that here the results are a bit similar that DTT but still quiet different.
+
+This is because DTT re-adjust these values to scale them and calculate the average at each time points (which are the node ages).
+Looking at a reproduction of the `geiger::dtt` code, this is what it looks like
+
+```{r}
+## Get the node ages for as the time slices
+node_ages <- tree.age(tree)$ages[-c(1:Ntip(tree))]
+names(node_ages) <- 1:Nnode(tree) + Ntip(tree)
+
+## Finding the ancestral stem age for each node for averaging laterone
+ancestor_ages <- numeric()
+ancestor_ages <- unname(node_ages[1])
+for(node in 2:tree$Nnode) {
+       ## Find this node's ancestor
+       node_anc_edge <- which(tree$edge[, 2] == node+Ntip(tree))
+       ## Getting the node ancestor's age
+       ancestor_ages[node] <- node_ages[as.numeric(names(node_ages)) == tree$edge[node_anc_edge, 1]]
+}
+
+## Sort the node depths sequentially
+sorted_ages <- sort(node_ages, decreasing = TRUE)
+
+## Calculate disparity per clade
+disparity <- unlist(get.disparity(dispRity(custom.subsets(data, tree), metric = average.sq)))
+
+## Disparity at the root
+dtt_results <- numeric()
+dtt_results[1] <- disparity[1]
+
+## Disparity for the other nodes (average per time slice)
+for(i in 2:length(sorted_ages)) {
+       ## Check which lineages are present at the time of interest 
+       x <- disparity[ancestor_ages >= sorted_ages[i-1] & node_ages < sorted_ages[i-1]]
+       ## ancetral node ages is bigger or equal than previous ltt AND node depth is smaller than previous ltt
+       if(length(x) == 0) {
+              ## If none, the disparity is 0
+              dtt_results[i] <- 0
+       } else {
+              ## Else, it's the average disparity of the clades present at that time
+              dtt_results[i] <- mean(x)
+       }
+}
+
+## The last disparity value is set to 0
+dtt_results[length(sorted_ages)+1] <- 0
+
+## And the results are scaled relative to the first observation (the disparity of the whole clade)
+dtt_results <- dtt_results/dtt_results[1]
+
+## Adding the different disparity scores
+dtt_geiger <- geiger::dtt(phy = tree, data = data, nsim = 20, plot = TRUE, index = "avg.sq")
+lines(x = dtt_geiger$times, y = dtt_results, col = "orange", lwd = 1)
+
+## You can compare that to the more naive approach highlighted above
+## where the disparity per clade is just plotted through time:
+raw_disparity <- disparity/disparity[1]
+raw_disparity <- c(raw_disparity, 0)
+
+lines(x = dtt_geiger$times, y = raw_disparity, col = "blue", lwd = 2)
+
+## Adding the legend
+legend("topleft", lwd = 2, col = c("black", "orange", "blue"),
+       legend = c("DTT (geiger::dtt)", "average disparity per clade", "raw disparity per clade"))
+```
+
+<!-- Refine the algorithm with slice.tree(tree, age = sort(node_ages)[3], model = "ACCTRAN")
+? -->
