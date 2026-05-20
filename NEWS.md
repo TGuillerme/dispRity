@@ -1,4 +1,4 @@
-dispRity v1.9.8 (2025-12-08)
+dispRity v1.9.8 (2026-04-08)
 =========================
 
 ### NEW FEATURES
@@ -12,6 +12,8 @@ dispRity v1.9.8 (2025-12-08)
 
 ### MINOR IMPROVEMENTS
  * **Changed default argument** in `multi.ace`: `ml.collapse` default is now `list(type = "majority")` (previously `threshold = TRUE` which mapped to `"relative"`).
+ * The `dispRity` functions now tries to auto-fill any give empty `"dispRity"` object. I.e. `dispRity(make.dispRity(...), ...)` now automatically runs `dispRity(fill.dispRity(make.dispRity(...)), ...)`.
+ * Streamlined the implementation of `dtt.dispRity` for clarity and speed. This function now also has a dedicated vignette for illustrating the difference between disparity through time in `dispRity` and in `geiger`.
 
 dispRity v1.9.7 (2025-08-22)
 =========================
