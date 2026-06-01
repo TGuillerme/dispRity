@@ -12,7 +12,7 @@ One function called `chrono.test` that contains the series:
  * `"itsa"`
  * `"citsa"`
  * `"area"`
- Or a function that outputs a `"h.test"` object (e.g. `"t.test"`, or `aov`)
+ * `"average"` (`t.test`) or any function that outputs a `"h.test"` object (e.g. `"t.test"`, or `aov`) (average)
 
 #'@param changepoint, a vector of at least one "numeric", "integer" or "character" `"detect"`
  
@@ -26,49 +26,87 @@ chrono.test(disparity, method, changepoint, time.window, ...)
 
 ### TODO:
 
- * [ ] write the doc (with these arguments above)
- * [ ] implement the check.* for these four arguments
- * [ ] do the sanity unit testing (e.g. if `chrono.test(disparity, method = "kista", changepoint, time.window, ...)` error should be: "Wrong method type, the ones allowed are...")
-
-
+ - [ ] write the doc (with these arguments above)
+ - [ ] implement the check.* for these four arguments
+ - [ ] do the sanity unit testing (e.g. if `chrono.test(disparity, method = "kista", changepoint, time.window, ...)` error should be: "Wrong method type, the ones allowed are...")
 
 # 2 - under the hood functions
 
- * `check.time` function for sanitizing both `changepoint` and `time.window` args 
+## `check.time` function for sanitizing both `changepoint` and `time.window` args 
+  - [ ] unit test
+  - [ ] implement
 
- * `check.dispRity` function to sanitize data input:
-   *  has both a tree and matrix
+## `check.dispRity` function to sanitize data input:
+   *  has both a tree and matrix (check the tree and matrix match)
    *  check if it is multi or not (i.e., sometimes will be using sample ace data, so n(matrix) > 1 )
-   *  check if it has subsets defined already or not
-   *  check the tree and matrix match
-   *  
+   *  check if it has subsets defined already. Needs to be from chrono.subsets OR custom.subsets with mega conditions TODO:for later version
+   *  check if it has disparity values + the disparity level
+  - [ ] unit test
+  - [ ] implement
 
- * `"chrono.test"` data.frame style = `make.deltatronic`
+## `make.deltatronic`
    * at base level, is data.frame of: time | disparity | intervention
    * has conditional calls depending on `method = ...`, i.e. `if(method == "citsa") {delta_df$real_vs_control <- c(rep(1, nrow(real)), rep(0, nrow(cont)))} 
+  - [ ] unit test
+  - [ ] implement
 
- * `set.changepoint` generating a list of changepoints to go through (each in a absolute time format (e.g. 66)). If only one changepoint, list contains only one element, else more. If `changepoint = "detect"` by default it creates a list using the input time slices, else you can use `changepoint = list(method = "detect", resolution = 2)` which will create a list of every 2 mya (within the time window).
+## `set.time.window`
+  through the input `dispRity` object + the input options.
+  - [ ] unit test
+  - [ ] implement
 
- * `set.time.window`  
-  
+## `set.changepoint`
+  generating a list of changepoints to go through (each in a absolute time format (e.g. 66)).
+  If only one changepoint, list contains only one element, else more. If `changepoint = "detect"` by default it creates a list using the input time slices, else you can use `changepoint = list(method = "detect", resolution = 2)` which will create a list of every 2 mya (within the time window).
+  - [ ] unit test
+  - [ ] implement
 
-
- * if method = `"itsa"` calls `"itsa.disparity"`
-
-  
+## `itsa.method`  
    * `run.itsa.model` runs `lm` function on the `make.deltatronic` output
+      * Add option to have not only `lm` (`... <- list("itsa.model" = lm)`)
+  - [ ] unit test
+  - [ ] implement
 
- * if method = `"citsa"` calls `"chrono.null"` + `"itsa.bm"`. 
+## `citsa.method` 
+  
+1 - Generate the following ... options as default (or extract from user e.g. `... <- list(nsim = 20, covar.estimate = TRUE)`)    
+  * nsim = number of simulations
+  * covar.estimate = whether to estimate the covariance structure between traits based on the pre-change point? (TRUE; default), or FALSE if you assume that your dimensions are orthogonal.
+  * Add option to have not only `lm` (`... <- list("itsa.model" = lm)`)
   * if paint = TRUE calls `paint.branches`
+    -> Check if `paint = TRUE` (using `mvBM`) is faster than `slice.tree` and implement by default the faster. + check for equality-ish 
+  - [ ] unit test
+  - [ ] implement
+
+2 - Go through the following pipeline
+## `"chrono.null"`
   * calls `fit.bm` which estimates sig_sq & root_value for each PC axis, using `mvMORPH::mvBM(tree, data, model = "BMM", echo = FALSE, diagnostic = FALSE)`
+  * recycle the model part from `run.itsa.model`
+  - [ ] unit test
+  - [ ] implement
+
+## `sim.counterfactual`
   * calls `sim.counterfactual` which simulates BM from the output of `fit.bm` for each PC axis, according to how many `nsim = n`
-  * calls `run.citsa.model` runs `lm` function on the `rbind` `make.deltatronic` + `sim.counterfactual` outputs
- 
- * if method = `"area"` calls `"area.disparity"` @@@TODO:TG: check if the area implementation can fit with the geiger stuff
- 
- * if method = `"h.test"` 
-   * takes output from `make.deltatronic`
-   * plugs it into optional arg `test = stats::t.test` or `test = stats::aov` etc.
+  - [ ] unit test
+  - [ ] implement
+
+## `run.citsa.model`
+  * calls `run.citsa.model` runs `lm` (recycle from model argument) function on the `rbind` `make.deltatronic` + `sim.counterfactual` outputs
+  - [ ] unit test
+  - [ ] implement
+
+## `area.method`
+ * @@@TODO:TG: check if the area implementation can fit with the geiger stuff
+ * run `itsa.method`
+  - [ ] unit test
+  - [ ] implement
+
+## `average.method`
+  * takes output from `make.deltatronic`
+  * plugs it into optional arg `test = stats::t.test` or `test = stats::aov` etc.
+  - [ ] unit test
+  - [ ] implement
+
 
 
 # 3 - output structure
