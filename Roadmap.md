@@ -36,6 +36,13 @@ chrono.test(disparity, method, changepoint, time.window, ...)
 
  * `check.time` function for sanitizing both `changepoint` and `time.window` args 
 
+ * `check.dispRity` function to sanitize data input:
+   *  has both a tree and matrix
+   *  check if it is multi or not (i.e., sometimes will be using sample ace data, so n(matrix) > 1 )
+   *  check if it has subsets defined already or not
+   *  check the tree and matrix match
+   *  
+
  * `"chrono.test"` data.frame style = `make.deltatronic`
    * at base level, is data.frame of: time | disparity | intervention
    * has conditional calls depending on `method = ...`, i.e. `if(method == "citsa") {delta_df$real_vs_control <- c(rep(1, nrow(real)), rep(0, nrow(cont)))} 
@@ -47,6 +54,7 @@ chrono.test(disparity, method, changepoint, time.window, ...)
 
 
  * if method = `"itsa"` calls `"itsa.disparity"`
+
   
    * `run.itsa.model` runs `lm` function on the `make.deltatronic` output
 
@@ -58,7 +66,45 @@ chrono.test(disparity, method, changepoint, time.window, ...)
  
  * if method = `"area"` calls `"area.disparity"` @@@TODO:TG: check if the area implementation can fit with the geiger stuff
  
- * if method = `"t.test"` calls `"stats::t.test"`
+ * if method = `"h.test"` 
+   * takes output from `make.deltatronic`
+   * plugs it into optional arg `test = stats::t.test` or `test = stats::aov` etc.
+
+
+# 3 - output structure
+
+* Core output: `dispRity object`
+  * matrix
+  * tree
+  * subsets
+  * method_output.
+  * call
+  
+method_output expanded:
+if (method == "itsa")
+* model(s)
+if(is_multi){
+  * confidence interval of change in slope coefficients
+  * confidence interval of immediate jump coefficients
+} else {
+  * coefficient of change in slope
+  * coefficient of immediate jump
+}
+* convergence issues? 
+* if plot(itsa_output){
+    shows 
+  }
+
+if (method = "citsa")
+* model(s)
+if(is_multi){
+  * confidence interval of change in slope coefficients
+  * confidence interval of immediate jump coefficients
+} else {
+  * coefficient of change in slope
+  * coefficient of immediate jump
+}
+* convergence issues? 
 
 
 
