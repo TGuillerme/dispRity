@@ -37,14 +37,24 @@ chrono.test(disparity, method, changepoint, time.window, ...)
  * `check.time` function for sanitizing both `changepoint` and `time.window` args 
 
  * `"chrono.test"` data.frame style = `make.deltatronic`
+   * at base level, is data.frame of: time | disparity | intervention
+   * has conditional calls depending on `method = ...`, i.e. `if(method == "citsa") {delta_df$real_vs_control <- c(rep(1, nrow(real)), rep(0, nrow(cont)))} 
 
  * `set.changepoint` generating a list of changepoints to go through (each in a absolute time format (e.g. 66)). If only one changepoint, list contains only one element, else more. If `changepoint = "detect"` by default it creates a list using the input time slices, else you can use `changepoint = list(method = "detect", resolution = 2)` which will create a list of every 2 mya (within the time window).
 
  * `set.time.window`  
+  
+
 
  * if method = `"itsa"` calls `"itsa.disparity"`
+  
+   * `run.itsa.model` runs `lm` function on the `make.deltatronic` output
 
- * if method = `"citsa"` calls `"chrono.null"` + `"itsa.bm"`
+ * if method = `"citsa"` calls `"chrono.null"` + `"itsa.bm"`. 
+  * if paint = TRUE calls `paint.branches`
+  * calls `fit.bm` which estimates sig_sq & root_value for each PC axis, using `mvMORPH::mvBM(tree, data, model = "BMM", echo = FALSE, diagnostic = FALSE)`
+  * calls `sim.counterfactual` which simulates BM from the output of `fit.bm` for each PC axis, according to how many `nsim = n`
+  * calls `run.citsa.model` runs `lm` function on the `rbind` `make.deltatronic` + `sim.counterfactual` outputs
  
  * if method = `"area"` calls `"area.disparity"` @@@TODO:TG: check if the area implementation can fit with the geiger stuff
  
