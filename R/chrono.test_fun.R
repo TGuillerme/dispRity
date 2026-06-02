@@ -2,38 +2,36 @@
 
 
 ## sanitizing function for changepoint + time.window
-check.time <- function(object, class, msg, type, tree) {
-    match_call <- match.call()
+# check.time <- function(object, class, msg, type, tree) {
+#     match_call <- match.call()
 
-    # class_object <- class(object)[1]
-    # length_class <- length(class)
-    if (type == "changepoint"){
+#     # class_object <- class(object)[1]
+#     # length_class <- length(class)
+#     if (type == "changepoint"){
 
-        if (is(object, "numeric") || is(object, "integer") ) {
-            tree_span <- c(max(node.depth.edgelength(tree)), min(node.depth.edgelength(tree)))
-            if(!object < tree_span[1] && object > tree_span[2]) {
-                stop.call(match_call$object, " changepoint is either larger or smaller than the tree span...\n")
-            }
-        }
-        return(set.changepoint(object))
-        if (is(object, "character") && !object == "detect"){
-            stop.call(match_call$object, " must be `detect` if character string or a numeric value...\n")
-        }
-    }
+#         if (is(object, "numeric") || is(object, "integer") ) {
+#             tree_span <- c(max(node.depth.edgelength(tree)), min(node.depth.edgelength(tree)))
+#             if(!object < tree_span[1] && object > tree_span[2]) {
+#                 stop.call(match_call$object, " changepoint is either larger or smaller than the tree span...\n")
+#             }
+#         }
+#         return(set.changepoint(object))
+#         if (is(object, "character") && !object == "detect"){
+#             stop.call(match_call$object, " must be `detect` if character string or a numeric value...\n")
+#         }
+#     }
 
-    if (type == "time.window") {
-        if (object == 1){
-            stop.call(match_call$object, " must be either vector of times, a numeric >1 or =<0.5...\n")
-        }
-    }
-}
+#     if (type == "time.window") {
+#         if (object == 1){
+#             stop.call(match_call$object, " must be either vector of times, a numeric >1 or =<0.5...\n")
+#         }
+#     }
+# }
 
 
-make.deltatronic <- function(data, changepoint, concatenate = TRUE) {
+make.deltatronic <- function(data, changepoint, time.window, concatenate = TRUE) {
 
     changepoint  <- set.changepoint(changepoint)
-    time.window <- set.time.window(time.window)
-
 
     disp_vals <- t(as.data.frame(get.disparity(data, concatenate = as.logical(concatenate)), check.names = FALSE))
     # colnames(disp_vals) <- paste0("disparity", seq_len(ncol(disp_vals)))    
@@ -42,23 +40,23 @@ make.deltatronic <- function(data, changepoint, concatenate = TRUE) {
         time = as.matrix(numeric_time),
         time_elapsed =  as.matrix(max(numeric_time) - numeric_time),
         # disparity = as.numeric(disp_vals[,"disparity"]),
-        impact = as.matrix(as.numeric(numeric_time <= changepoint)),
+        impact = as.matrix(as.numeric(numeric_time <= changepoint[[1]])),
         disparity= as.matrix(disp_vals)
     )
 
-    delta_df$time_post_cp <- as.matrix(ifelse(delta_df$impact == 0, 0, delta_df$time_elapsed - changepoint))
+    delta_df$time_post_cp <- as.matrix(ifelse(delta_df$impact == 0, 0, delta_df$time_elapsed - changepoint[[1]]))
 
 
-    delta_df <- set.time.window(delta_df, time.window, changepoint)
+    delta_df <- set.time.window(delta_df, time.window)
     return(delta_df)
 }
 
-set.time.window <- function(delta_df, time.window, changepoint) {
+set.time.window <- function(delta_df, time.window) {
     if(is(time.window, "numeric") && length(time.window) == 1 && time.window > 1) { ## choose n = time.time.window datapoints either side
-        data_pre_impact <- sapply(delta_df, function(x) as.matrix(x[delta_df$impact == 0,]))
-        data_post_impact <- sapply(delta_df, function(x) as.matrix(x[delta_df$impact == 1,]))
-        kept_data_pre <- lapply(data_pre_impact, function(x) as.matrix(x[(length(data_pre_impact$time)-(time.window - 1)):length(data_pre_impact$time), ]))
-        kept_data_post <- lapply(data_post_impact, function(x) as.matrix(x[1:time.window]) )
+        data_pre_impact <- lapply(delta_df, function(x) x[delta_df$impact == 0, , drop = FALS])
+        data_post_impact <- lapply(delta_df, function(x) x[delta_df$impact == 1, , drop = FALSE])
+        kept_data_pre <- lapply(data_pre_impact, function(x) x[(length(data_pre_impact$time)-(time.window - 1)):length(data_pre_impact$time), , drop = FALSE])
+        kept_data_post <- lapply(data_post_impact, function(x) x[1:time.window, , drop = FALSE]) 
         kept_data <- Map(rbind,kept_data_pre,kept_data_post)
         return(kept_data)
     }
@@ -66,26 +64,26 @@ set.time.window <- function(delta_df, time.window, changepoint) {
     if(is(time.window,"numeric") && length(time.window) == 2) { ## time window around changepoint. note that this time should be going from past to present in Ma style time
         pre_time <- max(time.window)
         post_time  <- min(time.window)
-        kept_data_pre <- lapply(delta_df, function(x) as.matrix(x[delta_df$time < pre_time & delta_df$impact == 0 ]))
-        kept_data_post <- lapply(delta_df, function(x) as.matrix(x[delta_df$time > post_time & delta_df$impact == 1 ]))
+        kept_data_pre <- lapply(delta_df, function(x) x[delta_df$time < pre_time & delta_df$impact == 0, , drop = FALSE])
+        kept_data_post <- lapply(delta_df, function(x) x[delta_df$time > post_time & delta_df$impact == 1, , drop = FALSE])
         kept_data <- Map(rbind,kept_data_pre,kept_data_post)
         return(kept_data)
     }
 
     if(is(time.window, "numeric") && length(time.window) ==1 & time.window <= 0.5) { ## calculates percentage of data to keep either side of impact
-        data_pre_impact <- delta_df[delta_df$impact == 0,]
-        data_post_impact <- delta_df[delta_df$impact == 1,]
-        rows_to_keep_pre <- which.min(nrow(data_pre_impact) * (time.window*2))
-        rows_to_keep_post <- which.min(nrow(data_post_impact) * (time.window*2))
-        kept_data_pre <- data_pre_impact[(nrow(data_pre_impact)-(rows_to_keep_pre - 1)):nrow(data_pre_impact), ]
-        kept_data_post <- data_post_impact[1:rows_to_keep_post, ] 
-        kept_data <- rbind(kept_data_pre, kept_data_post)
+        data_pre_impact <- lapply(delta_df, function(x) x[delta_df$impact == 0, , drop = FALSE])
+        data_post_impact <- lapply(delta_df, function(x) x[delta_df$impact == 1, ,drop = FALSE])
+        rows_to_keep_pre <- ceiling((length(data_pre_impact$time) * (time.window*2)))
+        rows_to_keep_post <- ceiling(length(data_post_impact$time) * (time.window*2))
+        kept_data_pre <- lapply(data_pre_impact, function (x) x[(nrow(x)-(rows_to_keep_pre - 1)):nrow(x), , drop = FALSE])
+        kept_data_post <- lapply(data_post_impact, function (x)x[1:rows_to_keep_post, , drop = FALSE])
+        kept_data <- Map(rbind,kept_data_pre,kept_data_post)
         return(kept_data)
     }
 }
 
 set.changepoint  <- function(changepoint){
-    if (is(changepoint, "numeric") || is()){
+    if (is(changepoint, "numeric") || is(changepoint, "integer")){
         return(as.list(changepoint))
     } else if(changepoint == "detect"){
         ## do something here for detect
