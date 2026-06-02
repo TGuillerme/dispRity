@@ -1,5 +1,11 @@
 # Road map for the Deltatronic update
 
+Tuesday: skeleton everything
+Wednesday: implement the first part (the magic)
+Thursday: skeleton the output (that includes plot + summary + probably finding a new class type)
+Friday: have the function working
+
+
 This is gonna be integrated in the next release 1.10 (including the `BAT` compatibility + other stuff).
 
 ## Functions wish list for Deltratronic
