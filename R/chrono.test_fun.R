@@ -31,6 +31,7 @@
 
 make.deltatronic <- function(data, changepoint, time.window, concatenate = TRUE) {
 
+    match_call <- match.call()
     changepoint  <- set.changepoint(changepoint)
 
     if (changepoint == "detect"){
@@ -43,47 +44,50 @@ make.deltatronic <- function(data, changepoint, time.window, concatenate = TRUE)
      
     make.deltatronic.list <- function(changepoint, data){
 
-        disp_vals <- t(as.data.frame(get.disparity(data, concatenate = as.logical(concatenate)), check.names = FALSE))
+        changepoint <- as.numeric(changepoint)
+        disp_vals <- t(as.data.frame(get.disparity(data), check.names = FALSE))
         # colnames(disp_vals) <- paste0("disparity", seq_len(ncol(disp_vals)))    
         numeric_time <- as.numeric(rownames(disp_vals))
         delta_df <- list(
             time = as.matrix(numeric_time),
             time_elapsed =  as.matrix(max(numeric_time) - numeric_time),
-            # disparity = as.numeric(disp_vals[,"disparity"]),
-            impact = as.matrix(as.numeric(numeric_time <= changepoint[[1]])),
+            impact = as.matrix(as.numeric(numeric_time <= changepoint)),
             disparity= as.matrix(disp_vals)
         )
 
-        delta_df$time_post_cp <- as.matrix(ifelse(delta_df$impact == 0, 0, delta_df$time_elapsed - changepoint[[1]]))
+        delta_df$time_post_cp <- as.matrix(ifelse(delta_df$impact == 0, 0,  changepoint - delta_df$time))
         return(delta_df)
     }
 
     delta_df <- lapply(changepoint, make.deltatronic.list, data = data)
 
-    delta_df <- lapply(delta_df, set.time.window, time.window)
+    if(!is.null(time.window)){
+        delta_df <- lapply(delta_df, set.time.window, time.window)
+    }
+
     return(delta_df)
 }
 
-set.time.window <- function(delta_df, time.window) {
+set.time.window <- function(delta_df, time.window) { ## @@@ decide what the minimum number of points can be; start with 2 either side, and what if changepoint is on a datapoint
+
+    match_call <- match.call()
     if(is(time.window, "numeric") && length(time.window) == 1 && time.window > 1) { ## choose n = time.time.window datapoints either side
-        data_pre_impact <- lapply(delta_df, function(x) x[delta_df$impact == 0, , drop = FALS])
+        data_pre_impact <- lapply(delta_df, function(x) x[delta_df$impact == 0, , drop = FALSE])
         data_post_impact <- lapply(delta_df, function(x) x[delta_df$impact == 1, , drop = FALSE])
         kept_data_pre <- lapply(data_pre_impact, function(x) x[(length(data_pre_impact$time)-(time.window - 1)):length(data_pre_impact$time), , drop = FALSE])
         kept_data_post <- lapply(data_post_impact, function(x) x[1:time.window, , drop = FALSE]) 
         kept_data <- Map(rbind,kept_data_pre,kept_data_post)
-        return(kept_data)
     }
 
     if(is(time.window,"numeric") && length(time.window) == 2) { ## time window around changepoint. note that this time should be going from past to present in Ma style time
         pre_time <- max(time.window)
         post_time  <- min(time.window)
-        kept_data_pre <- lapply(delta_df, function(x) x[delta_df$time < pre_time & delta_df$impact == 0, , drop = FALSE])
-        kept_data_post <- lapply(delta_df, function(x) x[delta_df$time > post_time & delta_df$impact == 1, , drop = FALSE])
+        kept_data_pre <- lapply(delta_df, function(x) x[delta_df$time <= pre_time & delta_df$impact == 0, , drop = FALSE])
+        kept_data_post <- lapply(delta_df, function(x) x[delta_df$time >= post_time & delta_df$impact == 1, , drop = FALSE])
         kept_data <- Map(rbind,kept_data_pre,kept_data_post)
-        return(kept_data)
     }
 
-    if(is(time.window, "numeric") && length(time.window) ==1 & time.window <= 0.5) { ## calculates percentage of data to keep either side of impact
+    if(is(time.window, "numeric") && length(time.window) ==1 && time.window <= 0.5) { ## calculates percentage of data to keep either side of impact
         data_pre_impact <- lapply(delta_df, function(x) x[delta_df$impact == 0, , drop = FALSE])
         data_post_impact <- lapply(delta_df, function(x) x[delta_df$impact == 1, ,drop = FALSE])
         rows_to_keep_pre <- ceiling((length(data_pre_impact$time) * (time.window*2)))
@@ -91,8 +95,13 @@ set.time.window <- function(delta_df, time.window) {
         kept_data_pre <- lapply(data_pre_impact, function (x) x[(nrow(x)-(rows_to_keep_pre - 1)):nrow(x), , drop = FALSE])
         kept_data_post <- lapply(data_post_impact, function (x)x[1:rows_to_keep_post, , drop = FALSE])
         kept_data <- Map(rbind,kept_data_pre,kept_data_post)
-        return(kept_data)
     }
+
+    if (sum(kept_data$impact == 0) < 2 || sum(kept_data$impact == 1) < 2) {
+        stop.call(match_call$time.window, " window is too small. Needs at least 2 datapoints either side of the impact to run the function...\n")
+    }
+
+    return(kept_data)
 }
 
 set.changepoint  <- function(changepoint){

@@ -40,10 +40,51 @@ test_that("sanitizing works", {
 
 test_that("make.deltatronic works", {
 	data(disparity)
-	changepoint  <- 69
+	########changepoint testing#################
+	changepoint  <- 66
 	changepoint  <- set.changepoint(changepoint)
 	expect_is(changepoint, "list")
 	expect_equal(as.numeric(names(changepoint)), changepoint[[1]])
 	changepoint <- "detect"
+	changepoint <- set.changepoint(changepoint)
+	changepoint <- c(120, 66)
+	changepoint <- set.changepoint(changepoint)
+	expect_is(changepoint, "list")
+	expect_equal(length(changepoint), 2)
+
+	###### test make.deltatronic.list#######
+	changepoint <- 66
+	delta_df <- make.deltatronic.list(changepoint, disparity)
+	expect_is(delta_df, "list")
+	expect_equal(nrow(delta_df$time), length(disparity$subsets))
+	expect_equal(nrow(delta_df$disparity), length(disparity$subsets))
+    expected_impact <- ifelse(delta_df$time <= changepoint, 1, 0)
+    expect_equal(as.vector(delta_df$impact), as.vector(expected_impact))
+    expect_true(any(delta_df$impact == 0))
+    expect_true(any(delta_df$impact == 1))
+    first_impact_index <- min(which(delta_df$time <= changepoint))
+    expect_equal(as.numeric(delta_df$impact[first_impact_index, ]), 1)
+    expect_equal(as.numeric(delta_df$impact[first_impact_index - 1, ]), 0)
+	expect_true(all(diff(delta_df$time_elapsed)>0)) ## check time elapsed is increasing
+	expect_true(all(diff(delta_df$time)<0)) ## check raw time is decreasing
+	expect_true(all(diff(delta_df$time_post_cp)>=0))
+
+	## test set.time.window
+	#### n datapoints
+	time.window  <- 3
+	datapoints_window <- set.time.window(delta_df, time.window)
+	expect_true <- all(unlist(lapply(datapoints_window, nrow)) == 6) ## 3 datapoints either sie
+	expect_true <- sum(datapoints_window$impact == 0) == sum(datapoints_window$impact == 1) ## equal number of 0 and 1
+
+	time.window <- c(70, 50)
+	error <- capture_error(set.time.window(delta_df, time.window))
+	expect_equal(error[[1]], "time.window window is too small. Needs at least 2 datapoints either side of the impact to run the function...\n")
+
+	
+
+
+
+
+
 
 })
