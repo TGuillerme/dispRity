@@ -21,21 +21,3 @@ chrono.test <- function(data, method, changepoint, time.window, ...) {
 }
 
 ## sanitizing function for changepoint + time.window
-check.time <- function(object, class, msg, type, tree) {
-    # match_call <- match.call()
-
-    # class_object <- class(object)[1]
-    # length_class <- length(class)
-    if (type == "changepoint"){
-        check.class(object, c("numeric", "integer", "character"))
-        check.length(object, length = 1, paste(" argument must be a single numeric/integer or character string: `detect`.\n"))
-        if (class(object) == "numeric" || class(object) == "integer") {
-            tree_span <- c(max(node.depth.edgelength(tree)), min(node.depth.edgelength(tree)))
-            if(!object < tree_span[1] && object > tree_span[2]) {
-                stop()
-            }
-        }
-    }
-
-
-}

@@ -52,7 +52,7 @@ chrono.test(disparity, method, changepoint, time.window, ...)
 
 ## `make.deltatronic`
    * at base level, is data.frame of: time | disparity | intervention
-   * has conditional calls depending on `method = ...`, i.e. `if(method == "citsa") {delta_df$real_vs_control <- c(rep(1, nrow(real)), rep(0, nrow(cont)))} 
+   * has conditional calls depending on `method = ...`, i.e. `if(method == "citsa") {delta_df$real_vs_control <- c(rep(1, nrow(real)), rep(0, nrow(cont)))}
   - [ ] unit test
   - [ ] implement
 
