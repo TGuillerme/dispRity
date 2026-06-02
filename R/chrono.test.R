@@ -18,6 +18,26 @@ chrono.test <- function(data, method, changepoint, time.window, ...) {
     methods <- c("itsa", "citsa", "area", "h.test")
     check.method(slice.model, slice_models, "slice.model argument")
 
+
+
+    #######################################################################################################
+
+    
+
+    delta_df <- make.deltatronic(data, changepoint)
+
+    if(!is.null(time.window)) {
+        delta_df <- set.time.window(delta_df, time.window, changepoint)
+    }
+
+
+    
+
+
+
+
+
+
 }
 
 ## sanitizing function for changepoint + time.window

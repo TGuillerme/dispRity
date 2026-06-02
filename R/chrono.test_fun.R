@@ -20,7 +20,7 @@ check.time <- function(object, class, msg, type, tree) {
 
     if (type == "time.window") {
         if (object == 1){
-            stop(match_call$object, "must be larger than 1...\n")
+            stop(match_call$object, "must be larger than either vector of times, a numeric >1 or =<0.5...\n")
         }
     }
 }
@@ -43,26 +43,47 @@ make.deltatronic <- function(data, changepoint, concatenate = TRUE) {
     return(delta_df)
 }
 
-set.time.window <- function(delta_df, tree, time.window, changepoint) {
+set.time.window <- function(delta_df, time.window, changepoint) {
     if(class(time.window) ==  "numeric" && length(time.window) == 1 && time.window > 1) { ## choose n = time.time.window datapoints either side
         data_pre_impact <- delta_df[delta_df$impact == 0,]
         data_post_impact <- delta_df[delta_df$impact == 1,]
         kept_data_pre <- data_pre_impact[(nrow(data_pre_impact)-(time.window - 1)):nrow(data_pre_impact), ]
         kept_data_post <- data_post_impact[1:time.window, ] 
+        kept_data <- rbind(kept_data_pre, kept_data_post)
+        return(kept_data)
     }
 
     if(class(time.window) == "numeric" && length(time.window) == 2) { ## time window around changepoint. note that this time should be going from past to present in Ma style time
         pre_time <- max(time.window)
         post_time  <- min(time.window)
+        kept_data_pre <- delta_df[delta_df$time < pre_time & delta_df$impact == 0, ]
+        kept_data_post <- delta_df[delta_df$time > post_time & delta_df$impact == 1, ]
+        kept_data <- rbind(kept_data_pre, kept_data_post)
+        return(kept_data)
+    }
 
-        
-
-
-    }   
-
-
-
+    if(class(time.window) == "numeric" && length(time.window) ==1 & time.window <= 0.5) { ## calculates percentage of data to keep either side of impact
+        data_pre_impact <- delta_df[delta_df$impact == 0,]
+        data_post_impact <- delta_df[delta_df$impact == 1,]
+        rows_to_keep_pre <- which.min(nrow(data_pre_impact) * (time.window*2))
+        rows_to_keep_post <- which.min(nrow(data_post_impact) * (time.window*2))
+        kept_data_pre <- data_pre_impact[(nrow(data_pre_impact)-(rows_to_keep_pre - 1)):nrow(data_pre_impact), ]
+        kept_data_post <- data_post_impact[1:rows_to_keep_post, ] 
+        kept_data <- rbind(kept_data_pre, kept_data_post)
+        return(kept_data)
+    }
 }
+
+set.changepoint  <- function(changepoint){
+    if (class(changepoint) ==  "numeric"){
+        return(as.list(changepoint))
+    } else if(changepoint == "detect"){
+        ## do something here for detect
+    }
+}
+
+
+
 
 
 
