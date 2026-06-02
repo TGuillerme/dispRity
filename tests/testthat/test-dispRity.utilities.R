@@ -1028,10 +1028,3 @@ test_that("remove.dispRity works", {
     test <- remove.dispRity(disparity, what = c("subsets", "bootstraps", "covar", "tree", "disparity"))
     expect_equal(names(test), c("matrix", "tree", "call"))
 })
-
-test_that("add.s works", {
-    one <- list(1)
-    more <- c(1,2)
-    expect_equal(add.s(one), "")
-    expect_equal(add.s(more), "s")
-})

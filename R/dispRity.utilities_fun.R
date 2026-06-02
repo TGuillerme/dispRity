@@ -390,9 +390,3 @@ get.slice.subsets <- function(one_subset, data, to.root) {
         return(trees_out[[1]])
     }
 }
-
-
-## Adds an "s" or not to a error message
-add.s <- function(object) {
-    return(ifelse(length(object) == 1, "", "s"))
-}

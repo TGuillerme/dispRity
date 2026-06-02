@@ -392,3 +392,11 @@ test_that("matrix.to.dist works", {
     dist_mat <- as.matrix(dist)
     expect_equal(as.vector(matrix.to.dist(dist_mat)), as.vector(dist))
 }) 
+
+
+test_that("add.s works", {
+    one <- list(1)
+    more <- c(1,2)
+    expect_equal(add.s(one), "")
+    expect_equal(add.s(more), "s")
+})

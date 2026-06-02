@@ -125,7 +125,11 @@ check.dist.matrix <- function(matrix, method, just.check = FALSE, ...) {
 
 ## Stop with call message wrapper function
 stop.call <- function(call, msg, msg.pre = "") {
-    stop(paste0(msg.pre, as.expression(call), msg), call. = FALSE)
+    if(!missing(call)) {
+        stop(paste0(msg.pre, as.expression(call), msg), call. = FALSE)
+    } else {
+        stop(paste0(msg.pre, msg), call. = FALSE)
+    }
 }
 
 ## Check through a list
@@ -352,4 +356,9 @@ matrix.to.dist <- function(data) {
     attr(out, "Upper") <- FALSE
     class(out) <- "dist"
     return(out)
+}
+
+## Adds an "s" or not to a error message
+add.s <- function(object) {
+    return(ifelse(length(object) == 1, "", "s"))
 }
