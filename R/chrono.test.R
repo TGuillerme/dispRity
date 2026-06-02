@@ -57,25 +57,39 @@ chrono.test <- function(data, method, changepoint, time.window, ...) {
             stop.call(call = NULL, "chrono.test is not implemented yes for customised subsets")
         }
     }
+    if(!is(data$tree[[1]], "phylo")) {
+        is_data_error <- TRUE
+    }
     if(is.null(data$disparity)) {
         is_data_error <- TRUE
     }
     if(is_data_error) {
-        stop.call(call = match_call$data, msg = " must be a dispRity object with time series and disparity data.")
+        stop.call(call = match_call$data, msg = " must be a dispRity object with a tree, time series and disparity data.")
     }
 
     ## Check and set up the changepoint and time.window
+    all_time_range <- range(unlist(lapply(lapply(data$tree, tree.age), `[[`, "ages")))
     changepoint_class <- check.class(changepoint, c("numeric", "integer", "character"))
     if(changepoint_class == "character") {
         if(changepoint_class != "detect") {
             stop.call(call = NULL, msg = "changepoint argument must be a numeric or integer vector or \"detect\" to automatically detect the changepoint.")
         }
+    } else {
+        check.time.range <- function(x, all_time_range, name) {
+            if(any(x < min(all_time_range)) || any(x > max(all_time_range))) {
+                stop.call(msg.pre = paste0(name, add.s(x)), call = NULL, msg = paste0(" falls out of the time range of the data tree", add.s(data$tree)," (", min(all_time_range), " - ", max(all_time_range), ")."))
+            }
+        }
+        check.time.range(changepoint, all_time_range, name = "changepoint")
     }
     check.class(time.window, c("numeric", "integer"))
-
-    ## Time checks
-    changepoint <- check.time(changepoint, type = "changepoint", data = data)
-    time.window <- check.time(time.window, type = "time.window", data = data)
+    if(length(time.window) < 3) {
+        if(length(time.window) == 2) {
+            check.time.range(time.window, all_time_range, name = "time.window")
+        }
+    } else {
+        stop.call(call = NULL, msg = "time.window can only contain 2 values (the time ranges) or 1 value (the proportion or number of subsets before and after the time).")
+    }
 
     ## Check the method
     method_type <- check.class(method, c("character", "function"))
@@ -95,9 +109,10 @@ chrono.test <- function(data, method, changepoint, time.window, ...) {
 
     #######################################################################################################
 
-    changepoint <- set.changepoint(changepoint) ## set changepoint
 
-    # delta_df <- make.deltatronic(data, changepoint)
+    # changepoint <- set.changepoint(changepoint) ## set changepoint
+
+    # delta_df <- make.deltatronic(data, changepoint, time.window)
 
     # if(!is.null(time.window)) {
     #     delta_df <- set.time.window(delta_df, time.window, changepoint)
