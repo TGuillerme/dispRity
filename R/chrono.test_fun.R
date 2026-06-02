@@ -33,21 +33,34 @@ make.deltatronic <- function(data, changepoint, time.window, concatenate = TRUE)
 
     changepoint  <- set.changepoint(changepoint)
 
-    disp_vals <- t(as.data.frame(get.disparity(data, concatenate = as.logical(concatenate)), check.names = FALSE))
-    # colnames(disp_vals) <- paste0("disparity", seq_len(ncol(disp_vals)))    
-    numeric_time <- as.numeric(rownames(disp_vals))
-    delta_df <- list(
-        time = as.matrix(numeric_time),
-        time_elapsed =  as.matrix(max(numeric_time) - numeric_time),
-        # disparity = as.numeric(disp_vals[,"disparity"]),
-        impact = as.matrix(as.numeric(numeric_time <= changepoint[[1]])),
-        disparity= as.matrix(disp_vals)
-    )
+    if (changepoint == "detect"){
+        changepoint <- as.list((names(data$subsets)))
+        names(changepoint)  <- names(data$subsets)
+        changepoint[[length(changepoint)]] <- NULL
+        changepoint[[1]] <- NULL
+    } #@@@  check if still works even if changepoint is not an actual datapoint - should do
+    
+     
+    make.deltatronic.list <- function(changepoint, data){
 
-    delta_df$time_post_cp <- as.matrix(ifelse(delta_df$impact == 0, 0, delta_df$time_elapsed - changepoint[[1]]))
+        disp_vals <- t(as.data.frame(get.disparity(data, concatenate = as.logical(concatenate)), check.names = FALSE))
+        # colnames(disp_vals) <- paste0("disparity", seq_len(ncol(disp_vals)))    
+        numeric_time <- as.numeric(rownames(disp_vals))
+        delta_df <- list(
+            time = as.matrix(numeric_time),
+            time_elapsed =  as.matrix(max(numeric_time) - numeric_time),
+            # disparity = as.numeric(disp_vals[,"disparity"]),
+            impact = as.matrix(as.numeric(numeric_time <= changepoint[[1]])),
+            disparity= as.matrix(disp_vals)
+        )
 
+        delta_df$time_post_cp <- as.matrix(ifelse(delta_df$impact == 0, 0, delta_df$time_elapsed - changepoint[[1]]))
+        return(delta_df)
+    }
 
-    delta_df <- set.time.window(delta_df, time.window)
+    delta_df <- lapply(changepoint, make.deltatronic.list, data = data)
+
+    delta_df <- lapply(delta_df, set.time.window, time.window)
     return(delta_df)
 }
 
@@ -84,10 +97,12 @@ set.time.window <- function(delta_df, time.window) {
 
 set.changepoint  <- function(changepoint){
     if (is(changepoint, "numeric") || is(changepoint, "integer")){
-        return(as.list(changepoint))
+        changepoint <- as.list(changepoint)
+        names(changepoint) <- changepoint
+        return(changepoint)
     } else if(changepoint == "detect"){
         ## do something here for detect
-
+        return(changepoint)
     }
 }
 

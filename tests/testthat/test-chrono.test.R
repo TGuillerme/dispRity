@@ -37,3 +37,13 @@ test_that("sanitizing works", {
 	error <- capture_error(chrono.test(disparity, method = t.test, changepoint = 66, time.window = 3))
 	expect_equal(error[[1]], "user function for method not implemented yet.")
 })
+
+test_that("make.deltatronic works", {
+	data(disparity)
+	changepoint  <- 69
+	changepoint  <- set.changepoint(changepoint)
+	expect_is(changepoint, "list")
+	expect_equal(as.numeric(names(changepoint)), changepoint[[1]])
+	changepoint <- "detect"
+
+})
