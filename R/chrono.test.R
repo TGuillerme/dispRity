@@ -22,7 +22,7 @@ chrono.test <- function(data, method, changepoint, time.window, ...) {
 
     #######################################################################################################
 
-    
+    changepoint <- set.changepoint(changepoint) ## set changepoint
 
     delta_df <- make.deltatronic(data, changepoint)
 
