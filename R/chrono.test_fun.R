@@ -28,14 +28,15 @@ check.time <- function(object, class, msg, type, tree) {
 
 make.deltatronic <- function(data, changepoint, concatenate = TRUE) {
     disp_vals <- t(as.data.frame(get.disparity(data, concatenate = as.logical(concatenate)), check.names = FALSE))
-    colnames(disp_vals) <- "disparity"
+    # colnames(disp_vals) <- paste0("disparity", seq_len(ncol(disp_vals)))    
     numeric_time <- as.numeric(rownames(disp_vals))
-
-    delta_df <- data.frame(
+    delta_df <- list(data.frame(
         time = numeric_time,
         time_elapsed =  max(numeric_time) - numeric_time,
-        disparity = as.numeric(disp_vals[,"disparity"]),
+        # disparity = as.numeric(disp_vals[,"disparity"]),
         impact = as.numeric(numeric_time <= changepoint)
+    ),
+    data.frame(disp_vals[, grepl("^disparity", colnames(disp_vals))])
     )
 
     delta_df$time_post_cp <- ifelse(delta_df$impact == 0, 0, delta_df$time_elapsed - changepoint)
@@ -75,10 +76,11 @@ set.time.window <- function(delta_df, time.window, changepoint) {
 }
 
 set.changepoint  <- function(changepoint){
-    if (class(changepoint) ==  "numeric"){
+    if (is(changepoint, "numeric") || is()){
         return(as.list(changepoint))
     } else if(changepoint == "detect"){
         ## do something here for detect
+
     }
 }
 

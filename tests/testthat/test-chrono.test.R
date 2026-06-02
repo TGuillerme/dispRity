@@ -6,4 +6,5 @@ mat <- matrix(rnorm(995), 199, 5)
 rownames(mat) <- c(tree$tip.label, tree$node.label)
 data <- make.dispRity(data = mat, tree = tree)
 data <- chrono.subsets(data, method = "c", model = "equal.split", time = 10, inc.nodes = TRUE)
-data <- dispRity(data, metric = c(mean))
+
+data <- dispRity(data, metric = mean)
