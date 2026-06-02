@@ -57,7 +57,7 @@ set.time.window <- function(delta_df, time.window, changepoint) {
     if(is(time.window, "numeric") && length(time.window) == 1 && time.window > 1) { ## choose n = time.time.window datapoints either side
         data_pre_impact <- sapply(delta_df, function(x) as.matrix(x[delta_df$impact == 0,]))
         data_post_impact <- sapply(delta_df, function(x) as.matrix(x[delta_df$impact == 1,]))
-        kept_data_pre <- lapply(data_pre_impact, function(x) as.matrix(x[(length(data_pre_impact$time)-(time.window - 1)):length(data_pre_impact$time)]))
+        kept_data_pre <- lapply(data_pre_impact, function(x) as.matrix(x[(length(data_pre_impact$time)-(time.window - 1)):length(data_pre_impact$time), ]))
         kept_data_post <- lapply(data_post_impact, function(x) as.matrix(x[1:time.window]) )
         kept_data <- Map(rbind,kept_data_pre,kept_data_post)
         return(kept_data)
@@ -66,9 +66,9 @@ set.time.window <- function(delta_df, time.window, changepoint) {
     if(is(time.window,"numeric") && length(time.window) == 2) { ## time window around changepoint. note that this time should be going from past to present in Ma style time
         pre_time <- max(time.window)
         post_time  <- min(time.window)
-        kept_data_pre <- delta_df[delta_df$time < pre_time & delta_df$impact == 0, ]
-        kept_data_post <- delta_df[delta_df$time > post_time & delta_df$impact == 1, ]
-        kept_data <- rbind(kept_data_pre, kept_data_post)
+        kept_data_pre <- lapply(delta_df, function(x) as.matrix(x[delta_df$time < pre_time & delta_df$impact == 0 ]))
+        kept_data_post <- lapply(delta_df, function(x) as.matrix(x[delta_df$time > post_time & delta_df$impact == 1 ]))
+        kept_data <- Map(rbind,kept_data_pre,kept_data_post)
         return(kept_data)
     }
 
