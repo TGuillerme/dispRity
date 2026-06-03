@@ -73,18 +73,23 @@ test_that("make.deltatronic works", {
 	#### n datapoints
 	time.window  <- 3
 	datapoints_window <- set.time.window(delta_df, time.window)
-	expect_true <- all(unlist(lapply(datapoints_window, nrow)) == 6) ## 3 datapoints either sie
-	expect_true <- sum(datapoints_window$impact == 0) == sum(datapoints_window$impact == 1) ## equal number of 0 and 1
+	expect_true(all(unlist(lapply(datapoints_window, nrow)) == 6)) ## 3 datapoints either sie
+	expect_true(sum(datapoints_window$impact == 0) == sum(datapoints_window$impact == 1)) ## equal number of 0 and 1
 
 	time.window <- c(70, 50)
 	error <- capture_error(set.time.window(delta_df, time.window))
 	expect_equal(error[[1]], "time.window window is too small. Needs at least 2 datapoints either side of the impact to run the function...\n")
+	time.window <- c(80, 50)
+	vector_window <- set.time.window(delta_df, time.window)
+	expect_true(all(unlist(lapply(vector_window, nrow)) == 4))## 2 datapoints either side
+	expect_true(min(vector_window$time) == 50)
+	expect_true(max(vector_window$time) == 80)
 
-	
 
-
-
-
+	time.window <- 0.3
+	prop_window <- set.time.window(delta_df, time.window)
+	expect_true(min(prop_window$time) == 40)
+	expect_true(max(prop_window$time) == 60)
 
 
 })
