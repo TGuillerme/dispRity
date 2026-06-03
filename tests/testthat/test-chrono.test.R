@@ -133,7 +133,38 @@ test_that("average.method works", {
 )
 
 test_that("itsa.method works", {
-	## TODO caleb
+	data(disparity)
+	delta_df <- make.deltatronic(disparity, 66, time.window = NULL)
+	average <- lapply(delta_df, average.method)#
+
+}
+)
+
+test_that("paint.branches works", {
+	tree  <- rtree(n=50)
+	expect_is(tree, "phylo")
+	tree <- set.root.time(tree)
+	expect_is(tree$root.time, "numeric")
+	cp <- tree$root.time/2	
+	painted <- paint.branches(tree, cp)
+	expect_is(painted, "simmap")
+	expect_true(all(c("Pre_Intervention", "Post_Intervention") %in% names(unlist(painted$maps))))
+	
+
+	
+}
+)
+
+test_that("make.control works", {
+	data(disparity)
+	changepoint <- 66
+	delta_df <- make.deltatronic(disparity, 66, time.window = NULL)
+	changepoint <- set.changepoint(changepoint)
+	control <- lapply(changepoint, make.control, data = disparity, paint = TRUE, nsim = 10)
+	expect_is(control, "list")
+	expect_equal(names(control), "66")
+	expect_equal(length(control[[1]]$subsets), length(disparity$subsets))
+	expect_equal(length(get.disparity(control[[1]])[[1]]), length(get.disparity(disparity)[[1]]) * 10)
 
 }
 )

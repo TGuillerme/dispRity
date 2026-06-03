@@ -121,7 +121,7 @@ chrono.test <- function(data, method, changepoint, time.window, ...) {
         citsa={
             changepoint <- set.changepoint(changepoint)
             control <- lapply(changepoint, make.control, data = data, paint = TRUE, nsim = nsim)
-            control_deltatronic <- lapply(control, make.deltatronic, changepoint, time.window)
+            control_deltatronic <- make.deltatronic(control, changepoint, time.window)
             control_deltatronic <- lapply(control_deltatronic, function(x) {
                 x$emp_vs_null <- matrix(0, nrow = nrow(x$time))
                 return(x)

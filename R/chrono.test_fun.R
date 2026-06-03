@@ -47,7 +47,6 @@ make.deltatronic.list <- function(changepoint, data){
 
 
 make.deltatronic <- function(data, changepoint, time.window) {
-
     match_call <- match.call()
     if (!is(changepoint, "list")){
         changepoint  <- set.changepoint(changepoint)
@@ -61,16 +60,14 @@ make.deltatronic <- function(data, changepoint, time.window) {
     } #@@@  check if still works even if changepoint is not an actual datapoint - should do
     if (inherits(data, "dispRity")) {
         delta_df <- lapply(changepoint, make.deltatronic.list, data = data)
-    } else if (inherits(data, "list") && inherits(data[[1]], "dispRity")) {
+    } else if (inherits(data, "list") && inherits(data[[1]], "dispRity")) { ## has already been generated into list
         delta_df <- Map(make.deltatronic.list, changepoint, data) ## for doing the control
     }
 
     if(!is.null(time.window)){
         delta_df <- lapply(delta_df, set.time.window, time.window)
     }
-
     return(delta_df)
-
 }
 
 set.time.window <- function(delta_df, time.window) { ## @@@ decide what the minimum number of points can be; start with 2 either side, and what if changepoint is on a datapoint
@@ -244,10 +241,7 @@ make.control <- function(changepoint, data, nsim = 1000, paint = TRUE, slice.mod
     mat <- get.matrix(data)
 
     painted_tree <- paint.branches(tree, changepoint)
-    if(!inherits(painted_tree, "simmap")){
-        stop("Tree did not paint...\n")
-    }
-    
+
     sim_parameters <- replicate(ncol(mat), list(root_value = NULL, sig_sq = NULL), simplify = FALSE) ## create empty list structure for storing trait parameters
 
     if (paint) {
@@ -298,7 +292,7 @@ make.control <- function(changepoint, data, nsim = 1000, paint = TRUE, slice.mod
     control_traits <- lapply(sim_parameters, function(axis) {
         root_value <- axis$root_value
         sig_sq <- axis$sig_sq
-        treats::make.traits(process = BM.process, start = root_value, n = 1, process.args = list(Sigma = sig_sq))
+        treats::make.traits(process = treats::BM.process, start = root_value, n = 1, process.args = list(Sigma = sig_sq))
     })
     mapped_control <- replicate(nsim, {do.call(cbind, lapply(lapply(control_traits, treats::map.traits, tree = tree), function(x){x$data}))}, simplify = FALSE) ## produces however many differnt BM simulations as controls
 
