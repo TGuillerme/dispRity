@@ -115,7 +115,7 @@ set.changepoint  <- function(changepoint){
 }
 
 
-average.method <- function(delta_df test = stats::t.test, ...) {
+average.method <- function(delta_df, test = stats::t.test, ...) {
     # if (!c("disparity", "impact") %in% names(delta_df)){
     #     stop()
     # }

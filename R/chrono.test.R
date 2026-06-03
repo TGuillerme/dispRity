@@ -123,7 +123,7 @@ chrono.test <- function(data, method, changepoint, time.window, ...) {
             area <- lapply(itsa,  area.method)
         },
         average={
-            average <- average.method(delta_df)
+            average <- lapply(delta_df, average.method, ...)
             
         }
     )
