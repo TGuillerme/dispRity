@@ -92,7 +92,7 @@ test_that("make.deltatronic works", {
 	expect_true(max(prop_window$time) == 80)
 
 	### test make.deltatronic #### 
-	delta_df <- make.deltatronic(disparity, 66) ## test without time.window
+	delta_df <- make.deltatronic(disparity, 66, time.window = NULL) ## test without time.window
 	expect_equal(names(delta_df), "66")
 	expect_true(all(diff(delta_df[[1]]$time_elapsed)>0)) ## check time elapsed is increasing
 	expect_true(all(diff(delta_df[[1]]$time)<0)) ## check raw time is decreasing
@@ -122,7 +122,13 @@ test_that("make.deltatronic works", {
 
 test_that("average.method works", {
 	## TODO caleb
-
+	data(disparity)
+	delta_df <- make.deltatronic(disparity, 66, time.window = NULL)
+	average <- lapply(delta_df, average.method)#
+	expect_is(average[[1]], "htest")
+	expect_equal(average[[1]]$method, "Welch Two Sample t-test")
+	average <- lapply(delta_df, average.method, aov)
+	expect_is(average[[1]], "aov")
 }
 )
 

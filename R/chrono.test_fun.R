@@ -175,6 +175,9 @@ area.method <- function(itsa, time) {
 
 
 
+
+
+
 paint.branches <- function(tree, changepoint) {
 
     if(is.null(tree$root.time)) {
@@ -227,10 +230,10 @@ paint.branches <- function(tree, changepoint) {
 }
 
 
-make.control.painted <- function(disparity_object, changepoint, replicates,...) {
+make.control <- function(changepoint, data, replicates, paint = TRUE, slice.model = NULL ...) {
 
-    data <- get.matrix(disparity_object)
-    tree <- get.tree(disparity_object)
+    tree <- get.tree(data)
+    data <- get.matrix(data)
 
     painted_tree <- paint.branches(tree, changepoint)
     if(!inherits(painted_tree, "simmap")){
@@ -239,16 +242,50 @@ make.control.painted <- function(disparity_object, changepoint, replicates,...) 
     
     sim_parameters <- replicate(ncol(data), list(root_value = NULL, sig_sq = NULL), simplify = FALSE) ## create empty list structure for storing trait parameters
 
-    # branch_length_ratio <- sum(tree$edge.length) / sum(pre_tree$edge.length)
+    if (paint) {
+        n <- length(tree$tip.label)
+        tip_mat <- data[tree$tip.label, , drop = FALSE]
+        painted_tree <- paint.branches(tree, changepoint)
 
-    pre_tree <- slice.tree(tree, age = tree$root.time - changepoint, model = "acctran", keep.all.ancestors = TRUE)
-    n <- length(pre_tree$tip.label)
-    tip_mat <- data[tree$tip.label, , drop = FALSE]
-    for(i in 1:ncol(data)) {
-        fit_bm <- mvMORPH::mvBM(tree = painted_tree, data = tip_mat[, i], model = "BMM", echo = FALSE, diagnostic = FALSE) ## taken out error, can put back in
-        sim_parameters[[i]]$sig_sq <- fit_bm$sigma[, , "Pre_Intervention"] * n / (n - 1)   ## REML correction, see Revell http://www.phytools.org/***SanJuan2016/ex/5/Fitting-BM.html.
-        sim_parameters[[i]]$root_value <- as.numeric(fit_bm$theta)
+        for(i in 1:ncol(data)) {
+            fit_bm <- mvMORPH::mvBM(tree = painted_tree, data = tip_mat[, i], model = "BMM", echo = FALSE, diagnostic = FALSE) ## taken out error, can put back in
+            sim_parameters[[i]]$sig_sq <- fit_bm$sigma[, , "Pre_Intervention"] * n / (n - 1)   ## REML correction, see Revell http://www.phytools.org/***SanJuan2016/ex/5/Fitting-BM.html.
+            sim_parameters[[i]]$root_value <- as.numeric(fit_bm$theta)
+        }
+
+    } else { ## use tree slicing
+
+        if (slice.model == "proximity" || slice.model == "acctran" || slice.model == "deltran") {
+            pre_tree <- slice.tree(tree, age= tree$root.time - changepoint, model = slice.model, keep.all.ancestors = TRUE)
+            pre_mat <- data[pre_tree$tip.label, ] ## can just prune the matrix as it is if using punctuated model
+        }
+
+        if (slice.model == "gradual.split" || slice.model == "equal.split") {
+            pre_tree <- slice.tree(tree, age = tree$root.time - changepoint, model = "acctran", keep.all.ancestors = TRUE)
+            slice_vals <- slice.tree(tree, age = tree$root.time - changepoint, model = slice.model, keep.all.ancestors = TRUE)
+            pre_mat <- matrix(NA, nrow = length(pre_tree$tip.label), ncol = ncol(data))
+            rownames(pre_mat) <- as.character(slice_vals[, 2])
+            # pre_mat_error_list <- list()
+            for (i in seq_along(pre_tree$tip.label)) {
+                if(slice_vals[i, 3] == "0"){
+                    pre_mat[i, ] <- data[slice_vals[i, 2], ]
+                } else {
+                    t0 <- data[slice_vals[i, 1], ]
+                    t1 <- data[slice_vals[i, 2], ]
+                    slice_position <- as.numeric(slice_vals[i, 3]) ## get slice position across branch
+                    pre_mat[i, ] <- (slice_position * t0) + ((1-slice_position) * t1) ## weighted average
+                }
+            }
+        }
+        n <- length(pre_tree$tip.label)
+        for(i in 1:ncol(pre_mat)) {
+            fit_bm <- mvMORPH::mvBM(tree = pre_tree, data = pre_mat[, i], model = "BM1", echo = FALSE, diagnostic = FALSE) ## taken out error, can put back in
+            n <- length(pre_tree$tip.label)
+            sim_parameters[[i]]$sig_sq <- fit_bm$sigma * n / (n - 1)  ## REML correction, see Revell http://www.phytools.org/***SanJuan2016/ex/5/Fitting-BM.html.
+            sim_parameters[[i]]$root_value <- as.numeric(fit_bm$theta)
+        }
     }
+
     ## TODO use slice.tree and gradual.split. use get.tree for the tree in each subset.
 
     control_traits <- lapply(sim_parameters, function(axis) {

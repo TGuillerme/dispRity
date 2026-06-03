@@ -45,6 +45,8 @@
 chrono.test <- function(data, method, changepoint, time.window, ...) {
     
     match_call <- match.call()
+
+    # user_args <- list(...)
     
     ## Check the data
     error_disparity <- " must be a dispRity object with a tree, time series and disparity data."
@@ -117,6 +119,8 @@ chrono.test <- function(data, method, changepoint, time.window, ...) {
             itsa <- lapply(delta_df, itsa.method)
         },
         citsa={
+            changepoint <- set.changepoint(changepoint)
+            control <- lapply(changepoint, make.control, data = data, )
         },
         area={
             itsa <- lapply(delta_df, itsa.method)
@@ -127,6 +131,10 @@ chrono.test <- function(data, method, changepoint, time.window, ...) {
             
         }
     )
+
+
+
+    ## 
 
 
     
