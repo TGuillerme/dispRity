@@ -46,7 +46,7 @@ make.deltatronic.list <- function(changepoint, data){
 }
 
 
-make.deltatronic <- function(data, changepoint, time.window, concatenate = TRUE) {
+make.deltatronic <- function(data, changepoint, time.window) {
 
     match_call <- match.call()
     changepoint  <- set.changepoint(changepoint)
@@ -115,88 +115,51 @@ set.changepoint  <- function(changepoint){
 }
 
 
-average.method <- function(delta_df, changepoint, test = stats::t.test, ...) {
-    t <- test(delta_df$disparity ~ delta_df$impact)
+average.method <- function(delta_df test = stats::t.test, ...) {
+    # if (!c("disparity", "impact") %in% names(delta_df)){
+    #     stop()
+    # }
+    t <- test(delta_df$disparity ~ delta_df$impact, ...)
 }
 
 
 
+itsa.method <- function(delta_df) {
 
+    itsa_dat <- list(
+        disparity    = delta_df$disparity, #@@@ might be multi column 
+        time_elapsed = as.numeric(delta_df$time_elapsed),
+        impact       = as.numeric(delta_df$impact),
+        time_post_cp = as.numeric(delta_df$time_post_cp)
+    )
 
+    model <- lm(disparity ~ time_elapsed + impact + time_post_cp, data = itsa_dat)
 
-
-
-
-
-
-
-
-
-itsa.dispRity <- function(disparity_object, changepoint, time){
-    if (!inherits(disparity_object, "dispRity")) {
-        stop("Disparity object must be of class `dispRity`...\n")
-    }
-
-    run.itsa <- function(disparity_object, changepoint, time) {
-        disp_list <- get.disparity(disparity_object)
-        disp_vals <- data.frame(
-            time       = as.numeric(names(disp_list)),
-            disparity  = unlist(disp_list)
+    counterfactual_df <- data.frame(
+                time_elapsed = itsa_dat$time_elapsed,
+                impact       = 0,
+                time_post_cp = 0
         )
-
-        disp_vals <- disp_vals[disp_vals$time %in% time, ]
-
-        changepoint_index <- which(disp_vals$time == changepoint)
-
-        disp_vals$time_elapsed <- max(disp_vals$time) - disp_vals$time
-
-        disp_vals$dummy <- c(rep(0, changepoint_index - 1), 
-                        rep(1, nrow(disp_vals) - changepoint_index + 1))
-
-        disp_vals$time_post_changepoint <- c(
-        rep(0, changepoint_index - 1),
-        changepoint - disp_vals$time[changepoint_index:nrow(disp_vals)]
-        )
-
-        model <- lm(disparity ~ time_elapsed + dummy + time_post_changepoint, data = disp_vals)
-
-        counterfactual_df <- data.frame(
-            time_elapsed = disp_vals$time_elapsed,
-            dummy = 0,
-            time_post_changepoint = 0
-        )
-
-        counterfactual_predicts <- predict(model, newdata = counterfactual_df, interval = "confidence")
-
-        disp_vals$counter_mean_ci  <- counterfactual_predicts[, "fit"]
-        disp_vals$counter_lower_ci <- counterfactual_predicts[, "lwr"]
-        disp_vals$counter_upper_ci <- counterfactual_predicts[, "upr"]
-
-        return(list(data = disp_vals, model = model))
-    }
-
-
-    if(length(changepoint) > 1) {
-        output <- list()
-        for (i in seq_along(changepoint)){
-            output[[i]] <- run.itsa(disparity_object, changepoint[[i]], time)
-        }
-    } else {
-        output <- run.itsa(disparity_object, changepoint, time)
-    }
-    return(output)
-}
-
-
-
-area.disparity <- function(disparity_object, changepoint, time) {
     
-    itsa <- itsa.disparity(disparity_object, changepoint, time)
+    counterfactual_predicts <- predict(model, newdata = counterfactual_df, interval = "confidence")
 
+    delta_df$counter_mean_ci  <- as.matrix(counterfactual_predicts[, "fit"])
+    delta_df$counter_lower_ci <- as.matrix(counterfactual_predicts[, "lwr"])
+    delta_df$counter_upper_ci <- as.matrix(counterfactual_predicts[, "upr"])
+
+    
+    return(list(
+        data = delta_df,
+        model = model
+    ))
+}
+
+
+area.method <- function(itsa, time) {
+    
     data <- itsa$data
-    changepoint_index <- which.min(abs(data$time - changepoint)) ## uses which.min to find closest value to changepoint
-
-    post_intervention_dat <- data[changepoint_index:nrow(data),]
+    
+    post_intervention_dat <- lapply(data, function(x)  x[data$impact == 1, ,drop =FALSE])
 
     ## extracts amount of disparity that falls outside of CI envelope, otherwise put as 0
     exceed_upper <- pmax(post_intervention_dat$disparity - post_intervention_dat$counter_upper_ci, 0) 

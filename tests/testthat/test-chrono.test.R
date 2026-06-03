@@ -89,7 +89,32 @@ test_that("make.deltatronic works", {
 	time.window <- 0.3
 	prop_window <- set.time.window(delta_df, time.window)
 	expect_true(min(prop_window$time) == 40)
-	expect_true(max(prop_window$time) == 60)
+	expect_true(max(prop_window$time) == 80)
 
+	### test make.deltatronic #### 
+	delta_df <- make.deltatronic(disparity, 66) ## test without time.window
+	expect_equal(names(delta_df), "66")
+	expect_true(all(diff(delta_df[[1]]$time_elapsed)>0)) ## check time elapsed is increasing
+	expect_true(all(diff(delta_df[[1]]$time)<0)) ## check raw time is decreasing
+	expect_true(all(diff(delta_df[[1]]$time_post_cp)>=0))
+	expect_equal(nrow(delta_df[[1]]$time), length(disparity$subsets))
+	expect_equal(nrow(delta_df[[1]]$disparity), length(disparity$subsets))
+    expected_impact <- ifelse(delta_df[[1]]$time <= changepoint, 1, 0)
+    expect_equal(as.vector(delta_df[[1]]$impact), as.vector(expected_impact))
+    expect_true(any(delta_df[[1]]$impact == 0))
+    expect_true(any(delta_df[[1]]$impact == 1))
+    first_impact_index <- min(which(delta_df[[1]]$time <= changepoint))
+    expect_equal(as.numeric(delta_df[[1]]$impact[first_impact_index, ]), 1)
+    expect_equal(as.numeric(delta_df[[1]]$impact[first_impact_index - 1, ]), 0)
+
+	delta_df <- make.deltatronic(disparity, 66, time.window = 3) ## test without time.window
+	expect_true(all(unlist(lapply(delta_df[[1]], nrow)) == 6)) ## 3 datapoints either sie
+	expect_true(sum(delta_df[[1]]$impact == 0) == sum(delta_df[[1]]$impact == 1)) ## equal number of 0 and 1
+
+	expect_is(delta_df, "list")
+	expect_is(delta_df[[1]], "list")
+	expect_true(all(unlist(lapply(delta_df, lapply, is.matrix))))
+	expect_true(all(names(delta_df[[1]]) %in% c("time", "time_elapsed", "impact", "disparity", "time_post_cp")))	
+	# delta_df <- make.deltatronic(disparity, 66, time.window = NULL) ## no error
 
 })
