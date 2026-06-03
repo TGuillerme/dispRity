@@ -52,21 +52,25 @@ make.deltatronic <- function(data, changepoint, time.window) {
     if (!is(changepoint, "list")){
         changepoint  <- set.changepoint(changepoint)
     }
-    
+
     if (changepoint == "detect"){
         changepoint <- as.list((names(data$subsets)))
         names(changepoint)  <- names(data$subsets)
         changepoint[[length(changepoint)]] <- NULL
         changepoint[[1]] <- NULL
     } #@@@  check if still works even if changepoint is not an actual datapoint - should do
-
-    delta_df <- lapply(changepoint, make.deltatronic.list, data = data)
+    if (inherits(data, "dispRity")) {
+        delta_df <- lapply(changepoint, make.deltatronic.list, data = data)
+    } else if (inherits(data, "list") && inherits(data[[1]], "dispRity")) {
+        delta_df <- Map(make.deltatronic.list, changepoint, data) ## for doing the control
+    }
 
     if(!is.null(time.window)){
         delta_df <- lapply(delta_df, set.time.window, time.window)
     }
 
     return(delta_df)
+
 }
 
 set.time.window <- function(delta_df, time.window) { ## @@@ decide what the minimum number of points can be; start with 2 either side, and what if changepoint is on a datapoint
@@ -233,26 +237,25 @@ paint.branches <- function(tree, changepoint) {
 
 
 make.control <- function(changepoint, data, nsim = 1000, paint = TRUE, slice.model = NULL, ...) {
-
-    tree <- get.tree(data)
-    data <- get.matrix(data)
     metric <- get.metric.from.call(data, 2) ## store for later
     slices <- as.numeric(names(data$subsets)) # store for later
     slice_call <- data$call$subsets
+    tree <- get.tree(data)
+    mat <- get.matrix(data)
 
     painted_tree <- paint.branches(tree, changepoint)
     if(!inherits(painted_tree, "simmap")){
         stop("Tree did not paint...\n")
     }
     
-    sim_parameters <- replicate(ncol(data), list(root_value = NULL, sig_sq = NULL), simplify = FALSE) ## create empty list structure for storing trait parameters
+    sim_parameters <- replicate(ncol(mat), list(root_value = NULL, sig_sq = NULL), simplify = FALSE) ## create empty list structure for storing trait parameters
 
     if (paint) {
         n <- length(tree$tip.label)
-        tip_mat <- data[tree$tip.label, , drop = FALSE]
+        tip_mat <- mat[tree$tip.label, , drop = FALSE]
         painted_tree <- paint.branches(tree, changepoint)
 
-        for(i in 1:ncol(data)) {
+        for(i in 1:ncol(mat)) {
             fit_bm <- mvMORPH::mvBM(tree = painted_tree, data = tip_mat[, i], model = "BMM", echo = FALSE, diagnostic = FALSE) ## taken out error, can put back in
             sim_parameters[[i]]$sig_sq <- fit_bm$sigma[, , "Pre_Intervention"] * n / (n - 1)   ## REML correction, see Revell http://www.phytools.org/***SanJuan2016/ex/5/Fitting-BM.html.
             sim_parameters[[i]]$root_value <- as.numeric(fit_bm$theta)
@@ -262,20 +265,20 @@ make.control <- function(changepoint, data, nsim = 1000, paint = TRUE, slice.mod
 
         if (slice.model == "proximity" || slice.model == "acctran" || slice.model == "deltran") {
             pre_tree <- slice.tree(tree, age = changepoint, model = slice.model, keep.all.ancestors = TRUE)
-            pre_mat <- data[pre_tree$tip.label, ] ## can just prune the matrix as it is if using punctuated model
+            pre_mat <- mat[pre_tree$tip.label, ] ## can just prune the matrix as it is if using punctuated model
         }
 
         if (slice.model == "gradual.split" || slice.model == "equal.split") {
             pre_tree <- slice.tree(tree, age = changepoint, model = "acctran", keep.all.ancestors = TRUE)
             slice_vals <- slice.tree(tree, age = changepoint, model = slice.model, keep.all.ancestors = TRUE)
-            pre_mat <- matrix(NA, nrow = length(pre_tree$tip.label), ncol = ncol(data))
+            pre_mat <- matrix(NA, nrow = length(pre_tree$tip.label), ncol = ncol(mat))
             rownames(pre_mat) <- as.character(slice_vals[, 2])
             for (i in seq_along(pre_tree$tip.label)) {
                 if(slice_vals[i, 3] == "0"){
-                    pre_mat[i, ] <- data[slice_vals[i, 2], ]
+                    pre_mat[i, ] <- mat[slice_vals[i, 2], ]
                 } else {
-                    t0 <- data[slice_vals[i, 1], ]
-                    t1 <- data[slice_vals[i, 2], ]
+                    t0 <- mat[slice_vals[i, 1], ]
+                    t1 <- mat[slice_vals[i, 2], ]
                     slice_position <- as.numeric(slice_vals[i, 3]) ## get slice position across branch
                     pre_mat[i, ] <- (slice_position * t0) + ((1-slice_position) * t1) ## weighted average
                 }
@@ -302,7 +305,12 @@ make.control <- function(changepoint, data, nsim = 1000, paint = TRUE, slice.mod
 
     chrono <- chrono.subsets(mapped_control, tree, method = slice_call[1], model = slice_call[2], bind.data = as.logical(slice_call["bind"]), inc.nodes = TRUE, time = slices)
 
-    disp <- dispRity(chrono, metric = metric)
+
+    metric.fun <- function(mat){
+        metric[[1]](metric[[2]](mat))
+    }
+    disp <- dispRity(chrono, metric = metric.fun)
+    disp$call$disparity$metrics <- data$call$disparity$metrics
 
     return(disp)
 }
