@@ -120,7 +120,8 @@ chrono.test <- function(data, method, changepoint, time.window, ...) {
         },
         citsa={
             changepoint <- set.changepoint(changepoint)
-            control <- lapply(changepoint, make.control, data = data, )
+            control <- lapply(changepoint, make.control, data = data, ...)
+            control_deltatronic <- make.deltatronic(control, changepoint, time.window)
         },
         area={
             itsa <- lapply(delta_df, itsa.method)

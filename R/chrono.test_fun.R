@@ -49,8 +49,10 @@ make.deltatronic.list <- function(changepoint, data){
 make.deltatronic <- function(data, changepoint, time.window) {
 
     match_call <- match.call()
-    changepoint  <- set.changepoint(changepoint)
-
+    if (!is(changepoint, "list")){
+        changepoint  <- set.changepoint(changepoint)
+    }
+    
     if (changepoint == "detect"){
         changepoint <- as.list((names(data$subsets)))
         names(changepoint)  <- names(data$subsets)
@@ -230,10 +232,13 @@ paint.branches <- function(tree, changepoint) {
 }
 
 
-make.control <- function(changepoint, data, replicates, paint = TRUE, slice.model = NULL ...) {
+make.control <- function(changepoint, data, nsim = 1000, paint = TRUE, slice.model = NULL, ...) {
 
     tree <- get.tree(data)
     data <- get.matrix(data)
+    metric <- get.metric.from.call(data, 2) ## store for later
+    slices <- as.numeric(names(data$subsets)) # store for later
+    slice_call <- data$call$subsets
 
     painted_tree <- paint.branches(tree, changepoint)
     if(!inherits(painted_tree, "simmap")){
@@ -256,16 +261,15 @@ make.control <- function(changepoint, data, replicates, paint = TRUE, slice.mode
     } else { ## use tree slicing
 
         if (slice.model == "proximity" || slice.model == "acctran" || slice.model == "deltran") {
-            pre_tree <- slice.tree(tree, age= tree$root.time - changepoint, model = slice.model, keep.all.ancestors = TRUE)
+            pre_tree <- slice.tree(tree, age = changepoint, model = slice.model, keep.all.ancestors = TRUE)
             pre_mat <- data[pre_tree$tip.label, ] ## can just prune the matrix as it is if using punctuated model
         }
 
         if (slice.model == "gradual.split" || slice.model == "equal.split") {
-            pre_tree <- slice.tree(tree, age = tree$root.time - changepoint, model = "acctran", keep.all.ancestors = TRUE)
-            slice_vals <- slice.tree(tree, age = tree$root.time - changepoint, model = slice.model, keep.all.ancestors = TRUE)
+            pre_tree <- slice.tree(tree, age = changepoint, model = "acctran", keep.all.ancestors = TRUE)
+            slice_vals <- slice.tree(tree, age = changepoint, model = slice.model, keep.all.ancestors = TRUE)
             pre_mat <- matrix(NA, nrow = length(pre_tree$tip.label), ncol = ncol(data))
             rownames(pre_mat) <- as.character(slice_vals[, 2])
-            # pre_mat_error_list <- list()
             for (i in seq_along(pre_tree$tip.label)) {
                 if(slice_vals[i, 3] == "0"){
                     pre_mat[i, ] <- data[slice_vals[i, 2], ]
@@ -293,12 +297,14 @@ make.control <- function(changepoint, data, replicates, paint = TRUE, slice.mode
         sig_sq <- axis$sig_sq
         treats::make.traits(process = BM.process, start = root_value, n = 1, process.args = list(Sigma = sig_sq))
     })
-    mapped_control <- replicate(replicates, {do.call(cbind, lapply(lapply(control_traits, treats::map.traits, tree = tree), function(x){x$data}))}, simplify = FALSE) ## produces however many differnt BM simulations as controls
+    mapped_control <- replicate(nsim, {do.call(cbind, lapply(lapply(control_traits, treats::map.traits, tree = tree), function(x){x$data}))}, simplify = FALSE) ## produces however many differnt BM simulations as controls
 
 
-    # chrono_output <- chrono.subsets(mapped_control, tree = tree, method = "c", model = slice.model, time = subsets) ## TODO recycle it from original call. look at get.time.slice.
+    chrono <- chrono.subsets(mapped_control, tree, method = slice_call[1], model = slice_call[2], bind.data = as.logical(slice_call["bind"]), inc.nodes = TRUE, time = slices)
 
-    return(mapped_control)
+    disp <- dispRity(chrono, metric = metric)
+
+    return(disp)
 }
 
 
