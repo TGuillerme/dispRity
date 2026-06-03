@@ -28,21 +28,7 @@
 #     }
 # }
 
-
-make.deltatronic <- function(data, changepoint, time.window, concatenate = TRUE) {
-
-    match_call <- match.call()
-    changepoint  <- set.changepoint(changepoint)
-
-    if (changepoint == "detect"){
-        changepoint <- as.list((names(data$subsets)))
-        names(changepoint)  <- names(data$subsets)
-        changepoint[[length(changepoint)]] <- NULL
-        changepoint[[1]] <- NULL
-    } #@@@  check if still works even if changepoint is not an actual datapoint - should do
-    
-     
-    make.deltatronic.list <- function(changepoint, data){
+make.deltatronic.list <- function(changepoint, data){
 
         changepoint <- as.numeric(changepoint)
         disp_vals <- t(as.data.frame(get.disparity(data), check.names = FALSE))
@@ -57,7 +43,20 @@ make.deltatronic <- function(data, changepoint, time.window, concatenate = TRUE)
 
         delta_df$time_post_cp <- as.matrix(ifelse(delta_df$impact == 0, 0,  changepoint - delta_df$time))
         return(delta_df)
-    }
+}
+
+
+make.deltatronic <- function(data, changepoint, time.window, concatenate = TRUE) {
+
+    match_call <- match.call()
+    changepoint  <- set.changepoint(changepoint)
+
+    if (changepoint == "detect"){
+        changepoint <- as.list((names(data$subsets)))
+        names(changepoint)  <- names(data$subsets)
+        changepoint[[length(changepoint)]] <- NULL
+        changepoint[[1]] <- NULL
+    } #@@@  check if still works even if changepoint is not an actual datapoint - should do
 
     delta_df <- lapply(changepoint, make.deltatronic.list, data = data)
 
@@ -116,7 +115,9 @@ set.changepoint  <- function(changepoint){
 }
 
 
-
+average.method <- function(delta_df, changepoint, test = stats::t.test, ...) {
+    t <- test(delta_df$disparity ~ delta_df$impact)
+}
 
 
 
