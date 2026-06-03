@@ -114,31 +114,22 @@ chrono.test <- function(data, method, changepoint, time.window, ...) {
 
     chrono_test_output <- switch(method,
         itsa={
-            itsa <- itsa.method(delta_df)
+            itsa <- lapply(delta_df, itsa.method)
         },
         citsa={
         },
         area={
-            itsa <- itsa.method(delta_df)
-            area <- area.method(itsa)
+            itsa <- lapply(delta_df, itsa.method)
+            area <- lapply(itsa,  area.method)
         },
-        average={}
+        average={
+            average <- average.method(delta_df)
+            
+        }
     )
 
-    
-    # changepoint <- set.changepoint(changepoint) ## set changepoint
-
-    # delta_df <- make.deltatronic(data, changepoint, time.window)
-
-    # if(!is.null(time.window)) {
-    #     delta_df <- set.time.window(delta_df, time.window, changepoint)
-    # }
-
 
     
-
-
-
 
     return(NULL)
 

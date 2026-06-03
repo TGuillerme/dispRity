@@ -118,3 +118,16 @@ test_that("make.deltatronic works", {
 	# delta_df <- make.deltatronic(disparity, 66, time.window = NULL) ## no error
 
 })
+
+
+test_that("average.method works", {
+	## TODO caleb
+
+}
+)
+
+test_that("itsa.method works", {
+	## TODO caleb
+
+}
+)
