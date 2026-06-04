@@ -47,17 +47,21 @@ make.deltatronic.list <- function(changepoint, data){
 
 
 make.deltatronic <- function(data, changepoint, time.window) {
-    match_call <- match.call()
-    if (!is(changepoint, "list")){
-        changepoint  <- set.changepoint(changepoint)
-    }
 
-    if (changepoint == "detect"){
+    match_call <- match.call()
+
+    if (identical(changepoint,"detect")) {
         changepoint <- as.list((names(data$subsets)))
         names(changepoint)  <- names(data$subsets)
         changepoint[[length(changepoint)]] <- NULL
         changepoint[[1]] <- NULL
-    } #@@@  check if still works even if changepoint is not an actual datapoint - should do
+    }  #@@@  check if still works even if changepoint is not an actual datapoint - should do
+
+
+    if (!is(changepoint, "list") && is.numeric(changepoint)){
+        changepoint  <- set.changepoint(changepoint)
+    }
+
     if (inherits(data, "dispRity")) {
         delta_df <- lapply(changepoint, make.deltatronic.list, data = data)
     } else if (inherits(data, "list") && inherits(data[[1]], "dispRity")) { ## has already been generated into list
@@ -123,20 +127,25 @@ average.method <- function(delta_df, test = stats::t.test, ...) {
     #     stop()
     # }
     t <- test(delta_df$disparity ~ delta_df$impact, ...)
+    return(t)
 }
 
 
 
-itsa.method <- function(delta_df) {
+itsa.method <- function(delta_df, itsa.type, ...) {
+
+    # if(itsa.type) ##@@@ allow gls to be used with autocorrelation
 
     itsa_dat <- list(
-        disparity    = delta_df$disparity, #@@@ might be multi column 
+        disparity    = delta_df$disparity, #@@@ might be multi column
         time_elapsed = as.numeric(delta_df$time_elapsed),
         impact       = as.numeric(delta_df$impact),
         time_post_cp = as.numeric(delta_df$time_post_cp)
     )
 
-    model <- lm(disparity ~ time_elapsed + impact + time_post_cp, data = itsa_dat)
+
+
+    model <- lm(disparity ~ time_elapsed + impact + time_post_cp, data = itsa_da, ...)
 
     counterfactual_df <- data.frame(
                 time_elapsed = itsa_dat$time_elapsed,

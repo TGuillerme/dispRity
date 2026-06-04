@@ -116,11 +116,11 @@ chrono.test <- function(data, method, changepoint, time.window, ...) {
 
     chrono_test_output <- switch(method,
         itsa={
-            itsa <- lapply(delta_df, itsa.method)
+            itsa <- lapply(delta_df, itsa.method, ...)
         },
         citsa={
             changepoint <- set.changepoint(changepoint)
-            control <- lapply(changepoint, make.control, data = data, paint = TRUE, nsim = nsim)
+            control <- lapply(changepoint, make.control, data = data, ...)
             control_deltatronic <- make.deltatronic(control, changepoint, time.window)
             control_deltatronic <- lapply(control_deltatronic, function(x) {
                 x$emp_vs_null <- matrix(0, nrow = nrow(x$time))
@@ -130,14 +130,14 @@ chrono.test <- function(data, method, changepoint, time.window, ...) {
                 x$emp_vs_null <- matrix(1, nrow = nrow(x$time))
                 return(x)
             })
+            ## here will go `citsa.method`
         },
         area={
-            itsa <- lapply(delta_df, itsa.method)
-            area <- lapply(itsa,  area.method)
+            itsa <- lapply(delta_df, itsa.method, ...)
+            area <- lapply(itsa,  area.method, ...)
         },
         average={
             average <- lapply(delta_df, average.method, ...)
-            
         }
     )
 
@@ -148,7 +148,11 @@ chrono.test <- function(data, method, changepoint, time.window, ...) {
 
     
 
-    return(chrono_test_output)
+    return(list(
+        test.output = chrono_test_output,
+        disparity = data,
+        call = list(method, changepoint, time.window)
+    ))
 
 }
 

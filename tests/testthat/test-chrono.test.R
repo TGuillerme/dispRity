@@ -117,6 +117,24 @@ test_that("make.deltatronic works", {
 	expect_true(all(names(delta_df[[1]]) %in% c("time", "time_elapsed", "impact", "disparity", "time_post_cp")))	
 	# delta_df <- make.deltatronic(disparity, 66, time.window = NULL) ## no error
 
+
+
+	## test it works with multicolumn disparity
+
+	set.seed(123)
+	tree <- rtree(n = 100)
+	tree <- makeNodeLabel(tree)
+	tree <- set.root.time(tree)
+	changepoint <- tree$root.time/2
+	mat <- matrix(rnorm(995), 199, 5)
+	rownames(mat) <- c(tree$tip.label, tree$node.label)
+	data <- make.dispRity(data = mat, tree = tree)
+	data <- chrono.subsets(data, method = "c", model = "equal.split", time = c(7,6,5,4,3,2,1), inc.nodes = TRUE)
+	## Warning is for the last time slice that's 0
+	data <- dispRity(data, metric = variances)
+	delta_df <- make.deltatronic(data, changepoint, time.window = NULL)
+	expect_true(all(delta_df[[1]]$disparity == do.call(rbind, get.disparity(data))))
+
 })
 
 
@@ -127,16 +145,27 @@ test_that("average.method works", {
 	average <- lapply(delta_df, average.method)#
 	expect_is(average[[1]], "htest")
 	expect_equal(average[[1]]$method, "Welch Two Sample t-test")
+	average <- lapply(delta_df, average.method, alternative = "less")#
+	expect_equal(average[[1]]$alternative, "less")
 	average <- lapply(delta_df, average.method, aov)
 	expect_is(average[[1]], "aov")
+	data(disparity)
+	delta_df <- make.deltatronic(disparity, 66, time.window = NULL)
+	average <- lapply(delta_df, average.method, wilcox.test)#
+	expect_equal(average[[1]]$method, "Wilcoxon rank sum exact test")
+	average <- lapply(delta_df, average.method, wilcox.test, alternative = "less")#
+	expect_equal(average[[1]]$alternative, "less")
 }
 )
 
 test_that("itsa.method works", {
 	data(disparity)
 	delta_df <- make.deltatronic(disparity, 66, time.window = NULL)
-	average <- lapply(delta_df, average.method)#
-
+	method <- lapply(delta_df, itsa.method)#
+	expect_is(method[[1]], "list")
+	expect_true(all(names(method[[1]]) %in% c("data", "model")))
+	expect_true(all(names(method[[1]]$data) %in% c("time", "time_elapsed", "impact", "disparity", "time_post_cp", "counter_mean_ci", "counter_lower_ci", "counter_upper_ci")))
+	expect_is(method[[1]]$model, "lm")
 }
 )
 
@@ -148,7 +177,7 @@ test_that("paint.branches works", {
 	cp <- tree$root.time/2	
 	painted <- paint.branches(tree, cp)
 	expect_is(painted, "simmap")
-	expect_true(all(c("Pre_Intervention", "Post_Intervention") %in% names(unlist(painted$maps))))
+	expect_true(all(c("pre_impact", "pre_impact") %in% names(unlist(painted$maps))))
 	# error <- capture_error(paint.branches(tree, changepoint = 50))
 }
 )
