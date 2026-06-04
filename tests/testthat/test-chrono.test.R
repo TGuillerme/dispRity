@@ -161,13 +161,14 @@ test_that("make.control works", {
 	control <- lapply(changepoint, make.control, data = disparity, paint = TRUE, nsim = 10)
 	expect_is(control, "list")
 	expect_equal(names(control), "66")
-	expect_equal(length(control[[1]]$subsets), length(disparity$subsets))
-	expect_equal(length(get.disparity(control[[1]])[[1]]), length(get.disparity(disparity)[[1]]) * 10)
+	expect_equal(length(control[[1]]$disparity$subsets), length(disparity$subsets))
+	expect_equal(length(get.disparity(control[[1]]$disparity)[[1]]), length(get.disparity(disparity)[[1]]) * 10)
 	error <- capture_error(lapply(changepoint, make.control, data = disparity, paint = FALSE, nsim = 10))
 	expect_equal(error[[1]], "`slice.model` argument needs to be inputted if paint = FALSE...\n")
 	error <- capture_error(lapply(changepoint, make.control, data = disparity, paint = FALSE, slice.model = 5, nsim = 10))
 	expect_equal(error[[1]], "slice.model argument must be one of the following: acctran, deltran, random, proximity, equal.split, gradual.split.")
-	
-
+	expect_equal(names(control[[1]]), c("sim_parameters", "disparity"))
+	expect_equal(ncol(control[[1]]$sim_parameters),ncol(get.matrix(disparity)))
+	expect_equal(nrow(get.matrix(control[[1]]$disparity)), nrow(get.matrix(disparity)))
 }
 )

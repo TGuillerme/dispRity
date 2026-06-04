@@ -148,7 +148,7 @@ chrono.test <- function(data, method, changepoint, time.window, ...) {
 
     
 
-    return(NULL)
+    return(chrono_test_output)
 
 }
 

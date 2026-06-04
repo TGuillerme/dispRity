@@ -190,7 +190,7 @@ paint.branches <- function(tree, changepoint) {
 
     N_edges <- nrow(tree$edge)
     mapped_edge <- matrix(0, nrow = N_edges, ncol = 2)
-    colnames(mapped_edge) <- c("Pre_Intervention", "Post_Intervention")
+    colnames(mapped_edge) <- c("pre_impact", "post_impact")
     rownames(mapped_edge) <- paste(tree$edge[,1], tree$edge[,2], sep=",")
     
     maps <- list()
@@ -203,22 +203,22 @@ paint.branches <- function(tree, changepoint) {
         age_child  <- node_ages[child_node]
         
         if(age_child >= changepoint) {
-            mapped_edge[i, "Pre_Intervention"] <- tree$edge.length[i]
-            maps[[i]] <- c("Pre_Intervention" = tree$edge.length[i])
+            mapped_edge[i, "pre_impact"] <- tree$edge.length[i]
+            maps[[i]] <- c("pre_impact" = tree$edge.length[i])
         }
         else if(age_parent <= changepoint) {
-            mapped_edge[i, "Post_Intervention"] <- tree$edge.length[i]
-            maps[[i]] <- c("Post_Intervention" = tree$edge.length[i])
+            mapped_edge[i, "post_impact"] <- tree$edge.length[i]
+            maps[[i]] <- c("post_impact" = tree$edge.length[i])
         }
         else {
             pre_time <- age_parent - changepoint
             post_time <- changepoint - age_child
             
-            mapped_edge[i, "Pre_Intervention"] <- pre_time
-            mapped_edge[i, "Post_Intervention"] <- post_time
+            mapped_edge[i, "pre_impact"] <- pre_time
+            mapped_edge[i, "post_impact"] <- post_time
             
-            maps[[i]] <- c("Pre_Intervention" = pre_time,
-                           "Post_Intervention" = post_time)
+            maps[[i]] <- c("pre_impact" = pre_time,
+                           "post_impact" = post_time)
         }
     }
     
@@ -256,14 +256,15 @@ make.control <- function(changepoint, data, nsim = 1000, paint = TRUE, slice.mod
     sim_parameters <- replicate(ncol(mat), list(root_value = NULL, sig_sq = NULL), simplify = FALSE) ## create empty list structure for storing trait parameters
 
     if (paint) {
+
         painted_tree <- paint.branches(tree, changepoint)
         n <- length(tree$tip.label)
         tip_mat <- mat[tree$tip.label, , drop = FALSE]
         painted_tree <- paint.branches(tree, changepoint)
 
         for(i in 1:ncol(mat)) {
-            fit_bm <- mvMORPH::mvBM(tree = painted_tree, data = tip_mat[, i], model = "BMM", echo = FALSE, diagnostic = FALSE) ## taken out error, can put back in
-            sim_parameters[[i]]$sig_sq <- fit_bm$sigma[, , "Pre_Intervention"] * n / (n - 1)   ## REML correction, see Revell http://www.phytools.org/***SanJuan2016/ex/5/Fitting-BM.html.
+            fit_bm <- mvMORPH::mvBM(tree = painted_tree, data = tip_mat[, i], model = "BMM", echo = FALSE, diagnostic = FALSE)
+            sim_parameters[[i]]$sig_sq <- fit_bm$sigma[, , "pre_impact"] * n / (n - 1)   ## REML correction, see Revell http://www.phytools.org/***SanJuan2016/ex/5/Fitting-BM.html.
             sim_parameters[[i]]$root_value <- as.numeric(fit_bm$theta)
         }
 
@@ -316,7 +317,7 @@ make.control <- function(changepoint, data, nsim = 1000, paint = TRUE, slice.mod
         metric[[1]](metric[[2]](mat))
     }
     disp <- dispRity(chrono, metric = metric.fun)
-    disp$call$disparity$metrics <- data$call$disparity$metrics
+    disp$call$disparity$metrics <- data$call$disparity$metrics ## reattach metric fun info
 
     return(list(
         sim_parameters = do.call(cbind, sim_parameters),
