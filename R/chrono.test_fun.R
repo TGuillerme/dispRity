@@ -141,6 +141,9 @@ average.method <- function(delta_df, test = stats::t.test, dimension.level,  ...
 
 
 
+
+
+
 itsa.method <- function(delta_df,  dimension.level, ...) {
 
     # if(itsa.type) ##@@@ allow gls to be used with autocorrelation
@@ -196,6 +199,37 @@ itsa.method <- function(delta_df,  dimension.level, ...) {
     return(list(
         data = delta_df,
         model = model
+    ))
+}
+calculate.angular.effect <- function(itsa) {
+
+    model <- itsa$model
+    delta_df <- itsa$data
+
+    m1 <- coef(model)["time_elapsed"] ## basline slope
+    m_diff <- coef(model)["time_post_cp"] ## change in slope
+
+    m2 <- m1 + m_diff ## post-impact slope
+
+    sd_time <- sd(delta_df$time_elapsed, na.rm = TRUE) ## stdev of time
+    sd_disp <- sd(delta_df$disparity, na.rm = TRUE) ## stdev of disparity across **whole curve** (think that is right)
+
+    if (is.na(sd_disp) || sd_disp == 0 || is.na(sd_time) || sd_time == 0) {
+    return(NA)
+    }
+
+    beta1 <- m1 * (sd_time / sd_disp) ## standardise by stdev of time and stdev of disparity
+    beta2 <- m2 * (sd_time / sd_disp)
+
+    theta1 <- atan(beta1) * (180 / pi) ## convert to geometric angles from radians
+    theta2 <- atan(beta2) * (180 / pi) ## same here
+    angular_effect_size <- (theta2 - theta1) / 180
+
+    return(list(
+    baseline_angle_deg = theta1,
+    post_impact__angle_deg   = theta2,
+    angle_delta_deg    = theta2 - theta1,
+    effect_size   = angular_effect_size
     ))
 }
 

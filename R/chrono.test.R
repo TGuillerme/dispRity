@@ -109,6 +109,13 @@ chrono.test <- function(data, method, changepoint, time.window, ...) {
 
 
 
+    is_multi_matrix <- FALSE
+
+    if (length(data$matrix) > 1){
+        is_multi_matrix  <- TRUE
+    }
+
+
 
     #######################################################################################################
 
@@ -121,7 +128,7 @@ chrono.test <- function(data, method, changepoint, time.window, ...) {
 
     is_multi <- FALSE
 
-    
+
 
     chrono_test_output <- switch(method,
         itsa={

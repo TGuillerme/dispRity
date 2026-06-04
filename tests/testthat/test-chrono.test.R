@@ -180,7 +180,7 @@ test_that("average.method works", {
 test_that("itsa.method works", {
 	data(disparity)
 	delta_df <- make.deltatronic(disparity, 66, time.window = NULL)
-	method <- lapply(delta_df, itsa.method)#
+	method <- lapply(delta_df, itsa.method, dimension.level = 1)#
 	expect_is(method[[1]], "list")
 	expect_true(all(names(method[[1]]) %in% c("data", "model")))
 	expect_true(all(names(method[[1]]$data) %in% c("time", "time_elapsed", "impact", "disparity", "time_post_cp", "counter_mean_ci", "counter_lower_ci", "counter_upper_ci")))
@@ -200,6 +200,27 @@ test_that("itsa.method works", {
 	delta_df <- make.deltatronic(data, changepoint, time.window = NULL)
 	dims <- max(data$call$dimensions)
 	method <- lapply(delta_df, itsa.method, dimension.level = dims)#
+}
+)
+
+test_that("calculate.angular.effect works", {
+	## test for no change
+	set_state <- set.seed(123)
+	time_elapsed <- seq(0, 60, by = 5)
+	baseline_slope <- 0.002
+	intercept      <- 1.82
+	noise <- rnorm(length(time_elapsed), mean = 0, sd = 0.005)
+	disparity <- intercept + (baseline_slope * time_elapsed) + noise
+	delta_df <- list(
+	time_elapsed = as.matrix(time_elapsed),
+	disparity    = as.matrix(disparity),
+	impact       = as.matrix(ifelse(time_elapsed >= 30, 1, 0)),
+	time_post_cp = as.matrix(ifelse(time_elapsed > 30, time_elapsed - 30, 0))
+	)
+
+	itsa <- itsa.method(delta_df, dimension.level = 1)
+
+	calculate
 
 }
 )
@@ -254,8 +275,12 @@ test_that("multi matrix disparity works", {
 	sum.var <- function(mat){
 		sum(variances(mat))
 	}
-	multi_data <- dispRity(multi_data, metric = sum.var)
-
+	multi_data_disp <- dispRity(multi_data, metric = sum.var)
+	
+	var.fun <- function(mat){
+		variances(mat)
+	}
+	multi_multi_dimensional <- dispRity(multi_data, metric = var.fun)
 
 
 
