@@ -178,9 +178,6 @@ area.method <- function(itsa, time) {
 
 
 
-
-
-
 paint.branches <- function(tree, changepoint) {
 
     if(is.null(tree$root.time)) {
@@ -234,17 +231,32 @@ paint.branches <- function(tree, changepoint) {
 
 
 make.control <- function(changepoint, data, nsim = 1000, paint = TRUE, slice.model = NULL, ...) {
+
+    if (paint) {
+        slice.model  <- NULL
+    }
+
+    if (!paint && is.null(slice.model)){
+        stop("`slice.model` argument needs to be inputted if paint = FALSE...\n")
+    }
+
+    if (!paint && !is.null(slice.model)) {
+        all_models <- c("acctran", "deltran", "random", "proximity", "equal.split", "gradual.split")
+        check.length(slice.model, 1, paste(" argument must be one of the following: ", paste(all_models, collapse = ", "), ".", sep = ""))
+        check.method(slice.model, all_models, "slice.model argument")
+    }
+
     metric <- get.metric.from.call(data, 2) ## store for later
     slices <- as.numeric(names(data$subsets)) # store for later
     slice_call <- data$call$subsets
     tree <- get.tree(data)
     mat <- get.matrix(data)
 
-    painted_tree <- paint.branches(tree, changepoint)
 
     sim_parameters <- replicate(ncol(mat), list(root_value = NULL, sig_sq = NULL), simplify = FALSE) ## create empty list structure for storing trait parameters
 
     if (paint) {
+        painted_tree <- paint.branches(tree, changepoint)
         n <- length(tree$tip.label)
         tip_mat <- mat[tree$tip.label, , drop = FALSE]
         painted_tree <- paint.branches(tree, changepoint)
@@ -306,7 +318,10 @@ make.control <- function(changepoint, data, nsim = 1000, paint = TRUE, slice.mod
     disp <- dispRity(chrono, metric = metric.fun)
     disp$call$disparity$metrics <- data$call$disparity$metrics
 
-    return(disp)
+    return(list(
+        sim_parameters = do.call(cbind, sim_parameters),
+        disparity = disp
+    ))
 }
 
 

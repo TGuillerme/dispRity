@@ -149,9 +149,7 @@ test_that("paint.branches works", {
 	painted <- paint.branches(tree, cp)
 	expect_is(painted, "simmap")
 	expect_true(all(c("Pre_Intervention", "Post_Intervention") %in% names(unlist(painted$maps))))
-	
-
-	
+	# error <- capture_error(paint.branches(tree, changepoint = 50))
 }
 )
 
@@ -165,6 +163,11 @@ test_that("make.control works", {
 	expect_equal(names(control), "66")
 	expect_equal(length(control[[1]]$subsets), length(disparity$subsets))
 	expect_equal(length(get.disparity(control[[1]])[[1]]), length(get.disparity(disparity)[[1]]) * 10)
+	error <- capture_error(lapply(changepoint, make.control, data = disparity, paint = FALSE, nsim = 10))
+	expect_equal(error[[1]], "`slice.model` argument needs to be inputted if paint = FALSE...\n")
+	error <- capture_error(lapply(changepoint, make.control, data = disparity, paint = FALSE, slice.model = 5, nsim = 10))
+	expect_equal(error[[1]], "slice.model argument must be one of the following: acctran, deltran, random, proximity, equal.split, gradual.split.")
+	
 
 }
 )
