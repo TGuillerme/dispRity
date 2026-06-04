@@ -167,8 +167,10 @@ test_that("average.method works", {
 	data <- chrono.subsets(data, method = "c", model = "equal.split", time = c(7,6,5,4,3,2,1), inc.nodes = TRUE)
 	## Warning is for the last time slice that's 0
 	data <- dispRity(data, metric = variances)
+	dims <- max(data$call$dimensions)
 	delta_df <- make.deltatronic(data, changepoint, time.window = NULL)
-	average <- lapply(delta_df, average.method, wilcox.test)#
+	average <- lapply(delta_df, average.method, wilcox.test, dimension.level = dims)#
+	expect_equal(dims, length(average[[1]]))
 
 
 
@@ -183,6 +185,22 @@ test_that("itsa.method works", {
 	expect_true(all(names(method[[1]]) %in% c("data", "model")))
 	expect_true(all(names(method[[1]]$data) %in% c("time", "time_elapsed", "impact", "disparity", "time_post_cp", "counter_mean_ci", "counter_lower_ci", "counter_upper_ci")))
 	expect_is(method[[1]]$model, "lm")
+
+	set.seed(123)
+	tree <- rtree(n = 100)
+	tree <- makeNodeLabel(tree)
+	tree <- set.root.time(tree)
+	changepoint <- tree$root.time / 2
+	mat <- matrix(rnorm(995), 199, 5)
+	rownames(mat) <- c(tree$tip.label, tree$node.label)
+	data <- make.dispRity(data = mat, tree = tree)
+	data <- chrono.subsets(data, method = "c", model = "equal.split", time = c(7,6,5,4,3,2,1), inc.nodes = TRUE)
+	## Warning is for the last time slice that's 0
+	data <- dispRity(data, metric = variances)
+	delta_df <- make.deltatronic(data, changepoint, time.window = NULL)
+	dims <- max(data$call$dimensions)
+	method <- lapply(delta_df, itsa.method, dimension.level = dims)#
+
 }
 )
 
@@ -218,3 +236,27 @@ test_that("make.control works", {
 	expect_equal(nrow(get.matrix(control[[1]]$disparity)), nrow(get.matrix(disparity)))
 }
 )
+
+
+## eg multi.ace sample = >1 output
+test_that("multi matrix disparity works", {
+	set.seed(123)
+	tree <- rtree(n = 100)
+	tree <- makeNodeLabel(tree)
+	tree <- set.root.time(tree)
+	changepoint <- tree$root.time / 2
+	mat_1 <- matrix(rnorm(995), 199, 5)
+	mat_2 <- matrix(rnorm(995), 199, 5)
+	rownames(mat_2)	 <- rownames(mat_1) <- c(tree$tip.label, tree$node.label)
+
+	multi_data <- make.dispRity(list(mat_1, mat_2), tree)
+	multi_data <- chrono.subsets(multi_data, method = "c", model = "equal.split", time = c(7,6,5,4,3,2,1), inc.nodes = TRUE)
+	sum.var <- function(mat){
+		sum(variances(mat))
+	}
+	multi_data <- dispRity(multi_data, metric = sum.var)
+
+
+
+
+})

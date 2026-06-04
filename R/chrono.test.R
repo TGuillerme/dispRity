@@ -115,13 +115,17 @@ chrono.test <- function(data, method, changepoint, time.window, ...) {
     delta_df <- make.deltatronic(data, changepoint, time.window)
 
     dimension_level <- 1
-    if (all(unlist(lapply(delta_df, function(x) ncol(x$disparity) >1)))) { # if disparity is 2-dim
-        dimension_level <- 2
+    if (all(unlist(lapply(delta_df, function(x) ncol(x$disparity) >1)))) { # if disparity is > 1-dim
+        dimension_level <- ncol(x$disparity)
     }
+
+    is_multi <- FALSE
+
+    
 
     chrono_test_output <- switch(method,
         itsa={
-            itsa <- lapply(delta_df, itsa.method, ...)
+            itsa <- lapply(delta_df, itsa.method, dimension.level, ...)
         },
         citsa={
             changepoint <- set.changepoint(changepoint)
@@ -138,11 +142,11 @@ chrono.test <- function(data, method, changepoint, time.window, ...) {
             ## here will go `citsa.method`
         },
         area={
-            itsa <- lapply(delta_df, itsa.method, ...)
+            itsa <- lapply(delta_df, itsa.method, dimension.level, ...)
             area <- lapply(itsa,  area.method, ...)
         },
         average={
-            average <- lapply(delta_df, average.method, ...)
+            average <- lapply(delta_df, average.method, dimension.level, ...)
         }
     )
 

@@ -128,17 +128,26 @@ average.method <- function(delta_df, test = stats::t.test, dimension.level,  ...
     # }
     if(dimension.level == 1){
         t <- test(delta_df$disparity ~ delta_df$impact, ...)
-    } else if(dimension.level ==2 ){
+    } else if(dimension.level > 1 ){
         ## need a multivariate test, eg permanova? or t.test across each axis
+        # do permanova here
+        t <- list()
+        for (i in 1:dimension.level){
+            t[[i]] <- test(delta_df$disparity[, i] ~ delta_df$impact)
+        }
     }
     return(t)
 }
 
 
 
-itsa.method <- function(delta_df, itsa.type, ...) {
+itsa.method <- function(delta_df,  dimension.level, ...) {
 
     # if(itsa.type) ##@@@ allow gls to be used with autocorrelation
+
+    # if (dimension.level > 1){ 
+        
+    # }
 
     itsa_dat <- list(
         disparity    = delta_df$disparity, #@@@ might be multi column
@@ -147,23 +156,43 @@ itsa.method <- function(delta_df, itsa.type, ...) {
         time_post_cp = as.numeric(delta_df$time_post_cp)
     )
 
+    if (dimension.level > 1){  ## if a multidimensional dispRity.metric for loop over each axis
+        model <- list()
+        delta_df$counter_mean_ci <- matrix(NA, nrow = nrow(itsa_dat$disparity), ncol = ncol(itsa_dat$disparity))
+        delta_df$counter_lower_ci <- matrix(NA, nrow = nrow(itsa_dat$disparity), ncol = ncol(itsa_dat$disparity))
+        delta_df$counter_upper_ci <- matrix(NA, nrow = nrow(itsa_dat$disparity), ncol = ncol(itsa_dat$disparity))
 
+        counterfactual_df <- data.frame(
+                        time_elapsed = itsa_dat$time_elapsed,
+                        impact       = 0,
+                        time_post_cp = 0
+            )
 
-    model <- lm(disparity ~ time_elapsed + impact + time_post_cp, data = itsa_da, ...)
+        for (i in 1:dimension.level){
+            model[[i]] <- lm(disparity[, i] ~ time_elapsed + impact + time_post_cp, data = itsa_dat)
+            counterfactual_predicts <- predict(model[[i]], newdata = counterfactual_df, interval = "confidence")
+            delta_df$counter_mean_ci[, i] <- as.matrix(counterfactual_predicts[, "fit"])
+            delta_df$counter_lower_ci[,i] <- as.matrix(counterfactual_predicts[, "lwr"])
+            delta_df$counter_upper_ci[,i] <- as.matrix(counterfactual_predicts[, "upr"])
+        }
+    } else {
 
-    counterfactual_df <- data.frame(
-                time_elapsed = itsa_dat$time_elapsed,
-                impact       = 0,
-                time_post_cp = 0
+        model <- lm(disparity ~ time_elapsed + impact + time_post_cp, data = itsa_dat, ...)
+
+        counterfactual_df <- data.frame(
+                    time_elapsed = itsa_dat$time_elapsed,
+                    impact       = 0,
+                    time_post_cp = 0
         )
-    
-    counterfactual_predicts <- predict(model, newdata = counterfactual_df, interval = "confidence")
+        
+        counterfactual_predicts <- predict(model, newdata = counterfactual_df, interval = "confidence")
 
-    delta_df$counter_mean_ci  <- as.matrix(counterfactual_predicts[, "fit"])
-    delta_df$counter_lower_ci <- as.matrix(counterfactual_predicts[, "lwr"])
-    delta_df$counter_upper_ci <- as.matrix(counterfactual_predicts[, "upr"])
+        delta_df$counter_mean_ci  <- as.matrix(counterfactual_predicts[, "fit"])
+        delta_df$counter_lower_ci <- as.matrix(counterfactual_predicts[, "lwr"])
+        delta_df$counter_upper_ci <- as.matrix(counterfactual_predicts[, "upr"])
 
-    
+    }
+
     return(list(
         data = delta_df,
         model = model
@@ -243,7 +272,7 @@ paint.branches <- function(tree, changepoint) {
 }
 
 
-make.control <- function(changepoint, data, nsim = 1000, paint = TRUE, slice.model = NULL, ...) {
+make.control <- function(changepoint, data, nsim = 100, paint = TRUE, slice.model = NULL, ...) { ## change slice.model name for clarity
 
     if (paint) {
         slice.model  <- NULL
@@ -327,9 +356,12 @@ make.control <- function(changepoint, data, nsim = 1000, paint = TRUE, slice.mod
 
 
     metric.fun <- function(mat){
-        metric[[1]](metric[[2]](mat))
-    }
+        metric[[1]](metric[[2]](mat)) ## add if in case there is 1 or 3 metric functions applied
+    } ##@@@ this needs to get fixed, works for now but thomas will fix it.
+
+    
     disp <- dispRity(chrono, metric = metric.fun)
+    # disp$disparity <- t(disp$disparity)
     disp$call$disparity$metrics <- data$call$disparity$metrics ## reattach metric fun info
 
     return(list(
@@ -339,7 +371,7 @@ make.control <- function(changepoint, data, nsim = 1000, paint = TRUE, slice.mod
 }
 
 
-
+###@@@ see thomas photo on how to relativise, using triangle. the coefficients are extracted, the maximum change is 1 which is a straight line upwards, everything else is a proportion of that change in angle.
 
 ols.deltatronic.itsa <- function(empirical, control, changepoint, times = NULL, alpha = 0.05, normalise = TRUE) { 
 
