@@ -122,11 +122,15 @@ set.changepoint  <- function(changepoint){
 }
 
 
-average.method <- function(delta_df, test = stats::t.test, ...) {
+average.method <- function(delta_df, test = stats::t.test, dimension.level,  ...) {
     # if (!c("disparity", "impact") %in% names(delta_df)){
     #     stop()
     # }
-    t <- test(delta_df$disparity ~ delta_df$impact, ...)
+    if(dimension.level == 1){
+        t <- test(delta_df$disparity ~ delta_df$impact, ...)
+    } else if(dimension.level ==2 ){
+        ## need a multivariate test, eg permanova? or t.test across each axis
+    }
     return(t)
 }
 

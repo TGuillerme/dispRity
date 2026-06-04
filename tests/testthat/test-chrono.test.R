@@ -120,12 +120,11 @@ test_that("make.deltatronic works", {
 
 
 	## test it works with multicolumn disparity
-
 	set.seed(123)
 	tree <- rtree(n = 100)
 	tree <- makeNodeLabel(tree)
 	tree <- set.root.time(tree)
-	changepoint <- tree$root.time/2
+	changepoint <- tree$root.time / 2
 	mat <- matrix(rnorm(995), 199, 5)
 	rownames(mat) <- c(tree$tip.label, tree$node.label)
 	data <- make.dispRity(data = mat, tree = tree)
@@ -155,6 +154,24 @@ test_that("average.method works", {
 	expect_equal(average[[1]]$method, "Wilcoxon rank sum exact test")
 	average <- lapply(delta_df, average.method, wilcox.test, alternative = "less")#
 	expect_equal(average[[1]]$alternative, "less")
+
+
+	set.seed(123)
+	tree <- rtree(n = 100)
+	tree <- makeNodeLabel(tree)
+	tree <- set.root.time(tree)
+	changepoint <- tree$root.time / 2
+	mat <- matrix(rnorm(995), 199, 5)
+	rownames(mat) <- c(tree$tip.label, tree$node.label)
+	data <- make.dispRity(data = mat, tree = tree)
+	data <- chrono.subsets(data, method = "c", model = "equal.split", time = c(7,6,5,4,3,2,1), inc.nodes = TRUE)
+	## Warning is for the last time slice that's 0
+	data <- dispRity(data, metric = variances)
+	delta_df <- make.deltatronic(data, changepoint, time.window = NULL)
+	average <- lapply(delta_df, average.method, wilcox.test)#
+
+
+
 }
 )
 

@@ -114,6 +114,11 @@ chrono.test <- function(data, method, changepoint, time.window, ...) {
 
     delta_df <- make.deltatronic(data, changepoint, time.window)
 
+    dimension_level <- 1
+    if (all(unlist(lapply(delta_df, function(x) ncol(x$disparity) >1)))) { # if disparity is 2-dim
+        dimension_level <- 2
+    }
+
     chrono_test_output <- switch(method,
         itsa={
             itsa <- lapply(delta_df, itsa.method, ...)
