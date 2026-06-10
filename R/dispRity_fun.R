@@ -382,9 +382,9 @@ decompose.matrix <- function(one_subsets_bootstrap, fun, data, nrow, use_tree, d
         ## Toggle dist.data
         dist.data <- TRUE
     } else {
-        data_list  <- data$matrix
-    
+        data_list  <- data$matrix    
     }
+    
     ## Select the dimensions
     if(dist.data) {
         bootstrap  <- dimensions <- na.omit(one_subsets_bootstrap)
@@ -402,16 +402,29 @@ decompose.matrix <- function(one_subsets_bootstrap, fun, data, nrow, use_tree, d
 
     if(!use_tree) {
         ## Apply the fun, bootstrap and dimension on each matrix
-        return(unlist(lapply(data_list, decompose.base,
+        # return(unlist(lapply(data_list, decompose.base,
+        #                     bootstrap  = bootstrap,
+        #                     dimensions = dimensions,
+        #                     fun        = fun,
+        #                     nrow       = nrow,
+        #                     ...),
+        #               recursive = FALSE))
+        return(do.call(cbind, lapply(data_list, decompose.base,
                             bootstrap  = bootstrap,
                             dimensions = dimensions,
                             fun        = fun,
                             nrow       = nrow,
-                            ...),
-                      recursive = FALSE))
+                            ...)))
+
+        # do.call(cbind, lapply(data_list, decompose.base,
+        #                     bootstrap  = bootstrap,
+        #                     dimensions = dimensions,
+        #                     fun        = fun,
+        #                     nrow       = nrow))
 
         #TG: when multiple matrices and dimensions level2 this should return an array?
         # decompose.base(data_list[[1]], bootstrap = bootstrap, dimensions = dimensions, fun = fun, nrow = nrow)
+
 
     } else {
         ## Check whether the number of trees and matrices match
@@ -480,26 +493,48 @@ decompose.matrix.wrapper <- function(one_subsets_bootstrap, fun, data, use_array
  
     } else {
 
-        ## one_subsets_bootstrap is a list (in example) on a single matrix
-        results_out <- apply(one_subsets_bootstrap, 2, decompose.matrix, fun = fun, data = data, nrow = nrow, use_tree = use_tree, dist_help = dist_help, dist.data = dist.data, by.col = by.col, ...)
+        if(length(data$matrix) == 1) {
+            ## data is a lit of a single matrix
+            results_out <- apply(one_subsets_bootstrap, 2, decompose.matrix, fun = fun, data = data, nrow = nrow, use_tree = use_tree, dist_help = dist_help, dist.data = dist.data, by.col = by.col, ...)
+
+            ## Outputs a matrix
+            if(!is(results_out, "matrix")) {
+                results_out <- matrix(results_out, ncol = ncol(one_subsets_bootstrap))
+            }
+
+        } else {
+            ## data is a list of multiple matrices
+            results_out <- lapply(unlist(apply(one_subsets_bootstrap, 2, function(x)list(matrix(x))), recursive = FALSE),
+                              decompose.matrix,
+                                  fun = fun,
+                                  data = data,
+                                  nrow = nrow,
+                                  use_tree = use_tree,
+                                  dist_help = dist_help,
+                                  dist.data = dist.data,
+                                  by.col = by.col,
+                                  ...)
+            results_out <- do.call(rbind, results_out)
+        }
+
+        return(results_out)
+        # results_out <- apply(one_subsets_bootstrap, 2, decompose.matrix, fun = fun, data = data, nrow = nrow, use_tree = use_tree, dist_help = dist_help, dist.data = dist.data, by.col = by.col, ...)
 
         # one_subsets_bootstrap <- cbind(one_subsets_bootstrap, one_subsets_bootstrap)
         # decompose.matrix(one_subsets_bootstrap[,1], fun = fun, data = data, nrow = nrow, use_tree = use_tree, dist_help = dist_help, dist.data = dist.data, by.col = by.col)
 
 
         ## Return the results
-        if(is(results_out, "matrix")) {
-            return(results_out)
-        } else {
-            ## Make the results into a matrix with the same size
-            return(do.call(cbind,
-                lapply(results_out, function(x, max) {length(x) <- max ; return(x)},
-                        max = max(unlist(lapply(results_out, length)))
-                        )
-                )
-            )
-        }
-
+        # if(is(results_out, "matrix")) {
+        #     return(results_out)
+        # } else {
+        #     ## Combine the outputs by matrices
+        #     return(do.call(rbind, results_out))
+        #         # lapply(results_out, function(x, max) {length(x) <- max ; return(x)},
+        #         #         max = max(unlist(lapply(results_out, length)))
+        #         #         )
+        #         # )
+        # }
         # return(matrix(apply(one_bs_matrix, 2, decompose.matrix, fun = fun, data = data, ...), ncol = ncol(one_bs_matrix)))
     }
 }
