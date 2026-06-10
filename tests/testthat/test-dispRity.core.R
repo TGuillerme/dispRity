@@ -615,7 +615,7 @@ test_that("dispRity works with multiple matrices from chrono.subsets", {
 
     ## level 1 works?
     expect_is(level1, "dispRity")
-    ## Results in a 3matrix X 3trees matrix
+    ## Results in a 3 matrix X 3trees matrix
     expect_equal(length(level1$disparity[[1]][[1]]), 9)
     ## Variance in the two first subsets (nodes are different)
     expect_true(sd(level1$disparity[[1]][[1]]) != 0)
@@ -626,10 +626,10 @@ test_that("dispRity works with multiple matrices from chrono.subsets", {
 
     ## level2 works?
     expect_is(level2, "dispRity")
-    ## Results is length elements * matrices * trees
-    expect_equal(dim(level2$disparity[[1]][[1]]), c(21,3))
-    expect_equal(dim(level2$disparity[[2]][[1]]), c(24,3))
-    expect_equal(dim(level2$disparity[[3]][[1]]), c(30,3))
+    ## Results is length elements in trees * matrices # c(1,4,7) is because 3 trees with split* model (3 col per three in BS)
+    expect_equal(dim(level2$disparity[[1]][[1]]), c(sum(!is.na(c(level2$subsets[[1]]$elements[,c(1,4,7)]))),length(matrices)))
+    expect_equal(dim(level2$disparity[[2]][[1]]), c(sum(!is.na(c(level2$subsets[[2]]$elements[,c(1,4,7)]))),length(matrices)))
+    expect_equal(dim(level2$disparity[[3]][[1]]), c(sum(!is.na(c(level2$subsets[[3]]$elements[,c(1,4,7)]))),length(matrices)))
     ## Correct results (should be equal to level12?)
     # expect_equal(summary(level2, cent.tend = mean, na.rm = TRUE)$obs.mean, c(0.410, 0.814, 1.217))
 
@@ -639,9 +639,6 @@ test_that("dispRity works with multiple matrices from chrono.subsets", {
     expect_equal(length(level12$disparity[[1]][[1]]), 3)
     expect_equal(length(level12$disparity[[2]][[1]]), 3)
     expect_equal(length(level12$disparity[[3]][[1]]), 3)
-    ## Variance in the two first subsets (nodes are different)
-    expect_true(is.na(sd(level12$disparity[[1]][[1]])))
-    expect_true(sd(level1$disparity[[2]][[1]]) != 0)
     ## No variance in the third (only tips which are the same in this design)
     # expect_false(sd(level1$disparity[[3]][[1]]) != 0) #bug in macos
     # expect_equal(summary(level12, cent.tend = mean, na.rm = TRUE)$obs.mean, c(0.580, 0.654, 1.217))
@@ -649,7 +646,6 @@ test_that("dispRity works with multiple matrices from chrono.subsets", {
     ## Works with binding data
     set.seed(1)
     test <- chrono.subsets(matrices, tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5, bind.data = TRUE)
-
 
     means <- dispRity(test, metric = mean, na.rm = TRUE)
     expect_is(means, "dispRity")
@@ -675,10 +671,10 @@ test_that("dispRity works with multiple matrices from chrono.subsets", {
     test <- chrono.subsets(matrices2, tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5, bind.data = FALSE)
     expect_equal(dim(test$subsets[[1]]$elements)[2], length(trees))
     level1 <- dispRity(test, metric = sum)
-    expect_equal(dim(level1$disparity[[1]]$elements), c(length(matrices2), length(trees)))
+    expect_equal(dim(level1$disparity[[1]]$elements), c(length(trees), length(matrices2)))
     sum.var <- function(matrix, ...) return(sum(variances(matrix, ...)))
     level1 <- dispRity(test, metric = sum.var)
-    expect_equal(dim(level1$disparity[[1]]$elements), c(length(matrices2), length(trees)))
+    expect_equal(dim(level1$disparity[[1]]$elements), c(length(trees), length(matrices2)))
 
     ## Works with unpaired number of trees and matrices
     test <- chrono.subsets(matrices[[1]], tree = trees, time = 3, method = "continuous", model = "acctran", t0 = 5, bind.data = FALSE)
@@ -746,6 +742,69 @@ test_that("dispRity works with multiple matrices from chrono.subsets", {
 
     expect_equal(dim(bs_unbou$disparity[[1]]$elements), c(3,3))
     expect_equal(dim(bs_bound$disparity[[1]]$elements), c(1,3))
+
+
+
+    set.seed(1)
+    ## Creating 3 matrices with 4 dimensions and 10 elements each (called t1, t2, t3, etc...)
+    matrix_list <- replicate(3, matrix(rnorm(40), 10, 4, dimnames = list(paste0("t", 1:10))),
+                             simplify = FALSE)
+    class(matrix_list) # This is a list of matrices
+
+    ### Expected output
+    test <- dispRity(matrix_list, metric = c(median, centroids))$disparity
+    expect_equal(dim(test[[1]][[1]]), c(1,3))
+
+    test <- dispRity(matrix_list, metric = c(centroids))$disparity
+    expect_equal(dim(test[[1]][[1]]), c(10,3))
+
+    set.seed(1)
+    ## Matches the trees and the matrices
+    ## A bunch of trees
+    make.tree <- function(n, fun = rtree) {
+        ## Make the tree
+        tree <- fun(n)
+        tree <- chronos(tree, quiet = TRUE,
+                        calibration = makeChronosCalib(tree, age.min = 10, age.max = 10))
+        class(tree) <- "phylo"
+        ## Add the node labels
+        tree$node.label <- paste0("n", 1:Nnode(tree))
+        ## Add the root time
+        tree$root.time <- max(tree.age(tree)$ages)
+        return(tree)
+    }
+    trees <- replicate(3, make.tree(10), simplify = FALSE)
+    class(trees) <- "multiPhylo"
+
+    ## A function for running the ancestral states estimations
+    do.ace <- function(tree, matrix) {
+        ## Run one ace
+        fun.ace <- function(character, tree) {
+            results <- ace(character, phy = tree)$ace
+            names(results) <- paste0("n", 1:Nnode(tree))
+            return(results)
+        }
+        ## Run all ace
+        return(rbind(matrix, apply(matrix, 2, fun.ace, tree = tree)))
+    }
+
+    ## All matrices
+    matrices <- mapply(do.ace, trees, matrix_list, SIMPLIFY = FALSE)
+
+    chrono <- chrono.subsets(matrices, trees[[1]],
+                                 method = "continuous",
+                                 model = "proximity", time = 3)
+
+    ## Measuring disparity median centroids, should be a matrix of 3*1
+    test <- dispRity(chrono, metric = c(median, centroids))$disparity
+    expect_is(test, "list")
+    expect_length(test, 3)
+    expect_equal(dim(test[[1]][[1]]), c(1,3))
+
+    test <- dispRity(chrono, metric = c(centroids))$disparity
+    expect_is(test, "list")
+    expect_length(test, 3)
+    expect_equal(dim(test[[3]][[1]]), c(10,3))
 })
 
 test_that("dispRity works with the tree component", {

@@ -1,4 +1,4 @@
-dispRity v1.9.8 (2025-12-08)
+dispRity v1.9.9 (2026-06-10)
 =========================
 
 ### NEW FEATURES
@@ -6,6 +6,10 @@ dispRity v1.9.8 (2025-12-08)
 
 ### MINOR IMPROVEMENTS
  * **Changed default argument** in `multi.ace`: `ml.collapse` default is now `list(type = "majority")` (previously `threshold = TRUE` which mapped to `"relative"`).
+
+### BUG FIXES
+
+ * disparity results structure with `chrono.subsets` with multiple matrices are now handled correctly when using a list of metrics (e.g. `c(sum, variances)` now gives the same results structure as `function(x)sum(variances(x))` as expected). Thanks to Caleb Scutt for spotting this one.
 
 dispRity v1.9.7 (2025-08-22)
 =========================
