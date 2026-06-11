@@ -109,9 +109,9 @@ chrono.test <- function(data, method, changepoint, time.window, ...) {
 
 
 
-    is_multi_matrix <- FALSE
+    is_multi_matrix <- 1
     if (length(data$matrix) > 1){
-        is_multi_matrix  <- TRUE
+        is_multi_matrix  <- length(data$matrix)
     }
 
     dimension_level <- 1
@@ -124,8 +124,12 @@ chrono.test <- function(data, method, changepoint, time.window, ...) {
     #######################################################################################################
 
 
+
     delta_df <- make.deltatronic(data, changepoint, time.window, dimension.level, is_multi_matrix)
 
+    # if (is_multi){
+        
+    # }
     # dimension_level <- 1
     # if (all(unlist(lapply(delta_df, function(x) ncol(x$disparity) >1)))) { # if disparity is > 1-dim
     #     dimension_level <- ncol(x$disparity)

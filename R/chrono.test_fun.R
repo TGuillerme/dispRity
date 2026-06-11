@@ -28,7 +28,48 @@
 #     }
 # }
 
-make.deltatronic.list <- function(changepoint, data){
+make.deltatronic.list <- function(changepoint, data, dimension.level, is.multi.matrix) {
+
+    if (is.multi.matrix > 1 && dimension.level == 1) {
+        disp_vals <- get.disparity(data, concatenate = FALSE)
+        disp_vals_list <- list()
+        for (i in 1:is.multi.matrix) {
+            disp_vals_list[[i]] <- lapply(disp_vals, function(x) x[i])
+            disp_vals_list[[i]] <- t(as.data.frame(disp_vals_list[[i]],, check.names = FALSE))
+        }
+        
+        delta_df <- list()
+        for (i in 1:is.multi.matrix){
+            numeric_time <- as.numeric(rownames(disp_vals_list[[i]]))
+            delta_df[[i]] <- list(
+            time = as.matrix(numeric_time),
+            time_elapsed =  as.matrix(max(numeric_time) - numeric_time),
+            impact = as.matrix(as.numeric(numeric_time <= changepoint)),
+            disparity= as.matrix(disp_vals_list[[i]])
+            )
+            delta_df[[i]]$time_post_cp <- as.matrix(ifelse(delta_df[[i]]$impact == 0, 0,  changepoint - delta_df[[i]]$time))
+        }
+    } else if (is.multi.matrix > 1 && dimension.level > 1){
+        disp_vals <- get.disparity(data, concatenate = FALSE)
+        disp_vals_list <- list()
+            for (i in 1:is.multi.matrix) {
+                disp_vals_list[[i]] <- lapply(disp_vals, function(x) x[,i]) ## extract each column (i.e matrix replicate)
+                disp_vals_list[[i]] <- t(as.data.frame(disp_vals_list[[i]],, check.names = FALSE)) ## transpose to data.frame
+            }
+        
+        delta_df <- list()
+        for (i in 1:is.multi.matrix){
+            numeric_time <- as.numeric(rownames(disp_vals_list[[i]]))
+            delta_df[[i]] <- list(
+            time = as.matrix(numeric_time),
+            time_elapsed =  as.matrix(max(numeric_time) - numeric_time),
+            impact = as.matrix(as.numeric(numeric_time <= changepoint)),
+            disparity= as.matrix(disp_vals_list[[i]])
+            )
+            delta_df[[i]]$time_post_cp <- as.matrix(ifelse(delta_df[[i]]$impact == 0, 0,  changepoint - delta_df[[i]]$time))
+        }
+    
+    } else if (is.multi.matrix == 1 && dimension.level ==1) {
 
         changepoint <- as.numeric(changepoint)
         disp_vals <- t(as.data.frame(get.disparity(data, concatenate = FALSE), check.names = FALSE))
@@ -42,13 +83,18 @@ make.deltatronic.list <- function(changepoint, data){
         )
 
         delta_df$time_post_cp <- as.matrix(ifelse(delta_df$impact == 0, 0,  changepoint - delta_df$time))
+    }
         return(delta_df)
 }
 
 
-make.deltatronic <- function(data, changepoint, time.window) {
+make.deltatronic <- function(data, changepoint, time.window, dimension.level, is.multi.matrix) {
 
     match_call <- match.call()
+
+    # if (is.multi.matrix) {
+    #     multi_dis <- replicate(length(data$matrix), list(data))
+    # }
 
     if (identical(changepoint,"detect")) {
         changepoint <- as.list((names(data$subsets)))
@@ -63,7 +109,7 @@ make.deltatronic <- function(data, changepoint, time.window) {
     }
 
     if (inherits(data, "dispRity")) {
-        delta_df <- lapply(changepoint, make.deltatronic.list, data = data)
+        delta_df <- lapply(changepoint, make.deltatronic.list, data = data, dimension.level, is.multi.matrix)
     } else if (inherits(data, "list") && inherits(data[[1]], "dispRity")) {
         # data <- data$disparity ## has already been generated into list
         delta_df <- Map(make.deltatronic.list, changepoint, data) ## for doing the control

@@ -305,7 +305,7 @@ test_that("make.control works", {
 	dims <- max(data$call$dimensions)
 	changepoint <- set.changepoint(changepoint)
     control <- lapply(changepoint, make.control, data = data, nsim = 5)
-	
+
 	## multi matrix
 	set.seed(123)
 	tree <- rtree(n = 100)
@@ -320,7 +320,24 @@ test_that("make.control works", {
 	data <- make.dispRity(data = mat, tree = tree)
 	data <- chrono.subsets(data, method = "c", model = "equal.split", time = c(7,6,5,4,3,2,1), inc.nodes = TRUE)
 	## Warning is for the last time slice that's 0
-	disp <- dispRity(data, metric = c(sum, variances))
+	disp <- dispRity(data, metric = c(sum,variances))
+
+	
+	## multi and multidimensional matrix
+	set.seed(123)
+	tree <- rtree(n = 100)
+	tree <- makeNodeLabel(tree)
+	tree <- set.root.time(tree)
+	changepoint <- tree$root.time / 2
+	mat <- replicate(10, matrix(rnorm(995), 199, 5), simplify = FALSE)
+	mat <- lapply(mat, function(x) {
+	rownames(x)  <- c(tree$tip.label, tree$node.label)#
+	return(x)
+	})
+	data <- make.dispRity(data = mat, tree = tree)
+	data <- chrono.subsets(data, method = "c", model = "equal.split", time = c(7,6,5,4,3,2,1), inc.nodes = TRUE)
+	## Warning is for the last time slice that's 0
+	disp <- dispRity(data, metric = c(variances))
 
 
 	delta_df <- make.deltatronic(disp, changepoint, time.window = NULL)
