@@ -288,6 +288,49 @@ test_that("make.control works", {
 	expect_equal(names(control[[1]]), c("sim_parameters", "disparity"))
 	expect_equal(ncol(control[[1]]$sim_parameters),ncol(get.matrix(disparity)))
 	expect_equal(nrow(get.matrix(control[[1]]$disparity)), nrow(get.matrix(disparity)))
+
+
+	set.seed(123)
+	tree <- rtree(n = 100)
+	tree <- makeNodeLabel(tree)
+	tree <- set.root.time(tree)
+	changepoint <- tree$root.time / 2
+	mat <- matrix(rnorm(995), 199, 5)
+	rownames(mat) <- c(tree$tip.label, tree$node.label)
+	data <- make.dispRity(data = mat, tree = tree)
+	data <- chrono.subsets(data, method = "c", model = "equal.split", time = c(7,6,5,4,3,2,1), inc.nodes = TRUE)
+	## Warning is for the last time slice that's 0
+	data <- dispRity(data, metric = variances)
+	delta_df <- make.deltatronic(data, changepoint, time.window = NULL)
+	dims <- max(data$call$dimensions)
+	changepoint <- set.changepoint(changepoint)
+    control <- lapply(changepoint, make.control, data = data, nsim = 5)
+	
+	## multi matrix
+	set.seed(123)
+	tree <- rtree(n = 100)
+	tree <- makeNodeLabel(tree)
+	tree <- set.root.time(tree)
+	changepoint <- tree$root.time / 2
+	mat <- replicate(10, matrix(rnorm(995), 199, 5), simplify = FALSE)
+	mat <- lapply(mat, function(x) {
+	rownames(x)  <- c(tree$tip.label, tree$node.label)#
+	return(x)
+	})
+	data <- make.dispRity(data = mat, tree = tree)
+	data <- chrono.subsets(data, method = "c", model = "equal.split", time = c(7,6,5,4,3,2,1), inc.nodes = TRUE)
+	## Warning is for the last time slice that's 0
+	disp <- dispRity(data, metric = c(sum, variances))
+
+
+	delta_df <- make.deltatronic(disp, changepoint, time.window = NULL)
+	dims <- max(data$call$dimensions)
+	changepoint <- set.changepoint(changepoint)
+    control <- lapply(changepoint, make.control, data = data, nsim = 5)
+	
+
+
+
 }
 )
 

@@ -31,7 +31,7 @@
 make.deltatronic.list <- function(changepoint, data){
 
         changepoint <- as.numeric(changepoint)
-        disp_vals <- t(as.data.frame(get.disparity(data), check.names = FALSE))
+        disp_vals <- t(as.data.frame(get.disparity(data, concatenate = FALSE), check.names = FALSE))
         # colnames(disp_vals) <- paste0("disparity", seq_len(ncol(disp_vals)))    
         numeric_time <- as.numeric(rownames(disp_vals))
         delta_df <- list(
@@ -443,19 +443,36 @@ make.control <- function(changepoint, data, nsim = 100, paint = TRUE, slice.mode
 }
 
 
+bind.delta <- function(delta_df, control_delta_df, dimension.level) {
+    if (multi) {
+
+    }
+
+    delta_df <- lapply(delta_df, as.numeric)
+    delta_df <- do.call(cbind, delta_df)
+    control_df <- lapply(control_delta_df, as.numeric)
+    control_df <- do.call(cbind, control_df)
+    full_df <- as.data.frame(rbind(control_df, delta_df))
+
+
+}
+
+
 ###@@@ see thomas photo on how to relativise, using triangle. the coefficients are extracted, the maximum change is 1 which is a straight line upwards, everything else is a proportion of that change in angle.
 
 
-citsa.method <- function(delta_df, control_delta_df){
+citsa.method <- function(full_df){
 
-        if(dimension.level > 1)
-        delta_df <- lapply(delta_df, as.numeric)
-        delta_df <- do.call(cbind, delta_df)
+        # if(dimension.level > 1) {
 
-        control_df <- lapply(control_delta_df, as.numeric)
-        control_df <- do.call(cbind, control_df)
+        # }
+        # delta_df <- lapply(delta_df, as.numeric)
+        # delta_df <- do.call(cbind, delta_df)
 
-        full_df <- as.data.frame(rbind(control_df, delta_df))
+        # control_df <- lapply(control_delta_df, as.numeric)
+        # control_df <- do.call(cbind, control_df)
+
+        # full_df <- as.data.frame(rbind(control_df, delta_df))
 
     
         model <- tryCatch({
