@@ -116,6 +116,9 @@ make.deltatronic <- function(data, changepoint, time.window, dimension.level, is
     }
 
     if(!is.null(time.window)){
+        if (is.multi.matrix >1){
+            delta_df <- lapply(delta_df, lapply, set.time.window, time.window)
+        }
         delta_df <- lapply(delta_df, set.time.window, time.window)
     }
     return(delta_df)

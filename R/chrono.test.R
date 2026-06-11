@@ -109,14 +109,14 @@ chrono.test <- function(data, method, changepoint, time.window, ...) {
 
 
 
-    is_multi_matrix <- 1
+    is.multi.matrix <- 1
     if (length(data$matrix) > 1){
-        is_multi_matrix  <- length(data$matrix)
+        is.multi.matrix  <- length(data$matrix)
     }
 
-    dimension_level <- 1
-    if (all(unlist(lapply(get.disparity(data, concatenate = FALSE), function(x) nrow(x) >1)))) {
-        dimension_level <- unlist(lapply(get.disparity(data, concatenate = FALSE), function(x) nrow(x)), use.names = FALSE)[1]
+    dimension.level <- 1
+    if (any(unlist(lapply(get.disparity(data, concatenate = FALSE), function(x) nrow(x) >1)))) {
+        dimension.level <- unlist(lapply(get.disparity(data, concatenate = FALSE), function(x) nrow(x)), use.names = FALSE)[1]
     }
 
 
@@ -125,14 +125,14 @@ chrono.test <- function(data, method, changepoint, time.window, ...) {
 
 
 
-    delta_df <- make.deltatronic(data, changepoint, time.window, dimension.level, is_multi_matrix)
+    delta_df <- make.deltatronic(data, changepoint, time.window, dimension.level, is.multi.matrix)
 
     # if (is_multi){
         
     # }
-    # dimension_level <- 1
+    # dimension.level <- 1
     # if (all(unlist(lapply(delta_df, function(x) ncol(x$disparity) >1)))) { # if disparity is > 1-dim
-    #     dimension_level <- ncol(x$disparity)
+    #     dimension.level <- ncol(x$disparity)
     # }
 
     # is_multi <- FALSE
@@ -141,17 +141,30 @@ chrono.test <- function(data, method, changepoint, time.window, ...) {
 
     chrono_test_output <- switch(method,
         itsa={
-            itsa <- lapply(delta_df, itsa.method, dimension.level, is_multi_matrix, ...)
+            if(is.multi.matrix >1){
+                itsa <- lapply(delta_df, lapply, itsa.method, dimension.level,...)
+            }
+            itsa <- lapply(delta_df, itsa.method, dimension.level, ...)
         },
         citsa={
             changepoint <- set.changepoint(changepoint)
             control <- lapply(changepoint, make.control, data = data, nsim = 5)
-            control_deltatronic <- make.deltatronic(control, changepoint, time.window,dimension.level, is_multi_matrix,)
+            control_deltatronic <- make.deltatronic(control, changepoint, time.window, dimension.level, is.multi.matrix)
             # control_deltatronic <- lapply(control, make.deltatronic, changepoint, time.window)
             control_delta_df <- lapply(control_deltatronic, function(x) {
                 x$emp_vs_null <- matrix(0, nrow = nrow(x$time))
                 return(x)
             })
+
+
+            if (is.multi.matrix > 1) {
+                delta_df <- lapply(delta_df, lapply, function(x) {
+                x$emp_vs_null <- matrix(1, nrow = nrow(x$time))
+                return(x)
+            })
+
+            }
+
             delta_df <- lapply(delta_df, function(x) {
                 x$emp_vs_null <- matrix(1, nrow = nrow(x$time))
                 return(x)
@@ -160,11 +173,11 @@ chrono.test <- function(data, method, changepoint, time.window, ...) {
             ## here will go `citsa.method`
         },
         area={
-            itsa <- lapply(delta_df, itsa.method, dimension.level, is_multi_matrix, ...)
-            area <- lapply(itsa,  area.method, is_multi_matrix, ...)
+            itsa <- lapply(delta_df, itsa.method, dimension.level, is.multi.matrix, ...)
+            area <- lapply(itsa,  area.method, is.multi.matrix, ...)
         },
         average={
-            average <- lapply(delta_df, average.method, dimension.level, is_multi_matrix, ...)
+            average <- lapply(delta_df, average.method, dimension.level, is.multi.matrix, ...)
         }
     )
 

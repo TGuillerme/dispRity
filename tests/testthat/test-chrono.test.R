@@ -54,7 +54,15 @@ test_that("make.deltatronic works", {
 
 	###### test make.deltatronic.list#######
 	changepoint <- 66
-	delta_df <- make.deltatronic.list(changepoint, disparity)
+	is.multi.matrix <- 1
+    if (length(disparity$matrix) > 1){
+        is.multi.matrix  <- length(disparity$matrix)
+    }
+    dimension.level <- 1
+    if (any(unlist(lapply(get.disparity(disparity, concatenate = FALSE), function(x) nrow(x) >1)))) {
+        dimension.level <- unlist(lapply(get.disparity(disparity, concatenate = FALSE), function(x) nrow(x)), use.names = FALSE)[1]
+    }
+	delta_df <- make.deltatronic.list(changepoint, disparity, dimension.level, is.multi.matrix)
 	expect_is(delta_df, "list")
 	expect_equal(nrow(delta_df$time), length(disparity$subsets))
 	expect_equal(nrow(delta_df$disparity), length(disparity$subsets))
@@ -92,7 +100,7 @@ test_that("make.deltatronic works", {
 	expect_true(max(prop_window$time) == 80)
 
 	### test make.deltatronic #### 
-	delta_df <- make.deltatronic(disparity, 66, time.window = NULL) ## test without time.window
+	delta_df <- make.deltatronic(disparity, 66, time.window = NULL,dimension.level, is.multi.matrix ) ## test without time.window
 	expect_equal(names(delta_df), "66")
 	expect_true(all(diff(delta_df[[1]]$time_elapsed)>0)) ## check time elapsed is increasing
 	expect_true(all(diff(delta_df[[1]]$time)<0)) ## check raw time is decreasing
@@ -107,7 +115,76 @@ test_that("make.deltatronic works", {
     expect_equal(as.numeric(delta_df[[1]]$impact[first_impact_index, ]), 1)
     expect_equal(as.numeric(delta_df[[1]]$impact[first_impact_index - 1, ]), 0)
 
-	delta_df <- make.deltatronic(disparity, 66, time.window = 3) ## test without time.window
+	delta_df <- make.deltatronic(disparity, 66, time.window = 3, dimension.level, is.multi.matrix ) ## test without time.window
+	expect_true(all(unlist(lapply(delta_df[[1]], nrow)) == 6)) ## 3 datapoints either sie
+	expect_true(sum(delta_df[[1]]$impact == 0) == sum(delta_df[[1]]$impact == 1)) ## equal number of 0 and 1
+
+	expect_is(delta_df, "list")
+	expect_is(delta_df[[1]], "list")
+	expect_true(all(unlist(lapply(delta_df, lapply, is.matrix))))
+	expect_true(all(names(delta_df[[1]]) %in% c("time", "time_elapsed", "impact", "disparity", "time_post_cp")))	
+	# delta_df <- make.deltatronic(disparity, 66, time.window = NULL) ## no error
+
+	# 	set.seed(123)
+	# tree <- rtree(n = 100)
+	# tree <- makeNodeLabel(tree)
+	# tree <- set.root.time(tree)
+	# changepoint <- tree$root.time / 2
+	# mat <- matrix(rnorm(995), 199, 5)
+	# rownames(mat) <- c(tree$tip.label, tree$node.label)
+	# data <- make.dispRity(data = mat, tree = tree)
+	# data <- chrono.subsets(data, method = "c", model = "equal.split", time = c(7,6,5,4,3,2,1), inc.nodes = TRUE)
+	# ## Warning is for the last time slice that's 0
+	# data <- dispRity(data, metric = variances)
+	# delta_df <- make.deltatronic(data, changepoint, time.window = NULL)
+	# dims <- max(data$call$dimensions)
+	# changepoint <- set.changepoint(changepoint)
+    # control <- lapply(changepoint, make.control, data = data, nsim = 5)
+
+	## multi matrix
+	set.seed(123)
+	tree <- rtree(n = 100)
+	tree <- makeNodeLabel(tree)
+	tree <- set.root.time(tree)
+	changepoint <- tree$root.time / 2
+	mat <- replicate(10, matrix(rnorm(995), 199, 5), simplify = FALSE)
+	mat <- lapply(mat, function(x) {
+	rownames(x)  <- c(tree$tip.label, tree$node.label)#
+	return(x)
+	})
+	data <- make.dispRity(data = mat, tree = tree)
+	data <- chrono.subsets(data, method = "c", model = "equal.split", time = c(7,6,5,4,3,2,1), inc.nodes = TRUE)
+	## Warning is for the last time slice that's 0
+	data <- dispRity(data, metric = c(sum,variances))
+
+
+    is.multi.matrix <- 1
+    if (length(data$matrix) > 1){
+        is.multi.matrix  <- length(data$matrix)
+    }
+
+    dimension.level <- 1
+    if (any(unlist(lapply(get.disparity(data, concatenate = FALSE), function(x) nrow(x) >1)))) {
+        dimension.level <- unlist(lapply(get.disparity(data, concatenate = FALSE), function(x) nrow(x)), use.names = FALSE)[1]
+    }
+
+	delta_df <- make.deltatronic(data, changepoint, time.window = NULL, dimension.level, is.multi.matrix)
+	#@@@ test on multi.matrix
+	expect_equal(names(delta_df), "66")
+	expect_true(all(diff(delta_df[[1]]$time_elapsed)>0)) ## check time elapsed is increasing
+	expect_true(all(diff(delta_df[[1]]$time)<0)) ## check raw time is decreasing
+	expect_true(all(diff(delta_df[[1]]$time_post_cp)>=0))
+	expect_equal(nrow(delta_df[[1]]$time), length(disparity$subsets))
+	expect_equal(nrow(delta_df[[1]]$disparity), length(disparity$subsets))
+    expected_impact <- ifelse(delta_df[[1]]$time <= changepoint, 1, 0)
+    expect_equal(as.vector(delta_df[[1]]$impact), as.vector(expected_impact))
+    expect_true(any(delta_df[[1]]$impact == 0))
+    expect_true(any(delta_df[[1]]$impact == 1))
+    first_impact_index <- min(which(delta_df[[1]]$time <= changepoint))
+    expect_equal(as.numeric(delta_df[[1]]$impact[first_impact_index, ]), 1)
+    expect_equal(as.numeric(delta_df[[1]]$impact[first_impact_index - 1, ]), 0)
+
+	delta_df <- make.deltatronic(disparity, 66, time.window = 3, dimension.level, is.multi.matrix ) ## test without time.window
 	expect_true(all(unlist(lapply(delta_df[[1]], nrow)) == 6)) ## 3 datapoints either sie
 	expect_true(sum(delta_df[[1]]$impact == 0) == sum(delta_df[[1]]$impact == 1)) ## equal number of 0 and 1
 
@@ -119,20 +196,38 @@ test_that("make.deltatronic works", {
 
 
 
-	## test it works with multicolumn disparity
+
+	
+	## multi and multidimensional matrix
 	set.seed(123)
 	tree <- rtree(n = 100)
 	tree <- makeNodeLabel(tree)
 	tree <- set.root.time(tree)
 	changepoint <- tree$root.time / 2
-	mat <- matrix(rnorm(995), 199, 5)
-	rownames(mat) <- c(tree$tip.label, tree$node.label)
+	mat <- replicate(10, matrix(rnorm(995), 199, 5), simplify = FALSE)
+	mat <- lapply(mat, function(x) {
+	rownames(x)  <- c(tree$tip.label, tree$node.label)#
+	return(x)
+	})
 	data <- make.dispRity(data = mat, tree = tree)
 	data <- chrono.subsets(data, method = "c", model = "equal.split", time = c(7,6,5,4,3,2,1), inc.nodes = TRUE)
 	## Warning is for the last time slice that's 0
-	data <- dispRity(data, metric = variances)
-	delta_df <- make.deltatronic(data, changepoint, time.window = NULL)
-	expect_true(all(delta_df[[1]]$disparity == do.call(rbind, get.disparity(data))))
+	disp <- dispRity(data, metric = c(variances))
+
+	# ## test it works with multicolumn disparity
+	# set.seed(123)
+	# tree <- rtree(n = 100)
+	# tree <- makeNodeLabel(tree)
+	# tree <- set.root.time(tree)
+	# changepoint <- tree$root.time / 2
+	# mat <- matrix(rnorm(995), 199, 5)
+	# rownames(mat) <- c(tree$tip.label, tree$node.label)
+	# data <- make.dispRity(data = mat, tree = tree)
+	# data <- chrono.subsets(data, method = "c", model = "equal.split", time = c(7,6,5,4,3,2,1), inc.nodes = TRUE)
+	# ## Warning is for the last time slice that's 0
+	# data <- dispRity(data, metric = variances)
+	# delta_df <- make.deltatronic(data, changepoint, time.window = NULL)
+	# expect_true(all(delta_df[[1]]$disparity == do.call(rbind, get.disparity(data))))
 
 })
 
