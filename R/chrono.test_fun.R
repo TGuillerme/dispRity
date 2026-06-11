@@ -64,7 +64,8 @@ make.deltatronic <- function(data, changepoint, time.window) {
 
     if (inherits(data, "dispRity")) {
         delta_df <- lapply(changepoint, make.deltatronic.list, data = data)
-    } else if (inherits(data, "list") && inherits(data[[1]], "dispRity")) { ## has already been generated into list
+    } else if (inherits(data, "list") && inherits(data[[1]], "dispRity")) {
+        # data <- data$disparity ## has already been generated into list
         delta_df <- Map(make.deltatronic.list, changepoint, data) ## for doing the control
     }
 
@@ -221,6 +222,8 @@ calculate.angular.effect <- function(itsa) {
     beta1 <- m1 * (sd_time / sd_disp) ## standardise by stdev of time and stdev of disparity
     beta2 <- m2 * (sd_time / sd_disp)
 
+
+    ## note that using atan() is non-linear, therefore it is harder to get a large effect size if the baseline angle is already steep, than if the baseline was narrow.
     theta1 <- atan(beta1) * (180 / pi) ## convert to geometric angles from radians
     theta2 <- atan(beta2) * (180 / pi) ## same here
     angular_effect_size <- (theta2 - theta1) / 180
@@ -230,6 +233,42 @@ calculate.angular.effect <- function(itsa) {
     post_impact__angle_deg   = theta2,
     angle_delta_deg    = theta2 - theta1,
     effect_size   = angular_effect_size
+    ))
+}
+
+calculate.slope.effect <- function(itsa) {
+
+    model <- itsa$model
+    delta_df <- itsa$data
+
+    # m1 <- coef(model)["time_elapsed"] ## basline slope
+    # m_diff <- coef(model)["time_post_cp"] ## change in slope
+
+    # m2 <- m1 + m_diff ## post-impact slope
+
+    # sd_time <- sd(delta_df$time_elapsed, na.rm = TRUE) ## stdev of time
+    # sd_disp <- sd(delta_df$disparity, na.rm = TRUE) ## stdev of disparity across **whole curve** (think that is right)
+
+    # if (is.na(sd_disp) || sd_disp == 0 || is.na(sd_time) || sd_time == 0) {
+    # return(NA)
+    # }
+
+    # standardised_delta <- m_diff * (sd_time / sd_disp)
+
+    co <- summary(model)$coefficients
+
+    tval <- co["time_post_cp", "t value"]
+    df <- model$df.residual
+
+    effect_size <- tval^2 / (tval^2 + df)
+
+    # effect_size_0_1 <- tanh(abs(standardised_delta))
+
+    return(list(
+    # baseline_angle_deg = theta1,
+    # post_impact__angle_deg   = theta2,
+    # angle_delta_deg    = theta2 - theta1,
+    effect_size   = effect_size
     ))
 }
 
@@ -389,23 +428,52 @@ make.control <- function(changepoint, data, nsim = 100, paint = TRUE, slice.mode
     chrono <- chrono.subsets(mapped_control, tree, method = slice_call[1], model = slice_call[2], bind.data = as.logical(slice_call["bind"]), inc.nodes = TRUE, time = slices)
 
 
-    metric.fun <- function(mat){
-        metric[[1]](metric[[2]](mat)) ## add if in case there is 1 or 3 metric functions applied
-    } ##@@@ this needs to get fixed, works for now but thomas will fix it.
+
+
+    # metric.fun <- function(mat){
+    #     metric[[1]](metric[[2]](mat)) ## add if in case there is 1 or 3 metric functions applied
+    # } ##@@@ this needs to get fixed, works for now but thomas will fix it.
 
     
-    disp <- dispRity(chrono, metric = metric.fun)
+    disp <- dispRity(chrono, metric = metric)
     # disp$disparity <- t(disp$disparity)
     disp$call$disparity$metrics <- data$call$disparity$metrics ## reattach metric fun info
 
-    return(list(
-        sim_parameters = do.call(cbind, sim_parameters),
-        disparity = disp
-    ))
+    return(disp)
 }
 
 
 ###@@@ see thomas photo on how to relativise, using triangle. the coefficients are extracted, the maximum change is 1 which is a straight line upwards, everything else is a proportion of that change in angle.
+
+
+citsa.method <- function(delta_df, control_delta_df){
+
+        if(dimension.level > 1)
+        delta_df <- lapply(delta_df, as.numeric)
+        delta_df <- do.call(cbind, delta_df)
+
+        control_df <- lapply(control_delta_df, as.numeric)
+        control_df <- do.call(cbind, control_df)
+
+        full_df <- as.data.frame(rbind(control_df, delta_df))
+
+    
+        model <- tryCatch({
+                lm(
+                disparity ~ time_elapsed + impact + emp_vs_null + time_post_cp +
+                            time_elapsed:emp_vs_null + 
+                            impact:emp_vs_null + 
+                            time_post_cp:emp_vs_null,
+                data = full_df,
+                # correlation = corAR1(form = ~ time_index | real_vs_control), ## checked and this causes more type i/ii errors
+                # weights = varIdent(form = ~ 1 | real_vs_control),
+                # method = "REML",
+                na.action = na.omit
+            )}, error = function(e){
+                warning(paste0("Model failed to converge:", e$message))
+                return(NULL)
+        })
+}
 
 ols.deltatronic.itsa <- function(empirical, control, changepoint, times = NULL, alpha = 0.05, normalise = TRUE) { 
 

@@ -220,7 +220,40 @@ test_that("calculate.angular.effect works", {
 
 	itsa <- itsa.method(delta_df, dimension.level = 1)
 
-	calculate
+	calculate.slope.effect(itsa)
+
+	set_state <- set.seed(123)
+	time_elapsed <- seq(0, 60, by = 5)
+
+	intercept      <- 1.82
+	baseline_slope <- 0.002
+	slope_change   <- 0.0005  
+
+	time_post_cp_vec <- ifelse(time_elapsed > 30, time_elapsed - 30, 0)
+
+	noise <- rnorm(length(time_elapsed), mean = 0, sd = 0.005)
+	disparity <- intercept + (baseline_slope * time_elapsed) + (slope_change * time_post_cp_vec) + noise
+
+	delta_df <- list(
+	time_elapsed = as.matrix(time_elapsed),
+	disparity    = as.matrix(disparity),
+	impact       = as.matrix(ifelse(time_elapsed >= 30, 1, 0)),
+	time_post_cp = as.matrix(time_post_cp_vec)
+	)
+
+	itsa <- itsa.method(delta_df, dimension.level = 1)
+
+	plot(disparity ~ time_elapsed, data = delta_df, type = "l")
+
+	print(calculate.slope.effect(itsa))
+
+	data(disparity)
+	delta_df <- make.deltatronic(disparity, 66, time.window = NULL)
+	method <- lapply(delta_df, itsa.method, dimension.level = 1)#
+	expect_is(method[[1]], "list")
+	expect_true(all(names(method[[1]]) %in% c("data", "model")))
+	expect_true(all(names(method[[1]]$data) %in% c("time", "time_elapsed", "impact", "disparity", "time_post_cp", "counter_mean_ci", "counter_lower_ci", "counter_upper_ci")))
+	expect_is(method[[1]]$model, "lm")
 
 }
 )
