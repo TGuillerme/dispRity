@@ -143,12 +143,13 @@ chrono.test <- function(data, method, changepoint, time.window, ...) {
         itsa={
             if(is.multi.matrix >1){
                 itsa <- lapply(delta_df, lapply, itsa.method, dimension.level,...)
-            }
-            itsa <- lapply(delta_df, itsa.method, dimension.level, ...)
+            } else {
+                itsa <- lapply(delta_df, itsa.method, dimension.level, ...)
+            }        
         },
         citsa={
             changepoint <- set.changepoint(changepoint)
-            control <- lapply(changepoint, make.control, data = data, nsim = 5)
+            control <- lapply(changepoint, make.control, data = data)
             control_deltatronic <- make.deltatronic(control, changepoint, time.window, dimension.level, is.multi.matrix)
             # control_deltatronic <- lapply(control, make.deltatronic, changepoint, time.window)
             control_delta_df <- lapply(control_deltatronic, function(x) {
@@ -162,19 +163,22 @@ chrono.test <- function(data, method, changepoint, time.window, ...) {
                 x$emp_vs_null <- matrix(1, nrow = nrow(x$time))
                 return(x)
             })
-
+            } else {
+                delta_df <- lapply(delta_df, function(x) {
+                    x$emp_vs_null <- matrix(1, nrow = nrow(x$time))
+                    return(x)
+                })
             }
-
-            delta_df <- lapply(delta_df, function(x) {
-                x$emp_vs_null <- matrix(1, nrow = nrow(x$time))
-                return(x)
-            })
             citsa <- Map(citsa.method, delta_df, control_delta_df)
             ## here will go `citsa.method`
         },
         area={
-            itsa <- lapply(delta_df, itsa.method, dimension.level, is.multi.matrix, ...)
-            area <- lapply(itsa,  area.method, is.multi.matrix, ...)
+            if (is.multi.matrix > 1) {
+                itsa <- lapply(delta_df, lapply, itsa.method, dimension.level, ...)
+                area <- lapply(itsa, lapply, area.method, dimension.level)
+            }
+            itsa <- lapply(delta_df, itsa.method, dimension.level ...)
+            area <- lapply(itsa,  area.method, ...)
         },
         average={
             average <- lapply(delta_df, average.method, dimension.level, is.multi.matrix, ...)
