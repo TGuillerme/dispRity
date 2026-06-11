@@ -175,9 +175,9 @@ chrono.test <- function(data, method, changepoint, time.window, ...) {
         area={
             if (is.multi.matrix > 1) {
                 itsa <- lapply(delta_df, lapply, itsa.method, dimension.level, ...)
-                area <- lapply(itsa, lapply, area.method, dimension.level)
+                area <- lapply(itsa, lapply, area.method, dimension.level) ## check on this 
             }
-            itsa <- lapply(delta_df, itsa.method, dimension.level ...)
+            itsa <- lapply(delta_df, itsa.method, dimension.level, ...)
             area <- lapply(itsa,  area.method, ...)
         },
         average={

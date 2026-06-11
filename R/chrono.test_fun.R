@@ -69,8 +69,7 @@ make.deltatronic.list <- function(changepoint, data, dimension.level, is.multi.m
             delta_df[[i]]$time_post_cp <- as.matrix(ifelse(delta_df[[i]]$impact == 0, 0,  changepoint - delta_df[[i]]$time))
         }
     
-    } else if (is.multi.matrix == 1 && dimension.level ==1) {
-
+    } else { ## here dimension.level can be >1 but function still works.
         changepoint <- as.numeric(changepoint)
         disp_vals <- t(as.data.frame(get.disparity(data, concatenate = FALSE), check.names = FALSE))
         # colnames(disp_vals) <- paste0("disparity", seq_len(ncol(disp_vals)))    
@@ -177,6 +176,7 @@ average.method <- function(delta_df, test = stats::t.test, dimension.level,  ...
     # if (!c("disparity", "impact") %in% names(delta_df)){
     #     stop()
     # }
+
     if(dimension.level == 1){
         t <- test(delta_df$disparity ~ delta_df$impact, ...)
     } else if(dimension.level > 1 ){
