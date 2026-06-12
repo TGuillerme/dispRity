@@ -109,6 +109,7 @@ chrono.test <- function(data, method, changepoint, time.window, ...) {
 
     ## Toggling parameters
     is.multi.matrix <- length(data$matrix)
+    #TG: also note that to me, for a variable is_something, I would expect a logical. Here it's maybe more n_matrices or something like that? And if n_matrices == 1, then is.multi.matrix = FALSE? 
 
     dimension.level <- 1 #TG: is this for getting the number of dimensions in the data (then you can do:
     # dimension.level <- length(data$call$dimensions)
@@ -159,7 +160,7 @@ chrono.test <- function(data, method, changepoint, time.window, ...) {
         citsa={
 
             changepoint <- set.changepoint(changepoint)
-                    
+
             control <- lapply(changepoint, make.control, data = data)
             
             control_deltatronic <- make.deltatronic(control, changepoint, time.window, dimension.level, is.multi.matrix)
