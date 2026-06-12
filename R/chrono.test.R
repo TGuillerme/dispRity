@@ -107,14 +107,21 @@ chrono.test <- function(data, method, changepoint, time.window, ...) {
         stop.call(msg = "user function for method not implemented yet.")
     }
 
+    ## Toggling parameters
+    is.multi.matrix <- length(data$matrix)
 
+    dimension.level <- 1 #TG: is this for getting the number of dimensions in the data (then you can do:
+    # dimension.level <- length(data$call$dimensions)
+    #    or the dimension of the metric? then you can do something like
+    # if(length(data$call$disparity$metrics$fun) == 1) {
+    #     levels <- make.metric(data$call$disparity$metrics$fun, silent = TRUE)$type
+    # } else {
+    #     levels <- unlist(lapply(lapply(data$call$disparity$metrics$fun, make.metric, silent = TRUE), `[[`, "type"))
+    # }
+    # dimension.level <- as.integer(gsub("level", "", levels))
 
-    is.multi.matrix <- 1
-    if (length(data$matrix) > 1){
-        is.multi.matrix  <- length(data$matrix)
-    }
-
-    dimension.level <- 1
+    # levels <- lapply(data$call$disparity$metrics, make.metric, silent = TRUE)
+    # 
     if (any(unlist(lapply(get.disparity(data, concatenate = FALSE), function(x) nrow(x) >1)))) {
         dimension.level <- unlist(lapply(get.disparity(data, concatenate = FALSE), function(x) nrow(x)), use.names = FALSE)[1]
     }
