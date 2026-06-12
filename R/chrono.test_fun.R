@@ -30,28 +30,34 @@
 
 make.deltatronic.list <- function(changepoint, data, dimension.level, is.multi.matrix) {
 
+
+    disp_vals <- get.disparity(data, concatenate = FALSE)
+    disp_vals_list <- delta_df <- list()
+
     if (is.multi.matrix > 1 && dimension.level == 1) {
-        disp_vals <- get.disparity(data, concatenate = FALSE)
-        disp_vals_list <- list()
-        for (i in 1:is.multi.matrix) {
-            disp_vals_list[[i]] <- lapply(disp_vals, function(x) x[i])
-            disp_vals_list[[i]] <- t(as.data.frame(disp_vals_list[[i]],, check.names = FALSE))
-        }
-        
-        delta_df <- list()
+
+        # Filling this placeholder so that we have the results in a matrix        
+        temp_list <-do.call(rbind, get.disparity(data, concatenate = FALSE))
+        disp_vals_list <- apply(temp_list, 2, function(x) matrix(x, ncol = 1, dimnames = list(rownames(temp_list))), simplify = FALSE)
+
+
+
+        ## Initiating the deltratonic list
+
         for (i in 1:is.multi.matrix){
             numeric_time <- as.numeric(rownames(disp_vals_list[[i]]))
             delta_df[[i]] <- list(
-            time = as.matrix(numeric_time),
-            time_elapsed =  as.matrix(max(numeric_time) - numeric_time),
-            impact = as.matrix(as.numeric(numeric_time <= changepoint)),
-            disparity= as.matrix(disp_vals_list[[i]])
+                time = as.matrix(numeric_time),
+                time_elapsed =  as.matrix(max(numeric_time) - numeric_time),
+                impact = as.matrix(as.numeric(numeric_time <= changepoint)),
+                disparity= as.matrix(disp_vals_list[[i]])
             )
             delta_df[[i]]$time_post_cp <- as.matrix(ifelse(delta_df[[i]]$impact == 0, 0,  changepoint - delta_df[[i]]$time))
         }
+
     } else if (is.multi.matrix > 1 && dimension.level > 1){
-        disp_vals <- get.disparity(data, concatenate = FALSE)
-        disp_vals_list <- list()
+        
+        ## Initi
             for (i in 1:is.multi.matrix) {
                 disp_vals_list[[i]] <- lapply(disp_vals, function(x) x[,i]) ## extract each column (i.e matrix replicate)
                 disp_vals_list[[i]] <- t(as.data.frame(disp_vals_list[[i]],, check.names = FALSE)) ## transpose to data.frame
