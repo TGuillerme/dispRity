@@ -1,4 +1,4 @@
-dispRity v1.9.9 (2026-06-10)
+dispRity v1.9.10 (2026-06-12)
 =========================
 
 ### NEW FEATURES
@@ -10,6 +10,7 @@ dispRity v1.9.9 (2026-06-10)
 ### BUG FIXES
 
  * disparity results structure with `chrono.subsets` with multiple matrices are now handled correctly when using a list of metrics (e.g. `c(sum, variances)` now gives the same results structure as `function(x)sum(variances(x))` as expected). Thanks to Caleb Scutt for spotting this one.
+ * fixed bug with empty time subsets in `chrono.subsets` that would output the wrong dimension `NA` matrix when calculating disparity.
 
 dispRity v1.9.7 (2025-08-22)
 =========================

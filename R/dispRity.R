@@ -605,7 +605,11 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
     ## Adding the removed elements as NAs
     if(removed_elements) {
         ## Creating empty disparity subsets
-        empty_disparity <- lapply(data$subsets[which(elements <= 1)], lapply, function(x) ifelse(x, NA, NA))
+        if(!has_probabilities) {
+            empty_disparity <- lapply(data$subsets[which(elements <= 1)], lapply, function(x) ifelse(x, NA, NA))
+        } else {
+            empty_disparity <- lapply(data$subsets[which(elements <= 1)], lapply, function(x) return(matrix(rep(NA, length(x)/3), nrow = length(x)/3))) #TG: or ncol?
+        }
 
         ## Merging the two subsets
         disparity <- c(disparity, empty_disparity)
