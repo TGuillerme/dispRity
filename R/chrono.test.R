@@ -148,15 +148,20 @@ chrono.test <- function(data, method, changepoint, time.window, ...) {
 
     chrono_test_output <- switch(method,
         itsa={
-            if(is.multi.matrix >1){
+
+            #TG: for here and for delta_df in general, is it not easier to just make a list of lists? So that it never has to toggle between either options? I.e. if it's a multi.matrix or not it always go double lapply?
+            if(is.multi.matrix > 1){
                 itsa <- lapply(delta_df, lapply, itsa.method, dimension.level,...)
             } else {
                 itsa <- lapply(delta_df, itsa.method, dimension.level, ...)
             }        
         },
         citsa={
+
             changepoint <- set.changepoint(changepoint)
+                    
             control <- lapply(changepoint, make.control, data = data)
+            
             control_deltatronic <- make.deltatronic(control, changepoint, time.window, dimension.level, is.multi.matrix)
             # control_deltatronic <- lapply(control, make.deltatronic, changepoint, time.window)
             control_delta_df <- lapply(control_deltatronic, function(x) {
