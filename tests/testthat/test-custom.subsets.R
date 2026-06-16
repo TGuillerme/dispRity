@@ -225,9 +225,10 @@ test_that("check.group.list works", {
 ## Sanitizing
 test_that("Sanitizing works", {
     ## class
-    expect_error(
+    error <- capture_error(
         custom.subsets(data, group = "A")
         )
+    expect_equal(error[[1]], "group argument should contain more than one element.")
     ## same number of rows
     group <- matrix(5,5)
     expect_error(
@@ -436,11 +437,26 @@ test_that("custom.subsets works with tree", {
     expect_equal(length(test$tree), 3)
 })
 
-test_that("custom.subsets works with a factor", {
+test_that("custom.subsets works with a factor or a vector", {
     data(charadriiformes)
     ## Quick test
     test <- custom.subsets(data  = charadriiformes$data[, -c(18, 19)],
                            group = charadriiformes$data[, "clade"])
+    expect_is(test, "dispRity")
+    expect_equal(n.subsets(test), 3)
+    expect_equal(size.subsets(test), c("gulls" = 159, "plovers" = 98, "sandpipers" = 102))
+    
+    vector_no_name <- vector_name <- as.vector(charadriiformes$data[, "clade"])
+    names(vector_name) <- rownames(charadriiformes$data)
+
+    test <- custom.subsets(data  = charadriiformes$data[, -c(18, 19)],
+                           group = vector_no_name)
+    expect_is(test, "dispRity")
+    expect_equal(n.subsets(test), 3)
+    expect_equal(size.subsets(test), c("gulls" = 159, "plovers" = 98, "sandpipers" = 102))
+
+    test <- custom.subsets(data  = charadriiformes$data[, -c(18, 19)],
+                           group = vector_name)
     expect_is(test, "dispRity")
     expect_equal(n.subsets(test), 3)
     expect_equal(size.subsets(test), c("gulls" = 159, "plovers" = 98, "sandpipers" = 102))
@@ -457,3 +473,4 @@ test_that("custom.subsets works with a logical", {
     expect_equal(name.subsets(test), c("FALSE", "TRUE"))
     expect_equal(size.subsets(test), c("FALSE" = 98, "TRUE" = 102))
 })
+

@@ -95,7 +95,13 @@ custom.subsets <- function(data, group, tree = NULL, dist.data = FALSE) {
     }
 
     ## Sanitize the group variable
-    group_class <- check.class(group, c("matrix", "data.frame", "list", "phylo", "factor", "logical"))
+    group_class <- check.class(group, c("matrix", "data.frame", "list", "phylo", "factor", "logical", "character", "integer", "numeric"))
+    ## If vector (logical, character, integer, numeric), check for multiple elements
+    if(group_class[1] %in% c("logical", "character", "integer", "numeric")) {
+        if(length(group) < 2) {
+            stop("group argument should contain more than one element.", call. = FALSE)
+        }
+    }
     if(group_class == "phylo") {
         ## Saving the tree for export
         tree <- group
