@@ -1,4 +1,4 @@
-dispRity v1.9.10 (2026-06-12)
+dispRity v1.9.11 (2026-06-16)
 =========================
 
 ### NEW FEATURES
@@ -6,6 +6,7 @@ dispRity v1.9.10 (2026-06-12)
 
 ### MINOR IMPROVEMENTS
  * **Changed default argument** in `multi.ace`: `ml.collapse` default is now `list(type = "majority")` (previously `threshold = TRUE` which mapped to `"relative"`).
+ * `custom.subsets`'s `group` argument can now be a vector.
 
 ### BUG FIXES
 
