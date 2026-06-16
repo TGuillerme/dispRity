@@ -42,7 +42,7 @@
 #' 
 
 
-chrono.test <- function(data, method, changepoint, time.window, ...) {
+chrono.test <- function(data, method, changepoint, time.window, nsim = 100, ...) {
     
     match_call <- match.call()
 
@@ -111,12 +111,10 @@ chrono.test <- function(data, method, changepoint, time.window, ...) {
     is.multi.matrix <- length(data$matrix)
     #TG: also note that to me, for a variable is_something, I would expect a logical. Here it's maybe more n_matrices or something like that? And if n_matrices == 1, then is.multi.matrix = FALSE? 
 
-    if(length(data$call$disparity$metrics$fun) == 1) {
-        levels <- make.metric(data$call$disparity$metrics$fun, silent = TRUE)$type
-    } else {
-        levels <- unlist(lapply(lapply(data$call$disparity$metrics$fun, make.metric, silent = TRUE), `[[`, "type"))
+    dimension.level <- 1
+    if (any(unlist(lapply(get.disparity(data, concatenate = FALSE), function(x) nrow(x) >1)))) {
+        dimension.level <- unlist(lapply(get.disparity(data, concatenate = FALSE), function(x) nrow(x)), use.names = FALSE)[1]
     }
-    dimension.level <- as.integer(gsub("level", "", levels))
 
     #######################################################################################################
 
@@ -140,37 +138,26 @@ chrono.test <- function(data, method, changepoint, time.window, ...) {
         itsa={
 
             #TG: for here and for delta_df in general, is it not easier to just make a list of lists? So that it never has to toggle between either options? I.e. if it's a multi.matrix or not it always go double lapply?
-            if(is.multi.matrix > 1){
                 itsa <- lapply(delta_df, lapply, itsa.method, dimension.level,...)
-            } else {
-                itsa <- lapply(delta_df, itsa.method, dimension.level, ...)
-            }        
         },
         citsa={
 
             changepoint <- set.changepoint(changepoint)
 
-            control <- lapply(changepoint, make.control, data = data)
+            control <- lapply(changepoint, make.control, data = data, nsim = nsim, is.multi.matrix, ...)
             
-            control_deltatronic <- make.deltatronic(control, changepoint, time.window, dimension.level, is.multi.matrix)
+            control_deltatronic <- make.deltatronic(control, changepoint, time.window, dimension.level, is.multi.matrix = nsim)
             # control_deltatronic <- lapply(control, make.deltatronic, changepoint, time.window)
             control_delta_df <- lapply(control_deltatronic, function(x) {
                 x$emp_vs_null <- matrix(0, nrow = nrow(x$time))
                 return(x)
             })
 
-
-            if (is.multi.matrix > 1) {
-                delta_df <- lapply(delta_df, lapply, function(x) {
-                x$emp_vs_null <- matrix(1, nrow = nrow(x$time))
-                return(x)
+            delta_df <- lapply(delta_df, lapply, function(x) {
+            x$emp_vs_null <- matrix(1, nrow = nrow(x$time))
+            return(x)
             })
-            } else {
-                delta_df <- lapply(delta_df, function(x) {
-                    x$emp_vs_null <- matrix(1, nrow = nrow(x$time))
-                    return(x)
-                })
-            }
+
             citsa <- Map(citsa.method, delta_df, control_delta_df)
             ## here will go `citsa.method`
         },
@@ -183,7 +170,7 @@ chrono.test <- function(data, method, changepoint, time.window, ...) {
             area <- lapply(itsa,  area.method, ...)
         },
         average={
-            average <- lapply(delta_df, average.method, dimension.level, is.multi.matrix, ...)
+            average <- lapply(delta_df, lapply, average.method, dimension.level, ...)
         }
     )
 

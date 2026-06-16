@@ -27,69 +27,44 @@
 #         }
 #     }
 # }
-
 make.deltatronic.list <- function(changepoint, data, dimension.level, is.multi.matrix) {
-
-
-    disp_vals <- get.disparity(data, concatenate = FALSE)
-    disp_vals_list <- delta_df <- list()
-
-    if (is.multi.matrix > 1 && dimension.level == 1) {
-
-        # Filling this placeholder so that we have the results in a matrix        
-        temp_list <-do.call(rbind, get.disparity(data, concatenate = FALSE))
-        disp_vals_list <- apply(temp_list, 2, function(x) matrix(x, ncol = 1, dimnames = list(rownames(temp_list))), simplify = FALSE)
-
-
-
-        ## Initiating the deltratonic list
-
-        for (i in 1:is.multi.matrix){
-            numeric_time <- as.numeric(rownames(disp_vals_list[[i]]))
-            delta_df[[i]] <- list(
-                time = as.matrix(numeric_time),
-                time_elapsed =  as.matrix(max(numeric_time) - numeric_time),
-                impact = as.matrix(as.numeric(numeric_time <= changepoint)),
-                disparity= as.matrix(disp_vals_list[[i]])
-            )
-            delta_df[[i]]$time_post_cp <- as.matrix(ifelse(delta_df[[i]]$impact == 0, 0,  changepoint - delta_df[[i]]$time))
-        }
-
-    } else if (is.multi.matrix > 1 && dimension.level > 1){
-        
-        ## Initi
-            for (i in 1:is.multi.matrix) {
-                disp_vals_list[[i]] <- lapply(disp_vals, function(x) x[,i]) ## extract each column (i.e matrix replicate)
-                disp_vals_list[[i]] <- t(as.data.frame(disp_vals_list[[i]],, check.names = FALSE)) ## transpose to data.frame
-            }
-        
-        delta_df <- list()
-        for (i in 1:is.multi.matrix){
-            numeric_time <- as.numeric(rownames(disp_vals_list[[i]]))
-            delta_df[[i]] <- list(
-            time = as.matrix(numeric_time),
-            time_elapsed =  as.matrix(max(numeric_time) - numeric_time),
-            impact = as.matrix(as.numeric(numeric_time <= changepoint)),
-            disparity= as.matrix(disp_vals_list[[i]])
-            )
-            delta_df[[i]]$time_post_cp <- as.matrix(ifelse(delta_df[[i]]$impact == 0, 0,  changepoint - delta_df[[i]]$time))
-        }
+    changepoint <- as.numeric(changepoint)
     
-    } else { ## here dimension.level can be >1 but function still works.
-        changepoint <- as.numeric(changepoint)
-        disp_vals <- t(as.data.frame(get.disparity(data, concatenate = FALSE), check.names = FALSE))
-        # colnames(disp_vals) <- paste0("disparity", seq_len(ncol(disp_vals)))    
-        numeric_time <- as.numeric(rownames(disp_vals))
-        delta_df <- list(
-            time = as.matrix(numeric_time),
-            time_elapsed =  as.matrix(max(numeric_time) - numeric_time),
-            impact = as.matrix(as.numeric(numeric_time <= changepoint)),
-            disparity= as.matrix(disp_vals)
+    disp_vals <- get.disparity(data, concatenate = FALSE)
+    numeric_time <- as.numeric(names(disp_vals))
+    
+    n_matrices <- max(1, as.numeric(is.multi.matrix))
+    
+    delta_df <- lapply(seq_len(n_matrices), function(i) {
+        
+        if (n_matrices == 1) {
+            disp_mat <- t(as.data.frame(disp_vals, check.names = FALSE))
+            
+        } else if (dimension.level == 1) {
+            temp_list <- do.call(rbind, disp_vals)
+            disp_mat <- matrix(temp_list[, i], ncol = 1, dimnames = list(rownames(temp_list), NULL))
+            
+        } else {
+            extracted <- lapply(disp_vals, function(x) x[, i])
+            disp_mat <- t(as.data.frame(extracted, check.names = FALSE))
+        }
+        
+        time_mat   <- as.matrix(numeric_time)
+        impact_mat <- as.matrix(as.numeric(numeric_time <= changepoint))
+        
+        res <- list(
+            time         = time_mat,
+            time_elapsed = as.matrix(max(numeric_time) - numeric_time),
+            impact       = impact_mat,
+            disparity    = as.matrix(disp_mat)
         )
-
-        delta_df$time_post_cp <- as.matrix(ifelse(delta_df$impact == 0, 0,  changepoint - delta_df$time))
-    }
-        return(delta_df)
+        
+        res$time_post_cp <- as.matrix(ifelse(res$impact == 0, 0, changepoint - res$time))
+        
+        return(res)
+    })
+    
+    return(delta_df)
 }
 
 
@@ -115,17 +90,17 @@ make.deltatronic <- function(data, changepoint, time.window, dimension.level, is
 
     if (inherits(data, "dispRity")) {
         delta_df <- lapply(changepoint, make.deltatronic.list, data = data, dimension.level, is.multi.matrix)
-    } else if (inherits(data, "list") && inherits(data[[1]], "dispRity")) {
-        # data <- data$disparity ## has already been generated into list
-        delta_df <- Map(make.deltatronic.list, changepoint, data) ## for doing the control
+    } else if (inherits(data, "list") && inherits(data[[1]], "dispRity")) { ## for when it is control
+        delta_df <- mapply(make.deltatronic.list,
+        changepoint,
+        data,
+        MoreArgs    = list(dimension.level = dimension.level, is.multi.matrix = is.multi.matrix),
+        SIMPLIFY    = FALSE 
+    )
     }
 
-    if(!is.null(time.window)){
-        if (is.multi.matrix >1){
+    if(!is.null(time.window)) {
             delta_df <- lapply(delta_df, lapply, set.time.window, time.window)
-        } else {
-        delta_df <- lapply(delta_df, set.time.window, time.window)
-        }
     }
     return(delta_df)
 }
@@ -260,10 +235,16 @@ itsa.method <- function(delta_df,  dimension.level, ...) {
 }
 calculate.angular.effect <- function(itsa) {
 
+    # if (citsa){
+
+
+
+    # }    
+
     model <- itsa$model
     delta_df <- itsa$data
 
-    m1 <- coef(model)["time_elapsed"] ## basline slope
+    m1_emp <- coef(model)["time_elapsed"] ## basline slope
     m_diff <- coef(model)["time_post_cp"] ## change in slope
 
     m2 <- m1 + m_diff ## post-impact slope
@@ -280,9 +261,21 @@ calculate.angular.effect <- function(itsa) {
 
 
     ## note that using atan() is non-linear, therefore it is harder to get a large effect size if the baseline angle is already steep, than if the baseline was narrow.
-    theta1 <- atan(beta1) * (180 / pi) ## convert to geometric angles from radians
-    theta2 <- atan(beta2) * (180 / pi) ## same here
+    theta1 <- atan(m1) * (180 / pi) ## convert to geometric angles from radians
+    theta2 <- atan(m2) * (180 / pi) ## same here
     angular_effect_size <- (theta2 - theta1) / 180
+
+## Area if disparity before K-Pg is constant  (=slope of LM before is not signif)
+slope = 2
+x_axes_time <- 13
+y_axes_disparity <- slope*x_axes_time
+surface_triangle <- x_axes_time * y_axes_disparity / 2 
+relative_surface <- surface_triangle/ x_axes_time^2
+relative_surface
+
+## Area if disparity before K-Pg is not constant (increase of decrease)
+relative_surface <- surface_triangle/ (surface_triangle+x_axes_time^2)
+relative_surface
 
     return(list(
     baseline_angle_deg = theta1,
@@ -294,29 +287,28 @@ calculate.angular.effect <- function(itsa) {
 
 calculate.slope.effect <- function(itsa) {
 
+ 
     model <- itsa$model
     delta_df <- itsa$data
 
-    # m1 <- coef(model)["time_elapsed"] ## basline slope
-    # m_diff <- coef(model)["time_post_cp"] ## change in slope
+    m1_emp <- coef(model)["time_elapsed"] ## basline slope
+    m_diff <- coef(model)["time_post_cp"] ## change in slope
 
-    # m2 <- m1 + m_diff ## post-impact slope
+    m2 <- m1 + m_diff ## post-impact slope
 
-    # sd_time <- sd(delta_df$time_elapsed, na.rm = TRUE) ## stdev of time
-    # sd_disp <- sd(delta_df$disparity, na.rm = TRUE) ## stdev of disparity across **whole curve** (think that is right)
+    sd_time <- sd(delta_df$time_elapsed, na.rm = TRUE) ## stdev of time
+    sd_disp <- sd(delta_df$disparity, na.rm = TRUE) ## stdev of disparity across **whole curve** (think that is right)
 
-    # if (is.na(sd_disp) || sd_disp == 0 || is.na(sd_time) || sd_time == 0) {
-    # return(NA)
-    # }
+    if (is.na(sd_disp) || sd_disp == 0 || is.na(sd_time) || sd_time == 0) {
+    return(NA)
+    }
 
-    # standardised_delta <- m_diff * (sd_time / sd_disp)
+    beta1 <- m1 * (sd_time / sd_disp) ## standardise by stdev of time and stdev of disparity
+    beta2 <- m2 * (sd_time / sd_disp)
 
-    co <- summary(model)$coefficients
 
-    tval <- co["time_post_cp", "t value"]
-    df <- model$df.residual
+    es <- beta2 - beta1
 
-    effect_size <- tval^2 / (tval^2 + df)
 
     # effect_size_0_1 <- tanh(abs(standardised_delta))
 
@@ -324,7 +316,7 @@ calculate.slope.effect <- function(itsa) {
     # baseline_angle_deg = theta1,
     # post_impact__angle_deg   = theta2,
     # angle_delta_deg    = theta2 - theta1,
-    effect_size   = effect_size
+    effect_size   = es
     ))
 }
 
@@ -401,7 +393,7 @@ paint.branches <- function(tree, changepoint) {
 }
 
 
-make.control <- function(changepoint, data, nsim = 100, paint = TRUE, slice.model = NULL, ...) { ## change slice.model name for clarity
+make.control <- function(changepoint, data, nsim = 100, paint = TRUE, slice.model = NULL, is.multi.matrix, ...) { ## change slice.model name for clarity
 
     if (paint) {
         slice.model  <- NULL
@@ -421,7 +413,29 @@ make.control <- function(changepoint, data, nsim = 100, paint = TRUE, slice.mode
     slices <- as.numeric(names(data$subsets)) # store for later
     slice_call <- data$call$subsets
     tree <- get.tree(data)
-    mat <- get.matrix(data)
+    mat <- list()
+    if (is.multi.matrix > 1){
+        for(i in 1:is.multi.matrix){
+            get.matrix(data, matrix = i)
+        }
+    } else {
+        mat <- get.matrix(data)
+    }
+
+
+    ## if matrix is single matrix (simple version)
+    # simulate.control(mat, changepoint, data, nsim, paint, slice.model)
+        # else
+    ##  if matrices is multi.ace output (same tip data across all matrices (come up with function to detect))
+        # simulate.control(mat[[1]], changepoint,...)
+    ## if matrices is all different
+        # work out how many sims per matrix to make nsims?
+        # n_sim  <- nsim / n_matrices
+        # simulate.control(sample(matrice, replace = FALSE) ...)
+        
+
+
+    ###@@@ need logic that can detect if its a `multi.ace` output, then it just iterates across them. if the matrices are all different (i.e. due ot intraspecific variation) then it does one per matrix.
 
 
     sim_parameters <- replicate(ncol(mat), list(root_value = NULL, sig_sq = NULL), simplify = FALSE) ## create empty list structure for storing trait parameters
@@ -484,16 +498,12 @@ make.control <- function(changepoint, data, nsim = 100, paint = TRUE, slice.mode
     chrono <- chrono.subsets(mapped_control, tree, method = slice_call[1], model = slice_call[2], bind.data = as.logical(slice_call["bind"]), inc.nodes = TRUE, time = slices)
 
 
-
-
-    # metric.fun <- function(mat){
-    #     metric[[1]](metric[[2]](mat)) ## add if in case there is 1 or 3 metric functions applied
-    # } ##@@@ this needs to get fixed, works for now but thomas will fix it.
-
     
     disp <- dispRity(chrono, metric = metric)
     # disp$disparity <- t(disp$disparity)
+    disp$call$disparity$metrics <- data$call$disparity$metrics
     disp$call$disparity$metrics <- data$call$disparity$metrics ## reattach metric fun info
+    disp$sim_params <- do.call(cbind, sim_parameters)
 
     return(disp)
 }

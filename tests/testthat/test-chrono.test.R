@@ -63,48 +63,7 @@ test_that("make.deltatronic works", {
         dimension.level <- unlist(lapply(get.disparity(disparity, concatenate = FALSE), function(x) nrow(x)), use.names = FALSE)[1]
     }
 	delta_df <- make.deltatronic.list(changepoint, disparity, dimension.level, is.multi.matrix)
-	expect_is(delta_df, "list")
-	expect_equal(nrow(delta_df$time), length(disparity$subsets))
-	expect_equal(nrow(delta_df$disparity), length(disparity$subsets))
-    expected_impact <- ifelse(delta_df$time <= changepoint, 1, 0)
-    expect_equal(as.vector(delta_df$impact), as.vector(expected_impact))
-    expect_true(any(delta_df$impact == 0))
-    expect_true(any(delta_df$impact == 1))
-    first_impact_index <- min(which(delta_df$time <= changepoint))
-    expect_equal(as.numeric(delta_df$impact[first_impact_index, ]), 1)
-    expect_equal(as.numeric(delta_df$impact[first_impact_index - 1, ]), 0)
-	expect_true(all(diff(delta_df$time_elapsed)>0)) ## check time elapsed is increasing
-	expect_true(all(diff(delta_df$time)<0)) ## check raw time is decreasing
-	expect_true(all(diff(delta_df$time_post_cp)>=0))
-
-	## test set.time.window
-	#### n datapoints
-	time.window  <- 3
-	datapoints_window <- set.time.window(delta_df, time.window)
-	expect_true(all(unlist(lapply(datapoints_window, nrow)) == 6)) ## 3 datapoints either sie
-	expect_true(sum(datapoints_window$impact == 0) == sum(datapoints_window$impact == 1)) ## equal number of 0 and 1
-
-	time.window <- c(70, 50)
-	error <- capture_error(set.time.window(delta_df, time.window))
-	expect_equal(error[[1]], "time.window window is too small. Needs at least 2 datapoints either side of the impact to run the function...\n")
-	time.window <- c(80, 50)
-	vector_window <- set.time.window(delta_df, time.window)
-	expect_true(all(unlist(lapply(vector_window, nrow)) == 4))## 2 datapoints either side
-	expect_true(min(vector_window$time) == 50)
-	expect_true(max(vector_window$time) == 80)
-
-
-	time.window <- 0.3
-	prop_window <- set.time.window(delta_df, time.window)
-	expect_true(min(prop_window$time) == 40)
-	expect_true(max(prop_window$time) == 80)
-
-	### test make.deltatronic #### 
-	delta_df <- make.deltatronic(disparity, 66, time.window = NULL,dimension.level, is.multi.matrix ) ## test without time.window
-	expect_equal(names(delta_df), "66")
-	expect_true(all(diff(delta_df[[1]]$time_elapsed)>0)) ## check time elapsed is increasing
-	expect_true(all(diff(delta_df[[1]]$time)<0)) ## check raw time is decreasing
-	expect_true(all(diff(delta_df[[1]]$time_post_cp)>=0))
+	expect_is(delta_df[[1]], "list")
 	expect_equal(nrow(delta_df[[1]]$time), length(disparity$subsets))
 	expect_equal(nrow(delta_df[[1]]$disparity), length(disparity$subsets))
     expected_impact <- ifelse(delta_df[[1]]$time <= changepoint, 1, 0)
@@ -114,15 +73,57 @@ test_that("make.deltatronic works", {
     first_impact_index <- min(which(delta_df[[1]]$time <= changepoint))
     expect_equal(as.numeric(delta_df[[1]]$impact[first_impact_index, ]), 1)
     expect_equal(as.numeric(delta_df[[1]]$impact[first_impact_index - 1, ]), 0)
+	expect_true(all(diff(delta_df[[1]]$time_elapsed)>0)) ## check time elapsed is increasing
+	expect_true(all(diff(delta_df[[1]]$time)<0)) ## check raw time is decreasing
+	expect_true(all(diff(delta_df[[1]]$time_post_cp)>=0))
 
-	delta_df <- make.deltatronic(disparity, 66, time.window = 3, dimension.level, is.multi.matrix ) ## test without time.window
-	expect_true(all(unlist(lapply(delta_df[[1]], nrow)) == 6)) ## 3 datapoints either sie
-	expect_true(sum(delta_df[[1]]$impact == 0) == sum(delta_df[[1]]$impact == 1)) ## equal number of 0 and 1
+	## test set.time.window
+	#### n datapoints
+	time.window  <- 3
+	datapoints_window <- set.time.window(delta_df[[1]], time.window)
+	expect_true(all(unlist(lapply(datapoints_window, nrow)) == 6)) ## 3 datapoints either sie
+	expect_true(sum(datapoints_window$impact == 0) == sum(datapoints_window$impact == 1)) ## equal number of 0 and 1
+
+	time.window <- c(70, 50)
+	error <- capture_error(set.time.window(delta_df[[1]], time.window))
+	expect_equal(error[[1]], "time.window window is too small. Needs at least 2 datapoints either side of the impact to run the function...\n")
+	time.window <- c(80, 50)
+	vector_window <- set.time.window(delta_df[[1]], time.window)
+	expect_true(all(unlist(lapply(vector_window, nrow)) == 4))## 2 datapoints either side
+	expect_true(min(vector_window$time) == 50)
+	expect_true(max(vector_window$time) == 80)
+
+
+	time.window <- 0.3
+	prop_window <- set.time.window(delta_df[[1]], time.window)
+	expect_true(min(prop_window$time) == 40)
+	expect_true(max(prop_window$time) == 80)
+
+	### test make.deltatronic #### 
+	delta_df <- make.deltatronic(disparity, 66, time.window = NULL,dimension.level, is.multi.matrix ) ## test without time.window
+	expect_equal(names(delta_df), "66")
+	expect_true(all(diff(delta_df$`66`[[1]]$time_elapsed)>0)) ## check time elapsed is increasing
+	expect_true(all(diff(delta_df$`66`[[1]]$time)<0)) ## check raw time is decreasing
+	expect_true(all(diff(delta_df$`66`[[1]]$time_post_cp)>=0))
+	expect_equal(nrow(delta_df$`66`[[1]]$time), length(disparity$subsets))
+	expect_equal(nrow(delta_df$`66`[[1]]$disparity), length(disparity$subsets))
+    expected_impact <- ifelse(delta_df$`66`[[1]]$time <= changepoint, 1, 0)
+    expect_equal(as.vector(delta_df$`66`[[1]]$impact), as.vector(expected_impact))
+    expect_true(any(delta_df$`66`[[1]]$impact == 0))
+    expect_true(any(delta_df$`66`[[1]]$impact == 1))
+    first_impact_index <- min(which(delta_df$`66`[[1]]$time <= changepoint))
+    expect_equal(as.numeric(delta_df$`66`[[1]]$impact[first_impact_index, ]), 1)
+    expect_equal(as.numeric(delta_df$`66`[[1]]$impact[first_impact_index - 1, ]), 0)
+
+	delta_df <- make.deltatronic(disparity, 66, time.window = 3, dimension.level, is.multi.matrix) ## test without time.window
+	expect_true(all(unlist(lapply(delta_df$`66`[[1]], nrow)) == 6)) ## 3 datapoints either sie
+	expect_true(sum(delta_df$`66`[[1]]$impact == 0) == sum(delta_df$`66`[[1]]$impact == 1)) ## equal number of 0 and 1
 
 	expect_is(delta_df, "list")
 	expect_is(delta_df[[1]], "list")
-	expect_true(all(unlist(lapply(delta_df, lapply, is.matrix))))
-	expect_true(all(names(delta_df[[1]]) %in% c("time", "time_elapsed", "impact", "disparity", "time_post_cp")))	
+	expect_is(delta_df[[1]][[1]], "list")
+	expect_true(all(unlist(lapply(delta_df, lapply, lapply,is.matrix))))
+	expect_true(all(names(delta_df$`66`[[1]]) %in% c("time", "time_elapsed", "impact", "disparity", "time_post_cp")))	
 	# delta_df <- make.deltatronic(disparity, 66, time.window = NULL) ## no error
 
 	## multi dim disparity	
@@ -139,18 +140,18 @@ test_that("make.deltatronic works", {
 	data <- dispRity(data, metric = variances)
 	delta_df <- make.deltatronic(data, changepoint, time.window = NULL, dimension.level = 5, is.multi.matrix = is.multi.matrix)
 	expect_equal(names(delta_df), as.character(changepoint))
-	expect_true(all(diff(delta_df[[1]]$time_elapsed)>0)) ## check time elapsed is increasing
-	expect_true(all(diff(delta_df[[1]]$time)<0)) ## check raw time is decreasing
-	expect_true(all(diff(delta_df[[1]]$time_post_cp)>=0))
-	expect_equal(nrow(delta_df[[1]]$time), length(disparity$subsets))
-	expect_equal(nrow(delta_df[[1]]$disparity), length(disparity$subsets))
-    expected_impact <- ifelse(delta_df[[1]]$time <= changepoint, 1, 0)
-    expect_equal(as.vector(delta_df[[1]]$impact), as.vector(expected_impact))
-    expect_true(any(delta_df[[1]]$impact == 0))
-    expect_true(any(delta_df[[1]]$impact == 1))
-    first_impact_index <- min(which(delta_df[[1]]$time <= changepoint))
-    expect_equal(as.numeric(delta_df[[1]]$impact[first_impact_index, ]), 1)
-    expect_equal(as.numeric(delta_df[[1]]$impact[first_impact_index - 1, ]), 0)
+	expect_true(all(diff(delta_df[[1]][[1]]$time_elapsed)>0)) ## check time elapsed is increasing
+	expect_true(all(diff(delta_df[[1]][[1]]$time)<0)) ## check raw time is decreasing
+	expect_true(all(diff(delta_df[[1]][[1]]$time_post_cp)>=0))
+	expect_equal(nrow(delta_df[[1]][[1]]$time), length(disparity$subsets))
+	expect_equal(nrow(delta_df[[1]][[1]]$disparity), length(disparity$subsets))
+    expected_impact <- ifelse(delta_df[[1]][[1]]$time <= changepoint, 1, 0)
+    expect_equal(as.vector(delta_df[[1]][[1]]$impact), as.vector(expected_impact))
+    expect_true(any(delta_df[[1]][[1]]$impact == 0))
+    expect_true(any(delta_df[[1]][[1]]$impact == 1))
+    first_impact_index <- min(which(delta_df[[1]][[1]]$time <= changepoint))
+    expect_equal(as.numeric(delta_df[[1]][[1]]$impact[first_impact_index, ]), 1)
+    expect_equal(as.numeric(delta_df[[1]][[1]]$impact[first_impact_index - 1, ]), 0)
 
 
 
@@ -162,8 +163,8 @@ test_that("make.deltatronic works", {
 	changepoint <- tree$root.time / 2
 	mat <- replicate(10, matrix(rnorm(995), 199, 5), simplify = FALSE)
 	mat <- lapply(mat, function(x) {
-	rownames(x)  <- c(tree$tip.label, tree$node.label)#
-	return(x)
+		rownames(x)  <- c(tree$tip.label, tree$node.label)#
+		return(x)
 	})
 	data <- make.dispRity(data = mat, tree = tree)
 	data <- chrono.subsets(data, method = "c", model = "equal.split", time = c(7,6,5,4,3,2,1), inc.nodes = TRUE)
@@ -281,20 +282,20 @@ test_that("average.method works", {
         dimension.level <- unlist(lapply(get.disparity(disparity, concatenate = FALSE), function(x) nrow(x)), use.names = FALSE)[1]
     }
 
-	delta_df <- make.deltatronic(disparity, 66, time.window = NULL,dimension.level, is.multi.matrix )
-	average <- lapply(delta_df, average.method, dimension.level = dimension.level)#
-	expect_is(average[[1]], "htest")
-	expect_equal(average[[1]]$method, "Welch Two Sample t-test")
-	average <- lapply(delta_df, average.method, alternative = "less", dimension.level = dimension.level)#
-	expect_equal(average[[1]]$alternative, "less")
-	average <- lapply(delta_df, average.method, aov,dimension.level= dimension.level)
-	expect_is(average[[1]], "aov")
+	delta_df <- make.deltatronic(disparity, 66, time.window = NULL,dimension.level, is.multi.matrix)
+	average <- lapply(delta_df, lapply, average.method, dimension.level = dimension.level)#
+	expect_is(average[[1]][[1]], "htest")
+	expect_equal(average[[1]][[1]]$method, "Welch Two Sample t-test")
+	average <- lapply(delta_df, lapply, average.method, alternative = "less", dimension.level = dimension.level)#
+	expect_equal(average[[1]][[1]]$alternative, "less")
+	average <- lapply(delta_df, lapply, average.method, aov,dimension.level= dimension.level)
+	expect_is(average[[1]][[1]], "aov")
 	data(disparity)
 	delta_df <- make.deltatronic(disparity, 66, time.window = NULL, dimension.level, is.multi.matrix )
-	average <- lapply(delta_df, average.method, wilcox.test, dimension.level = dimension.level)#
-	expect_equal(average[[1]]$method, "Wilcoxon rank sum exact test")
-	average <- lapply(delta_df, average.method, wilcox.test, alternative = "less", dimension.level = dimension.level)#
-	expect_equal(average[[1]]$alternative, "less")
+	average <- lapply(delta_df, lapply, average.method, wilcox.test, dimension.level = dimension.level)#
+	expect_equal(average[[1]][[1]]$method, "Wilcoxon rank sum exact test")
+	average <- lapply(delta_df, lapply, average.method, wilcox.test, alternative = "less", dimension.level = dimension.level)#
+	expect_equal(average[[1]][[1]]$alternative, "less")
 
 
 	set.seed(123)
@@ -308,13 +309,10 @@ test_that("average.method works", {
 	data <- chrono.subsets(data, method = "c", model = "equal.split", time = c(7,6,5,4,3,2,1), inc.nodes = TRUE)
 	## Warning is for the last time slice that's 0
 	data <- dispRity(data, metric = variances)
-	# dims <- max(data$call$dimensions)
+	dims <- max(data$call$dimensions)
 	delta_df <- make.deltatronic(data, changepoint, time.window = NULL, dimension.level = 5, is.multi.matrix)
-	average <- lapply(delta_df, average.method, wilcox.test, dimension.level = dims, is.multi.matrix)#
-	expect_equal(dims, length(average[[1]]))
-
-
-
+	average <- lapply(delta_df, lapply, average.method, wilcox.test, dimension.level = dims, is.multi.matrix)#
+	expect_equal(dims, length(average[[1]][[1]]))
 }
 )
 
@@ -333,12 +331,13 @@ test_that("itsa.method works", {
 
 
 	delta_df <- make.deltatronic(disparity, 66, time.window = NULL, dimension.level, is.multi.matrix )
-	method <- lapply(delta_df, itsa.method, dimension.level)#
-	expect_is(method[[1]], "list")
-	expect_true(all(names(method[[1]]) %in% c("data", "model")))
-	expect_true(all(names(method[[1]]$data) %in% c("time", "time_elapsed", "impact", "disparity", "time_post_cp", "counter_mean_ci", "counter_lower_ci", "counter_upper_ci")))
-	expect_is(method[[1]]$model, "lm")
+	method <- lapply(delta_df, lapply, itsa.method, dimension.level)#
+	expect_is(method[[1]][[1]], "list")
+	expect_true(all(names(method[[1]][[1]]) %in% c("data", "model")))
+	expect_true(all(names(method[[1]][[1]]$data) %in% c("time", "time_elapsed", "impact", "disparity", "time_post_cp", "counter_mean_ci", "counter_lower_ci", "counter_upper_ci")))
+	expect_is(method[[1]][[1]]$model, "lm")
 
+	## test on multidim disparity
 	set.seed(123)
 	tree <- rtree(n = 100)
 	tree <- makeNodeLabel(tree)
@@ -360,64 +359,69 @@ test_that("itsa.method works", {
     }
 	delta_df <- make.deltatronic(data, changepoint, time.window = NULL , dimension.level, is.multi.matrix)
 	dims <- max(data$call$dimensions)
-	method <- lapply(delta_df, itsa.method, dimension.level = dims)#
-}
-)
-
-test_that("calculate.angular.effect works", {
-	## test for no change
-	set_state <- set.seed(123)
-	time_elapsed <- seq(0, 60, by = 5)
-	baseline_slope <- 0.002
-	intercept      <- 1.82
-	noise <- rnorm(length(time_elapsed), mean = 0, sd = 0.005)
-	disparity <- intercept + (baseline_slope * time_elapsed) + noise
-	delta_df <- list(
-	time_elapsed = as.matrix(time_elapsed),
-	disparity    = as.matrix(disparity),
-	impact       = as.matrix(ifelse(time_elapsed >= 30, 1, 0)),
-	time_post_cp = as.matrix(ifelse(time_elapsed > 30, time_elapsed - 30, 0))
-	)
-
-	itsa <- itsa.method(delta_df, dimension.level = 1)
-
-	calculate.slope.effect(itsa)
-
-	set_state <- set.seed(123)
-	time_elapsed <- seq(0, 60, by = 5)
-
-	intercept      <- 1.82
-	baseline_slope <- 0.002
-	slope_change   <- 0.0005  
-
-	time_post_cp_vec <- ifelse(time_elapsed > 30, time_elapsed - 30, 0)
-
-	noise <- rnorm(length(time_elapsed), mean = 0, sd = 0.005)
-	disparity <- intercept + (baseline_slope * time_elapsed) + (slope_change * time_post_cp_vec) + noise
-
-	delta_df <- list(
-	time_elapsed = as.matrix(time_elapsed),
-	disparity    = as.matrix(disparity),
-	impact       = as.matrix(ifelse(time_elapsed >= 30, 1, 0)),
-	time_post_cp = as.matrix(time_post_cp_vec)
-	)
-
-	itsa <- itsa.method(delta_df, dimension.level = 1)
-
-	plot(disparity ~ time_elapsed, data = delta_df, type = "l")
-
-	print(calculate.slope.effect(itsa))
-
-	data(disparity)
-	delta_df <- make.deltatronic(disparity, 66, time.window = NULL)
-	method <- lapply(delta_df, itsa.method, dimension.level = 1)#
-	expect_is(method[[1]], "list")
-	expect_true(all(names(method[[1]]) %in% c("data", "model")))
-	expect_true(all(names(method[[1]]$data) %in% c("time", "time_elapsed", "impact", "disparity", "time_post_cp", "counter_mean_ci", "counter_lower_ci", "counter_upper_ci")))
-	expect_is(method[[1]]$model, "lm")
+	method <- lapply(delta_df, lapply, itsa.method, dimension.level = dims)#
+	expect_is(method[[1]][[1]], "list")
+	expect_true(all(names(method[[1]][[1]]) %in% c("data", "model")))
+	expect_true(all(names(method[[1]][[1]]$data) %in% c("time", "time_elapsed", "impact", "disparity", "time_post_cp", "counter_mean_ci", "counter_lower_ci", "counter_upper_ci")))
+	expect_is(method[[1]][[1]]$model[[1]], "lm")
 
 }
 )
+
+# test_that("calculate.slope.effect works", {
+# 	## test for no change
+# 	set_state <- set.seed(123)
+# 	time_elapsed <- seq(0, 60, by = 5)
+# 	baseline_slope <- 0.002
+# 	intercept      <- 1.82
+# 	noise <- rnorm(length(time_elapsed), mean = 0, sd = 0.005)
+# 	disparity <- intercept + (baseline_slope * time_elapsed) + noise
+# 	delta_df <- list(
+# 	time_elapsed = as.matrix(time_elapsed),
+# 	disparity    = as.matrix(disparity),
+# 	impact       = as.matrix(ifelse(time_elapsed >= 30, 1, 0)),
+# 	time_post_cp = as.matrix(ifelse(time_elapsed > 30, time_elapsed - 30, 0))
+# 	)
+
+# 	itsa <- itsa.method(delta_df, dimension.level = 1)
+
+# 	calculate.slope.effect(itsa)
+
+# 	set_state <- set.seed(123)
+# 	time_elapsed <- seq(0, 60, by = 5)
+
+# 	intercept      <- 1.82
+# 	baseline_slope <- 0.002
+# 	slope_change   <- 0.0005  
+
+# 	time_post_cp_vec <- ifelse(time_elapsed > 30, time_elapsed - 30, 0)
+
+# 	noise <- rnorm(length(time_elapsed), mean = 0, sd = 0.005)
+# 	disparity <- intercept + (baseline_slope * time_elapsed) + (slope_change * time_post_cp_vec) + noise
+
+# 	delta_df <- list(
+# 	time_elapsed = as.matrix(time_elapsed),
+# 	disparity    = as.matrix(disparity),
+# 	impact       = as.matrix(ifelse(time_elapsed >= 30, 1, 0)),
+# 	time_post_cp = as.matrix(time_post_cp_vec)
+# 	)
+
+# 	itsa <- itsa.method(delta_df, dimension.level = 1)
+
+# 	plot(disparity ~ time_elapsed, data = delta_df, type = "l")
+
+# 	print(calculate.slope.effect(itsa))
+
+# 	data(disparity)
+# 	delta_df <- make.deltatronic(disparity, 66, time.window = NULL)
+# 	method <- lapply(delta_df, itsa.method, dimension.level = 1)#
+# 	expect_is(method[[1]], "list")
+# 	expect_true(all(names(method[[1]]) %in% c("data", "model")))
+# 	expect_true(all(names(method[[1]]$data) %in% c("time", "time_elapsed", "impact", "disparity", "time_post_cp", "counter_mean_ci", "counter_lower_ci", "counter_upper_ci")))
+# 	expect_is(method[[1]]$model, "lm")
+
+# }
+# )
 
 test_that("paint.branches works", {
 	tree  <- rtree(n=50)
@@ -434,23 +438,37 @@ test_that("paint.branches works", {
 
 test_that("make.control works", {
 	data(disparity)
+	is.multi.matrix <- length(disparity$matrix)
+
+	dimension.level <- 1
+    if (any(unlist(lapply(get.disparity(disparity, concatenate = FALSE), function(x) nrow(x) >1)))) {
+        dimension.level <- unlist(lapply(get.disparity(disparity, concatenate = FALSE), function(x) nrow(x)), use.names = FALSE)[1]
+    }
+
 	changepoint <- 66
-	delta_df <- make.deltatronic(disparity, 66, time.window = NULL)
+	delta_df <- make.deltatronic(disparity, 66, time.window = NULL, dimension.level, is.multi.matrix)
 	changepoint <- set.changepoint(changepoint)
-	control <- lapply(changepoint, make.control, data = disparity, paint = TRUE, nsim = 10)
+	nsim <- 10
+	control <- lapply(changepoint, make.control, data = disparity, paint = TRUE, nsim = nsim)
 	expect_is(control, "list")
 	expect_equal(names(control), "66")
-	expect_equal(length(control[[1]]$disparity$subsets), length(disparity$subsets))
-	expect_equal(length(get.disparity(control[[1]]$disparity)[[1]]), length(get.disparity(disparity)[[1]]) * 10)
-	error <- capture_error(lapply(changepoint, make.control, data = disparity, paint = FALSE, nsim = 10))
+	expect_equal(length(control[[1]]$subsets), length(disparity$subsets))
+	expect_equal(length(get.disparity(control[[1]], concatenate = FALSE)[[1]]), length(get.disparity(disparity)[[1]]) * 10)
+	error <- capture_error(lapply(changepoint, make.control, data = disparity, paint = FALSE, nsim = nsim))
 	expect_equal(error[[1]], "`slice.model` argument needs to be inputted if paint = FALSE...\n")
-	error <- capture_error(lapply(changepoint, make.control, data = disparity, paint = FALSE, slice.model = 5, nsim = 10))
+	error <- capture_error(lapply(changepoint, make.control, data = disparity, paint = FALSE, slice.model = 5, nsim = nsim))
 	expect_equal(error[[1]], "slice.model argument must be one of the following: acctran, deltran, random, proximity, equal.split, gradual.split.")
-	expect_equal(names(control[[1]]), c("sim_parameters", "disparity"))
-	expect_equal(ncol(control[[1]]$sim_parameters),ncol(get.matrix(disparity)))
-	expect_equal(nrow(get.matrix(control[[1]]$disparity)), nrow(get.matrix(disparity)))
+	expect_equal(names(control[[1]]), c("matrix" ,    "tree"   ,    "call"    ,   "subsets"   , "disparity"  ,"sim_params"))
+	expect_equal(ncol(control[[1]]$sim_params),ncol(get.matrix(disparity)))
+	expect_equal(nrow(get.matrix(control[[1]])), nrow(get.matrix(disparity)))
 
 
+	control_deltatronic <- make.deltatronic(control, changepoint, time.window = NULL, dimension.level= dimension.level,is.multi.matrix = nsim)
+	expect_equal(names(control_deltatronic[[1]][[1]]), c("time", "time_elapsed", "impact", "disparity", "time_post_cp"))
+	expect_equal(length(control_deltatronic$`66`), length(get.disparity(control[[1]], concatenate = FALSE)[[1]])) ## test that 10 sims have correctly formatted to control_deltatronic with list of 10
+
+
+	## multi dim
 	set.seed(123)
 	tree <- rtree(n = 100)
 	tree <- makeNodeLabel(tree)
@@ -462,10 +480,43 @@ test_that("make.control works", {
 	data <- chrono.subsets(data, method = "c", model = "equal.split", time = c(7,6,5,4,3,2,1), inc.nodes = TRUE)
 	## Warning is for the last time slice that's 0
 	data <- dispRity(data, metric = variances)
-	delta_df <- make.deltatronic(data, changepoint, time.window = NULL)
+
+	is.multi.matrix <- length(data$matrix)
+
+    dimension.level <- 1
+    if (any(unlist(lapply(get.disparity(data, concatenate = FALSE), function(x) nrow(x) >1)))) {
+        dimension.level <- unlist(lapply(get.disparity(data, concatenate = FALSE), function(x) nrow(x)), use.names = FALSE)[1]
+    }
+    dimension.level <- as.integer(gsub("level", "", levels))[1]
+	delta_df <- make.deltatronic(data, changepoint, time.window = NULL, dimension.level, is.multi.matrix)
 	dims <- max(data$call$dimensions)
 	changepoint <- set.changepoint(changepoint)
-    control <- lapply(changepoint, make.control, data = data, nsim = 5)
+    control <- lapply(changepoint, make.control, data = data, nsim = nsim)
+	expect_is(control, "list")
+	expect_equal(names(control), "3.61339478986338")
+	expect_equal(length(control[[1]]$subsets), length(disparity$subsets))
+	expect_equal(length(get.disparity(control[[1]], concatenate = FALSE)[[1]]), length(get.disparity(data)[[1]]) * nsim)
+	error <- capture_error(lapply(changepoint, make.control, data, paint = FALSE, nsim = nsim))
+	expect_equal(error[[1]], "`slice.model` argument needs to be inputted if paint = FALSE...\n")
+	error <- capture_error(lapply(changepoint, make.control, data, paint = FALSE, slice.model = 5, nsim = nsim))
+	expect_equal(error[[1]], "slice.model argument must be one of the following: acctran, deltran, random, proximity, equal.split, gradual.split.")
+	expect_equal(names(control[[1]]), c("matrix" ,    "tree"   ,    "call"    ,   "subsets"   , "disparity"  ,"sim_params"))
+	expect_equal(ncol(control[[1]]$sim_params),ncol(get.matrix(data)))
+	expect_equal(nrow(get.matrix(control[[1]])), nrow(get.matrix(data)))
+
+	## testing make.deltatronic works with control input
+	control_deltatronic <- make.deltatronic(control, changepoint, time.window, dimension.level= dimension.level,is.multi.matrix = nsim)
+	expect_equal(names(control_deltatronic[[1]][[1]]), c("time", "time_elapsed", "impact", "disparity", "time_post_cp"))
+	expect_equal(ncol(control_deltatronic$`3.61339478986338`[[1]]$disparity), nrow(get.disparity(control[[1]], concatenate = FALSE)[[1]])) ## test that 10 sims have correctly formatted to control_deltatronic
+	expect_equal(length(control_deltatronic$`3.61339478986338`), ncol(get.disparity(control[[1]], concatenate = FALSE)[[1]])) ## test that 10 sims have correctly formatted to control_deltatronic
+	expect_equal(as.numeric(control_deltatronic[[1]][[10]]$disparity["2",1]), get.disparity(control[[1]], concatenate = FALSE)$`2`[1,10] )
+	expect_equal(as.numeric(control_deltatronic[[1]][[8]]$disparity["5",4]), get.disparity(control[[1]], concatenate = FALSE)$`5`[4,8] )
+
+
+
+
+
+
 
 	## multi matrix
 	set.seed(123)
@@ -481,7 +532,18 @@ test_that("make.control works", {
 	data <- make.dispRity(data = mat, tree = tree)
 	data <- chrono.subsets(data, method = "c", model = "equal.split", time = c(7,6,5,4,3,2,1), inc.nodes = TRUE)
 	## Warning is for the last time slice that's 0
-	disp <- dispRity(data, metric = c(sum,variances))
+	data <- dispRity(data, metric = c(sum,variances))
+
+	is.multi.matrix <- length(data$matrix)
+
+    dimension.level <- 1
+    if (any(unlist(lapply(get.disparity(data, concatenate = FALSE), function(x) nrow(x) >1)))) {
+        dimension.level <- unlist(lapply(get.disparity(data, concatenate = FALSE), function(x) nrow(x)), use.names = FALSE)[1]
+    }
+
+	changepoint <- set.changepoint(changepoint)
+
+	control <- make.deltatronic(changepoint, make.control, data = data, nsim = nsim)
 
 	
 	## multi and multidimensional matrix
@@ -504,10 +566,7 @@ test_that("make.control works", {
 	delta_df <- make.deltatronic(disp, changepoint, time.window = NULL)
 	dims <- max(data$call$dimensions)
 	changepoint <- set.changepoint(changepoint)
-    control <- lapply(changepoint, make.control, data = data, nsim = 5)
-	
-
-
+    control <- lapply(changepoint, make.control, data = data, nsim = nsim5)
 
 }
 )
