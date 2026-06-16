@@ -108,8 +108,8 @@ chrono.test <- function(data, method, changepoint, time.window, nsim = 100, ...)
     }
 
     ## Toggling parameters
-    is.multi.matrix <- length(data$matrix)
-    #TG: also note that to me, for a variable is_something, I would expect a logical. Here it's maybe more n_matrices or something like that? And if n_matrices == 1, then is.multi.matrix = FALSE? 
+    n.matrix <- length(data$matrix)
+    #TG: also note that to me, for a variable is_something, I would expect a logical. Here it's maybe more n_matrices or something like that? And if n_matrices == 1, then n.matrix = FALSE? 
 
     dimension.level <- 1
     if (any(unlist(lapply(get.disparity(data, concatenate = FALSE), function(x) nrow(x) >1)))) {
@@ -120,7 +120,7 @@ chrono.test <- function(data, method, changepoint, time.window, nsim = 100, ...)
 
 
 
-    delta_df <- make.deltatronic(data, changepoint, time.window, dimension.level, is.multi.matrix)
+    delta_df <- make.deltatronic(data, changepoint, time.window, dimension.level, n.matrix)
 
     # if (is_multi){
         
@@ -144,9 +144,9 @@ chrono.test <- function(data, method, changepoint, time.window, nsim = 100, ...)
 
             changepoint <- set.changepoint(changepoint)
 
-            control <- lapply(changepoint, make.control, data = data, nsim = nsim, is.multi.matrix, ...)
+            control <- lapply(changepoint, make.control, data = data, nsim = nsim, n.matrix, ...)
             
-            control_deltatronic <- make.deltatronic(control, changepoint, time.window, dimension.level, is.multi.matrix = nsim)
+            control_deltatronic <- make.deltatronic(control, changepoint, time.window, dimension.level, n.matrix = nsim)
             # control_deltatronic <- lapply(control, make.deltatronic, changepoint, time.window)
             control_delta_df <- lapply(control_deltatronic, function(x) {
                 x$emp_vs_null <- matrix(0, nrow = nrow(x$time))
@@ -162,7 +162,7 @@ chrono.test <- function(data, method, changepoint, time.window, nsim = 100, ...)
             ## here will go `citsa.method`
         },
         area={
-            if (is.multi.matrix > 1) {
+            if (n.matrix > 1) {
                 itsa <- lapply(delta_df, lapply, itsa.method, dimension.level, ...)
                 area <- lapply(itsa, lapply, area.method, dimension.level) ## check on this 
             }

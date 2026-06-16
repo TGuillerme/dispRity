@@ -27,13 +27,13 @@
 #         }
 #     }
 # }
-make.deltatronic.list <- function(changepoint, data, dimension.level, is.multi.matrix) {
+make.deltatronic.list <- function(changepoint, data, dimension.level, n.matrix) {
     changepoint <- as.numeric(changepoint)
     
     disp_vals <- get.disparity(data, concatenate = FALSE)
     numeric_time <- as.numeric(names(disp_vals))
     
-    n_matrices <- max(1, as.numeric(is.multi.matrix))
+    n_matrices <- max(1, as.numeric(n.matrix))
     
     delta_df <- lapply(seq_len(n_matrices), function(i) {
         
@@ -68,11 +68,11 @@ make.deltatronic.list <- function(changepoint, data, dimension.level, is.multi.m
 }
 
 
-make.deltatronic <- function(data, changepoint, time.window, dimension.level, is.multi.matrix) {
+make.deltatronic <- function(data, changepoint, time.window, dimension.level, n.matrix) {
 
     match_call <- match.call()
 
-    # if (is.multi.matrix) {
+    # if (n.matrix) {
     #     multi_dis <- replicate(length(data$matrix), list(data))
     # }
 
@@ -89,14 +89,13 @@ make.deltatronic <- function(data, changepoint, time.window, dimension.level, is
     }
 
     if (inherits(data, "dispRity")) {
-        delta_df <- lapply(changepoint, make.deltatronic.list, data = data, dimension.level, is.multi.matrix)
-    } else if (inherits(data, "list") && inherits(data[[1]], "dispRity")) { ## for when it is control
-        delta_df <- mapply(make.deltatronic.list,
-        changepoint,
-        data,
-        MoreArgs    = list(dimension.level = dimension.level, is.multi.matrix = is.multi.matrix),
-        SIMPLIFY    = FALSE 
-    )
+        delta_df <- lapply(changepoint, make.deltatronic.list, data = data, dimension.level, n.matrix)
+    } else if (inherits(data, "list") && inherits(data[[1]][[1]], "dispRity")) { ## for when it is control output
+        delta_df <- Map(function(cp, control_list) {
+            lapply(control_list, function(cont){
+                make.deltatronic.list(cp, cont, dimension.level, n.matrix)
+            })
+        }, changepoint, data)
     }
 
     if(!is.null(time.window)) {
@@ -393,7 +392,7 @@ paint.branches <- function(tree, changepoint) {
 }
 
 
-make.control <- function(changepoint, data, nsim = 100, paint = TRUE, slice.model = NULL, is.multi.matrix, ...) { ## change slice.model name for clarity
+make.control <- function(changepoint, data, nsim = 100, paint = TRUE, slice.model = NULL, n.matrix, ...) { ## change slice.model name for clarity
 
     if (paint) {
         slice.model  <- NULL
@@ -414,13 +413,17 @@ make.control <- function(changepoint, data, nsim = 100, paint = TRUE, slice.mode
     slice_call <- data$call$subsets
     tree <- get.tree(data)
     mat <- list()
-    if (is.multi.matrix > 1){
-        for(i in 1:is.multi.matrix){
-            get.matrix(data, matrix = i)
-        }
-    } else {
-        mat <- get.matrix(data)
+    for(i in 1:n.matrix){
+        mat[[i]] <- get.matrix(data, matrix = i)
     }
+
+
+
+
+
+
+
+
 
 
     ## if matrix is single matrix (simple version)
@@ -432,80 +435,106 @@ make.control <- function(changepoint, data, nsim = 100, paint = TRUE, slice.mode
         # work out how many sims per matrix to make nsims?
         # n_sim  <- nsim / n_matrices
         # simulate.control(sample(matrice, replace = FALSE) ...)
+    ## also add toggle that takes nodes or only tips to avoid contamination.
+
         
 
 
     ###@@@ need logic that can detect if its a `multi.ace` output, then it just iterates across them. if the matrices are all different (i.e. due ot intraspecific variation) then it does one per matrix.
 
+    simulate.control <- function(mat, changepoint, nsim, paint, slice.model) {
+        sim_parameters <- replicate(ncol(mat), list(root_value = NULL, sig_sq = NULL), simplify = FALSE) ## create empty list structure for storing trait parameters
 
-    sim_parameters <- replicate(ncol(mat), list(root_value = NULL, sig_sq = NULL), simplify = FALSE) ## create empty list structure for storing trait parameters
+        if (paint) {
 
-    if (paint) {
+            painted_tree <- paint.branches(tree, changepoint)
+            n <- length(tree$tip.label)
+            tip_mat <- mat[tree$tip.label, , drop = FALSE]
+            painted_tree <- paint.branches(tree, changepoint)
 
-        painted_tree <- paint.branches(tree, changepoint)
-        n <- length(tree$tip.label)
-        tip_mat <- mat[tree$tip.label, , drop = FALSE]
-        painted_tree <- paint.branches(tree, changepoint)
+            for(i in 1:ncol(mat)) {
+                fit_bm <- mvMORPH::mvBM(tree = painted_tree, data = tip_mat[, i], model = "BMM", echo = FALSE, diagnostic = FALSE)
+                sim_parameters[[i]]$sig_sq <- fit_bm$sigma[, , "pre_impact"] * n / (n - 1)   ## REML correction, see Revell http://www.phytools.org/***SanJuan2016/ex/5/Fitting-BM.html.
+                sim_parameters[[i]]$root_value <- as.numeric(fit_bm$theta)
+            }
 
-        for(i in 1:ncol(mat)) {
-            fit_bm <- mvMORPH::mvBM(tree = painted_tree, data = tip_mat[, i], model = "BMM", echo = FALSE, diagnostic = FALSE)
-            sim_parameters[[i]]$sig_sq <- fit_bm$sigma[, , "pre_impact"] * n / (n - 1)   ## REML correction, see Revell http://www.phytools.org/***SanJuan2016/ex/5/Fitting-BM.html.
-            sim_parameters[[i]]$root_value <- as.numeric(fit_bm$theta)
-        }
+        } else { ## use tree slicing
 
-    } else { ## use tree slicing
+            if (slice.model == "proximity" || slice.model == "acctran" || slice.model == "deltran") {
+                pre_tree <- slice.tree(tree, age = changepoint, model = slice.model, keep.all.ancestors = TRUE)
+                pre_mat <- mat[pre_tree$tip.label, ] ## can just prune the matrix as it is if using punctuated model
+            }
 
-        if (slice.model == "proximity" || slice.model == "acctran" || slice.model == "deltran") {
-            pre_tree <- slice.tree(tree, age = changepoint, model = slice.model, keep.all.ancestors = TRUE)
-            pre_mat <- mat[pre_tree$tip.label, ] ## can just prune the matrix as it is if using punctuated model
-        }
-
-        if (slice.model == "gradual.split" || slice.model == "equal.split") {
-            pre_tree <- slice.tree(tree, age = changepoint, model = "acctran", keep.all.ancestors = TRUE)
-            slice_vals <- slice.tree(tree, age = changepoint, model = slice.model, keep.all.ancestors = TRUE)
-            pre_mat <- matrix(NA, nrow = length(pre_tree$tip.label), ncol = ncol(mat))
-            rownames(pre_mat) <- as.character(slice_vals[, 2])
-            for (i in seq_along(pre_tree$tip.label)) {
-                if(slice_vals[i, 3] == "0"){
-                    pre_mat[i, ] <- mat[slice_vals[i, 2], ]
-                } else {
-                    t0 <- mat[slice_vals[i, 1], ]
-                    t1 <- mat[slice_vals[i, 2], ]
-                    slice_position <- as.numeric(slice_vals[i, 3]) ## get slice position across branch
-                    pre_mat[i, ] <- (slice_position * t0) + ((1-slice_position) * t1) ## weighted average
+            if (slice.model == "gradual.split" || slice.model == "equal.split") {
+                pre_tree <- slice.tree(tree, age = changepoint, model = "acctran", keep.all.ancestors = TRUE)
+                slice_vals <- slice.tree(tree, age = changepoint, model = slice.model, keep.all.ancestors = TRUE)
+                pre_mat <- matrix(NA, nrow = length(pre_tree$tip.label), ncol = ncol(mat))
+                rownames(pre_mat) <- as.character(slice_vals[, 2])
+                for (i in seq_along(pre_tree$tip.label)) {
+                    if(slice_vals[i, 3] == "0"){
+                        pre_mat[i, ] <- mat[slice_vals[i, 2], ]
+                    } else {
+                        t0 <- mat[slice_vals[i, 1], ]
+                        t1 <- mat[slice_vals[i, 2], ]
+                        slice_position <- as.numeric(slice_vals[i, 3]) ## get slice position across branch
+                        pre_mat[i, ] <- (slice_position * t0) + ((1-slice_position) * t1) ## weighted average
+                    }
                 }
             }
-        }
-        n <- length(pre_tree$tip.label)
-        for(i in 1:ncol(pre_mat)) {
-            fit_bm <- mvMORPH::mvBM(tree = pre_tree, data = pre_mat[, i], model = "BM1", echo = FALSE, diagnostic = FALSE) ## taken out error, can put back in
             n <- length(pre_tree$tip.label)
-            sim_parameters[[i]]$sig_sq <- fit_bm$sigma * n / (n - 1)  ## REML correction, see Revell http://www.phytools.org/***SanJuan2016/ex/5/Fitting-BM.html.
-            sim_parameters[[i]]$root_value <- as.numeric(fit_bm$theta)
+            for(i in 1:ncol(pre_mat)) {
+                fit_bm <- mvMORPH::mvBM(tree = pre_tree, data = pre_mat[, i], model = "BM1", echo = FALSE, diagnostic = FALSE) ## taken out error, can put back in
+                n <- length(pre_tree$tip.label)
+                sim_parameters[[i]]$sig_sq <- fit_bm$sigma * n / (n - 1)  ## REML correction, see Revell http://www.phytools.org/***SanJuan2016/ex/5/Fitting-BM.html.
+                sim_parameters[[i]]$root_value <- as.numeric(fit_bm$theta)
+            }
         }
+
+        ## TODO use slice.tree and gradual.split. use get.tree for the tree in each subset.
+
+        control_traits <- lapply(sim_parameters, function(axis) {
+            root_value <- axis$root_value
+            sig_sq <- axis$sig_sq
+            treats::make.traits(process = treats::BM.process, start = root_value, n = 1, process.args = list(Sigma = sig_sq))
+        })
+        mapped_control <- replicate(nsim, {do.call(cbind, lapply(lapply(control_traits, treats::map.traits, tree = tree), function(x){x$data}))}, simplify = FALSE) ## produces however many differnt BM simulations as controls
+
+
+        chrono <- chrono.subsets(mapped_control, tree, method = slice_call[1], model = slice_call[2], bind.data = as.logical(slice_call["bind"]), inc.nodes = TRUE, time = slices)
+
+
+        
+        disp <- dispRity(chrono, metric = metric)
+        # disp$disparity <- t(disp$disparity)
+        disp$call$disparity$metrics <- data$call$disparity$metrics
+        disp$call$disparity$metrics <- data$call$disparity$metrics ## reattach metric fun info
+        disp$sim_params <- do.call(cbind, sim_parameters)
+        return(disp)
     }
 
-    ## TODO use slice.tree and gradual.split. use get.tree for the tree in each subset.
+    ## check if all tips and tip values are same?
 
-    control_traits <- lapply(sim_parameters, function(axis) {
-        root_value <- axis$root_value
-        sig_sq <- axis$sig_sq
-        treats::make.traits(process = treats::BM.process, start = root_value, n = 1, process.args = list(Sigma = sig_sq))
-    })
-    mapped_control <- replicate(nsim, {do.call(cbind, lapply(lapply(control_traits, treats::map.traits, tree = tree), function(x){x$data}))}, simplify = FALSE) ## produces however many differnt BM simulations as controls
+    # data$tree
+    ## detect if it is a ancestral state sample output:
+    if (length(mat) > 1 && length(unique(lapply(mat, rownames))) == 1) {
+        # tree <- get.tree(data)
+        tips <- tree$tip.label
+        tip_mats <- lapply(mat, function(x) x[tips, ])
+        if (length(unique(tip_mats)) == 1){ ## if TRUE is a multi.ace output
+            mat <- list(mat[[1]]) ## you only need one matrix to estimate BM.
+        }
+    } 
 
+    control <- lapply(mat, simulate.control, changepoint, nsim, paint, slice.model)
 
-    chrono <- chrono.subsets(mapped_control, tree, method = slice_call[1], model = slice_call[2], bind.data = as.logical(slice_call["bind"]), inc.nodes = TRUE, time = slices)
+    ##@@@ if matrices is all different TODO
+        # work out how many sims per matrix to make nsims?
+        # n_sim  <- nsim / n_matrices
+        # simulate.control(sample(matrice, replace = FALSE) ...)
+    ## also add toggle that takes nodes or only tips to avoid contamination.
 
+    return(control)
 
-    
-    disp <- dispRity(chrono, metric = metric)
-    # disp$disparity <- t(disp$disparity)
-    disp$call$disparity$metrics <- data$call$disparity$metrics
-    disp$call$disparity$metrics <- data$call$disparity$metrics ## reattach metric fun info
-    disp$sim_params <- do.call(cbind, sim_parameters)
-
-    return(disp)
 }
 
 
