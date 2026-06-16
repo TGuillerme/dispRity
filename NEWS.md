@@ -1,4 +1,4 @@
-dispRity v1.9.9 (2026-06-10)
+dispRity v1.9.11 (2026-06-16)
 =========================
 
 ### NEW FEATURES
@@ -14,10 +14,12 @@ dispRity v1.9.9 (2026-06-10)
  * **Changed default argument** in `multi.ace`: `ml.collapse` default is now `list(type = "majority")` (previously `threshold = TRUE` which mapped to `"relative"`).
  * The `dispRity` functions now tries to auto-fill any give empty `"dispRity"` object. I.e. `dispRity(make.dispRity(...), ...)` now automatically runs `dispRity(fill.dispRity(make.dispRity(...)), ...)`.
  * Streamlined the implementation of `dtt.dispRity` for clarity and speed. This function now also has a dedicated vignette for illustrating the difference between disparity through time in `dispRity` and in `geiger`.
+ * `custom.subsets`'s `group` argument can now be a vector.
 
 ### BUG FIXES
 
  * disparity results structure with `chrono.subsets` with multiple matrices are now handled correctly when using a list of metrics (e.g. `c(sum, variances)` now gives the same results structure as `function(x)sum(variances(x))` as expected). Thanks to Caleb Scutt for spotting this one.
+ * fixed bug with empty time subsets in `chrono.subsets` that would output the wrong dimension `NA` matrix when calculating disparity.
 
 dispRity v1.9.7 (2025-08-22)
 =========================

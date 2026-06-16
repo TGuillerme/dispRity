@@ -805,6 +805,23 @@ test_that("dispRity works with multiple matrices from chrono.subsets", {
     expect_is(test, "list")
     expect_length(test, 3)
     expect_equal(dim(test[[3]][[1]]), c(10,3))
+
+    set.seed(123)
+    tree <- rtree(n = 100)
+    tree <- makeNodeLabel(tree)
+    tree <- set.root.time(tree)
+    mat <- matrix(rnorm(995), 199, 5)
+    rownames(mat) <- c(tree$tip.label, tree$node.label)
+    data <- make.dispRity(data = mat, tree = tree)
+    data <- chrono.subsets(data, method = "c", model = "equal.split", time = 10, inc.nodes = TRUE)
+    ## Warning is for the last time slice that's 0
+    warning <- capture_warning(test <- dispRity(data, metric = mean))
+    expect_equal(warning[[1]],  "Disparity not calculated for subset 0 (not enough data).")
+    expect_warning(test <- dispRity(data, metric = mean))
+    expect_is(test$disparity[[10]]$elements, "matrix")
+    expect_equal(dim(test$disparity[[10]]$elements), c(1,1))
+    expect_true(is.na(test$disparity[[10]]$elements[1]))
+
 })
 
 test_that("dispRity works with the tree component", {
