@@ -4,7 +4,7 @@
 \alias{chrono.test}
 \title{Disparity time series changes}
 \usage{
-chrono.test(data, method, changepoint, time.window, ...)
+chrono.test(data, method, changepoint, time.window, nsim = 100, ...)
 }
 \arguments{
 \item{data}{a \code{"dispRity"} object with time series (e.g. from \code{chrono.subsets}) and disparity values}
