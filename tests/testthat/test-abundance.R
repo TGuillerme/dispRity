@@ -105,37 +105,67 @@ test_that("abundance is handle as a dispRity component", {
     expect_equal(test, abundance_datas)
 })
 
+test_that("check.abundance.metric works", {
+    data(BeckLee_mat50) 
+    abundance_data <- matrix(sample(c(0,1,2,3), 200, replace = TRUE, prob = c(0.4, 0.4, 0.1, 0.1)), nrow = 50, ncol = 4)
+    rownames(abundance_data) <- rownames(BeckLee_mat50)
+    colnames(abundance_data) <- c("site1", "site2", "site3", "site4") 
+    data <- make.dispRity(data = BeckLee_mat50, abundance = abundance_data)
+
+    average1 <- function(matrix, ...) {
+        sum(matrix)/length(matrix)
+    }
+    average2 <- function(abundance, ...) {
+        sum(abundance)/length(abundance)
+    }
+    average3 <- function(matrix, abundance, ...) {
+        sum(matrix)/length(abundance)
+    }
+
+    expect_equal(check.abundance.metric(NULL, data), "no metric")
+    expect_equal(check.abundance.metric(average1, data), "matrix")
+    expect_equal(check.abundance.metric(average2, data), "abundance")
+    expect_equal(check.abundance.metric(average3, data), "matrix & abundance")
+})
 
 test_that("abundance works for calculating dispRity metrics", {
 
-#     ## Something like metric <- function(matrix, abundance)
-#     data(BeckLee_mat50) 
-#     abundance_data <- matrix(sample(c(0,1,2,3), 200, replace = TRUE, prob = c(0.4, 0.4, 0.1, 0.1)), nrow = 50, ncol = 4)
-#     rownames(abundance_data) <- rownames(BeckLee_mat50)
-#     colnames(abundance_data) <- c("site1", "site2", "site3", "site4") 
-#     data <- make.dispRity(data = BeckLee_mat50, abundance = abundance_data)
+    ## Something like metric <- function(matrix, abundance)
+    data(BeckLee_mat50) 
+    abundance_data <- matrix(sample(c(0,1,2,3), 200, replace = TRUE, prob = c(0.4, 0.4, 0.1, 0.1)), nrow = 50, ncol = 4)
+    rownames(abundance_data) <- rownames(BeckLee_mat50)
+    colnames(abundance_data) <- c("site1", "site2", "site3", "site4") 
+    data <- make.dispRity(data = BeckLee_mat50, abundance = abundance_data)
+
+    ## Standard test
+    average1 <- function(matrix, ...) {
+        sum(matrix)/length(matrix)
+    }
+    test1 <- dispRity(data, metric = average1)
+    print <- capture_output(print(test1))
+    expect_equal(print[[1]], " ---- dispRity object ---- \n50 elements in one matrix with 48 dimensions with 1 associated abundance matrix.\nDisparity was calculated as: average1.")
+    expect_equal_round(get.disparity(test1)[[1]], 3.918862e-17, 17)
 
 
-#     ## Standard test
-#     average1 <- function(matrix, ...) {
-#         sum(matrix)/length(matrix)
-#     }
-#     test1 <- dispRity(data, metric = average1)
-#     print <- capture_output(print(test1))
-#     expect_equal(print[[1]], " ---- dispRity object ---- \n50 elements in one matrix with 48 dimensions with 1 associated abundance matrix.\nDisparity was calculated as: average1.")
-#     expect_equal_round(get.disparity(test1)[[1]], 3.918862e-17, 17)
 
+## metric target toggles between using "matrix" or "abundance"?
+
+    
  
-#     ## Abundance only
-#     average2 <- function(abundance, ...) {
-#         sum(abundance)/length(abundance)
-#     }    
-#     test1 <- dispRity(data, metric = average2)
-#     expect_equal(get.disparity(test1)[[1]], mean(abundance_data))
+    ## Abundance only
+    average2 <- function(abundance, ...) {
+        sum(abundance)/length(abundance)
+    }
+    test1 <- dispRity(data, metric = average2)
+    print <- capture_output(print(test1))
+    expect_equal(print[[1]], " ---- dispRity object ---- \n50 elements in one matrix with 48 dimensions with 1 associated abundance matrix.\nDisparity was calculated as: average2.")
+    expect_equal(get.disparity(test1)[[1]], mean(abundance_data))
 
 
-#     ## Switch to abundance
-#     test1 <- dispRity(data, metric = as.abundance(average1))
+    ## Switch to abundance
+    test1 <- dispRity(data, metric = as.abundance(average1))
+    expect_equal(print[[1]], " ---- dispRity object ---- \n50 elements in one matrix with 48 dimensions with 1 associated abundance matrix.\nDisparity was calculated as: average2.")
+    expect_equal(get.disparity(test1)[[1]], mean(abundance_data))
 
 
 

@@ -262,6 +262,7 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
     metric_is_between.groups <- unlist(metrics_list$between.groups)
     metric_has_tree <- unlist(metrics_list$tree)
     metrics_list <- metrics_list$levels
+    metric_target <- lapply(metrics_list, check.metric.target, data)
     # return(metrics_list)
 
     ## Stop if data already contains disparity and metric is not level1
@@ -561,6 +562,7 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
                                             dist_help            = dist_help,
                                             dist.data            = dist.data,
                                             do_by.col            = do_by.col,
+                                            metric_target        = metric_target,
                                             ...),
                             SIMPLIFY = FALSE)
         # disparities <- mapply(mapply.wrapper, lapply_loops, splitted_data, MoreArgs = list(metrics_list, matrix_decomposition, verbose, metric_has_tree, dist_help), SIMPLIFY = FALSE) ; warning("DEBUG dispRity")
@@ -581,6 +583,7 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
                             dist_help            = dist_help,
                             dist.data            = dist.data,
                             do_by.col            = do_by.col,
+                            metric_target        = metric_target,
                             ...)
         #TG: check out the file disparity_internal_logic.md (located on the root of the package) for explanation about the logic in this lapply
 
