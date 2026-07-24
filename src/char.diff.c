@@ -23,7 +23,8 @@
 double character_to_numeric(char c)
 {
     double n = -1;
-    static const char * const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    // static const char * const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    static char * alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     char *p = strchr(alphabet, (unsigned char)c);
 
     if (p) {
