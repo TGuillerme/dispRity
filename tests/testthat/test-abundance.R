@@ -149,8 +149,9 @@ test_that("abundance works for calculating dispRity metrics", {
 
 
 ## metric target toggles between using "matrix" or "abundance"?
+    ## Alternatively just go with the old BAT implementation...
 
-    
+
  
     ## Abundance only
     average2 <- function(abundance, ...) {
