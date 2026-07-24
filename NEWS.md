@@ -1,9 +1,12 @@
-dispRity v1.9.12 (2026-07-24)
+dispRity v1.9.13 (2026-07-24)
 =========================
 
 ### NEW FEATURES
 
  * Added a new `$abundance` element to the `dispRity` object. This allows to use functional diversity metrics that take abundance into account (using metrics with a new `abundance` global argument) or modifying existing metrics to only take abundance into account (using a new metric transformer argument `as.abundance`.). This is associated with new plot options and streamlined to fit with all the other functionalities in the package.
+<!--  * New interface for the `BAT` package with new generic metric function `BAT.metric`. This function allows to use any metric from the `BAT` function as a metric for `dispRity` using the synthax: `dispRity(data, metric = BAT.metric, BAT.fun = "name", ...)`
+ * New utility function: `dispRity.BAT` for converting some parts of `dispRity` objects into `BAT` argumen
+ -->
 
  <!-- TODO: also add and "metric transoformer" section in the manual for as.covar and as.abundance -->
 
@@ -15,34 +18,14 @@ dispRity v1.9.12 (2026-07-24)
  * The `dispRity` functions now tries to auto-fill any give empty `"dispRity"` object. I.e. `dispRity(make.dispRity(...), ...)` now automatically runs `dispRity(fill.dispRity(make.dispRity(...)), ...)`.
  * Streamlined the implementation of `dtt.dispRity` for clarity and speed. This function now also has a dedicated vignette for illustrating the difference between disparity through time in `dispRity` and in `geiger`.
  * `custom.subsets`'s `group` argument can now be a vector.
+ * `chrono.subsets` now can recycle the `$tree` component of a `dispRity` object.
+ * The output of `multi.ace` using `estimation.details` with specific character arguments (e.g. `"detail_name"`) is now sorted in the order `output[[tree_ID]][[character_ID]]$detail_name`, rather than the previous version order that was `output[[tree_ID]]$detail_name[[character_ID]]`.
 
 ### BUG FIXES
 
  * disparity results structure with `chrono.subsets` with multiple matrices are now handled correctly when using a list of metrics (e.g. `c(sum, variances)` now gives the same results structure as `function(x)sum(variances(x))` as expected). Thanks to Caleb Scutt for spotting this one.
  * fixed bug with empty time subsets in `chrono.subsets` that would output the wrong dimension `NA` matrix when calculating disparity.
  * fixed CRAN compilation warning on Fedora (gcc 16.1.1 20260515 Red Hat 16.1.1-2).
-
-dispRity v1.9.7 (2025-08-22)
-=========================
-
-### NEW FEATURES
-
-
- * Abundance
-
-<!--  * New interface for the `BAT` package with new generic metric function `BAT.metric`. This function allows to use any metric from the `BAT` function as a metric for `dispRity` using the synthax: `dispRity(data, metric = BAT.metric, BAT.fun = "name", ...)`
- * New utility function: `dispRity.BAT` for converting some parts of `dispRity` objects into `BAT` argumen
- -->
-
- * Revamped `multi.ace` to allow for sampling distribution of ancestral states instead of point estimates with the new argument `sample`. The function can now also re-analyse previous outputs to save time by using the `output = "multi.ace"` option.
-
-### MINOR IMPROVEMENTS
-
- * `chrono.subsets` now can recycle the `$tree` component of a `dispRity` object.
- * The output of `multi.ace` using `estimation.details` with specific character arguments (e.g. `"detail_name"`) is now sorted in the order `output[[tree_ID]][[character_ID]]$detail_name`, rather than the previous version order that was `output[[tree_ID]]$detail_name[[character_ID]]`.
-
-### BUG FIXES
-  
  * `plot.dispRity` now handles infinite values for generating plot limits (thanks to Mario Corio for spotting that one).
  * `dispRity` now correctly handles multiple matrices and multiple trees for multiple metrics.
  * `print` now correctly prints the content of "empty" data.
@@ -50,6 +33,7 @@ dispRity v1.9.7 (2025-08-22)
  * Fixed bug with `multi.ace` that always returned missing data tokens for discrete invariant characters.
  * Fixed bug withe `chrono.subsets` for odd tree shapes (issue [#134](https://github.com/TGuillerme/dispRity/issues/134)).
  * `plot.dispRity` with `"preview"` now correctly handles custom subsets with the same sizes.
+
 
 dispRity v1.9 (2024-11-13)  *distant update*
 =========================
