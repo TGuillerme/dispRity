@@ -1,6 +1,6 @@
 #' @title dtt dispRity (from \code{geiger::dtt})
 #'
-#' @description A wrapper for the \code{geiger::dtt} function working with any disparity metric.
+#' @description A wrapper for the \code{geiger::dtt} function working with any disparity metric. 
 #'
 #' @param data A \code{dispRity} object or a \code{matrix}
 #' @param metric The disparity metric to be passed to \code{\link{dispRity}}.
@@ -13,6 +13,7 @@
 #' 
 #' @details
 #' See \code{geiger::dtt} for details.
+#' Also, note that despite the name, \code{dtt} does not measures disparity through time in a colloquial sense: it measure the cumulative disparity for all the descendants of each node. In this sense, disparity through time here means the cumulative disparity for each clade at each node's age.
 #' 
 #' @examples
 #'
