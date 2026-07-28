@@ -35,9 +35,13 @@ check.metric.target <- function(metric, data) {
         return("no metric")
     }
     has_abundance <- any(names(formals(metric)) %in% c("abundance", "abundance2"))
-    has_matrix <- any(names(formals(metric)) %in% c("matrix", "matrix2", "x")) || typeof(metric) == "builtin" # x is assumed as matrix for generics/ builtin is for primitives (e.g. sum)
+    has_matrix <- any(names(formals(metric)) %in% c("matrix", "matrix2", "x", "X")) || typeof(metric) == "builtin" # x is assumed as matrix for generics/ builtin is for primitives (e.g. sum)
 
-    return(c("matrix", "abundance")[c(has_matrix, has_abundance)])
+    if(!any(has_matrix, has_abundance)) {
+        return("matrix")
+    } else {
+        return(c("matrix", "abundance")[c(has_matrix, has_abundance)])
+    }
 }
 
 ## Checks the levels and extras for one metric
