@@ -35,7 +35,7 @@ check.metric.target <- function(metric, data) {
         return("no metric")
     }
     has_abundance <- any(names(formals(metric)) %in% c("abundance", "abundance2"))
-    has_matrix <- any(names(formals(metric)) %in% c("matrix", "matrix2", "x")) # x is assumed as matrix for generics
+    has_matrix <- any(names(formals(metric)) %in% c("matrix", "matrix2", "x")) || typeof(metric) == "builtin" # x is assumed as matrix for generics/ builtin is for primitives (e.g. sum)
 
     return(c("matrix", "abundance")[c(has_matrix, has_abundance)])
 }
@@ -384,11 +384,12 @@ decompose.matrix <- function(one_subsets_bootstrap, fun, data, nrow, use_tree, d
         ## Toggle dist.data
         dist.data <- TRUE
     } else {
-        # if(length(data_target) == 1) {
-            data_list  <- data[["matrix"]]
-        # } else {
-            # data_list  <- data[data_target]
-        # }
+        if(length(data_target) < 2) {
+            data_list  <- data[[data_target]]
+        } else {
+            stop("DEBUG: dispRity_fun not implemented with abundance + matrix yet")
+            data_list  <- data[data_target]
+        }
     }
     
     ## Select the dimensions
@@ -401,37 +402,22 @@ decompose.matrix <- function(one_subsets_bootstrap, fun, data, nrow, use_tree, d
             bootstrap <- na.omit(by.col) 
         } else {
             ## Base bootstrap use
-            # if("matrix" %in% data_target) {
-                dimensions <- data$call$dimensions    
-            # } else {
-            #     ## If used on abundance
-            #     dimensions <- 1:ncol(data_list[[1]])
-            # }
+            dimensions <- data$call$dimensions    
+            if("abundance" %in% data_target) {
+                dimensions <- 1:ncol(data_list[[11]])
+            }
             bootstrap  <- na.omit(one_subsets_bootstrap)
         }
     }
 
     if(!use_tree) {
         ## Apply the fun, bootstrap and dimension on each matrix
-        # return(unlist(lapply(data_list, decompose.base,
-        #                     bootstrap  = bootstrap,
-        #                     dimensions = dimensions,
-        #                     fun        = fun,
-        #                     nrow       = nrow,
-        #                     ...),
-        #               recursive = FALSE))
         return(do.call(cbind, lapply(data_list, decompose.base,
                             bootstrap  = bootstrap,
                             dimensions = dimensions,
                             fun        = fun,
                             nrow       = nrow,
                             ...)))
-
-        # do.call(cbind, lapply(data_list, decompose.base,
-        #                     bootstrap  = bootstrap,
-        #                     dimensions = dimensions,
-        #                     fun        = fun,
-        #                     nrow       = nrow))
 
         #TG: when multiple matrices and dimensions level2 this should return an array?
         # decompose.base(data_list[[1]], bootstrap = bootstrap, dimensions = dimensions, fun = fun, nrow = nrow)
@@ -555,7 +541,7 @@ decompose.matrix.wrapper <- function(one_subsets_bootstrap, fun, data, use_array
 # one_subsets_bootstrap <- lapply_loop[[1]][[1]] ; warning("DEBUG: dispRity_fun")
 # subsets <- lapply_loop[[1]] ; warning("DEBUG: dispRity_fun")
 # one_subsets_bootstrap <- subsets[[1]] ; warning("DEBUG: dispRity_fun")
-disparity.bootstraps <- function(one_subsets_bootstrap, metrics_list, data, matrix_decomposition, metric_has_tree = rep(FALSE, length(metrics_list)), dist_help = NULL, dist.data = FALSE, by.col = NULL, metric_target = NULL, ...){
+disparity.bootstraps <- function(one_subsets_bootstrap, metrics_list, data, matrix_decomposition, metric_has_tree = rep(FALSE, length(metrics_list)), dist_help = NULL, dist.data = FALSE, by.col = NULL, metric_target = rep("matrix", 3), ...){
     
     ## 1 - Decomposing the matrix (if necessary)
     verbose_place_holder <- NULL
@@ -616,7 +602,7 @@ disparity.bootstraps <- function(one_subsets_bootstrap, metrics_list, data, matr
 
 ## Lapply wrapper for disparity.bootstraps function
 # subsets <- lapply_loop[[1]] ; warning("DEBUG: dispRity_fun")
-lapply.wrapper <- function(subsets, metrics_list, data, matrix_decomposition, verbose, metric_has_tree = rep(FALSE, length(metrics_list)), dist_help = NULL, dist.data = FALSE, do_by.col = FALSE, metric_target = NULL, ...) {
+lapply.wrapper <- function(subsets, metrics_list, data, matrix_decomposition, verbose, metric_has_tree = rep(FALSE, length(metrics_list)), dist_help = NULL, dist.data = FALSE, do_by.col = FALSE, metric_target = "matrix", ...) {
     if(verbose) {
         ## Making the verbose version of disparity.bootstraps
         body(disparity.bootstraps)[[2]] <- substitute(message(".", appendLF = FALSE))
@@ -636,7 +622,7 @@ lapply.wrapper <- function(subsets, metrics_list, data, matrix_decomposition, ve
 
     return(lapply(subsets, disparity.bootstraps, metrics_list, data, matrix_decomposition, metric_has_tree, dist_help, dist.data, by.col, metric_target, ...))
 }
-mapply.wrapper <- function(lapply_loop, data, metrics_list, matrix_decomposition, verbose, metric_has_tree, dist_help = NULL, dist.data = FALSE, do_by.col = FALSE, metric_target = NULL, ...) {
+mapply.wrapper <- function(lapply_loop, data, metrics_list, matrix_decomposition, verbose, metric_has_tree, dist_help = NULL, dist.data = FALSE, do_by.col = FALSE, metric_target = "matrix", ...) {
     return(lapply(lapply_loop, lapply.wrapper,
         metrics_list = metrics_list,
         data = data,
