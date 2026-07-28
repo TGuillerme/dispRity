@@ -1,21 +1,47 @@
-#' @title as.covar
+#' @name as.target
+#' @aliases as.covar as.abundance
+#' @title Changes the target of a metric
 #'
-#' @description Changes a dispRity metric to use the covar element from a dispRity object.
+#' @description Changes a dispRity metric to use specific elements from the dispRity object: covar or abundance.
+#' 
+#' @usage as.abundance(fun, ...)
+#' @usage as.covar(fun, ..., VCV, loc)
 #'
-#' @param fun a \code{function} to apply to the \code{$covar} element of \code{dispRity}.
+#' @description 
+#'
+#' @param fun a \code{function} to apply to the element of \code{dispRity}.
 #' @param ... any additional arguments to pass to fun.
 #' @param VCV logical, whether to use the \code{$VCV} component of the elements in \code{dispRity$covar} (\code{TRUE}; default) or not (\code{FALSE}) (see details).
 #' @param loc logical, whether to use the \code{$loc} component of the elements in \code{dispRity$covar} (\code{TRUE}) or not (\code{FALSE}; default) (see details).
 #' 
 #' @details
-#' This function effectively transforms the input argument from \code{matrix} (or \code{matrix2}) to \code{matrix = matrix$VCV} and adds a evaluation after the return call to indicate that the function works on a \code{$covar} element.
-#' Note that if the function does not have an argument called \code{matrix}, the first argument is estimated as being the one to be transformed (e.g. if the function has its first argument \code{x}, it will transform it to \code{x = x$VCV}).
+#' This function effectively transforms the input argument from \code{matrix} (or \code{matrix2}) to either \code{data$abundance} (for \code{as.abundance}) or \code{data$matrix$VCV} (for \code{as.covar}).
 #' 
-#' You can toggle between using the \code{$VCV} or the \code{$loc} argument in the \code{$covar} matrix by using either \code{VCV = TRUE, loc = FALSE} (to access only \code{fun(matrix = matrix$VCV, ...)}), \code{VCV = FALSE, loc = TRUE} (to access only \code{matrix = matrix(matrix$loc, nrow = 1), ...}) or \code{VCV = TRUE, loc = TRUE} (to access \code{fun(matrix = matrix$VCV, loc = matrix$loc, ...)}; provided \code{fun} has an extra \code{loc} argument).
+#' Note that if the function does not have an argument called \code{matrix}, the first argument is estimated as being the one to be transformed (e.g. if the function has its first argument \code{x}, it will transform it to \code{x = x$VCV}).
+#'
+#' For \code{as.abundance} this function effectively transforms the input argument from \code{matrix} (or \code{matrix2}) to \code{matrix = matrix$abundance} and adds a evaluation after the return call to indicate that the function works on a \code{$abundance} element.
+# #' Note that if the function does not have an argument called \code{matrix}, the first argument is estimated as being the one to be transformed (e.g. if the function has its first argument \code{x}, it will transform it to \code{x = x$abundance}).
+
+#' For \code{as.covar}, you can toggle between using the \code{$VCV} or the \code{$loc} argument in the \code{$covar} matrix by using either \code{VCV = TRUE, loc = FALSE} (to access only \code{fun(matrix = matrix$VCV, ...)}), \code{VCV = FALSE, loc = TRUE} (to access only \code{matrix = matrix(matrix$loc, nrow = 1), ...}) or \code{VCV = TRUE, loc = TRUE} (to access \code{fun(matrix = matrix$VCV, loc = matrix$loc, ...)}; provided \code{fun} has an extra \code{loc} argument).
 #' 
 #' For \code{between.groups} metrics with \code{matrix} and \code{matrix2} arguments, you can provide multiple logicals for \code{VCV} and \code{loc} to be applied repspectively to \code{matrix} and \code{matrix2}. For example \code{VCV = TRUE} will reinterpret \code{matrix} and \code{matrix2} as \code{matrix$VCV} and \code{matrix2$VCV} but \code{loc = c(TRUE, FALSE)} will only reinterpret \code{matrix} as \code{matrix$loc} (and \code{matrix2} will not be reinterpreted).
+#' 
 #' @examples
-#' ## Creating a dispRity
+#' ## Get a dispRity object with abundance
+#' data(BeckLee_mat50) 
+#' abundance_data <- matrix(sample(c(0,1,2,3), 200, replace = TRUE,
+#'                          prob = c(0.4, 0.4, 0.1, 0.1)), nrow = 50, ncol = 4)
+#' disparabundance <- make.dispRity(data = BeckLee_mat50,
+#'                                  abundance = abundance_data)
+#' 
+#' ## Get the mean value of the traitspace ($matrix)
+#' get.disparity(dispRity(disparabundance, metric = mean))
+#' 
+#' ## Get the mean value of the abundance data ($abundance)
+#' get.disparity(dispRity(disparabundance, metric = as.abundance(mean)))
+#' 
+#' 
+#' ## Get a dispRity object with covar
 #' data(charadriiformes)
 #' 
 #' ## Creating a dispRity object from the charadriiformes model
@@ -69,6 +95,50 @@
 #' @author Thomas Guillerme
 #' @export
 
+as.abundance <- function(fun, ...) {
+    ## Finding the correct arguments to convert
+    avail_args <- names(formals(fun))
+
+    ## Toggle each argument in turn
+    change_matrix <- ("matrix" %in% avail_args)
+    change_matrix2 <- ("matrix2" %in% avail_args)
+    change_x <- ("x" %in% avail_args)
+
+    ## Copy the function
+    fun.abundance <- fun
+
+    if(any(c(change_matrix, change_matrix2, change_x))) {
+        ## Base fun change
+        fun_body <- deparse(body(fun.abundance))
+
+        ## Changes in the function
+        in_changes <- NULL
+        if(change_matrix) {
+            in_changes <- c(in_changes, "matrix <- abundance")
+        }
+        if(change_matrix2) {
+            in_changes <- c(in_changes, "matrix2 <- abundance2")
+        }
+        if(change_x) {
+            in_changes <- c(in_changes, "x <- abundance")
+        }
+        new_fun <- paste0(c(fun_body[1], in_changes, fun_body[-1]), collapse = "\n")
+        body(fun.abundance) <- as.expression(parse(text = new_fun))
+
+        ## Changes in the arguments
+        if(change_matrix) {
+            names(formals(fun.abundance))[which(avail_args %in% "matrix")] <- "abundance"
+        }        
+        if(change_matrix2) {
+            names(formals(fun.abundance))[which(avail_args %in% "matrix2")] <- "abundance2"
+        }
+        if(change_x) {
+            names(formals(fun.abundance))[which(avail_args %in% "x")] <- "abundance"
+        }
+    }
+
+    return(fun.abundance)
+}
 as.covar <- function(fun, ..., VCV = TRUE, loc = FALSE) {
     ## Finding the correct arguments to convert
     avail_args <- names(formals(fun))
@@ -203,13 +273,3 @@ as.covar <- function(fun, ..., VCV = TRUE, loc = FALSE) {
 }
 
 
-# ## Testing in dispRity
-# test <- as.covar(variances)
-# fun_is_covar <-NULL
-# cov_var <- as.covar(variances)
-
-# try(eval(body(variances)[[length(body(variances))]]), silent = TRUE)
-# is_covar # NULL
-
-# try(eval(body(cov_var)[[length(body(cov_var))]]), silent = TRUE)
-# is_covar # TRUE
