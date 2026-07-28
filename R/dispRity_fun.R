@@ -34,19 +34,10 @@ check.metric.target <- function(metric, data) {
     if(is.null(metric)) {
         return("no metric")
     }
-    is_abundance <- any(names(formals(metric)) %in% c("abundance", "abundance2"))
-    if(!is_abundance) {
-        return("matrix")
-    } else {
-        if(is_abundance && is.null(data$abundance)) {
-            stop.call(msg = "Impossible to use a metric with abundance if the data has no $abundance component.", call = "")
-        }
-        if(any(names(formals(metric)) %in% c("matrix", "matrix2"))) {
-            return("matrix & abundance")
-        } else {
-            return("abundance")
-        }
-    }
+    has_abundance <- any(names(formals(metric)) %in% c("abundance", "abundance2"))
+    has_matrix <- any(names(formals(metric)) %in% c("matrix", "matrix2", "x")) # x is assumed as matrix for generics
+
+    return(c("matrix", "abundance")[c(has_matrix, has_abundance)])
 }
 
 ## Checks the levels and extras for one metric
@@ -393,11 +384,11 @@ decompose.matrix <- function(one_subsets_bootstrap, fun, data, nrow, use_tree, d
         ## Toggle dist.data
         dist.data <- TRUE
     } else {
-        if(!grepl("&", data_target)) {
-            data_list  <- data[[data_target]]
-        } else {
-            stop("DEBUG: dispRity_fun: need implementing matrix + abundance")
-        }
+        # if(length(data_target) == 1) {
+            data_list  <- data[["matrix"]]
+        # } else {
+            # data_list  <- data[data_target]
+        # }
     }
     
     ## Select the dimensions
@@ -410,12 +401,12 @@ decompose.matrix <- function(one_subsets_bootstrap, fun, data, nrow, use_tree, d
             bootstrap <- na.omit(by.col) 
         } else {
             ## Base bootstrap use
-            if(grepl("matrix", data_target)) {
+            # if("matrix" %in% data_target) {
                 dimensions <- data$call$dimensions    
-            } else {
-                ## If used on abundance
-                dimensions <- 1:ncol(data_list[[1]])
-            }
+            # } else {
+            #     ## If used on abundance
+            #     dimensions <- 1:ncol(data_list[[1]])
+            # }
             bootstrap  <- na.omit(one_subsets_bootstrap)
         }
     }
@@ -509,13 +500,13 @@ decompose.matrix.wrapper <- function(one_subsets_bootstrap, fun, data, use_array
 
     ## Decomposing the matrix
     if(use_array) {
-        return(array(apply(one_subsets_bootstrap, 2, decompose.matrix, fun = fun, data = data, nrow = nrow, use_tree = use_tree, dist_help = dist_help, dist.data = dist.data, by.col = by.col, ...), dim = c(length(data$call$dimensions), length(data$call$dimensions), ncol(one_subsets_bootstrap))))
+        return(array(apply(one_subsets_bootstrap, 2, decompose.matrix, fun = fun, data = data, nrow = nrow, use_tree = use_tree, dist_help = dist_help, dist.data = dist.data, by.col = by.col, data_target = data_target, ...), dim = c(length(data$call$dimensions), length(data$call$dimensions), ncol(one_subsets_bootstrap))))
  
     } else {
 
         if(length(data$matrix) == 1) {
             ## data is a lit of a single matrix
-            results_out <- apply(one_subsets_bootstrap, 2, decompose.matrix, fun = fun, data = data, nrow = nrow, use_tree = use_tree, dist_help = dist_help, dist.data = dist.data, by.col = by.col, data_target = "matrix",...)
+            results_out <- apply(one_subsets_bootstrap, 2, decompose.matrix, fun = fun, data = data, nrow = nrow, use_tree = use_tree, dist_help = dist_help, dist.data = dist.data, by.col = by.col, data_target = data_target,...)
 
             ## Outputs a matrix
             if(!is(results_out, "matrix")) {
