@@ -408,7 +408,7 @@ decompose.matrix <- function(one_subsets_bootstrap, fun, data, nrow, use_tree, d
             ## Base bootstrap use
             dimensions <- data$call$dimensions    
             if("abundance" %in% data_target) {
-                dimensions <- 1:ncol(data_list[[11]])
+                dimensions <- 1:ncol(data_list[[1]])
             }
             bootstrap  <- na.omit(one_subsets_bootstrap)
         }
