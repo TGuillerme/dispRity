@@ -551,7 +551,7 @@ dispRity <- function(data, metric, dimensions = NULL, ..., between.groups = FALS
         ## Make the matrix list
         splitted_data <- bound.data.split(data)
 
-        splitted_data[[1]]$call$dimensions
+        # splitted_data[[1]]$call$dimensions
 
         ## mapply this
         disparities <- mapply(mapply.wrapper, lapply_loops, splitted_data, 
