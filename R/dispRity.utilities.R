@@ -15,7 +15,7 @@
 #' @param abundance Optional, a \code{matrix} or \code{data.frame} (or a list of matrices/data.frames) that contains abundance data (see details).
 #' @param subsets Optional, a \code{list} to be a \code{dispRity} subsets list.
 #' @param check Logical, whether to check the data (\code{TRUE}; default, highly advised) or not (\code{FALSE}).
-#' @param what Which elements to remove. Can be any of the following: \code{"subsets"}, \code{"bootstraps"}, \code{"covar"}, \code{"tree"}, \code{"disparity"}, code{"abundance"}. See details.
+#' @param what Which elements to remove. Can be any of the following: \code{"subsets"}, \code{"bootstraps"}, \code{"covar"}, \code{"tree"}, \code{"disparity"}, \code{"abundance"}. See details.
 #'
 #' @details
 #' Abundance matrices should be a matrix with rownames matching \code{data} and at least one named column. Each cell corresponds to the number of elements present in a column (e.g. number of individuals of species X in a field site, number of fossils in a geological layer, etc.).
