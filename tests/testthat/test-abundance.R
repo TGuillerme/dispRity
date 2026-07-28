@@ -122,10 +122,10 @@ test_that("check.abundance.metric works", {
         sum(matrix)/length(abundance)
     }
 
-    expect_equal(check.abundance.metric(NULL, data), "no metric")
-    expect_equal(check.abundance.metric(average1, data), "matrix")
-    expect_equal(check.abundance.metric(average2, data), "abundance")
-    expect_equal(check.abundance.metric(average3, data), "matrix & abundance")
+    expect_equal(check.metric.target(NULL, data), "no metric")
+    expect_equal(check.metric.target(average1, data), "matrix")
+    expect_equal(check.metric.target(average2, data), "abundance")
+    expect_equal(check.metric.target(average3, data), c("matrix","abundance"))
 })
 
 test_that("abundance works for calculating dispRity metrics", {
@@ -146,13 +146,6 @@ test_that("abundance works for calculating dispRity metrics", {
     expect_equal(print[[1]], " ---- dispRity object ---- \n50 elements in one matrix with 48 dimensions with 1 associated abundance matrix.\nDisparity was calculated as: average1.")
     expect_equal_round(get.disparity(test1)[[1]], 3.918862e-17, 17)
 
-
-
-## metric target toggles between using "matrix" or "abundance"?
-    ## Alternatively just go with the old BAT implementation...
-
-
- 
     ## Abundance only
     average2 <- function(abundance, ...) {
         sum(abundance)/length(abundance)
@@ -165,11 +158,19 @@ test_that("abundance works for calculating dispRity metrics", {
 
     ## Switch to abundance
     test1 <- dispRity(data, metric = as.abundance(average1))
-    expect_equal(print[[1]], " ---- dispRity object ---- \n50 elements in one matrix with 48 dimensions with 1 associated abundance matrix.\nDisparity was calculated as: average2.")
+    print <- capture_output(print(test1))
+    expect_equal(print[[1]], " ---- dispRity object ---- \n50 elements in one matrix with 48 dimensions with 1 associated abundance matrix.\nDisparity was calculated as: as.abundance(average1).")
     expect_equal(get.disparity(test1)[[1]], mean(abundance_data))
 
 
 
+
+
+## metric target toggles between using "matrix" or "abundance"?
+    ## Alternatively just go with the old BAT implementation...
+
+
+ 
 
 
 
