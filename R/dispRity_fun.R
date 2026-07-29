@@ -606,7 +606,7 @@ disparity.bootstraps <- function(one_subsets_bootstrap, metrics_list, data, matr
 
 ## Lapply wrapper for disparity.bootstraps function
 # subsets <- lapply_loop[[1]] ; warning("DEBUG: dispRity_fun")
-lapply.wrapper <- function(subsets, metrics_list, data, matrix_decomposition, verbose, metric_has_tree = rep(FALSE, length(metrics_list)), dist_help = NULL, dist.data = FALSE, do_by.col = FALSE, metric_target = "matrix", ...) {
+lapply.wrapper <- function(subsets, metrics_list, data, matrix_decomposition, verbose, metric_has_tree = rep(FALSE, length(metrics_list)), dist_help = NULL, dist.data = FALSE, do_by.col = FALSE, metric_target = rep("matrix", 3), ...) {
     if(verbose) {
         ## Making the verbose version of disparity.bootstraps
         body(disparity.bootstraps)[[2]] <- substitute(message(".", appendLF = FALSE))

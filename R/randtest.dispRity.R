@@ -71,7 +71,6 @@ randtest.dispRity <- function(xtest, subsets, metric, replicates = 100, resample
     data <- xtest
     names(match_call)[which(names(match_call) == "xtest")] <- "data"
 
-
     ## Sanitizing
     ## Distribution and subset
     data_class <- check.class(data, c("matrix", "dispRity"))
@@ -126,8 +125,10 @@ randtest.dispRity <- function(xtest, subsets, metric, replicates = 100, resample
             pop_names <- rownames(data) <- sample_pop
         }
 
-        ## Making the data into a dispRity like format
-        data <- list(matrix = list(data), call = list(dimensions = 1:ncol(data)))
+        data <- fill.dispRity(make.dispRity(data))
+
+        # ## Making the data into a dispRity like format
+        # data <- list(matrix = list(data), call = list(dimensions = 1:ncol(data)))
     }
 
     if(!inherits_subsets) {

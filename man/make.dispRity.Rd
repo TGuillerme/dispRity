@@ -25,7 +25,7 @@ remove.dispRity(data, what)
 
 \item{check}{Logical, whether to check the data (\code{TRUE}; default, highly advised) or not (\code{FALSE}).}
 
-\item{what}{Which elements to remove. Can be any of the following: \code{"subsets"}, \code{"bootstraps"}, \code{"covar"}, \code{"tree"}, \code{"disparity"}, code{"abundance"}. See details.}
+\item{what}{Which elements to remove. Can be any of the following: \code{"subsets"}, \code{"bootstraps"}, \code{"covar"}, \code{"tree"}, \code{"disparity"}, \code{"abundance"}. See details.}
 }
 \description{
 Creating an empty \code{dispRity} object from a matrix
