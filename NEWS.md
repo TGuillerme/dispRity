@@ -1,4 +1,4 @@
-dispRity v1.9.13 (2026-07-24)
+dispRity v1.9.13 (2026-07-31)
 =========================
 
 ### NEW FEATURES
@@ -14,12 +14,14 @@ dispRity v1.9.13 (2026-07-24)
  <!-- ADD this to the manual: This now combines the previously separate arguments `threshold` and `sample` under one banner. Use `ml.collapse = list(type = "majority")` (replaces `threshold = "max"`), `ml.collapse = list(type = "relative")` (replaces `threshold = TRUE`), `ml.collapse = list(type = "threshold", threshold = 0.95)` (replaces `threshold = 0.95`), or `ml.collapse = list(type = "sample", sample = 100)` (replaces `sample = 100`). This also includes a new tie-breaking option in `multi.ace`: `ml.collapse = list(type = "majority", tie.breaker = TRUE)` for randomly selecting one discrete state when highest scaled likelihoods are tied (alternative to default `tie.breaker = FALSE` which returns all tied states with uncertainty token). -->
 
 ### MINOR IMPROVEMENTS
+
  * **Changed default argument** in `multi.ace`: `ml.collapse` default is now `list(type = "majority")` (previously `threshold = TRUE` which mapped to `"relative"`).
  * The `dispRity` functions now tries to auto-fill any give empty `"dispRity"` object. I.e. `dispRity(make.dispRity(...), ...)` now automatically runs `dispRity(fill.dispRity(make.dispRity(...)), ...)`.
  * Streamlined the implementation of `dtt.dispRity` for clarity and speed. This function now also has a dedicated vignette for illustrating the difference between disparity through time in `dispRity` and in `geiger`.
  * `custom.subsets`'s `group` argument can now be a vector.
  * `chrono.subsets` now can recycle the `$tree` component of a `dispRity` object.
  * The output of `multi.ace` using `estimation.details` with specific character arguments (e.g. `"detail_name"`) is now sorted in the order `output[[tree_ID]][[character_ID]]$detail_name`, rather than the previous version order that was `output[[tree_ID]]$detail_name[[character_ID]]`.
+ * Highlighted the need to use `translate = FALSE` in `char.diff` when comparing taxa (not characters).
 
 ### BUG FIXES
 
