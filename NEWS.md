@@ -1,4 +1,4 @@
-dispRity v1.9.12 (2026-07-24)
+dispRity v1.9.12 (2026-07-31)
 =========================
 
 ### NEW FEATURES
@@ -7,6 +7,7 @@ dispRity v1.9.12 (2026-07-24)
 ### MINOR IMPROVEMENTS
  * **Changed default argument** in `multi.ace`: `ml.collapse` default is now `list(type = "majority")` (previously `threshold = TRUE` which mapped to `"relative"`).
  * `custom.subsets`'s `group` argument can now be a vector.
+ * Highlighted the need to use `translate = FALSE` in `char.diff` when comparing taxa (not characters).
 
 ### BUG FIXES
 
