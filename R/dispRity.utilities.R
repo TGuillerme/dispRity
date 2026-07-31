@@ -5,14 +5,14 @@
 #' 
 #' @description Creating an empty \code{dispRity} object from a matrix
 #'
-#' @usage make.dispRity(data, tree, call, subsets)
-#' @usage fill.dispRity(data, tree, check)
+#' @usage make.dispRity(data, tree, abundance, subsets, call)
+#' @usage fill.dispRity(data, tree, abundance, check)
 #' @usage remove.dispRity(data, what)
 #' 
-#' @param data A \code{matrix} (or a list of matrices).
+#' @param data A \code{matrix}, a \code{list} of matrices or an already existing \code{dispRity} object.
 #' @param tree Optional, a \code{phylo} or \code{multiPhylo} object.
 #' @param call Optional, a \code{list} to be a \code{dispRity} call.
-#' @param abundance Optional, a \code{matrix} or \code{data.frame} (or a list of matrices/data.frames) that contains abundance data (see details).
+#' @param abundance Optional, a \code{matrix}, \code{data.frame} (or a \code{list} of matrices/data.frames) that contains abundance data (see details) or a \code{logical} whether to generate a default abundance matrix (\code{TRUE}) or not (\code{FALSE}).
 #' @param subsets Optional, a \code{list} to be a \code{dispRity} subsets list.
 #' @param check Logical, whether to check the data (\code{TRUE}; default, highly advised) or not (\code{FALSE}).
 #' @param what Which elements to remove. Can be any of the following: \code{"subsets"}, \code{"bootstraps"}, \code{"covar"}, \code{"tree"}, \code{"disparity"}, \code{"abundance"}. See details.
@@ -134,6 +134,11 @@ fill.dispRity <- function(data, tree, abundance, check = TRUE) {
     }
     ## Add the abundance
     if(!missing(abundance)) {
+        if(is.logical(abundance)) {
+            if(abundance) {
+                abundance <- lapply(data$matrix, function(x) return(matrix(1, nrow = nrow(x), dimnames = list(rownames(x), "abundance"))))
+            }
+        }
         abundance <- check.abundance(data$matrix, abundance)
         data$abundance <- abundance 
     }

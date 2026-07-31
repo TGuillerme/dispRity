@@ -315,6 +315,8 @@ test_that("fill.dispRity", {
     expect_is(test$tree[[1]], "phylo")
     expect_equal(length(test$tree), 1)
     expect_equal(length(test$matrix), 1)
+
+    ## Works with abundance
 })
 
 ## get.matrix

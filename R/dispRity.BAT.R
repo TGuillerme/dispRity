@@ -114,13 +114,13 @@ dispRity.BAT <- function(data, subsets, matrix, tree, inc.all = FALSE) {
 }
 
 ## Transforms the trait matrix into a community one
-make.BAT.comm <- function(matrix, data) {
-    if(missing(data)) {
-        return(matrix(1, nrow = 1, ncol = nrow(matrix)))
-    } else {
-        return(matrix(as.integer(rownames(data) %in% rownames(matrix)), nrow = 1, ncol = nrow(data)))
-    }
-}
+# make.BAT.comm <- function(matrix, data) {
+#     if(missing(data)) {
+#         return(matrix(1, nrow = 1, ncol = nrow(matrix)))
+#     } else {
+#         return(matrix(as.integer(rownames(data) %in% rownames(matrix)), nrow = 1, ncol = nrow(data)))
+#     }
+# }
 
 ## Collapse a bootstrap probability
 collapse.proba <- function(proba_table) {
