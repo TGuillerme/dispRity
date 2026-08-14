@@ -502,20 +502,15 @@ test_that("make.control works", {
 	expect_equal(error[[1]], "slice.model argument must be one of the following: acctran, deltran, random, proximity, equal.split, gradual.split.")
 	expect_equal(names(control[[1]][[1]]), c("matrix" ,    "tree"   ,    "call"    ,   "subsets"   , "disparity"  ,"sim_params"))
 	expect_equal(ncol(control[[1]][[1]]$sim_params), ncol(get.matrix(data)))
-	expect_equal(nrow(get.matrix(control[[1]])), nrow(get.matrix(data)))
+	expect_equal(nrow(get.matrix(control[[1]][[1]])), nrow(get.matrix(data)))
 
 	## testing make.deltatronic works with control input
-	control_deltatronic <- make.deltatronic(control, changepoint, time.window, dimension.level= dimension.level,n.matrix = nsim)
-	expect_equal(names(control_deltatronic[[1]][[1]]), c("time", "time_elapsed", "impact", "disparity", "time_post_cp"))
-	expect_equal(ncol(control_deltatronic$`3.61339478986338`[[1]]$disparity), nrow(get.disparity(control[[1]], concatenate = FALSE)[[1]])) ## test that 10 sims have correctly formatted to control_deltatronic
-	expect_equal(length(control_deltatronic$`3.61339478986338`), ncol(get.disparity(control[[1]], concatenate = FALSE)[[1]])) ## test that 10 sims have correctly formatted to control_deltatronic
-	expect_equal(as.numeric(control_deltatronic[[1]][[10]]$disparity["2",1]), get.disparity(control[[1]], concatenate = FALSE)$`2`[1,10] )
-	expect_equal(as.numeric(control_deltatronic[[1]][[8]]$disparity["5",4]), get.disparity(control[[1]], concatenate = FALSE)$`5`[4,8] )
-
-
-
-
-
+	control_deltatronic <- make.deltatronic(control, changepoint, time.window= NULL, dimension.level= dimension.level,n.matrix = nsim)
+	expect_equal(names(control_deltatronic[[1]][[1]][[1]]), c("time", "time_elapsed", "impact", "disparity", "time_post_cp"))
+	expect_equal(ncol(control_deltatronic$`3.61339478986338`[[1]][[1]]$disparity), nrow(get.disparity(control[[1]][[1]], concatenate = FALSE)[[1]])) ## test that 5 dimensions have correctly formatted to control_deltatronic
+	expect_equal(length(control_deltatronic$`3.61339478986338`[[1]]), ncol(get.disparity(control[[1]][[1]], concatenate = FALSE)[[1]])) ## test that 10 sims have correctly formatted to control_deltatronic
+	expect_equal(as.numeric(control_deltatronic[[1]][[1]][[10]]$disparity["2",1]), get.disparity(control[[1]][[1]], concatenate = FALSE)$`2`[1, 10])
+	expect_equal(as.numeric(control_deltatronic[[1]][[1]][[8]]$disparity["5",4]), get.disparity(control[[1]][[1]], concatenate = FALSE)$`5`[4, 8])
 
 
 	## multi matrix
@@ -543,7 +538,16 @@ test_that("make.control works", {
 
 	changepoint <- set.changepoint(changepoint)
 
+	nsim  <- 12 ## switch up nsim 
 	control <- lapply(changepoint, make.control, data = data, nsim = nsim, paint = TRUE, n.matrix =n.matrix)
+	control_deltatronic <- make.deltatronic(control, changepoint, time.window= NULL, dimension.level= dimension.level,n.matrix = nsim)
+	expect_equal(names(control_deltatronic[[1]][[1]][[1]]), c("time", "time_elapsed", "impact", "disparity", "time_post_cp"))
+	expect_equal(length(control_deltatronic$`3.61339478986338`[[1]]), length(get.disparity(control[[1]][[1]], concatenate = FALSE)[[1]])) ## test that 12 sims have correctly formatted to control_deltatronic
+	expect_equal(length(control_deltatronic$`3.61339478986338`), 10) ## 10 matrices matches
+	# expect_equal(length(control_deltatronic$`3.61339478986338`[[1]]), ncol(get.disparity(control[[1]][[1]], concatenate = FALSE)[[1]]))
+	expect_equal(as.numeric(control_deltatronic[[1]][[1]][[10]]$disparity["2",]), get.disparity(control[[1]][[1]], concatenate = FALSE)$`2`[10])
+	expect_equal(as.numeric(control_deltatronic[[1]][[1]][[8]]$disparity["5",]), get.disparity(control[[1]][[1]], concatenate = FALSE)$`5`[8])
+
 
 	
 	## multi and multidimensional matrix
@@ -561,15 +565,59 @@ test_that("make.control works", {
 	data <- chrono.subsets(data, method = "c", model = "equal.split", time = c(7,6,5,4,3,2,1), inc.nodes = TRUE)
 	## Warning is for the last time slice that's 0
 	disp <- dispRity(data, metric = c(variances))
+	dimension.level <- 1
+    if (any(unlist(lapply(get.disparity(disp, concatenate = FALSE), function(x) nrow(x) >1)))) {
+        dimension.level <- unlist(lapply(get.disparity(disp, concatenate = FALSE), function(x) nrow(x)), use.names = FALSE)[1]
+    }
 
 
-	delta_df <- make.deltatronic(disp, changepoint, time.window = NULL)
-	dims <- max(data$call$dimensions)
+	nsim <- 12
+	delta_df <- make.deltatronic(disp, changepoint, time.window = NULL, n.matrix = 10, dimension.level = dimension.level)
 	changepoint <- set.changepoint(changepoint)
-    control <- lapply(changepoint, make.control, data = data, nsim = nsim)
+    control <- lapply(changepoint, make.control, data = disp, nsim = nsim, n.matrix = 10)
+
+	control_deltatronic <- make.deltatronic(control, changepoint, time.window= NULL, dimension.level= dimension.level,n.matrix = nsim)
+	expect_equal(names(control_deltatronic[[1]][[1]][[1]]), c("time", "time_elapsed", "impact", "disparity", "time_post_cp"))
+	expect_equal(length(control_deltatronic$`3.61339478986338`[[1]]), length(get.disparity(control[[1]][[1]], concatenate = FALSE)[[1]])) ## test that 12 sims have correctly formatted to control_deltatronic
+	expect_equal(length(control_deltatronic$`3.61339478986338`), 10) ## 10 matrices matches
+	# expect_equal(length(control_deltatronic$`3.61339478986338`[[1]]), ncol(get.disparity(control[[1]][[1]], concatenate = FALSE)[[1]]))
+	expect_equal(as.numeric(control_deltatronic[[1]][[1]][[10]]$disparity["2",3]), get.disparity(control[[1]][[1]], concatenate = FALSE)$`2`[3,10])
+	expect_equal(as.numeric(control_deltatronic[[1]][[1]][[8]]$disparity["5", 4]), get.disparity(control[[1]][[1]], concatenate = FALSE)$`5`[4,8])
+
 
 }
 )
+
+
+test_that("citsa.method works...\n", {
+	data(disparity)
+	nsim <- 12
+	cp <- 66
+	dimension.level <- 1
+    if (any(unlist(lapply(get.disparity(disparity, concatenate = FALSE), function(x) nrow(x) >1)))) {
+        dimension.level <- unlist(lapply(get.disparity(data, concatenate = FALSE), function(x) nrow(x)), use.names = FALSE)[1]
+    }
+	n.matrix <- length(disparity$matrix)
+	delta_df <- make.deltatronic(disparity, cp, time.window =NULL, dimension.level, n.matrix)
+    control <- lapply(changepoint, make.control, data = disp, nsim = nsim, n.matrix= n.matrix)
+	control_deltatronic <- make.deltatronic(control, cp, time.window = NULL, dimension.level, n.matrix = nsim)
+	control_delta_df <- lapply(control_deltatronic, lapply, lapply, function(x) {
+                x$emp_vs_null <- matrix(0, nrow = nrow(x$time))
+                return(x)
+    })
+
+	delta_df <- lapply(delta_df, lapply, function(x) {
+            x$emp_vs_null <- matrix(1, nrow = nrow(x$time))
+            return(x)
+            })
+
+
+
+
+
+})
+
+
 
 
 ## eg multi.ace sample = >1 output

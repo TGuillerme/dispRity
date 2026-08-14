@@ -138,7 +138,7 @@ chrono.test <- function(data, method, changepoint, time.window, nsim = 100, ...)
         itsa={
 
             #TG: for here and for delta_df in general, is it not easier to just make a list of lists? So that it never has to toggle between either options? I.e. if it's a multi.matrix or not it always go double lapply?
-                itsa <- lapply(delta_df, lapply, itsa.method, dimension.level,...)
+                itsa <- lapply(delta_df, lapply, itsa.method, dimension.level, ...)
         },
         citsa={
 

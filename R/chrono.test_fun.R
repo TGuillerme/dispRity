@@ -543,7 +543,7 @@ bind.delta <- function(delta_df, control_delta_df, dimension.level) {
 
     }
 
-    delta_df <- lapply(delta_df, as.numeric)
+    delta_df <- lapply(delta_df,lapply, as.numeric)
     delta_df <- do.call(cbind, delta_df)
     control_df <- lapply(control_delta_df, as.numeric)
     control_df <- do.call(cbind, control_df)
