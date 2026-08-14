@@ -487,21 +487,21 @@ test_that("make.control works", {
     if (any(unlist(lapply(get.disparity(data, concatenate = FALSE), function(x) nrow(x) >1)))) {
         dimension.level <- unlist(lapply(get.disparity(data, concatenate = FALSE), function(x) nrow(x)), use.names = FALSE)[1]
     }
-    dimension.level <- as.integer(gsub("level", "", levels))[1]
+    # dimension.level <- as.integer(gsub("level", "", levels))[1]
 	delta_df <- make.deltatronic(data, changepoint, time.window = NULL, dimension.level, n.matrix)
 	dims <- max(data$call$dimensions)
 	changepoint <- set.changepoint(changepoint)
-    control <- lapply(changepoint, make.control, data = data, nsim = nsim)
+    control <- lapply(changepoint, make.control, data = data, nsim = nsim, n.matrix = n.matrix)
 	expect_is(control, "list")
 	expect_equal(names(control), "3.61339478986338")
-	expect_equal(length(control[[1]]$subsets), length(disparity$subsets))
-	expect_equal(length(get.disparity(control[[1]], concatenate = FALSE)[[1]]), length(get.disparity(data)[[1]]) * nsim)
-	error <- capture_error(lapply(changepoint, make.control, data, paint = FALSE, nsim = nsim))
+	expect_equal(length(control[[1]][[1]]$subsets), length(disparity$subsets))
+	expect_equal(length(get.disparity(control[[1]][[1]], concatenate = FALSE)[[1]]), length(get.disparity(data)[[1]]) * nsim)
+	error <- capture_error(lapply(changepoint, make.control, data, paint = FALSE, nsim = nsim, n.matrix = n.matrix))
 	expect_equal(error[[1]], "`slice.model` argument needs to be inputted if paint = FALSE...\n")
-	error <- capture_error(lapply(changepoint, make.control, data, paint = FALSE, slice.model = 5, nsim = nsim))
+	error <- capture_error(lapply(changepoint, make.control, data, paint = FALSE, slice.model = 5, n.matrix =  n.matrix, nsim = nsim))
 	expect_equal(error[[1]], "slice.model argument must be one of the following: acctran, deltran, random, proximity, equal.split, gradual.split.")
-	expect_equal(names(control[[1]]), c("matrix" ,    "tree"   ,    "call"    ,   "subsets"   , "disparity"  ,"sim_params"))
-	expect_equal(ncol(control[[1]]$sim_params),ncol(get.matrix(data)))
+	expect_equal(names(control[[1]][[1]]), c("matrix" ,    "tree"   ,    "call"    ,   "subsets"   , "disparity"  ,"sim_params"))
+	expect_equal(ncol(control[[1]][[1]]$sim_params), ncol(get.matrix(data)))
 	expect_equal(nrow(get.matrix(control[[1]])), nrow(get.matrix(data)))
 
 	## testing make.deltatronic works with control input
