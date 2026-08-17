@@ -718,5 +718,8 @@ test_that("multi matrix disparity works", {
 
 
 test_that("chrono.test works", {
+	data(disparity)
+
+	chrono.test(disparity, method = "citsa", changepoint = 66, nsim = 10)
 
 })

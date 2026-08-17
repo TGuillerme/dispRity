@@ -42,7 +42,7 @@
 #' 
 
 
-chrono.test <- function(data, method, changepoint, time.window, nsim = 100, ...) {
+chrono.test <- function(data, method, changepoint, time.window = NULL, nsim = 100, ...) {
     
     match_call <- match.call()
 
@@ -81,19 +81,18 @@ chrono.test <- function(data, method, changepoint, time.window, nsim = 100, ...)
         check.time.range(changepoint, all_time_range, name = "changepoint")
     }
 
-    if(missing(time.window)) {
-        time.window <- all_time_range
+    if (is.null(time.window)) {
+    # No window restriction; make.deltatronic will keep full series
     } else {
         check.class(time.window, c("numeric", "integer"))
-        if(length(time.window) < 3) {
-            if(length(time.window) == 2) {
-                check.time.range(time.window, all_time_range, name = "time.window")
-            }
-        } else {
-            stop.call(msg = "time.window can only contain 2 values (the time ranges) or 1 value (the proportion or number of subsets before and after the time).")
-        }
+    if (length(time.window) < 3) {
+    if (length(time.window) == 2) {
+        check.time.range(time.window, all_time_range, name = "time.window")
     }
-
+    } else {
+        stop.call(msg = "time.window can only contain 2 values (the time ranges) or 1 value (the proportion or number of subsets before and after the time).")
+    }
+    }
     ## Check the method
     method_type <- check.class(method, c("character", "function"))
 
@@ -138,17 +137,17 @@ chrono.test <- function(data, method, changepoint, time.window, nsim = 100, ...)
         itsa={
 
             #TG: for here and for delta_df in general, is it not easier to just make a list of lists? So that it never has to toggle between either options? I.e. if it's a multi.matrix or not it always go double lapply?
-                itsa <- lapply(delta_df, lapply, itsa.method, dimension.level, ...)
+                itsa <- lapply(delta_df, lapply, itsa.method, dimension.level  =dimension.level, ...)
         },
         citsa={
 
             changepoint <- set.changepoint(changepoint)
 
-            control <- lapply(changepoint, make.control, data = data, nsim = nsim, n.matrix, ...)
+            control <- lapply(changepoint, make.control, data = data, nsim = nsim, n.matrix  = n.matrix, ...)
 
-            control_deltatronic <- make.deltatronic(control, changepoint, time.window, dimension.level, n.matrix = nsim)
+            control_deltatronic <- make.deltatronic(control, changepoint, time.window, dimension.level = dimension.level, n.matrix = nsim) ## n.matrix here becomes the number of matrices from the simulations (perhaps naming convention should be changed to avoid confusion)
             # control_deltatronic <- lapply(control, make.deltatronic, changepoint, time.window)
-            control_delta_df <- lapply(control_deltatronic, function(x) {
+            control_delta_df <- lapply(control_deltatronic, lapply, lapply,function(x) {
                 x$emp_vs_null <- matrix(0, nrow = nrow(x$time))
                 return(x)
             })
@@ -156,34 +155,40 @@ chrono.test <- function(data, method, changepoint, time.window, nsim = 100, ...)
             delta_df <- lapply(delta_df, lapply, function(x) {
             x$emp_vs_null <- matrix(1, nrow = nrow(x$time))
             return(x)
-            })
+            }) ## add emp vs null dummy variable for citsa model
 
-            full_df <- bind.delta(delta_df, control_delta_df, dimension.level)
+            full_df <- bind.delta(delta_df, control_delta_df, dimension.level = dimension.level) ## bind the data to make 1 dataframe with emp vs control combined.
 
             citsa <- lapply(full_df, lapply, lapply, citsa.method)
+
+
 
         },
         area={
             if (n.matrix > 1) {
-                itsa <- lapply(delta_df, lapply, itsa.method, dimension.level, ...)
-                area <- lapply(itsa, lapply, area.method, dimension.level) ## check on this 
+                itsa <- lapply(delta_df, lapply, itsa.method, dimension.level = dimension.level, ...)
+                area <- lapply(itsa, lapply, area.method, dimension.level = dimension.level) ## check on this 
             }
-            itsa <- lapply(delta_df, itsa.method, dimension.level, ...)
+            itsa <- lapply(delta_df, itsa.method, dimension.level = dimension.level, ...)
             area <- lapply(itsa,  area.method, ...)
         },
         average={
-            average <- lapply(delta_df, lapply, average.method, dimension.level, ...)
+            average <- lapply(delta_df, lapply, average.method, dimension.level = dimension.level, ...)
         }
     )
 
 
-    
-
-    return(list(
+    output <- list(
         test.output = chrono_test_output,
         disparity = data,
-        call = list(method, changepoint, time.window)
-    ))
+        call = match_call,
+        method = method,
+        changepoint = changepoint,
+        time.window = time.window,
+        nsim = nsim
+        )
+        class(out) <- c("dispRity", "chrono.test")
+        return(invisible(out))
 
 }
 

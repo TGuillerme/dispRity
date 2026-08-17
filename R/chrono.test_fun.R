@@ -548,7 +548,6 @@ bind.delta <- function(delta_df, control_delta_df, dimension.level) {
 
     return(full_df)
 
-
 }
 
 
@@ -582,9 +581,8 @@ citsa.method <- function(full_df){
 
         ctrl_slope_change <- model$coefficients[["time_post_cp"]]
         emp_slope_change <- model$coefficients[["time_post_cp"]] + model$coefficients[["emp_vs_null:time_post_cp"]]
-        rel_ctrl_slope_change <- 
 
-        return(model)
+        return(list(model = model, control_slope_change = ctrl_slope_change, emp_slope_change = emp_slope_change))
 }
 
 ols.deltatronic.itsa <- function(empirical, control, changepoint, times = NULL, alpha = 0.05, normalise = TRUE) { 

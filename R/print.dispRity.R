@@ -271,7 +271,34 @@ print.dispRity <- function(x, all = FALSE, ...) {
                     cat(tree_print)
                     cat("\nYou can use the multi.ace function to resample them and transform them in different outputs.")
                     return(invisible())
-                } 
+                },
+                chrono.test = {
+                    cat("Change in disparity slope test:\n")
+                    cat(paste0("Call: ", as.expression(x$call), "\n"))
+                    cat(paste0("Method: ", x$method, "\n"))
+
+                    cp_names <- names(x$test.output)
+                    if (is.null(cp_names)) {
+                    cp_names <- seq_along(x$test.output)
+                    }
+                    cat(paste0("Changepoint(s): ", paste(cp_names, collapse = ", "), "\n"))
+
+                    if (identical(x$method, "citsa")) {
+                    n_cp <- length(x$test.output)
+                    n_mat <- length(x$test.output[[1]])
+                    n_sim <- length(x$test.output[[1]][[1]])
+                    cat(paste0("C-ITSA models: ", n_cp, " changepoint(s) x ", n_mat, " matrix/matrices x ", n_sim, " simulation(s)\n"))
+
+                    ex <- x$test.output[[1]][[1]][[1]]
+                    if (is.list(ex) && all(c("control_slope_change", "emp_slope_change") %in% names(ex))) {
+                    cat(paste0("Example control slope change: ", signif(ex$control_slope_change, 4), "\n"))
+                    cat(paste0("Example empirical slope change: ", signif(ex$emp_slope_change, 4), "\n"))
+                    }
+                    cat("Use x$test.output to inspect all model objects.\n")
+                    }
+
+                    return(invisible())
+                    }
             )
         }
 
