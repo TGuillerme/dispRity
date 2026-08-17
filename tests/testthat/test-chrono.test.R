@@ -599,8 +599,10 @@ test_that("citsa.method works...\n", {
     }
 	n.matrix <- length(disparity$matrix)
 	delta_df <- make.deltatronic(disparity, cp, time.window =NULL, dimension.level, n.matrix)
-    control <- lapply(changepoint, make.control, data = disp, nsim = nsim, n.matrix= n.matrix)
-	control_deltatronic <- make.deltatronic(control, cp, time.window = NULL, dimension.level, n.matrix = nsim)
+	changepoint <- set.changepoint(cp)
+
+    control <- lapply(changepoint, make.control, data = disparity, nsim = nsim, n.matrix= n.matrix)
+	control_deltatronic <- make.deltatronic(control, changepoint, time.window = NULL, dimension.level, n.matrix = nsim)
 	control_delta_df <- lapply(control_deltatronic, lapply, lapply, function(x) {
                 x$emp_vs_null <- matrix(0, nrow = nrow(x$time))
                 return(x)
@@ -611,8 +613,64 @@ test_that("citsa.method works...\n", {
             return(x)
             })
 
+	
+	full_df <- bind.delta(delta_df, control_delta_df, dimension.level = dimension.level )
+	
+	expect_is(full_df, "list")
+	expect_is(full_df[[1]][[1]], "list")
+	expect_is(full_df[[1]][[1]][[1]], "data.frame")
+
+	# expect_equal(subset(full_df[[1]][[1]][[1]], emp_vs_null ==1)$disparity, as.numeric(delta_df[[1]][[1]]$disparity)) ## tests empirical disparity matches original delta_df
+	# expect_equal(subset(full_df[[1]][[1]][[5]], emp_vs_null ==0)$disparity, as.numeric(control_delta_df[[1]][[1]][[5]]$disparity))
+	expect_equal(unique(unlist(lapply(full_df, lapply, lapply, nrow))), nrow(delta_df[[1]][[1]][[1]]) *2) ## should be double the number of rows
+
+	#
+	# now test citsa.method works
+
+	citsa <- lapply(full_df, lapply, lapply, citsa.method)
+	expect_equal(unique(unlist(lapply(citsa, lapply, lapply, class))), "lm")
 
 
+
+	## multi matrix
+	## multi matrix
+	set.seed(123)
+	tree <- rtree(n = 100)
+	tree <- makeNodeLabel(tree)
+	tree <- set.root.time(tree)
+	changepoint <- tree$root.time / 2
+	mat <- replicate(10, matrix(rnorm(995), 199, 5), simplify = FALSE)
+	mat <- lapply(mat, function(x) {
+	rownames(x)  <- c(tree$tip.label, tree$node.label)#
+	return(x)
+	})
+	data <- make.dispRity(data = mat, tree = tree)
+	data <- chrono.subsets(data, method = "c", model = "equal.split", time = c(7,6,5,4,3,2,1), inc.nodes = TRUE)
+	## Warning is for the last time slice that's 0
+	data <- dispRity(data, metric = c(sum,variances))
+
+	n.matrix <- length(data$matrix)
+
+    dimension.level <- 1
+    if (any(unlist(lapply(get.disparity(data, concatenate = FALSE), function(x) nrow(x) >1)))) {
+        dimension.level <- unlist(lapply(get.disparity(data, concatenate = FALSE), function(x) nrow(x)), use.names = FALSE)[1]
+    }
+	delta_df <- make.deltatronic(data, changepoint, time.window =NULL, dimension.level, n.matrix)
+
+	changepoint <- set.changepoint(changepoint)
+	control <- lapply(changepoint, make.control, data = data, nsim = nsim, n.matrix= n.matrix)
+	control_deltatronic <- make.deltatronic(control, changepoint, time.window = NULL, dimension.level, n.matrix = nsim)
+	control_delta_df <- lapply(control_deltatronic, lapply, lapply, function(x) {
+				x$emp_vs_null <- matrix(0, nrow = nrow(x$time))
+				return(x)
+	})
+
+	delta_df <- lapply(delta_df, lapply, function(x) {
+			x$emp_vs_null <- matrix(1, nrow = nrow(x$time))
+			return(x)
+			})
+
+	full_df <- bind.delta(delta_df, control_delta_df, dimension.level = dimension.level )
 
 
 })
@@ -655,5 +713,10 @@ test_that("multi matrix disparity works", {
 	multi_multi_dimensional <- dispRity(multi_data, metric = var.fun)
 
 
+
+})
+
+
+test_that("chrono.test works", {
 
 })

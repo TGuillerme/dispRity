@@ -232,92 +232,59 @@ itsa.method <- function(delta_df,  dimension.level, ...) {
         model = model
     ))
 }
-calculate.angular.effect <- function(itsa) {
-
-    # if (citsa){
 
 
+# calculate.angular.effect <- function(itsa) {
 
-    # }    
-
-    model <- itsa$model
-    delta_df <- itsa$data
-
-    m1_emp <- coef(model)["time_elapsed"] ## basline slope
-    m_diff <- coef(model)["time_post_cp"] ## change in slope
-
-    m2 <- m1 + m_diff ## post-impact slope
-
-    sd_time <- sd(delta_df$time_elapsed, na.rm = TRUE) ## stdev of time
-    sd_disp <- sd(delta_df$disparity, na.rm = TRUE) ## stdev of disparity across **whole curve** (think that is right)
-
-    if (is.na(sd_disp) || sd_disp == 0 || is.na(sd_time) || sd_time == 0) {
-    return(NA)
-    }
-
-    beta1 <- m1 * (sd_time / sd_disp) ## standardise by stdev of time and stdev of disparity
-    beta2 <- m2 * (sd_time / sd_disp)
+#     # if (citsa){
 
 
-    ## note that using atan() is non-linear, therefore it is harder to get a large effect size if the baseline angle is already steep, than if the baseline was narrow.
-    theta1 <- atan(m1) * (180 / pi) ## convert to geometric angles from radians
-    theta2 <- atan(m2) * (180 / pi) ## same here
-    angular_effect_size <- (theta2 - theta1) / 180
 
-## Area if disparity before K-Pg is constant  (=slope of LM before is not signif)
-slope = 2
-x_axes_time <- 13
-y_axes_disparity <- slope*x_axes_time
-surface_triangle <- x_axes_time * y_axes_disparity / 2 
-relative_surface <- surface_triangle/ x_axes_time^2
-relative_surface
+#     # }    
 
-## Area if disparity before K-Pg is not constant (increase of decrease)
-relative_surface <- surface_triangle/ (surface_triangle+x_axes_time^2)
-relative_surface
+#     model <- itsa$model
+#     delta_df <- itsa$data
 
-    return(list(
-    baseline_angle_deg = theta1,
-    post_impact__angle_deg   = theta2,
-    angle_delta_deg    = theta2 - theta1,
-    effect_size   = angular_effect_size
-    ))
-}
+#     m1_emp <- coef(model)["time_elapsed"] ## basline slope
+#     m_diff <- coef(model)["time_post_cp"] ## change in slope
 
-calculate.slope.effect <- function(itsa) {
+#     m2 <- m1 + m_diff ## post-impact slope
 
- 
-    model <- itsa$model
-    delta_df <- itsa$data
+#     sd_time <- sd(delta_df$time_elapsed, na.rm = TRUE) ## stdev of time
+#     sd_disp <- sd(delta_df$disparity, na.rm = TRUE) ## stdev of disparity across **whole curve** (think that is right)
 
-    m1_emp <- coef(model)["time_elapsed"] ## basline slope
-    m_diff <- coef(model)["time_post_cp"] ## change in slope
+#     if (is.na(sd_disp) || sd_disp == 0 || is.na(sd_time) || sd_time == 0) {
+#     return(NA)
+#     }
 
-    m2 <- m1 + m_diff ## post-impact slope
-
-    sd_time <- sd(delta_df$time_elapsed, na.rm = TRUE) ## stdev of time
-    sd_disp <- sd(delta_df$disparity, na.rm = TRUE) ## stdev of disparity across **whole curve** (think that is right)
-
-    if (is.na(sd_disp) || sd_disp == 0 || is.na(sd_time) || sd_time == 0) {
-    return(NA)
-    }
-
-    beta1 <- m1 * (sd_time / sd_disp) ## standardise by stdev of time and stdev of disparity
-    beta2 <- m2 * (sd_time / sd_disp)
+#     beta1 <- m1 * (sd_time / sd_disp) ## standardise by stdev of time and stdev of disparity
+#     beta2 <- m2 * (sd_time / sd_disp)
 
 
-    es <- beta2 - beta1
+#     ## note that using atan() is non-linear, therefore it is harder to get a large effect size if the baseline angle is already steep, than if the baseline was narrow.
+#     theta1 <- atan(m1) * (180 / pi) ## convert to geometric angles from radians
+#     theta2 <- atan(m2) * (180 / pi) ## same here
+#     angular_effect_size <- (theta2 - theta1) / 180
 
+# ## Area if disparity before K-Pg is constant  (=slope of LM before is not signif)
+# slope = 2
+# x_axes_time <- 13
+# y_axes_disparity <- slope*x_axes_time
+# surface_triangle <- x_axes_time * y_axes_disparity / 2 
+# relative_surface <- surface_triangle/ x_axes_time^2
+# relative_surface
 
-    # effect_size_0_1 <- tanh(abs(standardised_delta))
+# ## Area if disparity before K-Pg is not constant (increase of decrease)
+# relative_surface <- surface_triangle/ (surface_triangle+x_axes_time^2)
+# relative_surface
 
-    return(list(
-    # baseline_angle_deg = theta1,
-    # post_impact__angle_deg   = theta2,
-    # angle_delta_deg    = theta2 - theta1,
-    effect_size   = es
-    ))
-}
+#     return(list(
+#     baseline_angle_deg = theta1,
+#     post_impact__angle_deg   = theta2,
+#     angle_delta_deg    = theta2 - theta1,
+#     effect_size   = angular_effect_size
+#     ))
+# }
 
 
 area.method <- function(itsa, time) {
@@ -539,15 +506,47 @@ make.control <- function(changepoint, data, nsim = 100, paint = TRUE, slice.mode
 
 
 bind.delta <- function(delta_df, control_delta_df, dimension.level) {
-    if (multi) {
+    if (dimension.level > 1) {
 
+    #@@@ needs work to sort out when is multidimensional
+
+    # full_df <- Map(function(control_cp, delta_cp){
+    #     Map(function(control_multi, delta_multi){
+    #         lapply(control_multi, function(sim){
+    #             # fill = TRUE allows binding with differing columns
+    #             as.data.frame(rbindlist(list(sim, delta_multi), fill = TRUE))
+    #         })
+    #     }, control_cp, delta_cp)
+    # }, control_df, delta_df_binded)
     }
 
-    delta_df <- lapply(delta_df,lapply, as.numeric)
-    delta_df <- do.call(cbind, delta_df)
-    control_df <- lapply(control_delta_df, as.numeric)
-    control_df <- do.call(cbind, control_df)
-    full_df <- as.data.frame(rbind(control_df, delta_df))
+    # delta_df <- lapply(delta_df, lapply, as.numeric)
+
+    delta_df_binded <- lapply(delta_df, lapply, function(mat){
+
+
+        ## normalise by dividing by mean disparity pre-intervention
+    mat <-  as.data.frame(mat)
+    norm_fact <- mean(mat[mat$impact == 0,]$disparity)
+    mat$disparity <- mat$disparity / norm_fact
+    return(mat)
+    })
+    control_df <- lapply(control_delta_df, lapply, lapply, function(mat){
+        mat <- as.data.frame(mat)
+        norm_fact <- mean(mat[mat$impact == 0,]$disparity)
+        mat$disparity <- mat$disparity / norm_fact
+        return(mat)
+    })
+
+    full_df <- Map(function(control_cp, delta_cp){
+        Map(function(control_multi, delta_multi){
+            lapply(control_multi, function(sim){
+                rbind(sim, delta_multi)
+            })
+        }, control_cp, delta_cp)
+    }, control_df, delta_df_binded)
+
+    return(full_df)
 
 
 }
@@ -558,18 +557,13 @@ bind.delta <- function(delta_df, control_delta_df, dimension.level) {
 
 citsa.method <- function(full_df){
 
-        # if(dimension.level > 1) {
+    ## normalise the values
 
-        # }
-        # delta_df <- lapply(delta_df, as.numeric)
-        # delta_df <- do.call(cbind, delta_df)
+    # ctrl_normalising_factor <- mean(subset(full_df, emp_vs_null == 0 & impact == 0)$disparity) ## mean of pre-int dispairty
+    # emp_normalising_factor <- mean(subset(full_df, emp_vs_null == 1 & impact == 0)$disparity)
+    # full_df$disparity <- full_df[full_df$emp_vs_null == 0,]$disparity
 
-        # control_df <- lapply(control_delta_df, as.numeric)
-        # control_df <- do.call(cbind, control_df)
 
-        # full_df <- as.data.frame(rbind(control_df, delta_df))
-
-    
         model <- tryCatch({
                 lm(
                 disparity ~ time_elapsed + impact + emp_vs_null + time_post_cp +
@@ -585,6 +579,12 @@ citsa.method <- function(full_df){
                 warning(paste0("Model failed to converge:", e$message))
                 return(NULL)
         })
+
+        ctrl_slope_change <- model$coefficients[["time_post_cp"]]
+        emp_slope_change <- model$coefficients[["time_post_cp"]] + model$coefficients[["emp_vs_null:time_post_cp"]]
+        rel_ctrl_slope_change <- 
+
+        return(model)
 }
 
 ols.deltatronic.itsa <- function(empirical, control, changepoint, times = NULL, alpha = 0.05, normalise = TRUE) { 

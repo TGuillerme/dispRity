@@ -145,7 +145,7 @@ chrono.test <- function(data, method, changepoint, time.window, nsim = 100, ...)
             changepoint <- set.changepoint(changepoint)
 
             control <- lapply(changepoint, make.control, data = data, nsim = nsim, n.matrix, ...)
-            
+
             control_deltatronic <- make.deltatronic(control, changepoint, time.window, dimension.level, n.matrix = nsim)
             # control_deltatronic <- lapply(control, make.deltatronic, changepoint, time.window)
             control_delta_df <- lapply(control_deltatronic, function(x) {
@@ -158,8 +158,10 @@ chrono.test <- function(data, method, changepoint, time.window, nsim = 100, ...)
             return(x)
             })
 
-            citsa <- Map(citsa.method, delta_df, control_delta_df)
-            ## here will go `citsa.method`
+            full_df <- bind.delta(delta_df, control_delta_df, dimension.level)
+
+            citsa <- lapply(full_df, lapply, lapply, citsa.method)
+
         },
         area={
             if (n.matrix > 1) {
@@ -173,10 +175,6 @@ chrono.test <- function(data, method, changepoint, time.window, nsim = 100, ...)
             average <- lapply(delta_df, lapply, average.method, dimension.level, ...)
         }
     )
-
-
-
-    ## 
 
 
     
