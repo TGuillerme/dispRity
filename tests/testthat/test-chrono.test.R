@@ -720,6 +720,28 @@ test_that("multi matrix disparity works", {
 test_that("chrono.test works", {
 	data(disparity)
 
-	chrono.test(disparity, method = "citsa", changepoint = 66, nsim = 10)
+	out <- chrono.test(disparity, method = "citsa", changepoint = 66, nsim = 10)
+
+
+
+	## multi matrix
+	## multi matrix
+	set.seed(123)
+	tree <- rtree(n = 100)
+	tree <- makeNodeLabel(tree)
+	tree <- set.root.time(tree)
+	changepoint <- tree$root.time / 2
+	mat <- replicate(10, matrix(rnorm(995), 199, 5), simplify = FALSE)
+	mat <- lapply(mat, function(x) {
+	rownames(x)  <- c(tree$tip.label, tree$node.label)#
+	return(x)
+	})
+	data <- make.dispRity(data = mat, tree = tree)
+	data <- chrono.subsets(data, method = "c", model = "equal.split", time = c(7,6,5,4,3,2,1), inc.nodes = TRUE)
+	## Warning is for the last time slice that's 0
+	data <- dispRity(data, metric = c(sum,variances))
+
+	out <- chrono.test(data, method = "citsa", changepoint = 3.613395, nsim = 10)
+
 
 })

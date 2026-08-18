@@ -585,6 +585,8 @@ citsa.method <- function(full_df){
         return(list(model = model, control_slope_change = ctrl_slope_change, emp_slope_change = emp_slope_change))
 }
 
+
+
 ols.deltatronic.itsa <- function(empirical, control, changepoint, times = NULL, alpha = 0.05, normalise = TRUE) { 
 
 

@@ -160,8 +160,16 @@ chrono.test <- function(data, method, changepoint, time.window = NULL, nsim = 10
             full_df <- bind.delta(delta_df, control_delta_df, dimension.level = dimension.level) ## bind the data to make 1 dataframe with emp vs control combined.
 
             citsa <- lapply(full_df, lapply, lapply, citsa.method)
+            dist_emp_slopes <- unlist(lapply(citsa, lapply, lapply,function(x)x$emp_slope_change))
+            dist_ctrl_slopes <- unlist(lapply(citsa, lapply, lapply,function(x) x$control_slope_change))
 
+            ci_ctrl <- quantile(dist_ctrl_slopes, c(0.025, 0.975), na.rm = TRUE) ## 95% confidence interval (cone of possibility defined as control)
 
+            prop_sig <- mean(dist_emp_slopes < ci_ctrl[1] | dist_emp_slopes > ci_ctrl[2], na.rm = TRUE) * 100
+
+            prop_sig_neg <- mean(dist_emp_slopes < ci_ctrl[1], na.rm = TRUE) * 100  # % significant drops
+            prop_sig_pos <- mean(dist_emp_slopes > ci_ctrl[2], na.rm = TRUE) * 100  # % significant jumps
+            t <- list(sig.increase = prop_sig_pos, sig.decrease = prop_sig_neg, citsa.output =  citsa)
 
         },
         area={
@@ -187,8 +195,8 @@ chrono.test <- function(data, method, changepoint, time.window = NULL, nsim = 10
         time.window = time.window,
         nsim = nsim
         )
-        class(out) <- c("dispRity", "chrono.test")
-        return(invisible(out))
+        class(output) <- c("dispRity", "chrono.test")
+        return(invisible(output))
 
 }
 

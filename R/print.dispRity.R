@@ -277,24 +277,33 @@ print.dispRity <- function(x, all = FALSE, ...) {
                     cat(paste0("Call: ", as.expression(x$call), "\n"))
                     cat(paste0("Method: ", x$method, "\n"))
 
-                    cp_names <- names(x$test.output)
-                    if (is.null(cp_names)) {
-                    cp_names <- seq_along(x$test.output)
+                    # cp_names <- names(x$test.output) ## names of list structure is by changepoint
+                    # if (is.null(cp_names)) {
+                    # cp_names <- seq_along(x$test.output)
+                    # }
+                    # cat(paste0("Changepoint(s): ", paste(cp_names, collapse = ", "), "\n")) ## prints the changeppint times
+
+                    if(x$method == "itsa"){
+                        n_cp <- length(x$test.output)
+                        n_mat <- length(x$test.output[[1]])
+                        cat(paste0("ITSA parameters: ", n_cp, " changepoint(s) &", n_mat, " matrix/matrices\n"))
                     }
-                    cat(paste0("Changepoint(s): ", paste(cp_names, collapse = ", "), "\n"))
+
+                    # if(x$method == "average")
 
                     if (identical(x$method, "citsa")) {
-                    n_cp <- length(x$test.output)
+                    n_cp <- length(x$changepoint)
                     n_mat <- length(x$test.output[[1]])
-                    n_sim <- length(x$test.output[[1]][[1]])
-                    cat(paste0("C-ITSA models: ", n_cp, " changepoint(s) x ", n_mat, " matrix/matrices x ", n_sim, " simulation(s)\n"))
+                    n_sim <- length(x$call$nsim)
+                    cat(paste0("CITSA parameters: ", n_cp, " changepoint(s) & ", n_mat, " matrix/matrices & ", n_sim, " simulation(s)\n"))
+                    cat(paste0("Out of ", n_sim, " simulations, the empirical curves were above the 95% confidence interval ", x$test.output$sig.increase, "% and below the 95% confidence interval ", x$test.output$sig.decrease, "% \n"))
 
-                    ex <- x$test.output[[1]][[1]][[1]]
-                    if (is.list(ex) && all(c("control_slope_change", "emp_slope_change") %in% names(ex))) {
-                    cat(paste0("Example control slope change: ", signif(ex$control_slope_change, 4), "\n"))
-                    cat(paste0("Example empirical slope change: ", signif(ex$emp_slope_change, 4), "\n"))
-                    }
-                    cat("Use x$test.output to inspect all model objects.\n")
+                    # ex <- x$test.output[[1]][[1]][[1]]
+                    # if (is.list(ex) && all(c("control_slope_change", "emp_slope_change") %in% names(ex))) {
+                    # cat(paste0("Example control slope change: ", signif(ex$control_slope_change, 4), "\n"))
+                    # cat(paste0("Example empirical slope change: ", signif(ex$emp_slope_change, 4), "\n"))
+                    # }
+                    cat("Use $test.output to inspect all model objects.\n")
                     }
 
                     return(invisible())
