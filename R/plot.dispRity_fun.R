@@ -1627,7 +1627,7 @@ get.center.scale.range <- function(xrange, yrange) {
 do.plot.chrono.test <- function(data) {
     method <- data$call$method
 
-    if (method == "itsa"){
+    if (method == "itsa") {
 
         ## this code plots each curve and cf independently as several plots, but i think is best to amalgamate into one plot
 
@@ -1701,5 +1701,56 @@ do.plot.chrono.test <- function(data) {
             lwd    = c(1, 1, 1),
             cex = 1.6)
         }
+    }
+
+    if (method == "citsa"){
+        n_plots <-length(data$test.output)
+        op_tmp <- par(mfrow = c(ceiling(sqrt(n_plots)),round(sqrt(n_plots))))
+
+        for (i in seq_along(length(data$test.output$citsa.output))) {
+            time <- subset(cp_output[[1]][[1]]$data, emp_vs_null ==1)$time
+            cp <- as.numeric(names(data$test.output$citsa.output)[i]) ## extract changepoint
+            # test_output <- data$test.output[[i]]
+            cp_output <- data$test.output$citsa.output[[i]]
+
+            ctrl_disparity <- do.call(
+                cbind,
+                lapply(unlist(cp_output, recursive = FALSE), function(x) {
+                    as.numeric(subset(x$data, emp_vs_null == 0)[["disparity"]])
+                })
+            )
+
+            ctrl_disparity_upper <- apply(ctrl_disparity, 1,max) 
+            ctrl_disparity_lower <- apply(ctrl_disparity, 1,min) 
+            ctrl_mean <- apply(ctrl_disparity, 1, mean)
+
+
+            emp_disparity <- do.call(
+                cbind,
+                lapply(unlist(cp_output, recursive = FALSE), function(x) {
+                    as.numeric(subset(x$data, emp_vs_null == 1)[["disparity"]])
+                })
+            )
+
+            x_lim <- c(max(time), min(time)) ## set plot parameters 
+            y_min <- min(c(ctrl_disparity_lower, emp_disparity), na.rm = TRUE)
+            y_max <- max(c(ctrl_disparity_upper, emp_disparity), na.rm = TRUE)
+            matplot(time, emp_disparity, type = "l", col = "black", xlim = x_lim, ylim = c(y_min, y_max))
+            polygon(
+                c(time, rev(time)),
+                c(ctrl_disparity_upper, rev(ctrl_disparity_lower)),
+                col = adjustcolor("red", alpha.f = 0.2), border = NA
+            ) ## add the counterfactual envelope
+            lines(time, ctrl_mean, lwd = 2, col = "red")
+            abline(v = cp, col = "blue", lty = 2, lwd = 2)
+            legend("topleft",
+                legend = c("Empirical disparity", "BM Counterfactual", "Changepoint"),
+                col    = c("black", "red", "blue"),
+                lty    = c(1, 1, 2),
+                lwd    = c(1, 1, 1),
+                cex = 1.6
+            )
+        }
+
     }
 }

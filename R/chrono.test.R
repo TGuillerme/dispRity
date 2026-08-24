@@ -170,7 +170,7 @@ chrono.test <- function(data, method, changepoint, time.window = NULL, nsim = 10
 
             prop_sig_neg <- mean(dist_emp_slopes < ci_ctrl[1], na.rm = TRUE) * 100  # % significant drops
             prop_sig_pos <- mean(dist_emp_slopes > ci_ctrl[2], na.rm = TRUE) * 100  # % significant jumps
-            out <- list(sig.increase = prop_sig_pos, sig.decrease = prop_sig_neg, citsa.output =  citsa, delta.df = list(emp = delta_df, ctrl = control_delta_df))
+            out <- list(sig.increase = prop_sig_pos, sig.decrease = prop_sig_neg, citsa.output =  citsa)
 
         },
         area={

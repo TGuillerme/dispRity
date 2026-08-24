@@ -582,7 +582,7 @@ citsa.method <- function(full_df){
         ctrl_slope_change <- model$coefficients[["time_post_cp"]]
         emp_slope_change <- model$coefficients[["time_post_cp"]] + model$coefficients[["emp_vs_null:time_post_cp"]]
 
-        return(list(model = model, control_slope_change = ctrl_slope_change, emp_slope_change = emp_slope_change))
+        return(list(model = model, control_slope_change = ctrl_slope_change, emp_slope_change = emp_slope_change, data = full_df))
 }
 
 

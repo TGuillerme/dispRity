@@ -630,7 +630,7 @@ test_that("citsa.method works...\n", {
 	citsa <- lapply(full_df, lapply, lapply, citsa.method)
 	expect_equal(unique(unlist(lapply(citsa, lapply, lapply, class))), "lm")
 
-
+	
 
 	## multi matrix
 	## multi matrix
@@ -744,6 +744,8 @@ test_that("chrono.test works", {
 	data <- dispRity(data, metric = c(sum,variances))
 
 	out <- chrono.test(data, method = "citsa", changepoint = 3.613395, nsim = 10)
+
+
 
 	out <- chrono.test(data, method = "itsa", changepoint = 3.613395, nsim = 10)
 
