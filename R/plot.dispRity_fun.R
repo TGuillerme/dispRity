@@ -1627,6 +1627,7 @@ get.center.scale.range <- function(xrange, yrange) {
 do.plot.chrono.test <- function(data) {
     method <- data$call$method
 
+    ## itsa method plots
     if (method == "itsa") {
 
         ## this code plots each curve and cf independently as several plots, but i think is best to amalgamate into one plot
@@ -1702,23 +1703,29 @@ do.plot.chrono.test <- function(data) {
             cex = 1.6)
         }
     }
+    
 
+    ## citsa method plots
     if (method == "citsa"){
-        n_plots <-length(data$test.output)
-        op_tmp <- par(mfrow = c(ceiling(sqrt(n_plots)),round(sqrt(n_plots))))
+        n_plots <-length(data$test.output$citsa.output) * 2
+        op_tmp <- par(mfrow = c(round(sqrt(n_plots)), ceiling(sqrt(n_plots))))
 
         for (i in seq_along(length(data$test.output$citsa.output))) {
-            time <- subset(cp_output[[1]][[1]]$data, emp_vs_null ==1)$time
+
+            ## time series plot
+
+            cp_output <- data$test.output$citsa.output[[i]]
+
+            time <- subset(cp_output[[1]][[1]]$data, emp_vs_null ==1)$time ## extract time
             cp <- as.numeric(names(data$test.output$citsa.output)[i]) ## extract changepoint
             # test_output <- data$test.output[[i]]
-            cp_output <- data$test.output$citsa.output[[i]]
 
             ctrl_disparity <- do.call(
                 cbind,
                 lapply(unlist(cp_output, recursive = FALSE), function(x) {
                     as.numeric(subset(x$data, emp_vs_null == 0)[["disparity"]])
                 })
-            )
+            ) ## ## create counterfactual disparity mat
 
             ctrl_disparity_upper <- apply(ctrl_disparity, 1,max) 
             ctrl_disparity_lower <- apply(ctrl_disparity, 1,min) 
@@ -1730,12 +1737,12 @@ do.plot.chrono.test <- function(data) {
                 lapply(unlist(cp_output, recursive = FALSE), function(x) {
                     as.numeric(subset(x$data, emp_vs_null == 1)[["disparity"]])
                 })
-            )
+            ) ## create empirical disparity mat
 
             x_lim <- c(max(time), min(time)) ## set plot parameters 
             y_min <- min(c(ctrl_disparity_lower, emp_disparity), na.rm = TRUE)
             y_max <- max(c(ctrl_disparity_upper, emp_disparity), na.rm = TRUE)
-            matplot(time, emp_disparity, type = "l", col = "black", xlim = x_lim, ylim = c(y_min, y_max))
+            matplot(time, emp_disparity, type = "l", col = "black", xlim = x_lim, ylim = c(y_min, y_max), xlab = "Time (Ma)", ylab = "Standardised disparity")
             polygon(
                 c(time, rev(time)),
                 c(ctrl_disparity_upper, rev(ctrl_disparity_lower)),
@@ -1750,6 +1757,51 @@ do.plot.chrono.test <- function(data) {
                 lwd    = c(1, 1, 1),
                 cex = 1.6
             )
+
+            ## histogram plot
+            emp_vals <- unlist(
+            lapply(cp_output, function(mat_out) sapply(mat_out, `[[`, "emp_slope_change")),
+            use.names = FALSE
+            )
+
+            ctrl_vals <- unlist(
+            lapply(cp_output, function(mat_out) sapply(mat_out, `[[`, "control_slope_change")),
+            use.names = FALSE
+            )
+
+            all_vals <- c(emp_vals, ctrl_vals)
+            common_breaks <- pretty(range(all_vals, na.rm = TRUE), n = 20)
+
+            h_emp  <- hist(emp_vals,  breaks = common_breaks, plot = FALSE)
+            h_ctrl <- hist(ctrl_vals, breaks = common_breaks, plot = FALSE)
+
+            y_max <- max(c(h_emp$counts, h_ctrl$counts), na.rm = TRUE)
+
+            plot(
+            h_ctrl,
+            col = grDevices::adjustcolor("red", alpha.f = 0.35),
+            border = "red",
+            ylim = c(0, y_max),
+            xlab = "Standardised slope change",
+            main = "CITSA slope-change distributions"
+            )
+
+            plot(
+            h_emp,
+            col = grDevices::adjustcolor("black", alpha.f = 0.35),
+            border = "black",
+            add = TRUE
+            )
+
+            abline(v = 0, lty = 2, col = "grey40")
+            legend(
+            "topright",
+            legend = c("Counterfactual", "Empirical"),
+            fill = c(grDevices::adjustcolor("red", 0.35), grDevices::adjustcolor("black", 0.35)),
+            border = c("red", "black"),
+            bty = "n"
+            )
+
         }
 
     }
