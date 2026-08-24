@@ -1622,3 +1622,84 @@ get.center.scale.range <- function(xrange, yrange) {
     }
     return(list(xlim = xlim, ylim = ylim))
 }
+
+
+do.plot.chrono.test <- function(data) {
+    method <- data$call$method
+
+    if (method == "itsa"){
+
+        ## this code plots each curve and cf independently as several plots, but i think is best to amalgamate into one plot
+
+
+        # n_cp <- length(data$test.output)
+        # n_matrices <- length(data$test.output[[1]])
+
+        # n_plots <- n_cp * n_matrices
+
+        # op_tmp <- par(mfrow = c(ceiling(sqrt(n_plots)),round(sqrt(n_plots))))
+
+        # for (i in 1:n_cp){
+        #     for (j in 1:n_matrices){
+        #         cp <- as.numeric(names(data$test.output)[i]) ## extract changepoint
+        #         test_data <- data$test.output[[i]][[j]]
+        #         # disp_vals <- test_data$data$disparity
+        #         coefs <- coef(test_data$model)
+        #         x_lim <- c(max(test_data$data$time), min(test_data$data$time)) ## set plot parameters 
+        #         y_min <- min(c(test_data$data$counter_lower_ci, test_data$data$disparity), na.rm = TRUE)
+        #         y_max <- max(c(test_data$data$counter_upper_ci, test_data$data$disparity), na.rm = TRUE)
+        #         plots[[i]][[j]] <- plot(test_data$data$time, test_data$data$disparity, 
+        #             type = "l", col = "black", lwd = 2,
+        #             xlab = "Time", ylab = "Disparity", xlim = x_lim, ylim = c(y_min, y_max)
+        #         )
+        #         polygon(
+        #             c(test_data$data$time, rev(test_data$data$time)),
+        #             c(test_data$data$counter_upper_ci, rev(test_data$data$counter_lower_ci)),
+        #             col = adjustcolor("red", alpha.f = 0.2), border = NA
+        #         ) ## add the counterfactual envelope
+        #         lines(test_data$data$time, test_data$data$counter_mean_ci, lwd = 2, col = "red")
+        #         abline(v = cp, col = "blue", lty = 2, lwd = 2)
+        #         legend("topleft",
+        #         legend = c("Empirical disparity", "Counterfactual", "Changepoint"),
+        #         col    = c("black", "red", "blue"),
+        #         lty    = c(1, 1, 2),
+        #         lwd    = c(1, 1, 1),
+        #         cex = 1.0)
+        #          legend("bottomright",
+        #             legend = paste0(names(coefs), ": ", round(coefs, 3)),
+        #             bty = "n",   # no box
+        #             cex = 1.8)
+        #     }
+        # }
+
+        ## one plot per cp
+        n_plots <-length(data$test.output)
+        op_tmp <- par(mfrow = c(ceiling(sqrt(n_plots)),round(sqrt(n_plots))))
+
+        for (i in seq_along(length(data$test.output))) {
+            cp <- as.numeric(names(data$test.output)[i]) ## extract changepoint
+            test_output <- data$test.output[[i]]
+            counter_lower <- pmax(apply(do.call(cbind,lapply(test_output, function(x) x$data$counter_lower_ci)), 1, min), 0) ## cutoff disparity at 0 to remove negative vals
+            counter_upper <- apply(do.call(cbind,lapply(test_output, function(x) x$data$counter_upper_ci)), 1, max)
+            counter_mean <- apply(do.call(cbind,lapply(test_output, function(x) x$data$counter_mean_ci)), 1, mean)
+            disparity <- do.call(cbind, lapply(test_output, function(x) x$data$disparity))
+            x_lim <- c(max(test_output[[1]]$data$time), min(test_output[[1]]$data$time)) ## set plot parameters 
+            y_min <- min(c(counter_lower, disparity), na.rm = TRUE)
+            y_max <- max(c(counter_upper, disparity), na.rm = TRUE)
+            matplot(test_output[[1]]$data$time, disparity, type = "l", col = "black", xlim = x_lim, ylim = c(y_min, y_max))
+            polygon(
+                c(test_output[[1]]$data$time, rev(test_output[[1]]$data$time)),
+                c(counter_upper, rev(counter_lower)),
+                col = adjustcolor("red", alpha.f = 0.2), border = NA
+            ) ## add the counterfactual envelope
+            lines(test_output[[1]]$data$time, counter_mean, lwd = 2, col = "red")
+            abline(v = cp, col = "blue", lty = 2, lwd = 2)
+            legend("topleft",
+            legend = c("Empirical disparity", "Counterfactual", "Changepoint"),
+            col    = c("black", "red", "blue"),
+            lty    = c(1, 1, 2),
+            lwd    = c(1, 1, 1),
+            cex = 1.6)
+        }
+    }
+}

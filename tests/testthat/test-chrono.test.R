@@ -720,8 +720,10 @@ test_that("multi matrix disparity works", {
 test_that("chrono.test works", {
 	data(disparity)
 
-	out <- chrono.test(disparity, method = "citsa", changepoint = 66, nsim = 10)
+	out <- chrono.test(disparity, method = "average", changepoint = 66)
+	out <- chrono.test(disparity, method = "itsa", changepoint = 66)
 
+	out <- chrono.test(disparity, method = "citsa", changepoint = 66)
 
 
 	## multi matrix
@@ -743,5 +745,6 @@ test_that("chrono.test works", {
 
 	out <- chrono.test(data, method = "citsa", changepoint = 3.613395, nsim = 10)
 
+	out <- chrono.test(data, method = "itsa", changepoint = 3.613395, nsim = 10)
 
 })

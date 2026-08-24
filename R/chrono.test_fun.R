@@ -287,7 +287,7 @@ itsa.method <- function(delta_df,  dimension.level, ...) {
 # }
 
 
-area.method <- function(itsa, time) {
+area.method <- function(itsa) {
     
     data <- itsa$data
     

@@ -137,7 +137,8 @@ chrono.test <- function(data, method, changepoint, time.window = NULL, nsim = 10
         itsa={
 
             #TG: for here and for delta_df in general, is it not easier to just make a list of lists? So that it never has to toggle between either options? I.e. if it's a multi.matrix or not it always go double lapply?
-                itsa <- lapply(delta_df, lapply, itsa.method, dimension.level  =dimension.level, ...)
+                itsa <- lapply(delta_df, lapply, itsa.method, dimension.level  = dimension.level, ...)
+
         },
         citsa={
 
@@ -169,15 +170,15 @@ chrono.test <- function(data, method, changepoint, time.window = NULL, nsim = 10
 
             prop_sig_neg <- mean(dist_emp_slopes < ci_ctrl[1], na.rm = TRUE) * 100  # % significant drops
             prop_sig_pos <- mean(dist_emp_slopes > ci_ctrl[2], na.rm = TRUE) * 100  # % significant jumps
-            t <- list(sig.increase = prop_sig_pos, sig.decrease = prop_sig_neg, citsa.output =  citsa)
+            out <- list(sig.increase = prop_sig_pos, sig.decrease = prop_sig_neg, citsa.output =  citsa, delta.df = list(emp = delta_df, ctrl = control_delta_df))
 
         },
         area={
-            if (n.matrix > 1) {
-                itsa <- lapply(delta_df, lapply, itsa.method, dimension.level = dimension.level, ...)
-                area <- lapply(itsa, lapply, area.method, dimension.level = dimension.level) ## check on this 
-            }
-            itsa <- lapply(delta_df, itsa.method, dimension.level = dimension.level, ...)
+            # if (n.matrix > 1) {
+            #     itsa <- lapply(delta_df, lapply, itsa.method, dimension.level = dimension.level, ...)
+            #     area <- lapply(itsa, lapply, area.method, dimension.level = dimension.level) ## check on this 
+            # }
+            itsa <- lapply(delta_df, lapply, itsa.method, dimension.level = dimension.level, ...)
             area <- lapply(itsa,  area.method, ...)
         },
         average={

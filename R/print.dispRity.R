@@ -296,7 +296,7 @@ print.dispRity <- function(x, all = FALSE, ...) {
                     n_mat <- length(x$test.output[[1]])
                     n_sim <- length(x$call$nsim)
                     cat(paste0("CITSA parameters: ", n_cp, " changepoint(s) & ", n_mat, " matrix/matrices & ", n_sim, " simulation(s)\n"))
-                    cat(paste0("Out of ", n_sim, " simulations, the empirical curves were above the 95% confidence interval ", x$test.output$sig.increase, "% and below the 95% confidence interval ", x$test.output$sig.decrease, "% \n"))
+                    cat(paste0("Out of ", n_sim,  " simulations, ",x$test.output$sig.increase,   "% of the empirical slope changes were above the 95% confidence interval ", " and ", x$test.output$sig.decrease, "% slope changes were below the 95% confidence interval.\n"))
 
                     # ex <- x$test.output[[1]][[1]][[1]]
                     # if (is.list(ex) && all(c("control_slope_change", "emp_slope_change") %in% names(ex))) {

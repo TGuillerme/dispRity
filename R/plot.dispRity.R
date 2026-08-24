@@ -258,6 +258,12 @@ plot.dispRity <- function(x, ..., type, quantiles = c(50, 95), cent.tend = media
             do.call(plot, plot_args)
             return(invisible())
         }
+
+
+        if (is(data, c("dispRity")) && is(data, c("chrono.test"))){
+            do.plot.chrono.test(data, ...)
+            return(invisible())
+        }
     }
 
     ## ----
