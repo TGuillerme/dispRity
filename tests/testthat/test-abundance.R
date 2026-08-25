@@ -161,18 +161,12 @@ test_that("abundance works for calculating dispRity metrics", {
     print <- capture_output(print(test1))
     expect_equal(print[[1]], " ---- dispRity object ---- \n50 elements in one matrix with 48 dimensions with 1 associated abundance matrix.\nDisparity was calculated as: as.abundance(average1).")
     expect_equal(get.disparity(test1)[[1]], mean(abundance_data))
+})
 
-
-
-
+test_that("abundance works for complex metrics", {
 
 ## metric target toggles between using "matrix" or "abundance"?
     ## Alternatively just go with the old BAT implementation...
-
-
- 
-
-
 
 # ## Metric fun:
 #     # 1- abundance only metric  -> detected if args are only abundance
@@ -200,10 +194,6 @@ test_that("abundance works for calculating dispRity metrics", {
 
 # ## Needs checking
 #     # 1- if metric has abundance, does data has abundance?
-
-
-
-
 })
 
 
