@@ -317,6 +317,11 @@ test_that("fill.dispRity", {
     expect_equal(length(test$matrix), 1)
 
     ## Works with abundance
+    test <- make.dispRity(data = my_data)
+    tust <- fill.dispRity(test, abundance = TRUE)
+    expect_equal(names(tust), c("matrix","tree","call","subsets","abundance"))
+    expect_is(tust$abundance, "list")
+    expect_equal(dim(tust$abundance[[1]]), c(nrow(my_data), 1))
 })
 
 ## get.matrix
