@@ -3,6 +3,7 @@
 #' @description An interface to use metrics from the \code{BAT} package in \code{dispRity}
 #'
 #' @param matrix A data matrix or a \code{BAT} structure data list (containing \code{"comm"}, \code{"tree"}, \code{"traits"}).
+#' @param ... Optional variables to be passed to \code{BAT.fun}. Can be \code{tree} or \code{trait}
 #' @param BAT.fun The name of the metric or directly it's function.
 #' @param BAT.args Any named optional arguments to be passed to \code{BAT.metric} (default is \code{NULL})
 #' @param return.all Whether to return the raw BAT results (\code{TRUE}) or not (\code{FALSE}; default)
@@ -51,19 +52,25 @@
 #' @seealso \code{\link{dispRity}}, \code{\link{custom.subsets}}
 #' 
 #' @author Thomas Guillerme
-BAT.metric <- function(matrix, BAT.fun, BAT.args = NULL, return.raw = FALSE) {
+BAT.metric <- function(matrix, ..., BAT.fun, BAT.args = NULL, return.raw = FALSE) {
     
     #SANITIZNG
     match_call <- match.call()
 
+    ## Get the dots
+    dots <- list(...)
+
     ## Checking the matrix
-    input_comm <- check.class(matrix, c("matrix", "list"))
-    input_is_comm <- FALSE
-    if(input_comm == "list") {
-        if(!all(names(matrix) %in% c("comm", "tree", "traits"))) {
-            stop.call(call = match_call$matrix, msg = " must be a matrix or a named list containing elements 'comm', 'tree' and 'traits'. You can use the function dispRity.BAT() to format it correctly.")
-        }
-        input_is_comm <- TRUE
+    input_matrix <- check.class(matrix, c("matrix", "list", "dispRity"))
+    if(input_matrix == "list") {
+        return(lapply(matrix, BAT.metric, BAT.fun, BAT.args, return.raw))
+    }
+    if(input_matrix == "dispRity") {
+        stop("DEBUG BAT.metric: does not handle dispRity object yet")
+        ## Needs to handle the variables as following:
+        BAT::comm -> dispRity$abundance
+        BAT::trait -> dispRity$matrix
+        BAT::tree -> dispRity$tree
     }
 
     ## Checking the fun
@@ -82,20 +89,7 @@ BAT.metric <- function(matrix, BAT.fun, BAT.args = NULL, return.raw = FALSE) {
         BAT.fun <- eval(str2lang(paste0("BAT::", BAT.fun)))
     }
 
-    ## Check if the function needs a tree
-    has_BAT_tree_args <- any(names(formals(BAT.fun)) == "tree")
-    has_BAT_trait_args <- any(names(formals(BAT.fun)) == "traits")
-
-    ## Handle the comms arg
-    comm_arg <- NULL
-    ## Basic
-    if(!input_is_comm) {
-        comm_arg <- make.BAT.comm(matrix)
-    } else {
-        comm_arg <- matrix$comm
-    }
-
-    ## Handle the arguments
+    ## Handle the optional arguments
     if(!is.null(BAT.args)) {
         BAT_args <- BAT.args
     } else {
@@ -103,21 +97,14 @@ BAT.metric <- function(matrix, BAT.fun, BAT.args = NULL, return.raw = FALSE) {
     }
 
     ## Add the comm argument
-    BAT_args$comm <- comm_arg
+    BAT_args$comm <- matrix
+    warning("DEBUG BAT.metric: needs to handle matrix argument more specifically + other arguments")
 
-    ## Add the tree or traits (if not overriden by ...)
-    if(has_BAT_tree_args && !("tree" %in% names(BAT_args)) && input_is_comm) {
-        BAT_args$tree <- matrix$tree
-    }
-    if(has_BAT_trait_args && !("traits" %in% names(BAT_args)) && input_is_comm) {
-        BAT_args$traits <- matrix$traits
-    }
-    
     ## Run the fun!
     if(return.raw) {
         return(do.call(BAT.fun, BAT_args))
     } else {
-        return(do.call(BAT.fun, BAT_args)[[1]])
+        return(c(do.call(BAT.fun, BAT_args)))
     }
 }
 

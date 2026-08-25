@@ -1039,5 +1039,55 @@ extinction.subsets <- function(data, extinction, lag = 1, names = FALSE, as.list
     }
 
     return(extinction_subset)
+}
 
+
+
+
+
+#' @title Matrix transpose for \code{dispRity}.
+#'
+#' @description Transpose the matrices in a \code{dispRity} object.
+#'
+#' @param x A \code{dispRity} object.
+#'
+#' @details Transposes the matrix or matrices in the \code{dispRity} object as well as all other optional linked data (e.g. dimensions, abundance data, etc) if present.
+#' 
+#' @examples
+#' ## Load a disparity example dataset
+#' data(disparity)
+#' 
+#' ## Transpose the internal data (subsets and disparity are lost)
+#' t(disparity)
+#' 
+#' @seealso \code{\link{dispRity}}
+#'
+#' @author Thomas Guillerme
+# @export
+
+t.dispRity <- function(x) {
+    data <- x
+
+    ## Get the elements in dispRity
+    elements <- names(data)
+
+    ## Remove elements
+    to_remove <- c("subsets", "boostraps", "covar", "disparity")
+    remove_name <- which(to_remove %in% elements)
+    if(length(remove_name) > 0) {
+        warning(paste0("The following element", ifelse(sum(remove_name) > 1, "s", ""), " cannot be transposed and ", ifelse(sum(remove_name) > 1, "have", "has"), " been removed from x: ", paste0(to_remove[remove_name], collapse = ", "), "."))
+    }
+    data <- remove.dispRity(data, what = to_remove)
+
+    ## Transpose what's left
+    data$matrix <- lapply(data$matrix, t)
+    if("abundance" %in% elements) {
+        data$abundance <- lapply(data$abundance, t)
+    }
+    if("call" %in% elements && !is.null(data$call$dimensions)) {
+        data$call$dimensions <- NULL
+    }
+
+    ## Fill what's left
+    return(fill.dispRity(data))
 }

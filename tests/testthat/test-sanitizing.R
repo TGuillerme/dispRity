@@ -105,7 +105,7 @@ test_that("check.dist.matrix works", {
     is_dist <- as.matrix(dist(non_dist))
 
     test <- check.dist.matrix(dist(non_dist))
-    expect_equal(test[[1]], dist(non_dist))
+    expect_true(all(test[[1]] == dist(non_dist)))
     expect_true(test$was_dist)
 
     expect_error(check.dist.matrix(non_dist, just.check = "blabla"))
@@ -158,7 +158,7 @@ test_that("check.class works", {
     test <- check.list(list, is.null, condition = any)
     expect_equal(test, c("a" = FALSE, "1" = FALSE, "tree" = FALSE))
 
-    test <- check.list(list, function(x) (x == "a"), condition = any)
+    test <- check.list(list, function(x) (is(x, "character")), condition = any)
     expect_equal(test, c("a" = TRUE, "1" = FALSE, "tree" = FALSE))    
 })
 

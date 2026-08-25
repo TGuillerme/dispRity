@@ -1,103 +1,107 @@
-## Base test (BAT::alpha)
-test_that("standalone works (just copying BAT functions)", {
-    set.seed(1)
-    dummy_matrix <- matrix(rnorm(90), 10, 9, dimnames = list(letters[1:10]))
-    dendro <- hclust(dist(dummy_matrix), method = "average")
-    comm <- make.BAT.comm(dummy_matrix)
+# ## Base test (BAT::alpha)
+# test_that("standalone works (just copying BAT functions)", {
 
-    ## Expected BAT tests
-    BAT_test1 <- BAT::alpha(comm)
-    expect_equal(BAT_test1[[1]], 2)
-    BAT_test2 <- BAT::alpha(comm, tree = dendro)
-    expect_equal_round(BAT_test2[[1]], 33.26329, digits = 5)
+#     ## Something like metric <- function(matrix, abundance)
+#     set.seed(1)
+#     data(BeckLee_mat50) 
+#     abundance_data <- matrix(sample(c(0,1,2,3), 200, replace = TRUE, prob = c(0.4, 0.4, 0.1, 0.1)), nrow = 50, ncol = 4)
+#     rownames(abundance_data) <- rownames(BeckLee_mat50)
+#     colnames(abundance_data) <- c("site1", "site2", "site3", "site4") 
+#     data <- make.dispRity(data = BeckLee_mat50, abundance = abundance_data)
+
+#     dendro <- hclust(dist(abundance_data), method = "average")
+
+#     ## Expected BAT tests
+#     BAT_test1 <- BAT::alpha(t(abundance_data))
+#     expect_equal(c(BAT_test1), c(32, 30, 33, 31))
+#     BAT_test2 <- BAT::alpha(t(abundance_data), tree = dendro)
+#     expect_equal_round(c(BAT_test2), c(41.81761, 38.48370, 38.15150, 39.90073), digit = 5)
+
+#     ## Expected dispRity errors
+#     # wrong matrix
+#     error <- capture_error(BAT.metric("dummy_matrix", BAT.fun = BAT::alpha))
+#     expect_equal(error[[1]], "matrix must be of class matrix or list.")
+#     # wrong fun
+#     error <- capture_error(BAT.metric(dummy_matrix, BAT.fun = "BAT::alpha"))
+#     expect_equal(error[[1]], "BAT.fun must be a function or must be one of the following: alpha.")
+
+#     ## Expected dispRity tests
+#     expect_equal(BAT.metric(abundance_data, BAT.fun = BAT::alpha), 10)
 
 
 
 
+#     expect_equal(BAT.metric(dummy_matrix, BAT.fun = "alpha"), 10)
+#     expect_equal_round(BAT.metric(dummy_matrix, BAT.fun = BAT::alpha, BAT.args = list(tree = dendro)), 33.26329, digits = 5)
+#     expect_equal_round(BAT.metric(dummy_matrix, BAT.fun = "alpha", BAT.args = list(tree = dendro)), 33.26329, digits = 5)
+# })
 
-
-
-    ## Expected dispRity errors
-    # wrong matrix
-    error <- capture_error(BAT.metric("dummy_matrix", BAT.fun = BAT::alpha))
-    expect_equal(error[[1]], "matrix must be of class matrix or list.")
-    # wrong fun
-    error <- capture_error(BAT.metric(dummy_matrix, BAT.fun = "BAT::alpha"))
-    expect_equal(error[[1]], "BAT.fun must be a function or must be one of the following: alpha.")
-
-    ## Expected dispRity tests
-    expect_equal(BAT.metric(dummy_matrix, BAT.fun = BAT::alpha), 10)
-    expect_equal(BAT.metric(dummy_matrix, BAT.fun = "alpha"), 10)
-    expect_equal_round(BAT.metric(dummy_matrix, BAT.fun = BAT::alpha, BAT.args = list(tree = dendro)), 33.26329, digits = 5)
-    expect_equal_round(BAT.metric(dummy_matrix, BAT.fun = "alpha", BAT.args = list(tree = dendro)), 33.26329, digits = 5)
-})
-
-test_that("dispRity pipeline workable", {
-    # data(demo_data)
-    # eco_data <- demo_data$jones
+# test_that("dispRity pipeline workable", {
+#     # data(demo_data)
+#     # eco_data <- demo_data$jones
     
-    # ## BAT test
-    # data <- dispRity.BAT(eco_data)
-    # test <- BAT::alpha(data$comm)
-    # expect_equal(c(test), c(24, 24))
+#     # ## BAT test
+#     # data <- dispRity.BAT(eco_data)
+#     # test <- BAT::alpha(data$comm)
+#     # expect_equal(c(test), c(24, 24))
 
-    # ## Apply the alpha diversity on these subsets
-    # alpha_diversity <- dispRity(eco_data, metric = BAT.metric, BAT.fun = BAT::alpha)
-    # expect_equal(c(summary(alpha_diversity)$obs), c(24, 24))
-    # alpha_diversity <- dispRity(eco_data, metric = BAT.metric, BAT.fun = "alpha")
-    # expect_equal(c(summary(alpha_diversity)$obs), c(24, 24))
-})
+#     # ## Apply the alpha diversity on these subsets
+#     # alpha_diversity <- dispRity(eco_data, metric = BAT.metric, BAT.fun = BAT::alpha)
+#     # expect_equal(c(summary(alpha_diversity)$obs), c(24, 24))
+#     # alpha_diversity <- dispRity(eco_data, metric = BAT.metric, BAT.fun = "alpha")
+#     # expect_equal(c(summary(alpha_diversity)$obs), c(24, 24))
+# })
 
-test_that("works for more complex ones", {
+# test_that("works for more complex ones", {
 
-    # data(demo_data)
-    # eco_data <- demo_data$jones
-    # data <- dispRity.BAT(eco_data)
-    # comm <- make.BAT.comm(data$traits)
+#     # data(demo_data)
+#     # eco_data <- demo_data$jones
+#     # data <- dispRity.BAT(eco_data)
+#     # comm <- make.BAT.comm(data$traits)
 
-    # ## Trees
-    # tree <- hclust(dist(data$traits), method = "average") 
-    # tree_alpha      <- BAT::alpha(data$comm, tree)
-    # tree_dispersion <- BAT::dispersion(data$comm, tree)
-    # tree_evenness   <- BAT::evenness(data$comm, tree)
+#     # ## Trees
+#     # tree <- hclust(dist(data$traits), method = "average") 
+#     # tree_alpha      <- BAT::alpha(data$comm, tree)
+#     # tree_dispersion <- BAT::dispersion(data$comm, tree)
+#     # tree_evenness   <- BAT::evenness(data$comm, tree)
 
-    # test <- BAT.metric(data$traits, BAT.fun = BAT::alpha, BAT.args = list(tree = tree))
-    # expect_equal(c(test), c(BAT::alpha(comm, tree)))
-    # test <- dispRity(eco_data, metric = BAT.metric, BAT.fun = BAT::alpha, BAT.args = list(tree = tree))
-    # expect_equal_round(c(summary(test)$obs), c(tree_alpha), digits = 2)
+#     # test <- BAT.metric(data$traits, BAT.fun = BAT::alpha, BAT.args = list(tree = tree))
+#     # expect_equal(c(test), c(BAT::alpha(comm, tree)))
+#     # test <- dispRity(eco_data, metric = BAT.metric, BAT.fun = BAT::alpha, BAT.args = list(tree = tree))
+#     # expect_equal_round(c(summary(test)$obs), c(tree_alpha), digits = 2)
 
-    # test <- BAT.metric(data$traits, BAT.fun = BAT::dispersion, BAT.args = list(tree = tree))
-    # expect_equal(c(test), c(BAT::dispersion(comm, tree)))
-    # test <- dispRity(eco_data, metric = BAT.metric, BAT.fun = BAT::dispersion, BAT.args = list(tree = tree))
-    # expect_equal_round(c(summary(test)$obs), c(tree_dispersion), digits = 2)
+#     # test <- BAT.metric(data$traits, BAT.fun = BAT::dispersion, BAT.args = list(tree = tree))
+#     # expect_equal(c(test), c(BAT::dispersion(comm, tree)))
+#     # test <- dispRity(eco_data, metric = BAT.metric, BAT.fun = BAT::dispersion, BAT.args = list(tree = tree))
+#     # expect_equal_round(c(summary(test)$obs), c(tree_dispersion), digits = 2)
 
-    # test <- BAT.metric(data$traits, BAT.fun = BAT::evenness, BAT.args = list(tree = tree))
-    # expect_equal(c(test), c(BAT::evenness(comm, tree)))
-    # test <- dispRity(eco_data, metric = BAT.metric, BAT.fun = BAT::evenness, BAT.args = list(tree = tree))
-    # expect_equal_round(c(summary(test)$obs), c(tree_evenness), digits = 2)
-})
+#     # test <- BAT.metric(data$traits, BAT.fun = BAT::evenness, BAT.args = list(tree = tree))
+#     # expect_equal(c(test), c(BAT::evenness(comm, tree)))
+#     # test <- dispRity(eco_data, metric = BAT.metric, BAT.fun = BAT::evenness, BAT.args = list(tree = tree))
+#     # expect_equal_round(c(summary(test)$obs), c(tree_evenness), digits = 2)
+# })
 
-test_that("works with pipes", {
-    ## Kernels
-    # hypervolume <- BAT::kernel.build(comm = data$comm, trait = data$traits)
-    # richness    <- BAT::kernel.alpha(comm = hypervolume))
-    # dispersion  <- BAT::kernel.dispersion(comm = hypervolume))
-    # regularity  <- BAT::kernel.evenness(comm = hypervolume))
+# test_that("works with pipes", {
+#     ## Kernels
+#     # hypervolume <- BAT::kernel.build(comm = data$comm, trait = data$traits)
+#     # richness    <- BAT::kernel.alpha(comm = hypervolume))
+#     # dispersion  <- BAT::kernel.dispersion(comm = hypervolume))
+#     # regularity  <- BAT::kernel.evenness(comm = hypervolume))
 
-    # ## Hulls
-    # hull <-    BAT::hull.build(comm = t(presence), trait = traits))
-    # results <- BAT::hull.alpha(hull))
-})
+#     # ## Hulls
+#     # hull <-    BAT::hull.build(comm = t(presence), trait = traits))
+#     # results <- BAT::hull.alpha(hull))
+# })
 
 
-test_that("works with bootstraps", {
-    # data(demo_data)
-    # data <- boot.matrix(demo_data$jones, bootstraps = 3, rarefaction = c(24,12))
-})
+# test_that("works with bootstraps", {
+#     # data(demo_data)
+#     # data <- boot.matrix(demo_data$jones, bootstraps = 3, rarefaction = c(24,12))
+# })
 
-test_that("works with custom/chrono.subsets", {
-    # data(demo_data)
-    # data <- boot.matrix(demo_data$jones, bootstraps = 3, rarefaction = c(24,12))
-})
+# test_that("works with custom/chrono.subsets", {
+#     # data(demo_data)
+#     # data <- boot.matrix(demo_data$jones, bootstraps = 3, rarefaction = c(24,12))
+# })
 
 

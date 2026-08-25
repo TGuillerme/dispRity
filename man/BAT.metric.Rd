@@ -4,10 +4,12 @@
 \alias{BAT.metric}
 \title{Using metrics from the BAT package.}
 \usage{
-BAT.metric(matrix, BAT.fun, BAT.args = NULL, return.raw = FALSE)
+BAT.metric(matrix, ..., BAT.fun, BAT.args = NULL, return.raw = FALSE)
 }
 \arguments{
 \item{matrix}{A data matrix or a \code{BAT} structure data list (containing \code{"comm"}, \code{"tree"}, \code{"traits"}).}
+
+\item{...}{Optional variables to be passed to \code{BAT.fun}. Can be \code{tree} or \code{trait}}
 
 \item{BAT.fun}{The name of the metric or directly it's function.}
 

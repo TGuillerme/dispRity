@@ -1035,3 +1035,18 @@ test_that("remove.dispRity works", {
     test <- remove.dispRity(disparity, what = c("subsets", "bootstraps", "covar", "tree", "disparity"))
     expect_equal(names(test), c("matrix", "tree", "call"))
 })
+
+
+test_that("t.dispRity works", {
+    data(disparity)
+    warns <- capture_warnings(test <- t.dispRity(disparity))
+    expect_equal(warns[[1]], "The following elements cannot be transposed and have been removed from x: subsets, disparity.")
+    expect_equal(warns[[2]], "Row names have been automatically added to data$matrix.")
+    expect_equal(unique(unlist(lapply(test$matrix, dim))), rev(unique(unlist(lapply(disparity$matrix, dim)))))
+
+    ## With S3
+    warns <- capture_warnings(tust <- t(disparity))
+    expect_equal(warns[[1]], "The following elements cannot be transposed and have been removed from x: subsets, disparity.")
+    expect_equal(warns[[2]], "Row names have been automatically added to data$matrix.")
+    expect_equal(unique(unlist(lapply(tust$matrix, dim))), rev(unique(unlist(lapply(disparity$matrix, dim)))))
+})

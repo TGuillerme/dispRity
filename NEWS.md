@@ -22,6 +22,7 @@ dispRity v1.9.13 (2026-07-31)
  * `chrono.subsets` now can recycle the `$tree` component of a `dispRity` object.
  * The output of `multi.ace` using `estimation.details` with specific character arguments (e.g. `"detail_name"`) is now sorted in the order `output[[tree_ID]][[character_ID]]$detail_name`, rather than the previous version order that was `output[[tree_ID]]$detail_name[[character_ID]]`.
  * Highlighted the need to use `translate = FALSE` in `char.diff` when comparing taxa (not characters).
+ * Added a new generic S3 method for transposing matrices on `dispRity` objects: `t.dispRity`.
 
 ### BUG FIXES
 

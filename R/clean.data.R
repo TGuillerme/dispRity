@@ -53,7 +53,7 @@ clean.data <- function(data, tree, inc.nodes = FALSE) {
     tree_class <- check.class(tree, c("phylo", "multiPhylo", "list"), " must be a phylo or multiPhylo object.")
     if(tree_class == "list") {
         ## Check if all phylo
-        tree_class <- unique(unlist(lapply(tree, is)))
+        tree_class <- unique(unlist(lapply(tree, class)))
         if(length(tree_class) > 1 || tree_class[1] != "phylo") {
             stop.call(call = match_call$tree, msg = " must be a phylo or multiPhylo object.")
         }
