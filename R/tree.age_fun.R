@@ -8,7 +8,7 @@ tree.age_table<-function(tree){
     ages <- castor::get_all_pairwise_distances(tree)[tree_length + 1,]
     tip.names <- tree$tip.label[1:tree_length]
     if(is.null(tree$node.label)) {
-        nod.names <- c((tree_length + 1):length(castor::get_all_pairwise_distances(tree)[, 1]))
+        nod.names <- c((tree_length + 1):length(ages)) # nolint
     } else {
         nod.names <- tree$node.label[1:Nnode(tree)]
     }
