@@ -6,18 +6,18 @@
 \alias{remove.dispRity}
 \title{Make and fill \code{dispRity}.}
 \usage{
-make.dispRity(data, tree, call, subsets)
+make.dispRity(data, tree, abundance, subsets, call)
 
-fill.dispRity(data, tree, check)
+fill.dispRity(data, tree, abundance, check)
 
 remove.dispRity(data, what)
 }
 \arguments{
-\item{data}{A \code{matrix} (or a list of matrices).}
+\item{data}{A \code{matrix}, a \code{list} of matrices or an already existing \code{dispRity} object.}
 
 \item{tree}{Optional, a \code{phylo} or \code{multiPhylo} object.}
 
-\item{abundance}{Optional, a \code{matrix} or \code{data.frame} (or a list of matrices/data.frames) that contains abundance data (see details).}
+\item{abundance}{Optional, a \code{matrix}, \code{data.frame} (or a \code{list} of matrices/data.frames) that contains abundance data (see details) or a \code{logical} whether to generate a default abundance matrix (\code{TRUE}) or not (\code{FALSE}).}
 
 \item{subsets}{Optional, a \code{list} to be a \code{dispRity} subsets list.}
 
