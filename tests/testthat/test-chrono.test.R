@@ -745,7 +745,8 @@ test_that("chrono.test works", {
 
 	out <- chrono.test(data, method = "citsa", changepoint = 3.613395, nsim = 100)
 
-
+	## test time.window
+	out <- chrono.test(data, method = "citsa", changepoint = 3.613, nsim = 10, time.window = c(5, 1))
 
 	out <- chrono.test(data, method = "itsa", changepoint = 3.613395, nsim = 10)
 

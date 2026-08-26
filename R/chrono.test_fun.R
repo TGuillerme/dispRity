@@ -99,10 +99,48 @@ make.deltatronic <- function(data, changepoint, time.window, dimension.level, n.
     }
 
     if(!is.null(time.window)) {
-            delta_df <- lapply(delta_df, lapply, set.time.window, time.window)
+            delta_df <- lapply(delta_df, lapply, lapply, set.time.window, time.window)
     }
     return(delta_df)
 }
+
+
+make.ctrl.deltatronic <- function(data, changepoint, time.window, dimension.level, n.matrix) {
+
+    match_call <- match.call()
+
+    # if (n.matrix) {
+    #     multi_dis <- replicate(length(data$matrix), list(data))
+    # }
+
+    if (identical(changepoint,"detect")) {
+        changepoint <- as.list((names(data$subsets)))
+        names(changepoint)  <- names(data$subsets)
+        changepoint[[length(changepoint)]] <- NULL
+        changepoint[[1]] <- NULL
+    }  #@@@  check if still works even if changepoint is not an actual datapoint - should do
+
+
+    if (!is(changepoint, "list") && is.numeric(changepoint)){
+        changepoint  <- set.changepoint(changepoint)
+    }
+
+    if (inherits(data, "dispRity")) {
+        delta_df <- lapply(changepoint, make.deltatronic.list, data = data, dimension.level, n.matrix)
+    } else if (inherits(data, "list") && inherits(data[[1]][[1]], "dispRity")) { ## for when it is control output
+        delta_df <- Map(function(cp, control_list) {
+            lapply(control_list, function(cont){
+                make.deltatronic.list(cp, cont, dimension.level, n.matrix)
+            })
+        }, changepoint, data)
+    }
+
+    if(!is.null(time.window)) {
+            delta_df <- lapply(delta_df, lapply, lapply, set.time.window, time.window)
+    }
+    return(delta_df)
+}
+
 
 set.time.window <- function(delta_df, time.window) { ## @@@ decide what the minimum number of points can be; start with 2 either side, and what if changepoint is on a datapoint
 
@@ -467,7 +505,7 @@ make.control <- function(changepoint, data, nsim = 100, paint = TRUE, slice.mode
         mapped_control <- replicate(nsim, {do.call(cbind, lapply(lapply(control_traits, treats::map.traits, tree = tree), function(x){x$data}))}, simplify = FALSE) ## produces however many differnt BM simulations as controls
 
 
-        chrono <- chrono.subsets(mapped_control, tree, method = slice_call[1], model = slice_call[2], bind.data = as.logical(slice_call["bind"]), inc.nodes = TRUE, time = slices)
+        chrono <- chrono.subsets(mapped_control, tree, method = slice_call[1], model = slice_call[2], bind.data = as.logical(slice_call["bind"]), inc.nodes = TRUE, time = slices) ## slices using the slice call from empirical data curve
 
 
         
