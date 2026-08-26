@@ -527,14 +527,21 @@ bind.delta <- function(delta_df, control_delta_df, dimension.level) {
 
         ## normalise by dividing by mean disparity pre-intervention
     mat <-  as.data.frame(mat)
-    norm_fact <- mean(mat[mat$impact == 0,]$disparity)
-    mat$disparity <- mat$disparity / norm_fact
+    pre_mean <- mean(mat[mat$impact == 0,]$disparity)
+    pre_sd <- sd(mat[mat$impact == 0,]$disparity)
+    mat$disparity <- (mat$disparity - pre_mean) / pre_sd
+
     return(mat)
+    
     })
+
+
+
     control_df <- lapply(control_delta_df, lapply, lapply, function(mat){
         mat <- as.data.frame(mat)
-        norm_fact <- mean(mat[mat$impact == 0,]$disparity)
-        mat$disparity <- mat$disparity / norm_fact
+        pre_mean <- mean(mat[mat$impact == 0,]$disparity)
+        pre_sd <- sd(mat[mat$impact == 0,]$disparity)
+        mat$disparity <- (mat$disparity - pre_mean) / pre_sd
         return(mat)
     })
 
@@ -552,6 +559,7 @@ bind.delta <- function(delta_df, control_delta_df, dimension.level) {
 
 
 ###@@@ see thomas photo on how to relativise, using triangle. the coefficients are extracted, the maximum change is 1 which is a straight line upwards, everything else is a proportion of that change in angle.
+
 
 
 citsa.method <- function(full_df){
