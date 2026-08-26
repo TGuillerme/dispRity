@@ -88,24 +88,17 @@ make.deltatronic <- function(data, changepoint, time.window, dimension.level, n.
         changepoint  <- set.changepoint(changepoint)
     }
 
-    if (inherits(data, "dispRity")) {
-        delta_df <- lapply(changepoint, make.deltatronic.list, data = data, dimension.level, n.matrix)
-    } else if (inherits(data, "list") && inherits(data[[1]][[1]], "dispRity")) { ## for when it is control output
-        delta_df <- Map(function(cp, control_list) {
-            lapply(control_list, function(cont){
-                make.deltatronic.list(cp, cont, dimension.level, n.matrix)
-            })
-        }, changepoint, data)
-    }
+    delta_df <- lapply(changepoint, make.deltatronic.list, data = data, dimension.level, n.matrix)
+
 
     if(!is.null(time.window)) {
-            delta_df <- lapply(delta_df, lapply, lapply, set.time.window, time.window)
+            delta_df <- lapply(delta_df, lapply, set.time.window, time.window)
     }
     return(delta_df)
 }
 
 
-make.ctrl.deltatronic <- function(data, changepoint, time.window, dimension.level, n.matrix) {
+make.ctrl.deltatronic <- function(data, changepoint, time.window, dimension.level, nsim) {
 
     match_call <- match.call()
 
@@ -125,20 +118,16 @@ make.ctrl.deltatronic <- function(data, changepoint, time.window, dimension.leve
         changepoint  <- set.changepoint(changepoint)
     }
 
-    if (inherits(data, "dispRity")) {
-        delta_df <- lapply(changepoint, make.deltatronic.list, data = data, dimension.level, n.matrix)
-    } else if (inherits(data, "list") && inherits(data[[1]][[1]], "dispRity")) { ## for when it is control output
-        delta_df <- Map(function(cp, control_list) {
-            lapply(control_list, function(cont){
-                make.deltatronic.list(cp, cont, dimension.level, n.matrix)
-            })
-        }, changepoint, data)
-    }
+    ctrl_delta_df <- Map(function(cp, control_list) {
+        lapply(control_list, function(cont){
+            make.deltatronic.list(cp, cont, dimension.level, nsim)
+        })
+    }, changepoint, data)
 
     if(!is.null(time.window)) {
-            delta_df <- lapply(delta_df, lapply, lapply, set.time.window, time.window)
+            ctrl_delta_df <- lapply(ctrl_delta_df, lapply, lapply, set.time.window, time.window)
     }
-    return(delta_df)
+    return(ctrl_delta_df)
 }
 
 

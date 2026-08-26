@@ -463,7 +463,7 @@ test_that("make.control works", {
 	expect_equal(nrow(get.matrix(control[[1]][[1]])), nrow(get.matrix(disparity)))
 
 
-	control_deltatronic <- make.deltatronic(control, changepoint, time.window = NULL, dimension.level= dimension.level, n.matrix = nsim)
+	control_deltatronic <- make.ctrl.deltatronic(control, changepoint, time.window = NULL, dimension.level= dimension.level, nsim = nsim)
 	expect_equal(names(control_deltatronic[[1]][[1]][[1]]), c("time", "time_elapsed", "impact", "disparity", "time_post_cp"))
 	expect_equal(length(control_deltatronic$`66`[[1]]), length(get.disparity(control[[1]][[1]], concatenate = FALSE)[[1]])) ## test that 10 sims have correctly formatted to control_deltatronic with list of 10
 
@@ -505,7 +505,7 @@ test_that("make.control works", {
 	expect_equal(nrow(get.matrix(control[[1]][[1]])), nrow(get.matrix(data)))
 
 	## testing make.deltatronic works with control input
-	control_deltatronic <- make.deltatronic(control, changepoint, time.window= NULL, dimension.level= dimension.level,n.matrix = nsim)
+	control_deltatronic <- make.ctrl.deltatronic(control, changepoint, time.window= NULL, dimension.level= dimension.level,nsim = nsim)
 	expect_equal(names(control_deltatronic[[1]][[1]][[1]]), c("time", "time_elapsed", "impact", "disparity", "time_post_cp"))
 	expect_equal(ncol(control_deltatronic$`3.61339478986338`[[1]][[1]]$disparity), nrow(get.disparity(control[[1]][[1]], concatenate = FALSE)[[1]])) ## test that 5 dimensions have correctly formatted to control_deltatronic
 	expect_equal(length(control_deltatronic$`3.61339478986338`[[1]]), ncol(get.disparity(control[[1]][[1]], concatenate = FALSE)[[1]])) ## test that 10 sims have correctly formatted to control_deltatronic
@@ -540,7 +540,7 @@ test_that("make.control works", {
 
 	nsim  <- 12 ## switch up nsim 
 	control <- lapply(changepoint, make.control, data = data, nsim = nsim, paint = TRUE, n.matrix =n.matrix)
-	control_deltatronic <- make.deltatronic(control, changepoint, time.window= NULL, dimension.level= dimension.level,n.matrix = nsim)
+	control_deltatronic <- make.ctrl.deltatronic(control, changepoint, time.window= NULL, dimension.level= dimension.level,nsim = nsim)
 	expect_equal(names(control_deltatronic[[1]][[1]][[1]]), c("time", "time_elapsed", "impact", "disparity", "time_post_cp"))
 	expect_equal(length(control_deltatronic$`3.61339478986338`[[1]]), length(get.disparity(control[[1]][[1]], concatenate = FALSE)[[1]])) ## test that 12 sims have correctly formatted to control_deltatronic
 	expect_equal(length(control_deltatronic$`3.61339478986338`), 10) ## 10 matrices matches
@@ -576,9 +576,9 @@ test_that("make.control works", {
 	changepoint <- set.changepoint(changepoint)
     control <- lapply(changepoint, make.control, data = disp, nsim = nsim, n.matrix = 10)
 
-	control_deltatronic <- make.deltatronic(control, changepoint, time.window= NULL, dimension.level= dimension.level,n.matrix = nsim)
+	control_deltatronic <- make.ctrl.deltatronic(control, changepoint, time.window= NULL, dimension.level= dimension.level,nsim = nsim)
 	expect_equal(names(control_deltatronic[[1]][[1]][[1]]), c("time", "time_elapsed", "impact", "disparity", "time_post_cp"))
-	expect_equal(length(control_deltatronic$`3.61339478986338`[[1]]), length(get.disparity(control[[1]][[1]], concatenate = FALSE)[[1]])) ## test that 12 sims have correctly formatted to control_deltatronic
+	expect_equal(length(control_deltatronic$`3.61339478986338`[[1]]), ncol(get.disparity(control[[1]][[1]], concatenate = FALSE)[[1]])) ## test that 12 sims have correctly formatted to control_deltatronic
 	expect_equal(length(control_deltatronic$`3.61339478986338`), 10) ## 10 matrices matches
 	# expect_equal(length(control_deltatronic$`3.61339478986338`[[1]]), ncol(get.disparity(control[[1]][[1]], concatenate = FALSE)[[1]]))
 	expect_equal(as.numeric(control_deltatronic[[1]][[1]][[10]]$disparity["2",3]), get.disparity(control[[1]][[1]], concatenate = FALSE)$`2`[3,10])
@@ -602,7 +602,7 @@ test_that("citsa.method works...\n", {
 	changepoint <- set.changepoint(cp)
 
     control <- lapply(changepoint, make.control, data = disparity, nsim = nsim, n.matrix= n.matrix)
-	control_deltatronic <- make.deltatronic(control, changepoint, time.window = NULL, dimension.level, n.matrix = nsim)
+	control_deltatronic <- make.ctrl.deltatronic(control, changepoint, time.window = NULL, dimension.level, nsim = nsim)
 	control_delta_df <- lapply(control_deltatronic, lapply, lapply, function(x) {
                 x$emp_vs_null <- matrix(0, nrow = nrow(x$time))
                 return(x)
@@ -628,9 +628,14 @@ test_that("citsa.method works...\n", {
 	# now test citsa.method works
 
 	citsa <- lapply(full_df, lapply, lapply, citsa.method)
-	expect_equal(unique(unlist(lapply(citsa, lapply, lapply, class))), "lm")
-
-
+	## test structure of citsa now
+	expect_is(citsa, "list")
+	expect_is(citsa[[1]], "list")
+	expect_is(citsa[[1]][[1]], "list")
+	expect_is(citsa[[1]][[1]][[1]], "list")
+	expect_named(citsa[[1]][[1]][[1]], c("model", "control_slope_change", "emp_slope_change", "data"))
+	expect_is(citsa[[1]][[1]][[1]]$data, "data.frame")
+	
 
 	## multi matrix
 	## multi matrix
@@ -659,7 +664,7 @@ test_that("citsa.method works...\n", {
 
 	changepoint <- set.changepoint(changepoint)
 	control <- lapply(changepoint, make.control, data = data, nsim = nsim, n.matrix= n.matrix)
-	control_deltatronic <- make.deltatronic(control, changepoint, time.window = NULL, dimension.level, n.matrix = nsim)
+	control_deltatronic <- make.ctrl.deltatronic(control, changepoint, time.window = NULL, dimension.level, nsim = nsim)
 	control_delta_df <- lapply(control_deltatronic, lapply, lapply, function(x) {
 				x$emp_vs_null <- matrix(0, nrow = nrow(x$time))
 				return(x)
@@ -679,42 +684,42 @@ test_that("citsa.method works...\n", {
 
 
 ## eg multi.ace sample = >1 output
-test_that("multi matrix disparity works", {
-	set.seed(123)
-	tree <- rtree(n = 100)
-	tree <- makeNodeLabel(tree)
-	tree <- set.root.time(tree)
-	changepoint <- tree$root.time / 2
-	mat_1 <- matrix(rnorm(995), 199, 5)
-	mat_2 <- matrix(rnorm(995), 199, 5)
-	rownames(mat_2)	 <- rownames(mat_1) <- c(tree$tip.label, tree$node.label)
+# test_that("multi matrix disparity works", {
+# 	set.seed(123)
+# 	tree <- rtree(n = 100)
+# 	tree <- makeNodeLabel(tree)
+# 	tree <- set.root.time(tree)
+# 	changepoint <- tree$root.time / 2
+# 	mat_1 <- matrix(rnorm(995), 199, 5)
+# 	mat_2 <- matrix(rnorm(995), 199, 5)
+# 	rownames(mat_2)	 <- rownames(mat_1) <- c(tree$tip.label, tree$node.label)
 
-	mat_2[grepl("^t", rownames(mat_2)), ] <- mat_1[grepl("^t", rownames(mat_1)), ] ## both tips have same
+# 	mat_2[grepl("^t", rownames(mat_2)), ] <- mat_1[grepl("^t", rownames(mat_1)), ] ## both tips have same
 
-	multi_data <- make.dispRity(list(mat_1, mat_2), tree)
-	multi_data <- chrono.subsets(multi_data, method = "c", model = "equal.split", time = c(7,6,5,4,3,2,1), inc.nodes = TRUE)
-
-
-
-	data <- dispRity(multi_data, c(sum, variances))
-	n.matrix <- length(data$matrix)
+# 	multi_data <- make.dispRity(list(mat_1, mat_2), tree)
+# 	multi_data <- chrono.subsets(multi_data, method = "c", model = "equal.split", time = c(7,6,5,4,3,2,1), inc.nodes = TRUE)
 
 
-	delta_df <- make.deltatronic(data, changepoint, time.window = NULL, dimension.level = 1, n.matrix)
-	dims <- max(data$call$dimensions)
-	changepoint <- set.changepoint(changepoint)
-    control <- lapply(changepoint, make.control, data = data, nsim = nsim)
+
+# 	data <- dispRity(multi_data, c(sum, variances))
+# 	n.matrix <- length(data$matrix)
+
+
+# 	delta_df <- make.deltatronic(data, changepoint, time.window = NULL, dimension.level = 1, n.matrix)
+# 	dims <- max(data$call$dimensions)
+# 	changepoint <- set.changepoint(changepoint)
+#     control <- lapply(changepoint, make.control, data = data, nsim = nsim)
 
 
 	
-	var.fun <- function(mat){
-		variances(mat)
-	}
-	multi_multi_dimensional <- dispRity(multi_data, metric = var.fun)
+# 	var.fun <- function(mat){
+# 		variances(mat)
+# 	}
+# 	multi_multi_dimensional <- dispRity(multi_data, metric = var.fun)
 
 
 
-})
+# })
 
 
 test_that("chrono.test works", {

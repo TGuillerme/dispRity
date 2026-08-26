@@ -146,7 +146,7 @@ chrono.test <- function(data, method, changepoint, time.window = NULL, nsim = 10
 
             control <- lapply(changepoint, make.control, data = data, nsim = nsim, n.matrix  = n.matrix, ...)
 
-            control_deltatronic <- make.deltatronic(control, changepoint, time.window, dimension.level = dimension.level, n.matrix = nsim) ## n.matrix here becomes the number of matrices from the simulations (perhaps naming convention should be changed to avoid confusion)
+            control_deltatronic <- make.ctrl.deltatronic(control, changepoint, time.window, dimension.level = dimension.level, nsim = nsim) ## n.matrix here becomes the number of matrices from the simulations (perhaps naming convention should be changed to avoid confusion)
             # control_deltatronic <- lapply(control, make.deltatronic, changepoint, time.window)
             control_delta_df <- lapply(control_deltatronic, lapply, lapply,function(x) {
                 x$emp_vs_null <- matrix(0, nrow = nrow(x$time))
