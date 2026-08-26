@@ -190,11 +190,11 @@ chrono.test <- function(data, method, changepoint, time.window = NULL, nsim = 10
     output <- list(
         test.output = chrono_test_output,
         disparity = data,
-        call = match_call,
-        method = method,
-        changepoint = changepoint,
-        time.window = time.window,
-        nsim = nsim
+        call = match_call
+        # method = method,
+        # changepoint = changepoint,
+        # time.window = time.window,
+        # nsim = nsim
         )
         class(output) <- c("dispRity", "chrono.test")
         return(invisible(output))

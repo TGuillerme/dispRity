@@ -273,9 +273,13 @@ print.dispRity <- function(x, all = FALSE, ...) {
                     return(invisible())
                 },
                 chrono.test = {
-                    cat("Change in disparity slope test:\n")
+                    cat("Chrono.test output:\n")
                     cat(paste0("Call: ", as.expression(x$call), "\n"))
-                    cat(paste0("Method: ", x$method, "\n"))
+                    cat(paste0("Method: ", x$call$method, "\n"))
+                    cat(paste0("Changepoint: ", x$call$changepoint, "\n"))
+                    ## maybe add something about time window here?
+
+                    n_mat <- length(x[[1]])
 
                     # cp_names <- names(x$test.output) ## names of list structure is by changepoint
                     # if (is.null(cp_names)) {
@@ -283,17 +287,25 @@ print.dispRity <- function(x, all = FALSE, ...) {
                     # }
                     # cat(paste0("Changepoint(s): ", paste(cp_names, collapse = ", "), "\n")) ## prints the changeppint times
 
-                    if(x$method == "itsa"){
+                    if(identical(x$call$method, "itsa")) {
                         n_cp <- length(x$test.output)
-                        n_mat <- length(x$test.output[[1]])
+                        # n_mat <- length(x$test.output[[1]])
                         cat(paste0("ITSA parameters: ", n_cp, " changepoint(s) &", n_mat, " matrix/matrices\n"))
                     }
 
-                    # if(x$method == "average")
+                   if (identical(x$call$method, "average")) {
+                        for (cp in names(x$test.output)) {
+                            cat("At changepoint:", cp, "\n")
+                            for (i in seq_along(x$test.output[[cp]])) {
+                                cat(" and matrix", i, ":\n")
+                                print(x$test.output[[cp]][[i]])
+                            }
+                        }
+                    }
 
-                    if (identical(x$method, "citsa")) {
-                    n_cp <- length(x$changepoint)
-                    n_mat <- length(x$test.output[[1]])
+                    if (identical(x$call$method, "citsa")) {
+                    n_cp <- length(x$call$changepoint)
+                    # n_mat <- length(x$test.output[[1]])
                     n_sim <- length(x$call$nsim)
                     cat(paste0("CITSA parameters: ", n_cp, " changepoint(s) & ", n_mat, " matrix/matrices & ", n_sim, " simulation(s)\n"))
                     cat(paste0("Out of ", n_sim,  " simulations, ",x$test.output$sig.increase,   "% of the empirical slope changes were above the 95% confidence interval ", " and ", x$test.output$sig.decrease, "% slope changes were below the 95% confidence interval.\n"))

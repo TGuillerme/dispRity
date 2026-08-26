@@ -722,11 +722,9 @@ test_that("citsa.method works...\n", {
 # })
 
 
-test_that("chrono.test works", {
+test_that("chrono.test (method = `citsa`) works", {
 	data(disparity)
 
-	out <- chrono.test(disparity, method = "average", changepoint = 66)
-	out <- chrono.test(disparity, method = "itsa", changepoint = 66)
 
 	out <- chrono.test(disparity, method = "citsa", changepoint = 66, nsim = 50)
 
@@ -754,5 +752,17 @@ test_that("chrono.test works", {
 	out <- chrono.test(data, method = "citsa", changepoint = 3.613, nsim = 10, time.window = c(5, 1))
 
 	out <- chrono.test(data, method = "itsa", changepoint = 3.613395, nsim = 10)
+
+})
+
+
+
+
+test_that("chrono.test (method = `average`) works", {
+	data(disparity)
+	# out <- chrono.test(disparity, method = "average", changepoint = 66,  test = stats::prop.test, n = 10)
+	out <- chrono.test(disparity, method = "average", changepoint = 66, time.window = c(80,40))
+
+
 
 })
