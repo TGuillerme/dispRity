@@ -291,6 +291,9 @@ print.dispRity <- function(x, all = FALSE, ...) {
                         n_cp <- length(x$test.output)
                         # n_mat <- length(x$test.output[[1]])
                         cat(paste0("ITSA parameters: ", n_cp, " changepoint(s) &", n_mat, " matrix/matrices\n"))
+                        cat("\n")
+                        print(lapply(x$test.output, lapply, function(x) summary(x$model)))
+                        cat("Use $test.output to inspect all model objects.\n")
                     }
 
                    if (identical(x$call$method, "average")) {

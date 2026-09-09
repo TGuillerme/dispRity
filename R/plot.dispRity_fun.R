@@ -1743,18 +1743,15 @@ do.plot.chrono.test <- function(data) {
             y_min <- min(c(ctrl_disparity_lower, emp_disparity), na.rm = TRUE)
             y_max <- max(c(ctrl_disparity_upper, emp_disparity), na.rm = TRUE)
             matplot(time, emp_disparity, type = "l", col = "black", xlim = x_lim, ylim = c(y_min, y_max), xlab = "Time (Ma)", ylab = "Standardised disparity")
-            polygon(
-                c(time, rev(time)),
-                c(ctrl_disparity_upper, rev(ctrl_disparity_lower)),
-                col = adjustcolor("red", alpha.f = 0.2), border = NA
+            polygon( c(time, rev(time)), c(ctrl_disparity_upper, rev(ctrl_disparity_lower)),col = adjustcolor("red", alpha.f = 0.2), border = NA
             ) ## add the counterfactual envelope
             lines(time, ctrl_mean, lwd = 2, col = "red")
             abline(v = cp, col = "blue", lty = 2, lwd = 2)
             legend("topleft",
-                legend = c("Empirical disparity", "BM Counterfactual", "Changepoint"),
+                legend = c("Empirical disparity","BM Counterfactual", "Changepoint"),
                 col    = c("black", "red", "blue"),
-                lty    = c(1, 1, 2),
-                lwd    = c(1, 1, 1),
+                lty    = c(1,1,2),
+                lwd    = c(1,1,1),
                 cex = 1.6
             )
 
@@ -1800,7 +1797,7 @@ do.plot.chrono.test <- function(data) {
             fill = c(grDevices::adjustcolor("red", 0.35), grDevices::adjustcolor("black", 0.35)),
             border = c("red", "black"),
             bty = "n"
-            )
+            ) ## change the slope change value to an understandable range, so that we can understand exactly how much change has occured.
 
         }
 

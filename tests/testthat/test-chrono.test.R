@@ -763,6 +763,10 @@ test_that("chrono.test (method = `average`) works", {
 	# out <- chrono.test(disparity, method = "average", changepoint = 66,  test = stats::prop.test, n = 10)
 	out <- chrono.test(disparity, method = "average", changepoint = 66, time.window = c(80,40))
 
+})
 
-
+test_that("chrono.test (method = `itsa`) works", {
+	data(disparity)
+	# out <- chrono.test(disparity, method = "average", changepoint = 66,  test = stats::prop.test, n = 10)
+	out <- chrono.test(disparity, method = "itsa", changepoint = 66, time.window = c(80,40))
 })
