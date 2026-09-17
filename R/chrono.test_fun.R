@@ -554,8 +554,8 @@ bind.delta <- function(delta_df, control_delta_df, dimension.level) {
 
         ## normalise by dividing by mean disparity pre-intervention
     mat <-  as.data.frame(mat)
-    pre_mean <- mean(mat[mat$impact == 0,]$disparity)
-    pre_sd <- sd(mat[mat$impact == 0,]$disparity)
+    pre_mean <- mean(mat[mat$impact == 0,]$disparity, na.rm = TRUE)
+    pre_sd <- sd(mat[mat$impact == 0,]$disparity, na.rm = TRUE) ## important that NA values are removed
     mat$disparity <- (mat$disparity - pre_mean) / pre_sd
 
     return(mat)
@@ -566,8 +566,8 @@ bind.delta <- function(delta_df, control_delta_df, dimension.level) {
 
     control_df <- lapply(control_delta_df, lapply, lapply, function(mat){
         mat <- as.data.frame(mat)
-        pre_mean <- mean(mat[mat$impact == 0,]$disparity)
-        pre_sd <- sd(mat[mat$impact == 0,]$disparity)
+        pre_mean <- mean(mat[mat$impact == 0,]$disparity, na.rm = TRUE)
+        pre_sd <- sd(mat[mat$impact == 0,]$disparity, na.rm = TRUE) ## again important NA values are removed (common issue when there is not enough data to get a disp value at a time point)
         mat$disparity <- (mat$disparity - pre_mean) / pre_sd
         return(mat)
     })
