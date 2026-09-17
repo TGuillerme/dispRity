@@ -753,7 +753,33 @@ test_that("chrono.test (method = `citsa`) works", {
 
 	out <- chrono.test(data, method = "itsa", changepoint = 3.613395, nsim = 10)
 
+
+	single_model_sims <- readRDS("/home/caleb/Documents/PhD/DELTA/Data/Simulations/single_model_sims.rds")
+
+	ord_single_sims <- lapply(single_model_sims, lapply, function(x){
+	traits <- x$data## should log continuous data before using it
+	tree <- drop.singles(x$tree) # drop bifurcating nodes
+	cleaned <- clean.data(traits, tree, inc.nodes = TRUE)
+	ord <- prcomp(cleaned$data, scale = FALSE, center = TRUE)$x
+	return(list(data = ord, tree = tree))
+	})
+
+	time_slices_single_sims <- lapply(ord_single_sims, lapply, function(x){
+	chrono.subsets(x$data, x$tree, method = "c", model = "gradual.split", time = seq(from = 4.75, to = 0, by = -0.25))
+	})
+
+	sum_var_single <- lapply(time_slices_single_sims, lapply, dispRity, metric = c(sum, variances))
+
+	dodgy_sim <- sum_var_single$BM[[87]]
+
+	test_dodgy <- chrono.test(dodgy_sim, method = "citsa", changepoint = 2.5, nsim = 100)
+
+	
+
+	plot(test_dodgy)
+
 })
+
 
 
 

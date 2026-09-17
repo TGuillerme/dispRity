@@ -279,7 +279,7 @@ print.dispRity <- function(x, all = FALSE, ...) {
                     cat(paste0("Changepoint: ", x$call$changepoint, "\n"))
                     ## maybe add something about time window here?
 
-                    n_mat <- length(x[[1]])
+                    # n_mat <- length(x[[1]])
 
                     # cp_names <- names(x$test.output) ## names of list structure is by changepoint
                     # if (is.null(cp_names)) {
@@ -290,7 +290,7 @@ print.dispRity <- function(x, all = FALSE, ...) {
                     if(identical(x$call$method, "itsa")) {
                         n_cp <- length(x$test.output)
                         # n_mat <- length(x$test.output[[1]])
-                        cat(paste0("ITSA parameters: ", n_cp, " changepoint(s) &", n_mat, " matrix/matrices\n"))
+                        cat(paste0("ITSA parameters: ", n_cp, " changepoint(s)\n"))
                         cat("\n")
                         print(lapply(x$test.output, lapply, function(x) summary(x$model)))
                         cat("Use $test.output to inspect all model objects.\n")
@@ -309,9 +309,8 @@ print.dispRity <- function(x, all = FALSE, ...) {
                     if (identical(x$call$method, "citsa")) {
                     n_cp <- length(x$call$changepoint)
                     # n_mat <- length(x$test.output[[1]])
-                    n_sim <- length(x$call$nsim)
-                    cat(paste0("CITSA parameters: ", n_cp, " changepoint(s) & ", n_mat, " matrix/matrices & ", n_sim, " simulation(s)\n"))
-                    cat(paste0("Out of ", n_sim,  " simulations, ",x$test.output$sig.increase,   "% of the empirical slope changes were above the 95% confidence interval ", " and ", x$test.output$sig.decrease, "% slope changes were below the 95% confidence interval.\n"))
+                    cat(paste0("CITSA parameters: ", n_cp, " changepoint(s) & ", x$call$nsim, " simulation(s)\n"))
+                    cat(paste0("Out of ", n_sim,  " simulations, ",x$test.output$sig.increase,   "% of the empirical slope changes were above the 95% confidence interval ", "and ", x$test.output$sig.decrease, "% slope changes were below the 95% confidence interval.\n"))
 
                     # ex <- x$test.output[[1]][[1]][[1]]
                     # if (is.list(ex) && all(c("control_slope_change", "emp_slope_change") %in% names(ex))) {
