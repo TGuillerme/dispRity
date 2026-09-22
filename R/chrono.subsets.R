@@ -14,7 +14,7 @@
 #' @param t0 If \code{time} is a number of samples, whether to start the sampling from the \code{tree$root.time} (\code{TRUE}), or from the first sample containing at least three elements (\code{FALSE} - default) or from a fixed time point (if \code{t0} is a single \code{numeric} value).
 #' @param bind.data If \code{data} contains multiple matrices and \code{tree} contains the same number of trees, whether to bind the pairs of matrices and the trees (\code{TRUE}) or not (\code{FALSE} - default).
 #' @param dist.data A \code{logical} value indicating whether to treat the data as distance data (\code{TRUE}) or not (\code{FALSE} - default).
-#' @param abundance Optional, an abundance data matrix matching the input data (see \code{\link{make.dispRity}} for more details). If the input data contained an abundance matrix already, this one is overridden.
+#' @param abundance Optional, an abundance data matrix matching the input data (see \code{\link{make.dispRity}} for more details). If the input data contained an abundance matrix already, this one is overridden. If set to \code{NULL} abundance is removed.
 #' 
 #' 
 #'  
@@ -96,13 +96,26 @@
 # t0 = 5
 # bind.data = TRUE
 
-chrono.subsets <- function(data, tree = NULL, method, time, model, inc.nodes = FALSE, FADLAD = NULL, verbose = FALSE, t0 = FALSE, bind.data = FALSE, dist.data = FALSE, abundance = NULL) {
+chrono.subsets <- function(data, tree = NULL, method, time, model, inc.nodes = FALSE, FADLAD = NULL, verbose = FALSE, t0 = FALSE, bind.data = FALSE, dist.data = FALSE, abundance) {
     match_call <- match.call()
 
     ## ----------------------
     ##  SANITIZING
     ## ----------------------
     ## DATA
+
+    ## Recycle abundance if needed
+    if(missing(abundance)) {
+        ## Check if data contained a abundance matrix
+        if(is(data, "dispRity") && !is.null(data$abundance)) {
+            abundance <- data$abundance
+        } else {
+            abundance <- NULL
+        }
+    } else {
+        abundance <- NULL
+    }
+
     # data <- check.dispRity.data(data, returns = "matrix")
 
     if(!is.null(tree)) {
@@ -496,14 +509,6 @@ chrono.subsets <- function(data, tree = NULL, method, time, model, inc.nodes = F
 
     ## Adding the original subsets
     #time_subsets <- c(make.origin.subsets(data), time_subsets)
-
-    ## Recycle abundance if needed
-    if(is.null(abundance)) {
-        ## Check if data contained a abundance matrix
-        if(is(data, "dispRity") && !is.null(data$abundance)) {
-            abundance <- data$abundance
-        }
-    }
 
     ## Output as a dispRity object
     if(!tree_was_missing) {

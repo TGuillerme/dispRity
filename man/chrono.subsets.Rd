@@ -18,7 +18,7 @@ chrono.subsets(
   t0 = FALSE,
   bind.data = FALSE,
   dist.data = FALSE,
-  abundance = NULL
+  abundance
 )
 }
 \arguments{
@@ -44,7 +44,7 @@ chrono.subsets(
 
 \item{dist.data}{A \code{logical} value indicating whether to treat the data as distance data (\code{TRUE}) or not (\code{FALSE} - default).}
 
-\item{abundance}{Optional, an abundance data matrix matching the input data (see \code{\link{make.dispRity}} for more details). If the input data contained an abundance matrix already, this one is overridden.}
+\item{abundance}{Optional, an abundance data matrix matching the input data (see \code{\link{make.dispRity}} for more details). If the input data contained an abundance matrix already, this one is overridden. If set to \code{NULL} abundance is removed.}
 }
 \description{
 Splits the data into a chronological (time) subsets list.

@@ -7,7 +7,7 @@
 \alias{cust.subsets}
 \title{Separating data into custom subsets.}
 \usage{
-custom.subsets(data, group, tree = NULL, dist.data = FALSE, abundance = NULL)
+custom.subsets(data, group, tree = NULL, dist.data = FALSE, abundance)
 }
 \arguments{
 \item{data}{A \code{matrix}, a \code{list} of matrices or a \code{dispRity} object.}
@@ -18,7 +18,7 @@ custom.subsets(data, group, tree = NULL, dist.data = FALSE, abundance = NULL)
 
 \item{dist.data}{A \code{logical} value indicating whether to treat the data as distance data (\code{TRUE}) or not (\code{FALSE} - default).}
 
-\item{abundance}{Optional, an abundance data matrix matching the input data (see \code{\link{make.dispRity}} for more details). If the input data contained an abundance matrix already, this one is overridden.}
+\item{abundance}{Optional, an abundance data matrix matching the input data (see \code{\link{make.dispRity}} for more details). If the input data contained an abundance matrix already, this one is overridden. If set to \code{NULL} abundance is removed.}
 }
 \description{
 Splits the data into a customized subsets list.
