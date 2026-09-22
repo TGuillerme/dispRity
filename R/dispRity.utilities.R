@@ -92,7 +92,7 @@ make.dispRity <- function(data, tree, abundance, subsets, call) {
     }
 
     ## Add the abundance
-    if(!missing(abundance)) {
+    if(!missing(abundance) && !is.null(abundance)) {
         abundance <- check.abundance(dispRity_object$matrix, abundance)
         dispRity_object$abundance <- abundance 
     }

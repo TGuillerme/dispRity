@@ -3,10 +3,12 @@
 #'
 #' @description Splits the data into a customized subsets list.
 #'
-#' @param data A \code{matrix} or a \code{list} of matrices.
+#' @param data A \code{matrix}, a \code{list} of matrices or a \code{dispRity} object.
 #' @param group Either a \code{list} of row numbers or names to be used as different groups, a \code{data.frame} with the same \eqn{k} elements as in \code{data} as rownames, a \code{factor} or a \code{logical} vector. If \code{group} is a \code{phylo} object matching \code{data}, groups are automatically generated as clades (and the tree is attached to the resulting \code{dispRity} object).
 #' @param tree \code{NULL} (default) or an optional \code{phylo} or \code{multiPhylo} object to be attached to the data.
 #' @param dist.data A \code{logical} value indicating whether to treat the data as distance data (\code{TRUE}) or not (\code{FALSE} - default).
+#' @param abundance Optional, an abundance data matrix matching the input data (see \code{\link{make.dispRity}} for more details). If the input data contained an abundance matrix already, this one is overridden.
+
 #'
 
 #' @details
@@ -52,7 +54,7 @@
 # group2 <- list("A" = c("a", "b", "c", "d"), "B" = c(letters[5:10]))
 # group3 <- as.data.frame(matrix(data = c(rep(1,5), rep(2,5)), nrow = 10, ncol = 1, dimnames = list(letters[1:10])))
 
-custom.subsets <- function(data, group, tree = NULL, dist.data = FALSE) {
+custom.subsets <- function(data, group, tree = NULL, dist.data = FALSE, abundance = NULL) {
 
     ## Saving the call
     match_call <- match.call()
@@ -123,12 +125,20 @@ custom.subsets <- function(data, group, tree = NULL, dist.data = FALSE) {
     ## Make into a subset table
     subsets_list <- lapply(group_list, function(x) list(elements = matrix(x, ncol = 1)))
 
+    ## Recycle abundance if needed
+    if(is.null(abundance)) {
+        ## Check if data contained a abundance matrix
+        if(is(data, "dispRity") && !is.null(data$abundance)) {
+            abundance <- data$abundance
+        }
+    }
+
     ## Attach the tree
     if(group_class == "phylo" || !is.null(tree)) {
         ## Output as a dispRity object (with tree)
-        return(make.dispRity(data = data, call = list("subsets" = "customised", "dist.data" = dist.data), subsets = subsets_list, tree = tree))
+        return(make.dispRity(data = data, call = list("subsets" = "customised", "dist.data" = dist.data), subsets = subsets_list, tree = tree, abundance = abundance))
     } else {
         ## Output as a dispRity object
-        return(make.dispRity(data = data, call = list("subsets" = "customised", "dist.data" = dist.data), subsets = subsets_list))
+        return(make.dispRity(data = data, call = list("subsets" = "customised", "dist.data" = dist.data), subsets = subsets_list, abundance = abundance))
     }
 }

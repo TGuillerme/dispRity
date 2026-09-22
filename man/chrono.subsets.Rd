@@ -17,7 +17,8 @@ chrono.subsets(
   verbose = FALSE,
   t0 = FALSE,
   bind.data = FALSE,
-  dist.data = FALSE
+  dist.data = FALSE,
+  abundance = NULL
 )
 }
 \arguments{
@@ -42,6 +43,8 @@ chrono.subsets(
 \item{bind.data}{If \code{data} contains multiple matrices and \code{tree} contains the same number of trees, whether to bind the pairs of matrices and the trees (\code{TRUE}) or not (\code{FALSE} - default).}
 
 \item{dist.data}{A \code{logical} value indicating whether to treat the data as distance data (\code{TRUE}) or not (\code{FALSE} - default).}
+
+\item{abundance}{Optional, an abundance data matrix matching the input data (see \code{\link{make.dispRity}} for more details). If the input data contained an abundance matrix already, this one is overridden.}
 }
 \description{
 Splits the data into a chronological (time) subsets list.
@@ -91,7 +94,7 @@ chrono.subsets(data = BeckLee_mat99, tree = BeckLee_tree,
 Guillerme T. & Cooper N. \bold{2018}. Time for a rethink: time sub-sampling methods in disparity-through-time analyses. Palaeontology. DOI: 10.1111/pala.12364.
 }
 \seealso{
-\code{\link{tree.age}}, \code{\link{slice.tree}}, \code{\link{cust.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}.
+\code{\link{tree.age}}, \code{\link{slice.tree}}, \code{\link{cust.subsets}}, \code{\link{boot.matrix}}, \code{\link{dispRity}}, \code{\link{make.dispRity}}.
 }
 \author{
 Thomas Guillerme
