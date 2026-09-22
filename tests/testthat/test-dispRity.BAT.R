@@ -45,7 +45,6 @@ test_that("dispRity.BAT works", {
     expect_is(out$tree, "phylo")
 })
 
-
 test_that("dispRity.BAT works with bootstraps", {
     ## Test convert simple
     data(demo_data)
@@ -68,4 +67,33 @@ test_that("dispRity.BAT works with bootstraps", {
     expect_equal(dim(out$comm), c(7,99))
     expect_equal(rownames(out$comm), as.character(seq(from = 120, to = 0, by = -20)))
     expect_equal(unique(c(out$comm)), c(0,1))
+})
+
+test_that("dispRity.BAT works with abundance data", {
+    ## Something like metric <- function(matrix, abundance)
+    set.seed(1)
+    data(BeckLee_mat50) 
+    abundance_data <- matrix(sample(c(0,1,2,3), 200, replace = TRUE, prob = c(0.4, 0.4, 0.1, 0.1)), nrow = 50, ncol = 4)
+    rownames(abundance_data) <- rownames(BeckLee_mat50)
+    colnames(abundance_data) <- c("site1", "site2", "site3", "site4") 
+    data <- make.dispRity(data = BeckLee_mat50, abundance = abundance_data)
+
+    ## Convert the data correctly
+    test <- dispRity.BAT(data)
+    expect_is(test, "list")
+    expect_equal(names(test), c("comm", "tree", "traits"))
+    expect_equal(dim(test$traits), c(50, 48))
+    expect_null(test$tree)
+    expect_equal(dim(test$comm), c(4,50))
+
+    ## Works with subsets
+    data <- custom.subsets(data, group = list(1:25, 26:50))
+    test <- dispRity.BAT(data)
+    expect_is(test, "list")
+    expect_equal(names(test), c("comm", "tree", "traits"))
+    expect_equal(dim(test$traits), c(50, 48))
+    expect_null(test$tree)
+    expect_equal(dim(test$comm), c(8,50))
+    expect_equal(rownames(test$comm), c(paste0(colnames(abundance_data), "_1"), paste0(colnames(abundance_data), "_2")))
+    expect_equal(colnames(test$comm), rownames(abundance_data))
 })

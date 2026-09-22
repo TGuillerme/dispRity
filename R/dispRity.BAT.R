@@ -39,10 +39,16 @@ dispRity.BAT <- function(data, subsets, matrix, tree, inc.all = FALSE) {
     check.class(data, "dispRity")
     ## Check if is subseted
     is_subseted <- length(data$subsets) != 0
+   
     ## If so check if probabilistic
     is_proba <- FALSE
     if(is_subseted) {
         is_proba <- !is.na(data$call$subsets[2]) && grepl("split", data$call$subsets[2])
+    }
+
+    ## Use subsets if not missing
+    if(!missing(subsets)) {
+        data <- get.subsets(data, subsets)
     }
 
     ## Placeholders
@@ -50,46 +56,66 @@ dispRity.BAT <- function(data, subsets, matrix, tree, inc.all = FALSE) {
 
     ## Check if matrix exists
     if(!missing(matrix)) {
-        matrix <- get.matrix(data, matrix = matrix)        
+        matrix <- get.matrix(data, matrix = matrix)
     } else {
         matrix <- data$matrix[[1]]
+        if(length(data$matrix) > 1) {
+            warning("dispRity.BAT does not convert multiple matrices yet and only used the first matrix.")
+        }
     }
 
-    ## Check if the data has subsets
-    if(is_subseted) {
-        ## Use subsets if not missing
-        if(!missing(subsets)) {
-            data <- get.subsets(data, subsets)
-        }
-       
-        ## Populate the comms table
-        comm <- do.call(rbind, unlist(lapply(data$subsets, lapply, make.a.subset.comm, matrix = matrix, is_proba = is_proba), recursive = FALSE))
+    ## If no abundance data is present
+    if(is.null(data$abundance)) {
+        ## Check if the data has subsets
+        if(is_subseted) {
+           
+            ## Populate the comms table
+            comm <- do.call(rbind, unlist(lapply(data$subsets, lapply, make.a.subset.comm, matrix = matrix, is_proba = is_proba), recursive = FALSE))
 
-        ## Get the table elements
-        subset_names <- name.subsets(data)
-        
-        ## If table had only elements name them as the subsets
-        if(nrow(comm) == length(subset_names)) {
-            rownames(comm) <- subset_names
-        } else {
-            ## Specify the bootstraps and rarefactions
-            names <- lapply(data$subsets, lapply, get.comm.names, matrix = matrix)
-            rownames <- character()
-            for(one_group in 1:length(names)) {
-               rownames <- c(rownames, paste0(subset_names[one_group], ".", unname(unlist(names[[one_group]]))))
+            ## Get the table elements
+            subset_names <- name.subsets(data)
+            
+            ## If table had only elements name them as the subsets
+            if(nrow(comm) == length(subset_names)) {
+                rownames(comm) <- subset_names
+            } else {
+                ## Specify the bootstraps and rarefactions
+                names <- lapply(data$subsets, lapply, get.comm.names, matrix = matrix)
+                rownames <- character()
+                for(one_group in 1:length(names)) {
+                   rownames <- c(rownames, paste0(subset_names[one_group], ".", unname(unlist(names[[one_group]]))))
+                }
+                rownames(comm) <- rownames
             }
-            rownames(comm) <- rownames
+            ## Inc all if no entire subset is in the data
+            if(inc.all && !any(apply(comm, 1, function(x) all(x == 1)))) {
+                comm <- rbind(comm, matrix(1, nrow = 1, ncol = nrow(matrix)))
+                rownames(comm)[nrow(comm)] <- "all"
+            }
+
+        } else {
+            ## No subsets
+            comm <- matrix(1, nrow = 1, ncol = nrow(matrix))
         }
-        ## Inc all if no entire subset is in the data
-        if(inc.all && !any(apply(comm, 1, function(x) all(x == 1)))) {
-            comm <- rbind(comm, matrix(1, nrow = 1, ncol = nrow(matrix)))
-            rownames(comm)[nrow(comm)] <- "all"
-        }
+        ## Add names
+        colnames(comm) <- rownames(matrix)
     } else {
-        ## No subsets
-        comm <- matrix(1, nrow = 1, ncol = nrow(matrix))
+        ## Get the abundance data
+        if(is_subseted) {
+            ## Populate the comms table
+            comm_subsets <- lapply(data$subsets, lapply, make.a.subset.comm, matrix = data$abundance[[1]], is_proba = is_proba, use.abundance = TRUE)
+
+            ## Update the column names by subset names
+            merge.names <- function(comm_subset, subset_name) {
+                rownames(comm_subset) <- paste0(rownames(comm_subset), "_", subset_name)
+                return(comm_subset)
+            }
+            comm <- do.call(rbind, mapply(merge.names, unlist(comm_subsets, recursive = FALSE), as.list(names(comm_subsets)), SIMPLIFY = FALSE))
+
+        } else {
+            comm <- t(data$abundance[[1]])            
+        }
     }
-    colnames(comm) <- rownames(matrix)
 
     ## Check if the tree exist
     if(!is.null(data$tree[[1]])) {
@@ -136,23 +162,31 @@ collapse.proba <- function(proba_table) {
 }
 
 ## Make a comm row out of a subset
-make.a.subset.comm <- function(one_subset, matrix, is_proba = FALSE) {
+make.a.subset.comm <- function(one_subset, matrix, is_proba = FALSE, use.abundance = FALSE) {
+
     ## Get the elements
     if(is_proba) {
         elements <- collapse.proba(one_subset)
     } else {
         elements <- one_subset[,, drop = FALSE]
-    }
+    }   
 
     ## Empty community matrix
-    comm_subset <- matrix(0, ncol = ncol(elements), nrow = nrow(matrix))
+    if(!use.abundance) {
+        comm_subset <- matrix(0, ncol = ncol(elements), nrow = nrow(matrix))
 
-    ## Fill the community matrix
-    for(i in 1:ncol(comm_subset)) {
-        comm_subset[elements[,i],i] <- 1
-    } 
+        ## Fill the community matrix
+        for(i in 1:ncol(comm_subset)) {
+            comm_subset[elements[,i],i] <- 1
+        } 
+    } else {
+        comm_subset <- matrix
+        comm_subset[-unique(c(elements)), ] <- 0
+    }
     return(t(comm_subset))
 }
+
+
 ## Get the comm names (bootstraps or rarefactions)
 get.comm.names <- function(one_subset, matrix) {
     if(ncol(one_subset) == 1) {
@@ -161,4 +195,3 @@ get.comm.names <- function(one_subset, matrix) {
         return(paste0("bootstrap.", nrow(one_subset), ".", 1:ncol(one_subset)))
     }
 }
-
