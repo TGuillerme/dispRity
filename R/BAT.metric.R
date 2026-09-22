@@ -65,12 +65,13 @@ BAT.metric <- function(matrix, ..., BAT.fun, BAT.args = NULL, return.raw = FALSE
     if(input_matrix == "list") {
         return(lapply(matrix, BAT.metric, BAT.fun, BAT.args, return.raw))
     }
+
     if(input_matrix == "dispRity") {
         stop("DEBUG BAT.metric: does not handle dispRity object yet")
         ## Needs to handle the variables as following:
-        BAT::comm -> dispRity$abundance
-        BAT::trait -> dispRity$matrix
-        BAT::tree -> dispRity$tree
+        dispRity$abundance -> BAT_comm
+        dispRity$matrix -> BAT_trait
+        dispRity$tree -> BAT_tree
     }
 
     ## Checking the fun
@@ -97,9 +98,9 @@ BAT.metric <- function(matrix, ..., BAT.fun, BAT.args = NULL, return.raw = FALSE
     }
 
     ## Add the comm argument
+    BAT_args <- dots
     BAT_args$comm <- matrix
-    warning("DEBUG BAT.metric: needs to handle matrix argument more specifically + other arguments")
-
+    
     ## Run the fun!
     if(return.raw) {
         return(do.call(BAT.fun, BAT_args))

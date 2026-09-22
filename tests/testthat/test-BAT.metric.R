@@ -1,40 +1,37 @@
-# ## Base test (BAT::alpha)
-# test_that("standalone works (just copying BAT functions)", {
+## Base test (BAT::alpha)
+test_that("standalone works (just copying BAT functions)", {
 
-#     ## Something like metric <- function(matrix, abundance)
-#     set.seed(1)
-#     data(BeckLee_mat50) 
-#     abundance_data <- matrix(sample(c(0,1,2,3), 200, replace = TRUE, prob = c(0.4, 0.4, 0.1, 0.1)), nrow = 50, ncol = 4)
-#     rownames(abundance_data) <- rownames(BeckLee_mat50)
-#     colnames(abundance_data) <- c("site1", "site2", "site3", "site4") 
-#     data <- make.dispRity(data = BeckLee_mat50, abundance = abundance_data)
+    ## Something like metric <- function(matrix, abundance)
+    set.seed(1)
+    data(BeckLee_mat50) 
+    abundance_data <- matrix(sample(c(0,1,2,3), 200, replace = TRUE, prob = c(0.4, 0.4, 0.1, 0.1)), nrow = 50, ncol = 4)
+    rownames(abundance_data) <- rownames(BeckLee_mat50)
+    colnames(abundance_data) <- c("site1", "site2", "site3", "site4") 
+    data <- make.dispRity(data = BeckLee_mat50, abundance = abundance_data)
 
-#     dendro <- hclust(dist(abundance_data), method = "average")
+    dendro <- hclust(dist(abundance_data), method = "average")
 
-#     ## Expected BAT tests
-#     BAT_test1 <- BAT::alpha(t(abundance_data))
-#     expect_equal(c(BAT_test1), c(32, 30, 33, 31))
-#     BAT_test2 <- BAT::alpha(t(abundance_data), tree = dendro)
-#     expect_equal_round(c(BAT_test2), c(41.81761, 38.48370, 38.15150, 39.90073), digit = 5)
+    dummy_matrix <- abundance_data
+    dumm_test <- dispRity.BAT(data)
 
-#     ## Expected dispRity errors
-#     # wrong matrix
-#     error <- capture_error(BAT.metric("dummy_matrix", BAT.fun = BAT::alpha))
-#     expect_equal(error[[1]], "matrix must be of class matrix or list.")
-#     # wrong fun
-#     error <- capture_error(BAT.metric(dummy_matrix, BAT.fun = "BAT::alpha"))
-#     expect_equal(error[[1]], "BAT.fun must be a function or must be one of the following: alpha.")
+    ## Expected BAT tests
+    BAT_test1 <- BAT::alpha(t(abundance_data))
+    expect_equal(c(BAT_test1), c(32, 30, 33, 31))
+    BAT_test2 <- BAT::alpha(t(abundance_data), tree = dendro)
+    expect_equal_round(c(BAT_test2), c(41.81761, 38.48370, 38.15150, 39.90073), digit = 5)
 
-#     ## Expected dispRity tests
-#     expect_equal(BAT.metric(abundance_data, BAT.fun = BAT::alpha), 10)
+    ## Expected dispRity errors
+    # wrong matrix
+    error <- capture_error(BAT.metric("dummy_matrix", BAT.fun = BAT::alpha))
+    expect_equal(error[[1]], "matrix must be of class matrix or list or dispRity.")
+    # wrong fun
+    error <- capture_error(BAT.metric(abundance_data, BAT.fun = "BAT::alpha"))
+    expect_equal(error[[1]], "BAT.fun must be a function or must be one of the following: alpha.")
 
-
-
-
-#     expect_equal(BAT.metric(dummy_matrix, BAT.fun = "alpha"), 10)
-#     expect_equal_round(BAT.metric(dummy_matrix, BAT.fun = BAT::alpha, BAT.args = list(tree = dendro)), 33.26329, digits = 5)
-#     expect_equal_round(BAT.metric(dummy_matrix, BAT.fun = "alpha", BAT.args = list(tree = dendro)), 33.26329, digits = 5)
-# })
+    ## Expected dispRity tests
+    expect_equal(BAT.metric(t(abundance_data), BAT.fun = BAT::alpha), c(32, 30, 33, 31))
+    expect_equal_round(BAT.metric(t(abundance_data), BAT.fun = BAT::alpha, tree = dendro), c(41.81761, 38.48370, 38.15150, 39.90073), digit = 5)
+})
 
 # test_that("dispRity pipeline workable", {
 #     # data(demo_data)
