@@ -31,6 +31,10 @@ test_that("standalone works (just copying BAT functions)", {
     ## Expected dispRity tests
     expect_equal(BAT.metric(t(abundance_data), BAT.fun = BAT::alpha), c(32, 30, 33, 31))
     expect_equal_round(BAT.metric(t(abundance_data), BAT.fun = BAT::alpha, tree = dendro), c(41.81761, 38.48370, 38.15150, 39.90073), digit = 5)
+
+    ## Works with dispRity data as input
+    expect_equal(BAT.metric(data, BAT.fun = BAT::alpha), c(32, 30, 33, 31))
+    expect_equal_round(BAT.metric(data, BAT.fun = BAT::alpha, tree = dendro), c(41.81761, 38.48370, 38.15150, 39.90073), digit = 5)    
 })
 
 # test_that("dispRity pipeline workable", {

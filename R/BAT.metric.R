@@ -66,14 +66,6 @@ BAT.metric <- function(matrix, ..., BAT.fun, BAT.args = NULL, return.raw = FALSE
         return(lapply(matrix, BAT.metric, BAT.fun, BAT.args, return.raw))
     }
 
-    if(input_matrix == "dispRity") {
-        stop("DEBUG BAT.metric: does not handle dispRity object yet")
-        ## Needs to handle the variables as following:
-        dispRity$abundance -> BAT_comm
-        dispRity$matrix -> BAT_trait
-        dispRity$tree -> BAT_tree
-    }
-
     ## Checking the fun
     BAT.fun_class <- check.class(BAT.fun, c("function", "character"))
     if(BAT.fun_class == "function") {
@@ -89,6 +81,8 @@ BAT.metric <- function(matrix, ..., BAT.fun, BAT.args = NULL, return.raw = FALSE
         ## Replace the method
         BAT.fun <- eval(str2lang(paste0("BAT::", BAT.fun)))
     }
+    ## Get the fun args
+    fun_formals <- names(formals(BAT.fun))
 
     ## Handle the optional arguments
     if(!is.null(BAT.args)) {
@@ -97,10 +91,28 @@ BAT.metric <- function(matrix, ..., BAT.fun, BAT.args = NULL, return.raw = FALSE
         BAT_args <- list()
     }
 
-    ## Add the comm argument
-    BAT_args <- dots
-    BAT_args$comm <- matrix
-    
+    if(input_matrix == "dispRity") {
+        ## Fill in the arguments directly from the dispRity object
+        BAT_vars <- dispRity.BAT(matrix)
+        if(!is.null(BAT_vars$comm)) {
+            BAT_args$comm <- BAT_vars$comm
+        }
+        if(!is.null(BAT_vars$traits) && "traits" %in% fun_formals) {
+            BAT_args$traits <- BAT_vars$traits
+        }
+        if(!is.null(BAT_vars$tree) && "traits" %in% fun_formals) {
+            BAT_args$tree <- BAT_vars$tree
+        }
+    } else {
+        ## Just use the input matrix
+        BAT_args$comm <- matrix
+    }
+
+    ## Add the comm argument (override input from dispRity)
+    if(length(dots) != 0) {
+        BAT_args <- c(BAT_args, dots)
+    }
+
     ## Run the fun!
     if(return.raw) {
         return(do.call(BAT.fun, BAT_args))
