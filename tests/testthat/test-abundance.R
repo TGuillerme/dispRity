@@ -165,6 +165,62 @@ test_that("abundance works for calculating dispRity metrics", {
 
 test_that("abundance works for complex metrics", {
 
+    data(BeckLee_mat50) 
+    abundance_data <- matrix(sample(c(0,1,2,3), 200, replace = TRUE, prob = c(0.4, 0.4, 0.1, 0.1)), nrow = 50, ncol = 4)
+    rownames(abundance_data) <- rownames(BeckLee_mat50)
+    colnames(abundance_data) <- c("site1", "site2", "site3", "site4") 
+    data <- make.dispRity(data = BeckLee_mat50, abundance = abundance_data)
+
+    metric <- function(matrix, abundance, ...) {
+        return(abundance * centroids(matrix, ...))
+    }
+
+    
+
+
+
+# ## Functional divergence
+# func.div <- function(matrix, abundance, ...) {
+#     ## The distance from centroid (dGi)
+#     dist_centroid <- centroids(matrix, ...)
+#     ## The mean distance from centroid (dG)
+#     mean_dis_cent <- mean(dist_centroid, na.rm = TRUE)
+#     ## The number of observations
+#     obs <- nrow(matrix)
+#     ## The FDiv metric
+
+#     sum(abundance * (dist_centroid - mean_dis_cent))
+#     /
+#     sum(abundance * abs(dist_centroid - mean_dis_cent))
+
+
+#     return((sum(dist_centroid) - mean_dis_cent * (obs-1)) / ((sum(abs(dist_centroid - mean_dis_cent) + dist_centroid))/obs))
+# }
+
+
+# gk = group_centroid = 1/n_obs * sum of coordinates per obs
+# = colmeans
+
+# dGi = observation distances to centroid
+# udGi = mean distances to centroid
+
+
+
+
+
+# EWl = eucl_dist_between_obs_ij / abundance of i + abundance of j
+
+
+
+# FEve = Sum of the minimal distances
+
+
+## Beta diversity
+
+
+
+
+
 ## metric target toggles between using "matrix" or "abundance"?
     ## Alternatively just go with the old BAT implementation...
 
