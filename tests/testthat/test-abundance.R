@@ -169,14 +169,23 @@ test_that("abundance works for complex metrics", {
     abundance_data <- matrix(sample(c(0,1,2,3), 200, replace = TRUE, prob = c(0.4, 0.4, 0.1, 0.1)), nrow = 50, ncol = 4)
     rownames(abundance_data) <- rownames(BeckLee_mat50)
     colnames(abundance_data) <- c("site1", "site2", "site3", "site4") 
-    data <- make.dispRity(data = BeckLee_mat50, abundance = abundance_data)
+    
+    data1 <- make.dispRity(data = BeckLee_mat50, abundance = abundance_data[,1, drop = FALSE])
+    # data4 <- make.dispRity(data = BeckLee_mat50, abundance = abundance_data)
 
-    metric <- function(matrix, abundance, ...) {
+    metric <- function(matrix, abundance = 1, ...) {
         return(abundance * centroids(matrix, ...))
     }
 
-    
+    # data <- data1
+    # metric <- metric
 
+    ## Get the base disparity
+    base_test <- metric(BeckLee_mat50, abundance_data[,1, drop = FALSE])
+    test <- dispRity(data, metric = metric)
+    expect_is(test, "dispRity")
+    vals <- get.disparity(test)[[1]]
+    expect_equal(unname(vals), c(base_test))
 
 
 # ## Functional divergence

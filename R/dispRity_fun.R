@@ -317,8 +317,16 @@ double.decompose <- function(matrix, bs_rows, bs_cols, fun, nrow, is.dist = FALS
 }
 ## Fun applied to two matrices (matrix + abundance)
 abundance.decompose <- function(matrix, abundance, bs_rows, bs_cols, fun, abundance_cols, ...) {
+
+
+        # cat(paste0("bs_rows = ", paste0(bs_rows, collapse = ", "), "\n")) ; warning("DEBUG")
+        # cat(paste0("bs_cols = ", paste0(bs_cols, collapse = ", "), "\n")) ; warning("DEBUG")
+        # cat(paste0("abundance_cols = ", paste0(abundance_cols, collapse = ", "), "\n")) ; warning("DEBUG")
+        # head(abundance)
+
+
      return(fun(matrix[bs_rows, bs_cols, drop = FALSE],
-                abundance[bs_rows, abundance_cols, drop = FALSE],...))
+                abundance[bs_rows, abundance_cols, drop = FALSE], ...))
 }
 
 ## Applying the function to one matrix (or two if nrow is not null)
@@ -336,7 +344,6 @@ decompose.base <- function(one_matrix, bootstrap, dimensions, fun, nrow, abundan
         ## Set the variables
         matrix  <- one_matrix[[1]]
         abundance <- one_matrix[[2]]
-
         ## Abundance decompose
         return(abundance.decompose(matrix, abundance, bs_rows, bs_cols, fun, abundance_cols, ...))
     } else {
@@ -440,16 +447,22 @@ decompose.matrix <- function(one_subsets_bootstrap, fun, data, nrow, use_tree, d
         ## Toggle dist.data
         dist.data <- TRUE
     } else {
+
         if(length(data_target) < 2) {
             data_list  <- data[[data_target]]
         } else {
+
+
             ## Here both matrix and abundance are selected
             data_list  <- data[data_target]
+            if(length(data_list$matrix) > 1) {
+                stop("Complex abundance metrics don't work yet on multiple matrices.")
+            }
             ## Transform into a list of paired matrix
-            data_list <- list(matrix = data_list$matrix[[1]],
-                              abundance = data_list$abundance[[1]])
+            data_list <- list(list(matrix = data_list$matrix[[1]],
+                                   abundance = data_list$abundance[[1]]))
             ## Get the abundance columns
-            abundance_cols <- 1:ncol(data_list$abundance)
+            abundance_cols <- 1:ncol(data_list[[1]]$abundance)
         }
     }
     
