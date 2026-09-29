@@ -83,7 +83,7 @@ get.dispRity.metric.handle <- function(metric, match_call, data = list(matrix = 
 
     ## Check all metrics
     metric_checks <- lapply(metric, check.one.metric, data, tree, ...)    
-    # warning("DEBUG: dispRity_fun.R::get.dispRity.metric.handle") ; metric_checks <- lapply(metric, check.one.metric, data, tree, dist.helper = dist.helper)
+    # warning("DEBUG: dispRity_fun.R::get.dispRity.metric.handle") ; metric_checks <- lapply(metric, check.one.metric, data, tree)
 
     ## Sort out the tests
     levels       <- unlist(lapply(metric_checks, `[[` , "type"))
@@ -294,9 +294,11 @@ get.row.col <- function(x, row, col = NULL) {
 
 
 ## Decompositions
+## Fun applied to just one matrix
 single.decompose <- function(matrix, bs_rows, bs_cols, fun, ...) {
     return(fun(matrix[bs_rows, bs_cols, drop = FALSE], ...))
 }
+## Fun applied to two parts of the same matrix (e.g. distance between group A and B)
 double.decompose <- function(matrix, bs_rows, bs_cols, fun, nrow, is.dist = FALSE, ...) {
 
     ## Get the columns to return
@@ -313,25 +315,42 @@ double.decompose <- function(matrix, bs_rows, bs_cols, fun, nrow, is.dist = FALS
             ...)
         )
 }
+## Fun applied to two matrices (matrix + abundance)
+abundance.decompose <- function(matrix, abundance, bs_rows, bs_cols, fun, abundance_cols, ...) {
+     return(fun(matrix[bs_rows, bs_cols, drop = FALSE],
+                abundance[bs_rows, abundance_cols, drop = FALSE],...))
+}
 
 ## Applying the function to one matrix (or two if nrow is not null)
 # one_matrix <- data$matrix[[1]] ; warning("DEBUG: dispRity_fun")
 # bootstrap <- na.omit(one_subsets_bootstrap) ; warning("DEBUG: dispRity_fun")
 # fun <- first_metric ; warning("DEBUG: dispRity_fun")
 # dimensions <- data$call$dimensions ; warning("DEBUG: dispRity_fun")
-decompose.base <- function(one_matrix, bootstrap, dimensions, fun, nrow, ...) {
+decompose.base <- function(one_matrix, bootstrap, dimensions, fun, nrow, abundance_cols = NULL, ...) {
 
     ## Select the variables
     bs_rows <- bootstrap
     bs_cols <- dimensions
-    matrix  <- one_matrix
 
-    if(is.null(nrow)) {
-        ## Normal decompose
-        return(single.decompose(matrix, bs_rows, bs_cols, fun, ...))
+    if(!is.null(abundance_cols)) {
+        ## Set the variables
+        matrix  <- one_matrix[[1]]
+        abundance <- one_matrix[[2]]
+
+        ## Abundance decompose
+        return(abundance.decompose(matrix, abundance, bs_rows, bs_cols, fun, abundance_cols, ...))
     } else {
-        ## Serial decompose
-        return(double.decompose(matrix, bs_rows, bs_cols, fun, nrow, is.dist = FALSE, ...))
+
+        ## Set the matrix variable
+        matrix  <- one_matrix
+
+        if(is.null(nrow)) {
+            ## Normal decompose
+            return(single.decompose(matrix, bs_rows, bs_cols, fun, ...))
+        } else {
+            ## Serial decompose
+            return(double.decompose(matrix, bs_rows, bs_cols, fun, nrow, is.dist = FALSE, ...))
+        }
     }
 }
 
@@ -341,31 +360,60 @@ decompose.base <- function(one_matrix, bootstrap, dimensions, fun, nrow, ...) {
 # bootstrap <- na.omit(one_subsets_bootstrap) ; warning("DEBUG: dispRity_fun")
 # fun <- first_metric ; warning("DEBUG: dispRity_fun")
 # dimensions <- data$call$dimensions ; warning("DEBUG: dispRity_fun")
-decompose.tree <- function(one_matrix, one_tree, bootstrap, dimensions, fun, nrow, dist_help = NULL, dist.data = FALSE, by.col = NULL, ...) {
+decompose.tree <- function(one_matrix, one_tree, bootstrap, dimensions, fun, nrow, dist_help = NULL, dist.data = FALSE, by.col = NULL, abundance_cols = NULL, ...) {
 
     ## Select the variables
     bs_rows <- bootstrap
     bs_cols <- dimensions
-    matrix  <- as.matrix(one_matrix)
 
     ## Check if fun has a "reference.data" argument
     if(!("reference.data" %in% formalArgs(fun))) {
-        ##Does not use reference.data
-        if(is.null(nrow)) {
-            ## Normal decompose
-            return(single.decompose(matrix, bs_rows, bs_cols, fun, tree = one_tree, ...))
+
+        if(!is.null(abundance_cols)) {
+            ## Set the variables
+            matrix  <- one_matrix[[1]]
+            abundance <- one_matrix[[2]]
+
+            ## Abundance decompose
+            return(abundance.decompose(matrix, abundance, bs_rows, bs_cols, fun, abundance_cols, tree = one_tree, ...))
+        
         } else {
-            ## Serial decompose
-            return(double.decompose(matrix, bs_rows, bs_cols, fun, nrow, is.dist = FALSE, tree = one_tree, ...))
+
+            ## Set the variables
+            matrix  <- as.matrix(one_matrix)
+
+            ##Does not use reference.data
+            if(is.null(nrow)) {
+                ## Normal decompose
+                return(single.decompose(matrix, bs_rows, bs_cols, fun, tree = one_tree, ...))
+            } else {
+                ## Serial decompose
+                return(double.decompose(matrix, bs_rows, bs_cols, fun, nrow, is.dist = FALSE, tree = one_tree, ...))
+            }
         }
     } else {
-        ## Uses reference.data
-        if(is.null(nrow)) {
-            ## Normal decompose
-            return(single.decompose(matrix, bs_rows, bs_cols, fun, tree = one_tree, reference.data = one_matrix, ...))
+
+        if(!is.null(abundance_cols)) {
+            ## Set the variables
+            matrix  <- one_matrix[[1]]
+            abundance <- one_matrix[[2]]
+
+            ## Abundance decompose
+            return(abundance.decompose(matrix, abundance, bs_rows, bs_cols, fun, abundance_cols,  tree = one_tree, reference.data = matrix, ...))
+
         } else {
-            ## Serial decompose
-            return(double.decompose(matrix, bs_rows, bs_cols, fun, nrow, is.dist = FALSE, tree = one_tree, reference.data = one_matrix, ...))
+
+            ## Set the variables
+            matrix  <- as.matrix(one_matrix)
+
+            ## Uses reference.data
+            if(is.null(nrow)) {
+                ## Normal decompose
+                return(single.decompose(matrix, bs_rows, bs_cols, fun, tree = one_tree, reference.data = one_matrix, ...))
+            } else {
+                ## Serial decompose
+                return(double.decompose(matrix, bs_rows, bs_cols, fun, nrow, is.dist = FALSE, tree = one_tree, reference.data = one_matrix, ...))
+            }
         }
     }
 }
@@ -381,6 +429,10 @@ decompose.matrix <- function(one_subsets_bootstrap, fun, data, nrow, use_tree, d
 
     ## Some compactify/decompactify thingy can happen here for a future version of the package where lapply(data$matrix, ...) can be lapply(decompact(data$matrix), ...)
 
+
+    ## No abundance data default
+    abundance_cols <- NULL
+
     ## Select the data
     if(!is.null(dist_help)) {
         ## RAM help setup (assuming distance matrices)
@@ -391,8 +443,13 @@ decompose.matrix <- function(one_subsets_bootstrap, fun, data, nrow, use_tree, d
         if(length(data_target) < 2) {
             data_list  <- data[[data_target]]
         } else {
-            stop("DEBUG: dispRity_fun not implemented with abundance + matrix yet")
+            ## Here both matrix and abundance are selected
             data_list  <- data[data_target]
+            ## Transform into a list of paired matrix
+            data_list <- list(matrix = data_list$matrix[[1]],
+                              abundance = data_list$abundance[[1]])
+            ## Get the abundance columns
+            abundance_cols <- 1:ncol(data_list$abundance)
         }
     }
     
@@ -406,8 +463,8 @@ decompose.matrix <- function(one_subsets_bootstrap, fun, data, nrow, use_tree, d
             bootstrap <- na.omit(by.col) 
         } else {
             ## Base bootstrap use
-            dimensions <- data$call$dimensions    
-            if("abundance" %in% data_target) {
+            dimensions <- data$call$dimensions
+            if(length(data_target) == 1 && data_target == "abundance") {
                 dimensions <- 1:ncol(data_list[[1]])
             }
             bootstrap  <- na.omit(one_subsets_bootstrap)
@@ -417,10 +474,11 @@ decompose.matrix <- function(one_subsets_bootstrap, fun, data, nrow, use_tree, d
     if(!use_tree) {
         ## Apply the fun, bootstrap and dimension on each matrix
         return(do.call(cbind, lapply(data_list, decompose.base,
-                            bootstrap  = bootstrap,
-                            dimensions = dimensions,
-                            fun        = fun,
-                            nrow       = nrow,
+                            bootstrap      = bootstrap,
+                            dimensions     = dimensions,
+                            fun            = fun,
+                            nrow           = nrow,
+                            abundance_cols = abundance_cols,
                             ...)))
 
         #TG: when multiple matrices and dimensions level2 this should return an array?
@@ -432,10 +490,11 @@ decompose.matrix <- function(one_subsets_bootstrap, fun, data, nrow, use_tree, d
         ## Applying the decomposition to all trees and all matrices
         return(do.call(cbind,
             mapply(decompose.tree, data_list, data$tree,
-                    MoreArgs = list(bootstrap  = bootstrap,
-                                    dimensions = dimensions,
-                                    fun        = fun,
-                                    nrow       = nrow,
+                    MoreArgs = list(bootstrap      = bootstrap,
+                                    dimensions     = dimensions,
+                                    fun            = fun,
+                                    nrow           = nrow,
+                                    abundance_cols = abundance_cols,
                                     ...),
                     SIMPLIFY = FALSE)))
     }
