@@ -141,6 +141,9 @@ test_that("abundance works for calculating dispRity metrics", {
     sum1 <- function(matrix, ...) {
         return(sum(abs(matrix)))
     }
+    average1 <- function(matrix, ...) {
+        sum(matrix)/length(matrix)
+    }
     test1 <- dispRity(data, metric = sum1)
     print <- capture_output(print(test1))
     expect_equal(print[[1]], " ---- dispRity object ---- \n50 elements in one matrix with 48 dimensions with 1 associated abundance matrix.\nDisparity was calculated as: sum1.")
@@ -172,18 +175,22 @@ test_that("abundance works for complex metrics", {
     colnames(abundance_data) <- c("site1", "site2", "site3", "site4") 
     
     data1 <- make.dispRity(data = BeckLee_mat50, abundance = abundance_data[,1, drop = FALSE])
-    # data4 <- make.dispRity(data = BeckLee_mat50, abundance = abundance_data)
+    data4 <- make.dispRity(data = BeckLee_mat50, abundance = abundance_data)
 
     metric <- function(matrix, abundance = 1, ...) {
         return(abundance * centroids(matrix, ...))
     }
 
-    # data <- data1
-    # metric <- metric
-
     ## Get the base disparity
     base_test <- metric(BeckLee_mat50, abundance_data[,1, drop = FALSE])
-    test <- dispRity(data, metric = metric)
+    test <- dispRity(data1, metric = metric)
+    expect_is(test, "dispRity")
+    vals <- get.disparity(test)[[1]]
+    expect_equal(unname(vals), c(base_test))
+
+    ## get the disparity for multiple abundance sites
+    base_test <- metric(BeckLee_mat50, abundance_data)
+    test <- dispRity(data4, metric = metric)
     expect_is(test, "dispRity")
     vals <- get.disparity(test)[[1]]
     expect_equal(unname(vals), c(base_test))
