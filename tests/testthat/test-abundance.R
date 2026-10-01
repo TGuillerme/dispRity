@@ -138,13 +138,14 @@ test_that("abundance works for calculating dispRity metrics", {
     data <- make.dispRity(data = BeckLee_mat50, abundance = abundance_data)
 
     ## Standard test
-    average1 <- function(matrix, ...) {
-        sum(matrix)/length(matrix)
+    sum1 <- function(matrix, ...) {
+        return(sum(abs(matrix)))
     }
-    test1 <- dispRity(data, metric = average1)
+    test1 <- dispRity(data, metric = sum1)
     print <- capture_output(print(test1))
-    expect_equal(print[[1]], " ---- dispRity object ---- \n50 elements in one matrix with 48 dimensions with 1 associated abundance matrix.\nDisparity was calculated as: average1.")
-    expect_equal_round(get.disparity(test1)[[1]], 3.918862e-17, 17)
+    expect_equal(print[[1]], " ---- dispRity object ---- \n50 elements in one matrix with 48 dimensions with 1 associated abundance matrix.\nDisparity was calculated as: sum1.")
+    expect_equal(get.disparity(test1)[[1]], sum(abs(BeckLee_mat50)))
+
 
     ## Abundance only
     average2 <- function(abundance, ...) {
