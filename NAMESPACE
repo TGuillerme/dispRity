@@ -3,7 +3,7 @@ import(ape)
 import(stats)
 
 importFrom("ade4", "randtest", "as.randtest")
-#importFrom("BAT", "alpha")
+# importFrom("BAT", "alpha")
 importFrom("castor", "get_subtree_with_tips", "get_all_pairwise_distances", "get_all_distances_to_root", "asr_mk_model")
 importFrom("Claddis", "calculate_morphological_distances")
 importFrom("ellipse", "ellipse")
@@ -13,7 +13,6 @@ importFrom("grDevices", "colorRampPalette", "grey", "hcl", "heat.colors", "adjus
 importFrom("MASS", "mvrnorm")
 importFrom("methods", "hasArg", "formalArgs", "is")
 importFrom("mnormt", "dmnorm", "rmnorm")
-# importFrom("paleotree", "timeSliceTree")
 importFrom("phangorn", "dist.hamming", "NJ", "RF.dist", "CI", "RI", "optim.parsimony", "parsimony")
 importFrom("phyclust", "gen.seq.HKY")
 importFrom("phylolm", "phylolm")
@@ -23,8 +22,7 @@ importFrom("scales", "rescale")
 importFrom("GET", "create_curve_set", "rank_envelope")
 importFrom("parallel", "parLapply", "detectCores", "makeCluster", "clusterExport", "stopCluster")
 importFrom("zoo", "rollmean")
-# importFrom("geomorph", "gpagen")
-# importFrom("RCurl", "getURL", "url.exists")
+
 
 ##C libraries
 useDynLib(dispRity, .registration = TRUE)

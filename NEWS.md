@@ -1,11 +1,11 @@
-dispRity v1.9.13 (2026-07-31)
+dispRity v1.9.14 (2026-10-16) *abundance of changes*
 =========================
 
 ### NEW FEATURES
 
  * Added a new `$abundance` element to the `dispRity` object. This allows to use functional diversity metrics that take abundance into account (using metrics with a new `abundance` global argument) or modifying existing metrics to only take abundance into account (using a new metric transformer argument `as.abundance`.). This is associated with new plot options and streamlined to fit with all the other functionalities in the package.
 <!--  * New interface for the `BAT` package with new generic metric function `BAT.metric`. This function allows to use any metric from the `BAT` function as a metric for `dispRity` using the synthax: `dispRity(data, metric = BAT.metric, BAT.fun = "name", ...)`
- * New utility function: `dispRity.BAT` for converting some parts of `dispRity` objects into `BAT` argumen
+ * New utility function: `dispRity.BAT` for converting some parts of `dispRity` objects into `BAT` argument
  -->
 
  <!-- TODO: also add and "`as.metric`" section in the manual for as.covar and as.abundance -->
@@ -23,6 +23,8 @@ dispRity v1.9.13 (2026-07-31)
  * The output of `multi.ace` using `estimation.details` with specific character arguments (e.g. `"detail_name"`) is now sorted in the order `output[[tree_ID]][[character_ID]]$detail_name`, rather than the previous version order that was `output[[tree_ID]]$detail_name[[character_ID]]`.
  * Highlighted the need to use `translate = FALSE` in `char.diff` when comparing taxa (not characters).
  * Added a new generic S3 method for transposing matrices on `dispRity` objects: `t.dispRity`.
+ * Updated the `dispRity` manual with the new functionalities and a clearer intro to functional diversity/disparity in ecology.
+ * `plot.dispRity` with `type = "preview"` can now handle abundance data.
 
 ### BUG FIXES
 
