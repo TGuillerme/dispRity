@@ -706,7 +706,8 @@ do.plot.preview <- function(data, specific.args, ...) {
     ## Set up the specific args
     specific.args <- get.dots(specific.args, specific.args, "matrix", c(1:length(data$matrix)))
     specific.args <- get.dots(specific.args, specific.args, "dimensions", c(1:2))
-    
+    specific.args <- get.dots(specific.args, specific.args, "abundance", FALSE)
+
     ## Plot the legend?
     if(is.null(dots$legend)) {
         plot_legend <- TRUE
@@ -732,6 +733,55 @@ do.plot.preview <- function(data, specific.args, ...) {
         } else {
             ## Specific args must be the specific trees to plot
             plot_trees <- TRUE
+        }
+    }
+
+
+    if(is.null(specific.args$abundance) || is.null(data$abundance)) {
+        ## Don't plot abundance
+        plot_abundance <- FALSE
+    } else {
+
+        wrong_abundance_args_msg <- "the abundance component from specific.args should be a logical, a numeric vector of the columns of interest or a list of numeric vectors of the same length as data$abundance."
+    
+        abundance_class <- check.class(specific.args$abundance, c("logical", "list", "integer", "numeric"), msg = wrong_abundance_args_msg)    
+    
+
+        ## Check specific args abundance
+        if(abundance_class == "list") {
+            if(length(specific.args$abundance) != length(data$abundance)) {
+                stop(wrong_abundance_args_msg, call. = FALSE)
+            }
+        }
+        if(abundance_class %in% c("numeric", "integer")) {
+            if(any(!(specific.args$abundance %in% 1:ncol(data$abundance[[1]])))) {
+                stop(wrong_abundance_args_msg, call. = FALSE)
+            }
+        }
+
+        if(is(specific.args$abundance, "logical")) {
+            ## Toggle plot_abundance
+            plot_abundance <- specific.args$abundance
+            if(plot_abundance) {
+                ## Select the abundance data to plot
+                specific.args$abundance <- rowSums(data$abundance[[1]])
+            }
+        } else {
+            ## Get the specific abundance values
+            if(is(specific.args$abundance, "list")) {
+                ## Get the specific abundances
+                get.abundance <- function(x, data) {
+                    if(is.null(x)) {
+                        return(NULL)
+                    } else {
+                        return(rowSums(data[, x]))
+                    }
+                }
+                abundances_tmp <- mapply(get.abundance, specific.args$abundance, data$abundance, SIMPLIFY = FALSE)
+                specific.args$abundance <- rowSums(do.call(cbind,  abundances_tmp[!unlist(lapply(abundances_tmp, is.null))]))
+            } else {
+                specific.args$abundance <- rowSums(data$abundance[[1]][, specific.args$abundance])
+            }
         }
     }
 
@@ -855,6 +905,14 @@ do.plot.preview <- function(data, specific.args, ...) {
         ## Add the points per matrix
         point_args$x <- data$matrix[[specific.args$matrix[matrix]]][, specific.args$dimensions[1]]
         point_args$y <- data$matrix[[specific.args$matrix[matrix]]][, specific.args$dimensions[2]]
+
+        ## Scaling the points with abundance
+        if(plot_abundance) {
+            specific.args$abundance <- specific.args$abundance/max(specific.args$abundance)
+            scaled_cex <- scale(ifelse(specific.args$abundance == 0, NA, specific.args$abundance), scale = FALSE, center = median(specific.args$abundance)) + 1
+            scaled_cex <- ifelse(is.na(scaled_cex), 0, scaled_cex)
+            point_args$cex <- scaled_cex
+        }
 
         ## Call the points
         do.call(points, point_args)

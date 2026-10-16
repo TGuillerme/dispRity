@@ -274,3 +274,23 @@ test_that("abundance works for with the other dispRity components", {
     ## custom.subsets
     ## chrono.subsets
 }) 
+
+
+test_that("abundance works for plots", {
+    data(BeckLee_mat50) 
+    abundance_data <- matrix(sample(c(0,1,2,3), 200, replace = TRUE, prob = c(0.4, 0.4, 0.1, 0.1)), nrow = 50, ncol = 4)
+    rownames(abundance_data) <- rownames(BeckLee_mat50)
+    colnames(abundance_data) <- c("site1", "site2", "site3", "site4") 
+    
+    data1 <- make.dispRity(data = BeckLee_mat50, abundance = abundance_data[,1, drop = FALSE])
+    data4 <- make.dispRity(data = BeckLee_mat50, abundance = abundance_data)
+
+    expect_null(plot.dispRity(BeckLee_mat50, type = "preview", specific.args = list(abundance = TRUE)))
+    expect_null(plot(data1, type = "preview", specific.args = list(abundance = TRUE)))
+    expect_null(plot(data4, type = "preview", specific.args = list(abundance = TRUE)))
+
+    error <- capture_error(plot(data4, type = "preview", specific.args = list(abundance = "TRUE")))
+    expect_equal(error[[1]], "the abundance component from specific.args should be a logical, a numeric vector of the columns of interest or a list of numeric vectors of the same length as data$abundance.")
+    error <- capture_error(plot(data1, type = "preview", specific.args = list(abundance = c(1,8))))
+    expect_equal(error[[1]], "the abundance component from specific.args should be a logical, a numeric vector of the columns of interest or a list of numeric vectors of the same length as data$abundance.")
+})
