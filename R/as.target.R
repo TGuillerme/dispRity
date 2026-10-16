@@ -7,8 +7,6 @@
 #' @usage as.abundance(fun, ...)
 #' @usage as.covar(fun, ..., VCV, loc)
 #'
-#' @description 
-#'
 #' @param fun a \code{function} to apply to the element of \code{dispRity}.
 #' @param ... any additional arguments to pass to fun.
 #' @param VCV logical, whether to use the \code{$VCV} component of the elements in \code{dispRity$covar} (\code{TRUE}; default) or not (\code{FALSE}) (see details).
