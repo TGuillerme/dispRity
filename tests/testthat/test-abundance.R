@@ -290,7 +290,7 @@ test_that("abundance works for plots", {
     expect_null(plot(data4, type = "preview", specific.args = list(abundance = TRUE)))
 
     error <- capture_error(plot(data4, type = "preview", specific.args = list(abundance = "TRUE")))
-    expect_equal(error[[1]], "the abundance component from specific.args should be a logical, a numeric vector of the columns of interest or a list of numeric vectors of the same length as data$abundance.")
+    expect_equal(error[[1]], "$specific.argsabundance: the abundance component from specific.args should be a logical, a numeric vector of the columns of interest or a list of numeric vectors of the same length as data$abundance.")
     error <- capture_error(plot(data1, type = "preview", specific.args = list(abundance = c(1,8))))
-    expect_equal(error[[1]], "the abundance component from specific.args should be a logical, a numeric vector of the columns of interest or a list of numeric vectors of the same length as data$abundance.")
+    expect_equal(error[[1]], ": the abundance component from specific.args should be a logical, a numeric vector of the columns of interest or a list of numeric vectors of the same length as data$abundance.")
 })
