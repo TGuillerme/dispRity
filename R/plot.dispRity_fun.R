@@ -742,10 +742,8 @@ do.plot.preview <- function(data, specific.args, ...) {
         plot_abundance <- FALSE
     } else {
 
-        wrong_abundance_args_msg <- "the abundance component from specific.args should be a logical, a numeric vector of the columns of interest or a list of numeric vectors of the same length as data$abundance."
-    
-        abundance_class <- check.class(specific.args$abundance, c("logical", "list", "integer", "numeric"), msg = wrong_abundance_args_msg)    
-    
+        wrong_abundance_args_msg <- ": the abundance component from specific.args should be a logical, a numeric vector of the columns of interest or a list of numeric vectors of the same length as data$abundance."
+        abundance_class <- check.class(specific.args$abundance, c("logical", "list", "integer", "numeric"), msg = wrong_abundance_args_msg)
 
         ## Check specific args abundance
         if(abundance_class == "list") {
