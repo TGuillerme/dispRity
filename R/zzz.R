@@ -2,9 +2,7 @@
 function (libname, pkgname) {
     ns <- parent.env(environment())
     assign(".genericFunctionName",
-           if (any(names(getClass("genericFunction")@subclasses) == "standardGeneric"))
-               "standardGeneric"
-           else "genericFunction",
+           as.character(class(getGeneric("==", mustFind = TRUE))),
            envir = ns, inherits = FALSE)
     NULL
 }
