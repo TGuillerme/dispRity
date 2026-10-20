@@ -259,3 +259,7 @@ plot(disparity_data)
 ## Testing for a difference between the groups
 test.dispRity(disparity_data, test = wilcox.test, details = TRUE)
 ```
+
+
+### Disparity in ecology (functional diversity)
+
