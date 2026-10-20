@@ -1138,6 +1138,14 @@ groups_alignement <- dispRity(data = my_covar,
 summary(groups_alignement)
 ```
 
+
+#### Abundance metrics {#abundance}
+
+Disparity metrics can also rely on some abundance component.
+Here, abundance designates an additional component of the `dispRity` object
+
+
+
 ### Which disparity metric to choose?
 
 The disparity metric that gives the most consistent results is the following one:
