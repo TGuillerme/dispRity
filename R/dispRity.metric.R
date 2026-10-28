@@ -715,6 +715,20 @@ func.div <- function(matrix, abundance = 1, method = "euclidean", ...) {
     return((sum(distances_dev) + mean_dis_cent) / (sum(abs(distances_dev)) + mean_dis_cent))
 }
 
+## Mean distance to the weighted centroid
+func.dis <- function(matrix, abundance = 1, method = "euclidean", ...) {
+    ## Mean distance to centroid if abundance = 1
+    if(length(c(abundance)) == 1) {
+        return(mean(centroids(matrix, method = method)))
+    } else {
+        ## Get the weighted centroid
+        abundance <- rowSums(abundance)
+        weighted_centroid <- colMeans(matrix * abundance)
+        return(mean(centroids(matrix, method = method, centroid = weighted_centroid)))
+    }
+}
+
+
 ## Select the right slope function
 get.slope.significant <- function(X, base_angle) {
     model <- lm(base_angle ~ X)
