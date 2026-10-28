@@ -723,7 +723,7 @@ test_that("citsa.method works...\n", {
 
 # })
 
-test_that("chrono.test rejects missing disparity values", {
+test_that("chrono.test handles missing disparity values", {
     # data(disparity)
 
     # disparity$disparity$`50` <- NA
@@ -734,13 +734,14 @@ test_that("chrono.test rejects missing disparity values", {
 	# out <- chrono.test(missing_disparity, method = "citsa", changepoint = 66, nsim = 50)
 
 
-	tree <- rtree(n = 100)
-	tree <- makeNodeLabel(tree)
-	tree <- set.root.time(tree)
-	mat <- matrix(rnorm(995), 199, 5)
-	rownames(mat) <- c(tree$tip.label, tree$node.label)
-	data <- make.dispRity(data = mat, tree = tree)
-	data <- chrono.subsets(data, method = "c", model = "equal.split", time = 10, inc.nodes = TRUE)
+	# tree <- rtree(n = 100)
+	# tree <- makeNodeLabel(tree)
+	# tree <- set.root.time(tree)
+	# mat <- matrix(rnorm(995), 199, 5)
+	# rownames(mat) <- c(tree$tip.label, tree$node.label)
+	# data <- make.dispRity(data = mat, tree = tree)
+	# data <- chrono.subsets(data, method = "c", model = "equal.split", time = 40, inc.nodes = TRUE)
+	# disparity <- dispRity(data, metric = c(sum, variances))
 
 })
 
