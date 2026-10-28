@@ -196,24 +196,6 @@ test_that("abundance works for complex metrics", {
     expect_equal(unname(vals), c(base_test))
 
 
-# ## Functional divergence
-# func.div <- function(matrix, abundance, ...) {
-#     ## The distance from centroid (dGi)
-#     dist_centroid <- centroids(matrix, ...)
-#     ## The mean distance from centroid (dG)
-#     mean_dis_cent <- mean(dist_centroid, na.rm = TRUE)
-#     ## The number of observations
-#     obs <- nrow(matrix)
-#     ## The FDiv metric
-
-#     sum(abundance * (dist_centroid - mean_dis_cent))
-#     /
-#     sum(abundance * abs(dist_centroid - mean_dis_cent))
-
-
-#     return((sum(dist_centroid) - mean_dis_cent * (obs-1)) / ((sum(abs(dist_centroid - mean_dis_cent) + dist_centroid))/obs))
-# }
-
 
 # gk = group_centroid = 1/n_obs * sum of coordinates per obs
 # = colmeans
