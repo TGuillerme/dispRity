@@ -5,10 +5,14 @@
   - [x] allow new internal structure object `"$abundance"` which is a list of matrices of taxa * site?
   - [x] modify internal architecture to pull from $abundance for calculations (replicating rows relative to abundance or to bootstrap)
   - [ ] allow plots to show abundance (points size scale with abundance)
-
-
+  - [ ] Add `func.div` `func.rich` `func.eve` `func.dis` and `raoQ` metrics
+    - [ ] + doc with `abundance`
+    - [ ] + manual in the `abundance` metrics section
+    - [ ] + test
+    - [ ] + add to aliases and namespace
  - [ ] add abundance to manual (in metrics part)
  - [ ] add ecology example in manual in section 02.
+ - [ ] add vignette comparing to `funcdiversity` and `FD`
 
 
 ##
