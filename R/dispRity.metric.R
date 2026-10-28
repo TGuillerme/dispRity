@@ -650,14 +650,37 @@ n.ball.volume <- function(matrix, sphere = TRUE, ...) {
     return(pi^(n/2)/gamma((n/2)+1)*radius)
 }
 
+
+## Weighted convex hull
+func.rich <- function(matrix, abundance = 1, ...) {
+  return(convhull.volume(matrix*abundance))
+}
+
 ## Minimal spanning tree distances evenness
-func.eve <- function(matrix, method = "euclidean", ...) {
+func.eve <- function(matrix, abundance = 1, method = "euclidean", ...) {
     ## Distance matrix
     distances <- check.dist.matrix(matrix, method = method)[[1]]
-    ## weighted evenness (EW) for equal weighted species
-    branch_lengths <- (distances/2)[which(as.dist(mst(distances)) != 0)]
-    ## partial weighted evenness (PEW)
+    
+    ## Get the minimum spanning tree
+    span_tree <- vegan::spantree(distances)
+    
+    ## Get the branch lengths (EW)
+    branch_lengths <- span_tree$dist
+
+    ## If abundance is provided scale the branch lenghts by the sum of the abundance of each edge's nodes (the species abundance on either side)
+    if(length(c(abundance)) !=  1) {
+        ## Correct the branch lengths
+        abundance_sums <- zoo::rollapply(rowSums(abundance[span_tree$labels, , drop = FALSE]), 2, sum)
+        branch_lengths <- branch_lengths/abundance_sums
+        ## Remove divided by 0s
+        if(any(branch_lengths) == Inf) {
+            branch_lengths <- ifelse(branch_lengths == Inf, 0, branch_lengths)
+        }
+    }
+
+    ## Get relative branch lengths (PEW)
     rel_br_lentghs <- branch_lengths/sum(branch_lengths)
+
     ## Regular abundance value (1/(S-1))
     regular <- 1/(nrow(as.matrix(distances)) - 1)
     ## Get the minimal distances
@@ -666,16 +689,30 @@ func.eve <- function(matrix, method = "euclidean", ...) {
     return((sum(min_distances) - regular) / (1 - regular))
 }
 
-## Distance from centroid deviation ratio
-func.div <- function(matrix, ...) {
+## Weighted deviations from the distance of the convex hull center
+func.div <- function(matrix, abundance = 1, method = "euclidean", ...) {
+
+    ## Measure the hull center
+    convhull <- geometry::convhulln(matrix, option = "FA")
+    hull_center <- colMeans(convhull$p[unique(c(convhull$hull)),, drop = FALSE])
+
     ## The distance from centroid (dGi)
-    dist_centroid <- centroids(matrix)
-    ## The mean distance from centroid (dG)
+    dist_centroid <- centroids(matrix, method = method, centroid = hull_center)
+    ## The mean distance from centroid (dG bar)
     mean_dis_cent <- mean(dist_centroid, na.rm = TRUE)
-    ## The number of observations
-    obs <- length(dist_centroid)
+
+    ## Set the abundances
+    if(length(c(abundance)) !=  1) {
+        abundance <- rowSums(abundance)/sum(abundance)
+    } else {
+        abundance <- rep(1/nrow(matrix), nrow(matrix))
+    }
+
+    ## Weighted or unweighted distance deviations (delta d)
+    distances_dev <- abundance * (dist_centroid - mean_dis_cent)
+
     ## The FDiv metric
-    return((sum(dist_centroid) - mean_dis_cent * (obs-1)) / ((sum(abs(dist_centroid - mean_dis_cent) + dist_centroid))/obs))
+    return((sum(distances_dev) + mean_dis_cent) / (sum(abs(distances_dev)) + mean_dis_cent))
 }
 
 ## Select the right slope function
