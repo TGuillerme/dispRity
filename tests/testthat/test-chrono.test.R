@@ -678,6 +678,8 @@ test_that("citsa.method works...\n", {
 	full_df <- bind.delta(delta_df, control_delta_df, dimension.level = dimension.level )
 
 
+
+
 })
 
 
@@ -721,6 +723,26 @@ test_that("citsa.method works...\n", {
 
 # })
 
+test_that("chrono.test rejects missing disparity values", {
+    # data(disparity)
+
+    # disparity$disparity$`50` <- NA
+
+	# missing_disparity  <- disparity
+	
+
+	# out <- chrono.test(missing_disparity, method = "citsa", changepoint = 66, nsim = 50)
+
+
+	tree <- rtree(n = 100)
+	tree <- makeNodeLabel(tree)
+	tree <- set.root.time(tree)
+	mat <- matrix(rnorm(995), 199, 5)
+	rownames(mat) <- c(tree$tip.label, tree$node.label)
+	data <- make.dispRity(data = mat, tree = tree)
+	data <- chrono.subsets(data, method = "c", model = "equal.split", time = 10, inc.nodes = TRUE)
+
+})
 
 test_that("chrono.test (method = `citsa`) works", {
 	data(disparity)
