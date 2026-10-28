@@ -49,6 +49,7 @@ export(print.dispRity)
 export(summary.dispRity)
 export(test.dispRity)
 export(test.metric)
+export(chrono.test)
 
 ##disparity metrics
 export(ancestral.dist)
