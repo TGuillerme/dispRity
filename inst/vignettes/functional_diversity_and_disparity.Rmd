@@ -1,0 +1,73 @@
+---
+title: "Functional diversity and disparity"
+author: "Thomas Guillerme"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    fig_width: 12
+    fig_height: 6
+---
+
+# Base test: functional diversity in `FD` and `fundiversity`
+
+```r
+library(fundiversity)
+library(FD)
+data(traits_birds)
+data(site_sp_birds)
+matrix <- traits_birds
+abundance <- site_sp_birds
+```
+
+Let's first calculate the overall functional diversity metrics, ignoring abundance
+
+```r
+## FD results
+FD_metrics <- FD::dbFD(traits_birds)
+FD_metrics <- c(FRic = unname(FD_metrics$FRic),
+                FEve = unname(FD_metrics$FEve),
+                FDiv = unname(FD_metrics$FDiv),
+                FDis = unname(FD::fdisp(dist(traits_birds))$FDis),
+                RaoQ = unname(FD_metrics$RaoQ))
+
+## Fundiversity results
+fundiversity_metrics <- c(FRic = fd_fric(traits_birds)[,2],
+                          FEve = fd_feve(traits_birds)[,2],
+                          FDiv = fd_fdiv(traits_birds)[,2],
+                          FDis = fd_fdis(traits_birds)[,2],
+                          RaoQ = fd_raoq(traits_birds)[,2])
+
+cbind(FD_metrics[-1], fundiversity_metrics[-1])
+
+## disparity results?
+
+# FRic ref: Villéger, S., Mason, N.W.H., Mouillot, D., 2008: = convex hull volume in fundiversity?
+# FEve ref: Villéger, S., Mason, N.W.H., Mouillot, D., 2008: 
+# FDiv ref: Villéger S., Mason N. W. H., Mouillot D. (2008)
+# FDis ref: Laliberté, E., & Legendre, P. (2010)
+# RaoQ ref: Pavoine S., Dolédec S. (2005)
+
+dispRity_metrics <- c(FRic = func.rich(traits_birds), ## Same as fundiversity # different from FD
+                      FEve = func.eve(traits_birds),  ## Same as fundiversity # different from FD
+                      FDiv = func.div(traits_birds),  ## Same as fundiversity # different from FD 
+                      FDis = fd_fdis(traits_birds)[,2], 
+                      RaoQ = fd_raoq(traits_birds)[,2])
+
+
+microbenchmark(fd_fric(traits_birds), func.rich(traits_birds))
+microbenchmark(fd_feve(traits_birds), func.eve(traits_birds))
+microbenchmark(fd_fdiv(traits_birds), func.div(traits_birds))
+
+
+## Reinvent the wheel:
+matrix <- traits_birds
+abundance <- matrix(sample(0:4, size = nrow(matrix), replace = TRUE, prob = c(0.04, 0.24, 0.24, 0.24, 0.24)), ncol = 1, dimnames = list(rownames(matrix)))
+
+# FRic = convhull.volume * abundance
+
+# FEve = regularity of the species along it's minimum spanning tree * abundance
+
+# FDiv = Weighted deviations from the distance of the convex hull center
+
+
+```
