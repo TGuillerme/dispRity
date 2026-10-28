@@ -49,7 +49,7 @@ check.one.metric <- function(metric, data, tree, ...) {
     
     dots <- list(...)
     ## Check the class
-    check.class(metric, c("function", "standardGeneric"), report = 1)
+    check.class(metric, c("function", .genericFunctionName), report = 1)
 
     ## Run the checks
     checks <- check.covar(metric, data)

@@ -105,8 +105,8 @@ covar.plot <- function(data, n, points = TRUE, major.axes = FALSE, ellipses = FA
     check.length(dimensions, 2, msg = " argument must contain only 2 dimensions (for now).")
 
     ## Selecting the centres
-    centre_class <- check.class(centres, c("standardGeneric", "function", "numeric", "integer", "list", "character"), msg = " must be either a function (e.g. colMeans) a set or a list of sets of coordinates (e.g. list(c(1,2), c(0,0))) or \"intercept\" for using the posteriors intercepts.")
-    centre_class <- ifelse(centre_class == "standardGeneric", "function", centre_class)
+    centre_class <- check.class(centres, c(.genericFunctionName, "function", "numeric", "integer", "list", "character"), msg = " must be either a function (e.g. colMeans) a set or a list of sets of coordinates (e.g. list(c(1,2), c(0,0))) or \"intercept\" for using the posteriors intercepts.")
+    centre_class <- ifelse(centre_class == .genericFunctionName, "function", centre_class)
     centre_class <- ifelse(centre_class == "integer", "numeric", centre_class)
     
     ## Adjusting the centres to match the dimensions
@@ -128,9 +128,9 @@ covar.plot <- function(data, n, points = TRUE, major.axes = FALSE, ellipses = FA
     }
 
     ## Axes and ellipses arguments
-    major_axes_class <- check.class(major.axes, c("logical", "function", "standardGeneric"), msg = " must be either logical or a function for summarising the major axes.")
+    major_axes_class <- check.class(major.axes, c("logical", "function", .genericFunctionName), msg = " must be either logical or a function for summarising the major axes.")
     do_major_axes <- !(major_axes_class == "logical" && !major.axes)
-    ellipses_class <- check.class(ellipses, c("logical", "function", "standardGeneric"), msg = " must be either logical or a function for summarising the ellipses.")
+    ellipses_class <- check.class(ellipses, c("logical", "function", .genericFunctionName), msg = " must be either logical or a function for summarising the ellipses.")
     do_ellipses <- !(ellipses_class == "logical" && !ellipses)
 
     ## Scaling the VCVs
@@ -141,7 +141,7 @@ covar.plot <- function(data, n, points = TRUE, major.axes = FALSE, ellipses = FA
 
     ## Measuring the axes
     if(do_major_axes) {
-        if(apply.to.VCV && (is(major.axes, "standardGeneric") || is(major.axes, "function")) && length(covars[[1]]) != 1) {
+        if(apply.to.VCV && is.function(major.axes) && length(covars[[1]]) != 1) {
             ## Get the VCV central tendencies
             covars_cent_tend <- lapply(covars, VCV.cent.tend, major.axes)
             ## Get the major axis
@@ -150,7 +150,7 @@ covar.plot <- function(data, n, points = TRUE, major.axes = FALSE, ellipses = FA
             ## The axes
             all_axes <- lapply(covars, lapply, get.one.axis, axis = 1, level = level, dimensions = dimensions)
             ## Summarising the axes (optional)
-            if(is(major.axes, "standardGeneric") || is(major.axes, "function")) {
+            if(is.function(major.axes)) {
                 ## Summarising the axes using the provided function
                 all_axes <- lapply(all_axes, function(one_group, fun) list(apply(simplify2array(one_group), 1:2, fun)), fun = major.axes)
             }
@@ -159,7 +159,7 @@ covar.plot <- function(data, n, points = TRUE, major.axes = FALSE, ellipses = FA
 
     ## Calculating the ellipses
     if(do_ellipses) {
-        if(apply.to.VCV && (is(ellipses, "standardGeneric") || is(ellipses, "function"))) {
+        if(apply.to.VCV && is.function(ellipses)) {
             ## Get the VCV central tendencies
             covars_cent_tend <- lapply(covars, VCV.cent.tend, ellipses)
             ## Get the major axis
@@ -168,7 +168,7 @@ covar.plot <- function(data, n, points = TRUE, major.axes = FALSE, ellipses = FA
             ## Get the ellipses
             all_ellipses <- lapply(covars, level.ellipses, dimensions, npoints = 50, centres, level = level)
             ## Summarising the ellipses (optional)
-            if(is(ellipses, "standardGeneric") || is(ellipses, "function")) {
+            if(is.function(ellipses)) {
                 ## Summarising the axes using the provided function
                 all_ellipses <- lapply(all_ellipses, function(one_group, fun) list(apply(simplify2array(one_group), 1:2, fun)), fun = ellipses)
             }
