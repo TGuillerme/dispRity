@@ -21,7 +21,7 @@ importFrom("vegan", "adonis2", "vegdist")
 importFrom("scales", "rescale")
 importFrom("GET", "create_curve_set", "rank_envelope")
 importFrom("parallel", "parLapply", "detectCores", "makeCluster", "clusterExport", "stopCluster")
-importFrom("zoo", "rollmean")
+importFrom("zoo", "rollmean", "rollapply")
 
 
 ##C libraries
