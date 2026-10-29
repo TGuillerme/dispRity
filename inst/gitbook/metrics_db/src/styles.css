@@ -1,0 +1,7 @@
+.entry-body code {
+  font-family: "Courier New", Courier, monospace;
+  background: #f2f2f2;
+  padding: 0.05rem 0.3rem;
+  border-radius: 0.2rem;
+  font-size: 0.9em;
+}
