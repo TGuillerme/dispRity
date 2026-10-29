@@ -5,3 +5,8 @@
   border-radius: 0.2rem;
   font-size: 0.9em;
 }
+
+.entry-body em {
+  font-style: italic;
+  color: inherit;
+}

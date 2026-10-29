@@ -32,7 +32,9 @@ function renderCategory(category) {
 }
 
 function mdInline(s) {
-  return esc(s).replace(/`([^`]+)`/g, "<code>$1</code>");
+  return esc(s)
+    .replace(/`([^`]+)`/g, "<code>$1</code>")   // `arg`  -> <code>arg</code>
+    .replace(/\*([^*]+)\*/g, "<em>$1</em>");    // *text* -> <em>text</em>
 }
 
 function renderEntry(entry, expandedId) {
