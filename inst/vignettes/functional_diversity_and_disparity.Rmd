@@ -47,17 +47,18 @@ cbind(FD_metrics[-1], fundiversity_metrics[-1])
 # FDis ref: Laliberté, E., & Legendre, P. (2010)
 # RaoQ ref: Pavoine S., Dolédec S. (2005)
 
-dispRity_metrics <- c(FRic = func.rich(traits_birds), ## Same as fundiversity # different from FD
+dispRity_metrics <- c(FRic = func.ric(traits_birds), ## Same as fundiversity # different from FD
                       FEve = func.eve(traits_birds),  ## Same as fundiversity # different from FD
                       FDiv = func.div(traits_birds),  ## Same as fundiversity # different from FD 
                       FDis = func.dis(traits_birds),  ## Same as fundiversity and FD
-                      RaoQ = fd_raoq(traits_birds)[,2])
+                      RaoQ = func.rao(traits_birds))
 
 
-microbenchmark(fd_fric(traits_birds), func.rich(traits_birds))
+microbenchmark(fd_fric(traits_birds), func.ric(traits_birds))
 microbenchmark(fd_feve(traits_birds), func.eve(traits_birds))
 microbenchmark(fd_fdiv(traits_birds), func.div(traits_birds))
-microbenchmark(fd_fdis(traits_birds), func.div(traits_birds))
+microbenchmark(fd_fdis(traits_birds), func.dis(traits_birds))
+microbenchmark(fd_raoq(traits_birds), func.rao(traits_birds))
 
 
 ## Reinvent the wheel:
@@ -72,10 +73,23 @@ abundance <- matrix(sample(0:4, size = nrow(matrix), replace = TRUE, prob = c(0.
 
 # FDis = Mean distance to the weighted centroid
 
-# RaoQ =
+# RaoQ = Sum of the distances scaled by the the outer product of abundance
 
-raoq <- function(matrix, abundance = 1, method = "euclidean", ...) {
-  
+func.rao <- function(matrix, abundance = 1, method = "euclidean", ...) {
+
+    ## Distance matrix
+    distances <- check.dist.matrix(matrix, method = method)[[1]]
+    
+    ## Relative abundance
+    if(length(c(abundance)) !=  1) {
+        relative_abundance <- rowSums(abundance)/sum(abundance)
+    } else {
+        relative_abundance <- rep(1/nrow(matrix), nrow(matrix))
+    }
+
+    ## Sum of the distances scaled by the the outer product of abundance
+    return(sum((relative_abundance %o% relative_abundance) * as.matrix(distances)))
 }
+
 
 ```
