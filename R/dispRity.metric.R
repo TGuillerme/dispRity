@@ -1,5 +1,5 @@
 #' @name dispRity.metric
-#' @aliases dimension.level3.fun dimension.level2.fun dimension.level1.fun between.groups.fun variances ranges centroids mode.val ellipsoid.volume ellipse.volume edge.length.tree convhull.surface convhull.volume diagonal ancestral.dist pairwise.dist span.tree.length n.ball.volume radius neighbours displacements quantiles func.eve func.div angles deviations group.dist point.dist projections projections.tree projections.between disalignment roundness count.neighbours
+#' @aliases dimension.level3.fun dimension.level2.fun dimension.level1.fun between.groups.fun variances ranges centroids mode.val ellipsoid.volume ellipse.volume edge.length.tree convhull.surface convhull.volume diagonal ancestral.dist pairwise.dist span.tree.length n.ball.volume radius neighbours displacements quantiles func.div func.dis func.eve func.rao func.ric angles deviations group.dist point.dist projections projections.tree projections.between disalignment roundness count.neighbours
 #' @title Disparity metrics
 #'
 #' @description Different implemented disparity metrics.
@@ -11,7 +11,7 @@
 #'  
 #' @param matrix A matrix.
 #' @param matrix2 Optional, a second matrix for metrics between groups.
-#' @param ... Optional arguments to be passed to the function. Usual optional arguments are \code{method} for specifying the method for calculating distance passed to \code{\link[vegan]{vegdist}} (e.g. \code{method = "euclidean"} - default - or \code{method = "manhattan"}) or \code{k.root} to scale the result using the \eqn{kth} root. See details below for available optional arguments for each function.
+#' @param ... Optional arguments to be passed to the function. Common optional arguments are \code{method} for specifying the method for calculating distance passed to \code{\link[vegan]{vegdist}} (e.g. \code{method = "euclidean"} - default - or \code{method = "manhattan"}); \code{abundance} to use an abundance matrix (can be recycled from \code{dispRity} object or set to \code{1} to be ignored (default)); or \code{k.root} to scale the result using the \eqn{kth} root. See details below for available optional arguments for each function.
 #'
 #' @details
 #' These are inbuilt functions for calculating disparity. See \code{\link{make.metric}} for details on \code{dimension.level3.fun}, \code{dimension.level2.fun}, \code{dimension.level1.fun} and \code{between.groups.fun}. The dimensions levels (1, 2 and 3) can be seen as similar to ranks in linear algebra.
@@ -21,7 +21,7 @@
 #'   \item \code{convhull.volume}: calculates the convex hull hypervolume of a matrix (calls \code{\link[geometry]{convhulln}(x, options = "FA")$vol}).
 #'      \itemize{
 #'          \item Both \code{convhull} functions call the \code{\link[geometry]{convhulln}} function with the \code{"FA"} option (computes total area and volume).
-#'          \item WARNING: both \code{convhull} functions can be computationally intensive above 10 dimensions!
+#'          \item WARNING: both \code{convhull} functions can be computationally intensive above 10 dimensions! Volume calculation is also unreliable above three dimensions (see \code{\link[geometry]{convhulln}} for details.)
 #'      }
 #'
 #'   \item \code{convhull.surface}: calculates the convex hull hypersurface of a matrix (calls \code{\link[geometry]{convhulln}(x, options = "FA")$area}).
@@ -39,10 +39,16 @@
 #'             \item \code{<a numeric vector>}: finally, you can directly provide a numeric vector of eigen values. This method is never automatically selected and overrides any other options.
 #'      }
 #' 
-#'   \item \code{func.div}: The functional divergence (Villeger et al. 2008): the ratio of deviation from the centroid (this is similar to \code{FD::dbFD()$FDiv}).
-#' 
-#'   \item \code{func.eve}: The functional evenness (Villeger et al. 2008): the minimal spanning tree distances evenness (this is similar to \code{FD::dbFD()$FEve}). If the matrix used is not a distance matrix, the distance method can be passed using, for example \code{method = "euclidean"} (default).
-#' 
+#'   \item \code{func.div}: The functional divergence (Villeger et al. 2008): the weighted deviations from the distance of the convex hull center. If the matrix used is not a distance matrix, the distance method can be passed using, for example, \code{method = "euclidean"} (default).
+#'
+#'   \item \code{func.dis}: The functional dissimilarity (Laliberte \& Legendre 2010): The average distance of all elements to the weighted centroid. If the matrix used is not a distance matrix, the distance method can be passed using, for example, \code{method = "euclidean"} (default).
+#'
+#'   \item \code{func.eve}: The functional evenness (Villeger et al. 2008): the regularity of the elements along it's minimum spanning tree scaled by abundance abundance. If the matrix used is not a distance matrix, the distance method can be passed using, for example, \code{method = "euclidean"} (default).
+#'
+#'   \item \code{func.ric}: The functional richness (Villeger et al. 2008): the convex hull volume scaled by abundance. This is the same as using \code{convhull.volume(matrix*abundance)}.
+#'
+#'   \item \code{func.rao}: The Rao entropy index (Q) (Pavoine & Doledec 2005): The sum of the pairwise distances scaled by the the outer product of abundance. If the matrix used is not a distance matrix, the distance method can be passed using, for example, \code{method = "euclidean"} (default).
+#'
 #'   \item \code{mode.val}: calculates the modal value of a vector.
 #'
 #'   \item \code{n.ball.volume}: calculate the volume of the minimum n-ball (if \code{sphere = TRUE}) or of the ellipsoid (if \code{sphere = FALSE}).
@@ -59,7 +65,7 @@
 #' 
 #'   \item \code{angles}: calculates the angles of the main axis of variation per dimension in a \code{matrix}. The angles are calculated using the least square algorithm from the \code{\link[stats]{lm}} function. The unit of the angle can be changed through the \code{unit} argument (either \code{"degree"} (default), \code{radian} or \code{slope}) and a base angle to measure the angle from can be passed through the \code{base} argument (by default \code{base = 0}, measuring the angle from the horizontal line (note that the \code{base} argument has to be passed in the same unit as \code{unit}). When estimating the slope through \code{\link[stats]{lm}}, you can use the option \code{significant} to only consider significant slopes (\code{TRUE}) or not (\code{FALSE} - default).
 #' 
-#'   \item \code{centroids}: calculates the distance between each row and the centroid of the matrix (Laliberte 2010). This function can take an optional arguments \code{centroid} for defining the centroid (if missing (default), the centroid of the matrix is used). This argument can be either a subset of coordinates matching the matrix's dimensions (e.g. \code{c(0, 1, 2)} for a matrix with three columns) or a single value to be the coordinates of the centroid (e.g. \code{centroid = 0} will set the centroid coordinates to \code{c(0, 0, 0)} for a three dimensional matrix). NOTE: distance is calculated as \code{"euclidean"} by default, this can be changed using the \code{method} argument.
+#'   \item \code{centroids}: calculates the distance between each row and the centroid of the matrix. This function can take an optional arguments \code{centroid} for defining the centroid (if missing (default), the centroid of the matrix is used). This argument can be either a subset of coordinates matching the matrix's dimensions (e.g. \code{c(0, 1, 2)} for a matrix with three columns) or a single value to be the coordinates of the centroid (e.g. \code{centroid = 0} will set the centroid coordinates to \code{c(0, 0, 0)} for a three dimensional matrix). NOTE: distance is calculated as \code{"euclidean"} by default, this can be changed using the \code{method} argument.
 #'
 #'  \item \code{count.neighbours}: counts the number of other elements neigbhouring each element within a certain radius. This function can take the optional arguments \code{radius} that is the radius for counting the neighbours. This can be either missing (by default this is half the longest distance), a function to calculate the distance taking \code{x} as the sole argument (e.g. \code{sd} or \code{function(x) sum(x, na.rm = TRUE)/length(x)}) or a \code{numeric} or \code{integer} value. The other option is \code{relative} to make the counts relative to the number of elements (\code{relative = TRUE}; default) or not (\code{relative = FALSE}). NOTE: distance is calculated as \code{"euclidean"} by default, this can be changed using the \code{method} argument. 
 #'
@@ -132,6 +138,7 @@
 #' @references Lalibert'{e} E, Legendre P. 2010. A distance-based framework for measuring functional diversity from multiple traits. Ecology, 91(1), pp.299-305.
 #' @references Vill'{e}ger S, Mason NW, Mouillot D. 2008. New multidimensional functional diversity indices for a multifaceted framework in functional ecology. Ecology. 89(8):2290-301.
 #' @references Wills MA. 2001. Morphological disparity: a primer. In Fossils, phylogeny, and form (pp. 55-144). Springer, Boston, MA.
+#' @references Pavoine S. and Dol'{e}dec S. 2005. The apportionment of quadratic entropy: a useful alternative for partitioning diversity in ecological data. Environmental and Ecological Statistics, 12(2), pp.125-138.
 #' @references Foote, M. 1990. Nearest-neighbor analysis of trilobite morphospace. Systematic Zoology, 39(4), pp.371-382.
 #' @references Guillerme T, Puttick MN, Marcy AE, Weisbecker V. 2020. Shifting spaces: Which disparity or dissimilarity measurement best summarize occupancy in multidimensional spaces?. Ecology and evolution. 10(14):7261-75.
 #' 
@@ -410,7 +417,10 @@ dimension.level1.fun <- function(matrix, ...) {
     cat("\n?diagonal")
     cat("\n?ellipsoid.volume")
     cat("\n?func.div")
+    cat("\n?func.dis")
     cat("\n?func.eve")
+    cat("\n?func.rao")
+    cat("\n?func.ric")
     cat("\n?group.dist")
     cat("\n?mode.val")
     cat("\n?n.ball.volume")
@@ -652,7 +662,7 @@ n.ball.volume <- function(matrix, sphere = TRUE, ...) {
 
 
 ## Weighted convex hull
-func.rich <- function(matrix, abundance = 1, ...) {
+func.ric <- function(matrix, abundance = 1, ...) {
   return(convhull.volume(matrix*abundance))
 }
 
@@ -728,6 +738,22 @@ func.dis <- function(matrix, abundance = 1, method = "euclidean", ...) {
     }
 }
 
+## Sum of the distances scaled by the the outer product of abundance
+func.rao <- function(matrix, abundance = 1, method = "euclidean", ...) {
+
+    ## Distance matrix
+    distances <- check.dist.matrix(matrix, method = method)[[1]]
+    
+    ## Relative abundance
+    if(length(c(abundance)) !=  1) {
+        relative_abundance <- rowSums(abundance)/sum(abundance)
+    } else {
+        relative_abundance <- rep(1/nrow(matrix), nrow(matrix))
+    }
+
+    ## Sum of the distances scaled by the the outer product of abundance
+    return(sum((relative_abundance %o% relative_abundance) * as.matrix(distances)))
+}
 
 ## Select the right slope function
 get.slope.significant <- function(X, base_angle) {
