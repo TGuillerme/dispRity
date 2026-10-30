@@ -14,6 +14,8 @@
  - [ ] add ecology example in manual in section 02.
  - [ ] add vignette comparing to `funcdiversity` and `FD`
 
+ - [ ] update manual in `05_other-functionalities.Rmd` for the sample arg in `multi.ace`
+
 
 ##
 
