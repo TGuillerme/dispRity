@@ -264,6 +264,45 @@ summary(dispRity(boot_dim, metric = sum))
 Note here how the observed sum is the same (no bootstrapping) but the bootstrapping distributions are quiet different even though the same seed was used.
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## Disparity metrics {#disparity-metrics}
 
 There are many ways of measuring disparity!
@@ -413,6 +452,10 @@ summary(dispRity(grouped_matrix, metric = mean.difference,
 Note that in any case, the order of the comparison can matter.
 In our example, it is obvious that `mean(matrix) - mean(matrix2)` is not the same as `mean(matrix2) - mean(matrix)`.
 
+
+### Metrics with abundance {#abundancemetric}
+
+
 ### `make.metric` {#makemetric}
 
 Of course, functions can be more complex and involve multiple operations such as the `centroids` function (see `?dispRity.metric`) that calculates the Euclidean distance between each element and the centroid of the ordinated space.
@@ -454,7 +497,7 @@ if(make.metric(var, silent = TRUE)$type != "level1") {
 }
 ```
 
-### Metrics in the `dispRity` function
+### Using metrics with the `dispRity` function
 
 Using this metric structure, we can easily use any disparity metric in the `dispRity` function as follows:
 
@@ -497,6 +540,8 @@ In these examples, we considered disparity to be a single value.
 For example, in the previous example, we defined disparity as the standard deviation of the variances of each column of the variance/covariance matrix (`metric = c(variances, sd, var)`).
 It is, however, possible to calculate [disparity as a distribution](#disparity-as-a-distribution).
 
+
+
 ### Metrics implemented in `dispRity`
 
 <!-- TODO: Sort by group of metrics -->
@@ -504,116 +549,15 @@ It is, however, possible to calculate [disparity as a distribution](#disparity-a
 Several disparity metrics are implemented in the `dispRity` package.
 The detailed list can be found in `?dispRity.metric` along with some description of each metric.
 
-Level | Name | Description | Source | 
-------|------|---------------------------------------------------|--------|
-2 | `ancestral.dist` | The distance between an element and its ancestor | `dispRity` |
-2 | `angles` | The angle of main variation of each dimensions | `dispRity` |
-2 | `centroids`<sup>1</sup> | The distance between each element and the centroid of the ordinated space | `dispRity` |
-1 | `convhull.surface` | The surface of the convex hull formed by all the elements | [`geometry`](https://cran.r-project.org/web/packages/geometry/index.html)`::convhulln$area` |
-1 | `convhull.volume` | The volume of the convex hull formed by all the elements | [`geometry`](https://cran.r-project.org/web/packages/geometry/index.html)`::convhulln$vol` |
-2 | `count.neighbours` | The number of neigbhours to each element in a specified radius | `dispRity` |
-2 | `deviations` | The minimal distance between each element and a hyperplane | `dispRity` |
-1 | `diagonal` | The longest distance in the ordinated space (like the diagonal in two dimensions) | `dispRity` |
-1 | `disalignment` | The rejection of the centroid of a matrix from the major axis of another (typically an `"as.covar"` metric) | `dispRity` |
-2 | `displacements` | The ratio between the distance from a reference and the distance from the centroid | `dispRity` |
-1 | `edge.length.tree` | The edge lengths of the elements on a tree | `ape` |
-1 | `ellipsoid.volume`<sup>1</sup> | The volume of the ellipsoid of the space | Donohue _et al._ (2013) |
-1 | `func.div` | The functional divergence (the ratio of deviation from the centroid) | `dispRity` (similar to [`FD`](https://cran.r-project.org/web/packages/FD/index.html)`::dbFD$FDiv` but without abundance)|
-1 | `func.eve` | The functional evenness (the minimal spanning tree distances evenness) | `dispRity` (similar to [`FD`](https://cran.r-project.org/web/packages/FD/index.html)`::dbFD$FEve` but without abundance)|
-1 | `group.dist` | The distance between two groups | `dispRity` |
-1 | `mode.val` | The modal value | `dispRity` |
-1 | `n.ball.volume` | The hyper-spherical (*n*-ball) volume | `dispRity` |
-2 | `neighbours` | The distance to specific neighbours (e.g. the nearest neighbours - by default) | `dispRity` |
-2 | `pairwise.dist` | The pairwise distances between elements | [`vegan`](https://cran.r-project.org/web/packages/vegan/index.html)`::vegist` |
-2 | `point.dist` | The distance between one group and the point of another group | `dispRity` |
-2 | `projections` | The distance *on* (projection) or *from* (rejection) an arbitrary vector | `dispRity` |
-1 | `projections.between` | `projections` metric applied between groups | `dispRity` |
-2 | `projections.tree` | The `projections` metric but where the vector can be based on a tree | `dispRity` |
-2 | `quantiles` | The *n*th quantile range per axis | `dispRity` |
-2 | `radius` | The radius of each dimensions | `dispRity` |
-2 | `ranges` | The range of each dimension | `dispRity` |
-1 | `roundness` | The integral of the ranked scaled eigenvalues of a variance-covariance matrix | `dispRity`
-2 | `span.tree.length` | The minimal spanning tree length | [`vegan`](https://cran.r-project.org/web/packages/vegan/index.html)`::spantree` |
-2 | `variances` | The variance of each dimension | `dispRity` |
+<!-- Database search index -->
+<input id="q" type="search" placeholder="Search keywords..." autocomplete="off" />
+<ul id="results"></ul>
 
-1: Note that by default, the centroid is the centroid of the elements.
-It can, however, be fixed to a different value by using the `centroid` argument `centroids(space, centroid = rep(0, ncol(space)))`, for example the origin of the ordinated space.
+<script type="module" src="./metrics_db/src/index.js"></script>
 
-2: This function uses an estimation of the eigenvalue that only works for MDS or PCoA ordinations (*not* PCA).
 
 You can find more informations on the vast variety of metrics that you can use in your analysis in this [paper](https://onlinelibrary.wiley.com/doi/10.1002/ece3.6452).
 
-### Equations and implementations
-Some of the functions described below are implemented in the `dispRity` package and do not require any other packages to calculate ([see implementation here](https://github.com/TGuillerme/dispRity/blob/master/R/dispRity.metric.R)).
-
-\begin{equation}
-    ancestral.dist = \sqrt{\sum_{i=1}^{n}{({d}_{n}-Ancestor_{n})^2}}
-\end{equation}
-
-\begin{equation}
-    centroids = \sqrt{\sum_{i=1}^{n}{({d}_{n}-Centroid_{d})^2}}
-\end{equation}
-
-\begin{equation}
-    diagonal = \sqrt{\sum_{i=1}^{d}|max(d_i) - min(k_i)|}
-\end{equation}
-
-\begin{equation}
-    deviations = \frac{|Ax + By + ... + Nm + Intercept|}{\sqrt{A^2 + B^2 + ... + N^2}}
-\end{equation}
-
-\begin{equation}
-    displacements = \frac{\sqrt{\sum_{i=1}^{n}{({d}_{n}-Reference_{d})^2}}}{\sqrt{\sum_{i=1}^{n}{({d}_{n}-Centroid_{k})^2}}}
-\end{equation}
-
-\begin{equation}
-    ellipsoid.volume = \frac{\pi^{d/2}}{\Gamma(\frac{d}{2}+1)}\displaystyle\prod_{i=1}^{d} (\lambda_{i}^{0.5})
-\end{equation}
-
-\begin{equation}
-    n.ball.volume = \frac{\pi^{d/2}}{\Gamma(\frac{d}{2}+1)}\displaystyle\prod_{i=1}^{d} R
-\end{equation}
-
-\begin{equation}
-    projection_{on} = \| \overrightarrow{i} \cdot \overrightarrow{b} \|
-\end{equation}
-\begin{equation}
-    projection_{from} = \| \overrightarrow{i} - \overrightarrow{i} \cdot \overrightarrow{b} \|
-\end{equation}
-
-\begin{equation}
-    radius = |\frac{\sum_{i=1}^{n}d_i}{n} - f(\mathbf{v}d)|
-\end{equation}
-
-\begin{equation}
-    ranges = |max(d_i) - min(d_i)|
-\end{equation}
-
-\begin{equation}
-    roundness = \int_{i = 1}^{n}{\frac{\lambda_{i}}{\text{max}(\lambda)}}
-\end{equation}
-
-\begin{equation}
-    variances = \sigma^{2}{d_i}
-\end{equation}
-
-\begin{equation}
-    span.tree.length = \mathrm{branch\ length}
-\end{equation}
-
-
-Where *d* is the number of dimensions,
-*n* the number of elements,
-$\Gamma$ is the Gamma distribution,
-$\lambda_i$ is the eigenvalue of each dimensions,
-$\sigma^{2}$ is their variance and
-$Centroid_{k}$ is their mean,
-$Ancestor_{n}$ is the coordinates of the ancestor of element $n$,
-$f(\mathbf{v}k)$ is function to select one value from the vector $\mathbf{v}$ of the dimension $k$ (e.g. it's maximum, minimum, mean, etc.),
-*R* is the radius of the sphere or the product of the radii of each dimensions ($\displaystyle\prod_{i=1}^{k}R_{i}$ - for a hyper-ellipsoid),
-$Reference_{k}$ is an arbitrary point's coordinates (usually 0),
-$\overrightarrow{b}$ is the vector defined by (`(point1, point2)`),
-and $\overrightarrow{i}$ is the vector defined by (`(point1, i)` where `i` is any row of the matrix).
 
 ### Using the different disparity metrics
 Here is a brief demonstration of the main metrics implemented in `dispRity`.
@@ -626,276 +570,59 @@ dummy_space <- space.maker(10, 5, rnorm)
 rownames(dummy_space) <- 1:10
 ```
 
-We will use this simulated space to demonstrate the different metrics.
 
-#### Volumes and surface metrics
-The functions `ellipsoid.volume`, `convhull.surface`, `convhull.volume` and `n.ball.volume`  all measure the surface or the volume of the ordinated space occupied:
+### Which disparity metric to choose?
 
-Because there is only one subset (i.e. one matrix) in the dispRity object, the operations below are the equivalent of `metric(dummy_space)` (with rounding).
+The disparity metric that gives the most consistent results is the following one:
 
 ```{r}
-## Calculating the ellipsoid volume
-summary(dispRity(dummy_space, metric = ellipsoid.volume))
+best.metric <- function() return(42)
 ```
-> WARNING: in such dummy space, this gives the estimation of the ellipsoid volume, not the real ellipsoid volume! See the cautionary note in `?ellipsoid.volume`.
+
+Joke aside, this is a legitimate question that has no simple answer: **it depends on the dataset and question at hand**.
+Thoughts on which metric to choose can be find in @moms and @Guillerme2020 but again, will ultimately depend on the question and dataset.
+The question should help figuring out which type of metric is desired: for example, in the question "does the extinction released niches for mammals to evolve", the metric in interest should probably pick up a change in size in the trait space (the release could result in some expansion of the mammalian morphospace); or if the question is "does group X compete with group Y", maybe the metric of interested should pick up changes in position (group X can be displaced by group Y).
+
+In order to visualise what signal different disparity metrics are picking, you can use the [`moms`](https://tguillerme.shinyapps.io/moms/) that come with a detailed [manual](https://rawcdn.githack.com/TGuillerme/moms/master/inst/moms_vignette.html) on how to use it.
+
+Alternatively, you can use the `test.metric` function:
+
+#### `test.metric` {#test-metric}
+
+This function allows to test whether a metric picks different changes in disparity. It intakes the space on which to test the metric, the disparity metric and the type of changes to apply gradually to the space.
+Basically this is a type of biased data rarefaction (or non-biased for `"random"`) to see how the metric reacts to specific changes in trait space.
 
 ```{r}
-## Calculating the convex hull surface
-summary(dispRity(dummy_space, metric = convhull.surface))
+## Creating a 2D uniform space
+example_space <- space.maker(300, 2, runif)
 
-## Calculating the convex hull volume
-summary(dispRity(dummy_space, metric = convhull.volume))
-
-## Calculating the convex hull volume
-summary(dispRity(dummy_space, metric = n.ball.volume))
+## Testing the product of ranges metric on the example space
+example_test <- test.metric(example_space, metric = c(prod, ranges),
+                           shifts = c("random", "size")) 
 ```
 
-The convex hull based functions are a call to the `geometry::convhulln` function with the `"FA"` option (computes total area and volume).
-Also note that they are really sensitive to the size of the dataset.
+By default, the test runs three replicates of space reduction as described in @moms by gradually removing 10% of the data points following the different algorithms from @moms (here the `"random"` reduction and the `"size"`) reduction, resulting in a `dispRity` object that can be summarised or plotted.
+The number of replicates can be changed using the `replicates` option.
+Still by default, the function then runs a linear model on the simulated data to measure some potential trend in the changes in disparity. 
+The model can be changed using the `model` option.
+Finally, the function runs 10 reductions by default from keeping 10% of the data (removing 90%) and way up to keeping 100% of the data (removing 0%).
+This can be changed using the `steps` option.
+A good disparity metric for your dataset will typically have no trend in the `"random"` reduction (the metric is ideally not affected by sample size) but should have a trend for the reduction of interest.
 
-> Cautionary note: measuring volumes in a high number of dimensions can be strongly affected by the [curse of dimensionality](https://en.wikipedia.org/wiki/Curse_of_dimensionality) that often results in near 0 disparity values. I strongly recommend reading [this really intuitive explanation](https://beta.observablehq.com/@tophtucker/theres-plenty-of-room-in-the-corners) from [Toph Tucker](https://github.com/tophtucker).
+```{r, fig.height = 12, fig.width = 6}
+## The results as a dispRity object
+example_test
 
-#### Ranges, variances, quantiles, radius, pairwise distance, neighbours (and counting them), modal value and diagonal
+## Summarising these results
+summary(example_test)
 
-The functions `ranges`, `variances` `radius`, `pairwise.dist`, `mode.val` and `diagonal` all measure properties of the ordinated space based on its dimensional properties (they are also less affected by the "curse of dimensionality"):
-
-`ranges`, `variances` `quantiles` and `radius` work on the same principle and measure the range/variance/radius of each dimension:
-
-```{r}
-## Calculating the ranges of each dimension in the ordinated space
-ranges(dummy_space)
-
-## Calculating disparity as the distribution of these ranges
-summary(dispRity(dummy_space, metric = ranges))
-
-## Calculating disparity as the sum and the product of these ranges
-summary(dispRity(dummy_space, metric = c(sum, ranges)))
-summary(dispRity(dummy_space, metric = c(prod, ranges)))
-
-## Calculating the variances of each dimension in the
-## ordinated space
-variances(dummy_space)
-
-## Calculating disparity as the distribution of these variances
-summary(dispRity(dummy_space, metric = variances))
-
-## Calculating disparity as the sum and
-## the product of these variances
-summary(dispRity(dummy_space, metric = c(sum, variances)))
-summary(dispRity(dummy_space, metric = c(prod, variances)))
-
-## Calculating the quantiles of each dimension
-## in the ordinated space
-quantiles(dummy_space)
-
-## Calculating disparity as the distribution of these variances
-summary(dispRity(dummy_space, metric = quantiles))
-
-## By default, the quantile calculated is the 95%
-## (i.e. 95% of the data on each axis)
-## this can be changed using the option quantile:
-summary(dispRity(dummy_space, metric = quantiles, quantile = 50))
-
-## Calculating the radius of each dimension in the ordinated space
-radius(dummy_space)
-
-## By default the radius is the maximum distance from the centre of
-## the dimension. It can however be changed to any function:
-radius(dummy_space, type = min)
-radius(dummy_space, type = mean)
-
-## Calculating disparity as the mean average radius
-summary(dispRity(dummy_space,
-                 metric = c(mean, radius),
-                 type = mean))
+## Or visualising them
+plot(example_test)
 ```
 
-The pairwise distances and the neighbours distances uses the function `vegan::vegdist` and can take the normal `vegdist` options:
+### Specific metrics
 
-```{r}
-## The average pairwise euclidean distance
-summary(dispRity(dummy_space, metric = c(mean, pairwise.dist)))
-
-## The distribution of the Manhattan distances
-summary(dispRity(dummy_space, metric = pairwise.dist,
-                 method = "manhattan"))
-
-## The average nearest neighbour distances
-summary(dispRity(dummy_space, metric = neighbours))
-
-## The average furthest neighbour manhattan distances
-summary(dispRity(dummy_space, metric = neighbours,
-                 which = max, method = "manhattan"))
-
-## The overall number of neighbours per point
-summary(dispRity(dummy_space, metric = count.neighbours,
-                 relative = FALSE))
-
-## The relative number of neigbhours
-## two standard deviations of each element
-summary(dispRity(dummy_space, metric = count.neighbours,
-                 radius = function(x)(sd(x)*2),
-                 relative = TRUE))
-```
-
-Note that this function is a direct call to `vegan::vegdist(matrix, method = method, diag = FALSE, upper = FALSE, ...)`.
-
-The `diagonal` function measures the multidimensional diagonal of the whole space (i.e. in our case the longest Euclidean distance in our five dimensional space).
-The `mode.val` function measures the modal value of the matrix:
-
-
-```{r}
-## Calculating the ordinated space's diagonal
-summary(dispRity(dummy_space, metric = diagonal))
-
-## Calculating the modal value of the matrix
-summary(dispRity(dummy_space, metric = mode.val))
-```
-
-> This metric is only a Euclidean diagonal (mathematically valid) if the dimensions within the space are all orthogonal!
-
-#### Centroids, displacements and ancestral distances metrics {#centroids}
-
-The `centroids` metric allows users to measure the position of the different elements compared to a fixed point in the ordinated space.
-By default, this function measures the distance between each element and their centroid (centre point):
-
-```{r}
-## The distribution of the distances between each element and their centroid
-summary(dispRity(dummy_space, metric = centroids))
-
-## Disparity as the median value of these distances
-summary(dispRity(dummy_space, metric = c(median, centroids)))
-```
-
-It is however possible to fix the coordinates of the centroid to a specific point in the ordinated space, as long as it has the correct number of dimensions:
-
-```{r}
-## The distance between each element and the origin
-## of the ordinated space
-summary(dispRity(dummy_space, metric = centroids, centroid = 0))
-
-## Disparity as the distance between each element
-## and a specific point in space
-summary(dispRity(dummy_space, metric = centroids,
-                 centroid = c(0,1,2,3,4)))
-```
-
-If you have subsets in your `dispRity` object, you can also use the `matrix.dispRity` (see [utilities](#utilities)) and `colMeans` to get the centre of a specific subgroup.
-For example
-
-```{r, warning = FALSE}
-## Create a custom subsets object
-dummy_groups <- custom.subsets(dummy_space,
-                               group = list("group1" = 1:5,
-                                            "group2" = 6:10))
-summary(dispRity(dummy_groups, metric = centroids,
-    centroid = colMeans(get.matrix(dummy_groups, "group1"))))
-```
-
-The `displacements` distance is the ratio between the `centroids` distance and the `centroids` distance with `centroid = 0`.
-Note that it is possible to measure a ratio from another point than `0` using the `reference` argument.
-It gives indication of the relative displacement of elements in the multidimensional space: a score > 1 signifies a displacement away from the reference. A score of < 1 signifies a displacement *towards* the reference.
-
-
-```{r}
-## The relative displacement of the group in space to the centre
-summary(dispRity(dummy_space, metric = displacements))
-
-## The relative displacement of the group to an arbitrary point
-summary(dispRity(dummy_space, metric = displacements,
-                 reference = c(0,1,2,3,4)))
-```
-
-The `ancestral.dist` metric works on a similar principle as the `centroids` function but changes the centroid to be the coordinates of each element's ancestor (if `to.root = FALSE`; default) or to the root of the tree (`to.root = TRUE`).
-Therefore this function needs a matrix that contains tips and nodes and a tree as additional argument.
-
-```{r}
-## A generating a random tree with node labels
-my_tree <- makeNodeLabel(rtree(5), prefix = "n")
-## Adding the tip and node names to the matrix
-dummy_space2 <- dummy_space[-1,]
-rownames(dummy_space2) <- c(my_tree$tip.label,
-                            my_tree$node.label)
-
-## Calculating the distances from the ancestral nodes
-ancestral_dist <- dispRity(dummy_space2, metric = ancestral.dist,
-                           tree = my_tree)
-
-## The ancestral distances distributions
-summary(ancestral_dist)
-
-## Calculating disparity as the sum of the distances from all the ancestral nodes
-summary(dispRity(ancestral_dist, metric = sum))
-```
-
-
-#### Minimal spanning tree length
-
-The `span.tree.length` uses the `vegan::spantree` function to heuristically calculate the minimum spanning tree (the shortest multidimensional tree connecting each elements) and calculates its length as the sum of every branch lengths.
-
-```{r}
-## The length of the minimal spanning tree
-summary(dispRity(dummy_space, metric = c(sum, span.tree.length)))
-```
-
-Note that because the solution is heuristic, this metric can take a long time to compute for big matrices.
-
-
-#### Functional divergence and evenness
-
-The `func.div` and `func.eve` functions are based on the `FD::dpFD` package.
-They are the equivalent to `FD::dpFD(matrix)$FDiv` and `FD::dpFD(matrix)$FEve` but a bit faster (since they don't deal with abundance data).
-They are pretty straightforward to use:
-
-```{r}
-## The ratio of deviation from the centroid 
-summary(dispRity(dummy_space, metric = func.div))
-
-## The minimal spanning tree distances evenness
-summary(dispRity(dummy_space, metric = func.eve))
-
-## The minimal spanning tree manhanttan distances evenness
-summary(dispRity(dummy_space, metric = func.eve,
-                 method = "manhattan"))
-```
-
-#### Orientation: angles and deviations
-
-The `angles` performs a least square regression (via the `lm` function) and returns slope of the main axis of variation for each dimension. This slope can be converted into different units, `"slope"`, `"degree"` (the default) and `"radian"`. This can be changed through the `unit` argument. 
-By default, the angle is measured from the slope 0 (the horizontal line in a 2D plot) but this can be changed through the `base` argument (using the defined `unit`):
-
-```{r}
-## The distribution of each angles in degrees for each
-## main axis in the matrix
-summary(dispRity(dummy_space, metric = angles))
-
-## The distribution of slopes deviating from the 1:1 slope:
-summary(dispRity(dummy_space, metric = angles, unit = "slope",
-                 base = 1))
-```
-
-The `deviations` function is based on a similar algorithm as above but measures the deviation from the main axis (or hyperplane) of variation.
-In other words, it finds the least square line (for a 2D dataset), plane (for a 3D dataset) or hyperplane (for a >3D dataset) and measures the shortest distances between every points and the line/plane/hyperplane.
-By default, the hyperplane is fitted using the least square algorithm from `stats::glm`:
-
-```{r}
-## The distribution of the deviation of each point
-## from the least square hyperplane
-summary(dispRity(dummy_space, metric = deviations))
-```
-
-It is also possible to specify the hyperplane equation through the `hyperplane` equation. The equation must contain the intercept first and then all the slopes and is interpreted as $intercept + Ax + By + ... + Nd = 0$. For example, a 2 line defined as beta + intercept (e.g. $y = 2x + 1$) should be defined as `hyperplane = c(1, 2, 1)` ($2x - y + 1 = 0$).
-
-```{r}
-## The distribution of the deviation of each point
-## from a slope (with only the two first dimensions)
-summary(dispRity(dummy_space[, c(1:2)], metric = deviations,
-                 hyperplane = c(1, 2, -1)))
-```
-
-Since both the functions `angles` and `deviations` effectively run a `lm` or `glm` to estimate slopes or hyperplanes, it is possible to use the option `significant = TRUE` to only consider slopes or intercepts that have a slope significantly different than zero using an `aov` with a significant threshold of $p = 0.05$.
-Note that depending on your dataset, using and `aov` could be completely inappropriate!
-In doubt, it's probably better to enter your `base` (for `angles`) or your `hyperplane` (for `deviations`) manually so you're sure you know what the function is measuring.
+Here is some more details on specific metrics.
 
 #### Projections and phylo projections: elaboration and exploration {#projections}
 
@@ -1024,176 +751,41 @@ VCVtools::plot.roundness(pancake, dimensions = c(1,2,3), col.lines = c("orange",
 VCVtools::plot.roundness(cigar, dimensions = c(1,2,3), col.lines = c("orange", "blue", "darkgreen"), main = "Cigar's roundness: ~0.25")
 ```
 
-#### Between group metrics {#betweengroupmetricslist}
-
-You can find detailed explanation on how between group metrics work [here](#betweengroupmetricsexplain).
-
-##### `group.dist`
-
-The `group.dist` metric allows to measure the distance between two groups in the multidimensional space.
-This function needs to intake several groups and use the option `between.groups = TRUE` in the `dispRity` function.
-It calculates the vector normal distance (euclidean) between two groups and returns 0 if that distance is negative.
-Note that it is possible to set up which quantiles to consider for calculating the distances between groups.
-For example, one might be interested in only considering the 95% CI for each group.
-This can be done through the option `probs = c(0.025, 0.975)` that is passed to the `quantile` function.
-It is also possible to use this function to measure the distance between the groups centroids by calculating the 50% quantile (`probs = c(0.5)`).
-
-```{r}
-## Creating a dispRity object with two groups
-grouped_space <- custom.subsets(dummy_space,
-                      group = list(c(1:5), c(6:10)))
-
-## Measuring the minimum distance between both groups
-summary(dispRity(grouped_space, metric = group.dist,
-                 between.groups = TRUE))
-
-## Measuring the centroid distance between both groups
-summary(dispRity(grouped_space, metric = group.dist,
-                 between.groups = TRUE, probs = 0.5))
-
-## Measuring the distance between both group's 75% CI
-summary(dispRity(grouped_space, metric = group.dist,
-                 between.groups = TRUE, probs = c(0.25, 0.75)))
-```
-
-##### `point.dist`
-
-The metric measures the distance between the elements in one group (`matrix`) and a point calculated from a second group (`matrix2`).
-By default this point is the centroid but can be any point defined by a function passed to the `point` argument.
-For example, the centroid of `matrix2` is the mean of each column of that matrix so `point = colMeans` (default).
-This function also takes the `method` argument like previous one described above to measure either the `"euclidean"` (default) or the `"manhattan"` distances:
-
-
-```{r}
-## Measuring the distance between the elements of the first group
-## and the centroid of the second group
-summary(dispRity(grouped_space, metric = point.dist,
-                 between.groups = TRUE))
-
-## Measuring the distance between the elements of the second group
-## and the centroid of the first group
-summary(dispRity(grouped_space, metric = point.dist,
-                 between.groups = list(c(2,1))))
-
-## Measuring the distance between the elements of the first group
-## a point defined as the standard deviation of each column
-## in the second group
-sd.point <- function(matrix2) {apply(matrix2, 2, sd)}
-summary(dispRity(grouped_space, metric = point.dist,
-                 point = sd.point, method = "manhattan",
-                 between.groups = TRUE))
-```
-
-##### `projections.between` and `disalignment`
-
-These two metrics are typically based on variance-covariance matrices from a `dispRity` object that has a `$covar` component (see more about that [here](#covar)).
-Both are based on the `projections` metric and can take the same optional arguments (more info [here](#projections)).
-The examples and explanations below are based on the default arguments but it is possible (and easy!) to change them. 
-
-We are going to use the `charadriiformes` example for both metrics (see more about that [here](#covar)). 
-
-```{r}
-## Loading the charadriiformes data
-data(charadriiformes)
-
-## Creating the dispRity object (see the #covar section in the manual for more info)
-my_covar <- MCMCglmm.subsets(n = 50,
-                             data = charadriiformes$data,
-                             posteriors = charadriiformes$posteriors,
-                             group = MCMCglmm.levels(charadriiformes$posteriors)[1:4],
-                             tree = charadriiformes$tree,
-                             rename.groups = c(levels(charadriiformes$data$clade), "phylogeny"))
-```
-
-The first metric, `projections.between` projects the major axis of one group (`matrix`) onto the major axis of another one (`matrix2`).
-For example we might want to know how some groups compare in terms of angle (orientation) to a base group:
-
-```{r}
-## Creating the list of groups to compare
-comparisons_list <- list(c("gulls", "phylogeny"),
-                         c("plovers", "phylogeny"),
-                         c("sandpipers", "phylogeny"))
-
-## Measuring the angles between each groups
-## (note that we set the metric as.covar, more on that in the #covar section below)
-groups_angles <- dispRity(data = my_covar,
-                          metric = as.covar(projections.between),
-                          between.groups = comparisons_list,
-                          measure = "degree")
-## And here are the angles in degrees:
-summary(groups_angles)
-```
-
-The second metric, `disalignment` rejects the centroid of a group (`matrix`) onto the major axis of another one (`matrix2`).
-This allows to measure wether the center of a group is aligned with the major axis of another.
-A disalignement value of 0 means that the groups are aligned. A higher disalignment value means the groups are more and more disaligned.
-We can use the same set of comparisons as in the `projections.between` examples to measure which group is most aligned (less disaligned) with the phylogenetic major axis:
-
-```{r}
-## Measuring the disalignement of each group
-groups_alignement <- dispRity(data = my_covar,
-                              metric = as.covar(disalignment),
-                              between.groups = comparisons_list)
-## And here are the groups alignment (0 = aligned)
-summary(groups_alignement)
-```
-
-
-#### Abundance metrics {#abundance}
-
-Disparity metrics can also rely on some abundance component.
-Here, abundance designates an additional component of the `dispRity` object
 
 
 
-### Which disparity metric to choose?
 
-The disparity metric that gives the most consistent results is the following one:
 
-```{r}
-best.metric <- function() return(42)
-```
 
-Joke aside, this is a legitimate question that has no simple answer: **it depends on the dataset and question at hand**.
-Thoughts on which metric to choose can be find in @moms and @Guillerme2020 but again, will ultimately depend on the question and dataset.
-The question should help figuring out which type of metric is desired: for example, in the question "does the extinction released niches for mammals to evolve", the metric in interest should probably pick up a change in size in the trait space (the release could result in some expansion of the mammalian morphospace); or if the question is "does group X compete with group Y", maybe the metric of interested should pick up changes in position (group X can be displaced by group Y).
 
-In order to visualise what signal different disparity metrics are picking, you can use the [`moms`](https://tguillerme.shinyapps.io/moms/) that come with a detailed [manual](https://rawcdn.githack.com/TGuillerme/moms/master/inst/moms_vignette.html) on how to use it.
 
-Alternatively, you can use the `test.metric` function:
 
-#### `test.metric` {#test-metric}
 
-This function allows to test whether a metric picks different changes in disparity. It intakes the space on which to test the metric, the disparity metric and the type of changes to apply gradually to the space.
-Basically this is a type of biased data rarefaction (or non-biased for `"random"`) to see how the metric reacts to specific changes in trait space.
 
-```{r}
-## Creating a 2D uniform space
-example_space <- space.maker(300, 2, runif)
 
-## Testing the product of ranges metric on the example space
-example_test <- test.metric(example_space, metric = c(prod, ranges),
-                           shifts = c("random", "size")) 
-```
 
-By default, the test runs three replicates of space reduction as described in @moms by gradually removing 10% of the data points following the different algorithms from @moms (here the `"random"` reduction and the `"size"`) reduction, resulting in a `dispRity` object that can be summarised or plotted.
-The number of replicates can be changed using the `replicates` option.
-Still by default, the function then runs a linear model on the simulated data to measure some potential trend in the changes in disparity. 
-The model can be changed using the `model` option.
-Finally, the function runs 10 reductions by default from keeping 10% of the data (removing 90%) and way up to keeping 100% of the data (removing 0%).
-This can be changed using the `steps` option.
-A good disparity metric for your dataset will typically have no trend in the `"random"` reduction (the metric is ideally not affected by sample size) but should have a trend for the reduction of interest.
 
-```{r, fig.height = 12, fig.width = 6}
-## The results as a dispRity object
-example_test
 
-## Summarising these results
-summary(example_test)
 
-## Or visualising them
-plot(example_test)
-```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## Summarising dispRity data (plots)
 
