@@ -386,6 +386,13 @@ paint.branches <- function(tree, changepoint) {
 }
 
 
+# simulates the counterfactual envelope.
+# @param changepoint where the intervention occurs
+# @params data the input data
+# @params nsim the number of simulations for counterfactual
+# @params paint = TRUE uses paint.branches function, paint = FALSE uses tree slice function
+# @params slice.model takes an argument of either "acctran", "deltran", "random", "proximity", "equal.split", "gradual.split"
+
 make.control <- function(changepoint, data, nsim = 100, paint = TRUE, slice.model = NULL, n.matrix, ...) { ## change slice.model name for clarity
 
     if (paint) {
@@ -412,14 +419,6 @@ make.control <- function(changepoint, data, nsim = 100, paint = TRUE, slice.mode
     }
 
 
-
-
-
-
-
-
-
-
     ## if matrix is single matrix (simple version)
     # simulate.control(mat, changepoint, data, nsim, paint, slice.model)
         # else
@@ -440,7 +439,6 @@ make.control <- function(changepoint, data, nsim = 100, paint = TRUE, slice.mode
         sim_parameters <- replicate(ncol(mat), list(root_value = NULL, sig_sq = NULL), simplify = FALSE) ## create empty list structure for storing trait parameters
 
         if (paint) {
-
             painted_tree <- paint.branches(tree, changepoint)
             n <- length(tree$tip.label)
             tip_mat <- mat[tree$tip.label, , drop = FALSE]
@@ -448,7 +446,8 @@ make.control <- function(changepoint, data, nsim = 100, paint = TRUE, slice.mode
 
             for(i in 1:ncol(mat)) {
                 fit_bm <- mvMORPH::mvBM(tree = painted_tree, data = tip_mat[, i], model = "BMM", echo = FALSE, diagnostic = FALSE)
-                sim_parameters[[i]]$sig_sq <- fit_bm$sigma[, , "pre_impact"] * n / (n - 1)   ## REML correction, see Revell http://www.phytools.org/***SanJuan2016/ex/5/Fitting-BM.html.
+                ## have a placeholder multiplier matrix that has diagonals as 1 and off-diagonals as 0. identoity matrix
+                sim_parameters[[i]]$sig_sq <- fit_bm$sigma[, , "pre_impact"] * n / (n - 1) ## REML correction, see Revell http://www.phytools.org/***SanJuan2016/ex/5/Fitting-BM.html.
                 sim_parameters[[i]]$root_value <- as.numeric(fit_bm$theta)
             }
 
@@ -477,7 +476,9 @@ make.control <- function(changepoint, data, nsim = 100, paint = TRUE, slice.mode
             }
             n <- length(pre_tree$tip.label)
             for(i in 1:ncol(pre_mat)) {
-                fit_bm <- mvMORPH::mvBM(tree = pre_tree, data = pre_mat[, i], model = "BM1", echo = FALSE, diagnostic = FALSE) ## taken out error, can put back in
+                fit_bm <- mvMORPH::mvBM(tree = pre_tree, data = pre_mat[, i], model = "BM1", echo = FALSE, diagnostic = FALSE) ## taken out error, can put back inNote that when using an "events" with a age.condition, the age is calculated in time from the root of the tree, not in time from the present. So an event triggered with age.condition(5) will trigger 5 units from the root of the tree, not from the tips. To get it to trigger from the tips you can calculate it as age.condition(my_tree$root.time-5).
+
+
                 n <- length(pre_tree$tip.label)
                 sim_parameters[[i]]$sig_sq <- fit_bm$sigma * n / (n - 1)  ## REML correction, see Revell http://www.phytools.org/***SanJuan2016/ex/5/Fitting-BM.html.
                 sim_parameters[[i]]$root_value <- as.numeric(fit_bm$theta)
@@ -532,6 +533,7 @@ make.control <- function(changepoint, data, nsim = 100, paint = TRUE, slice.mode
 }
 
 
+## binds the control and empirical df together
 bind.delta <- function(delta_df, control_delta_df, dimension.level) {
     if (dimension.level > 1) {
 
@@ -562,8 +564,6 @@ bind.delta <- function(delta_df, control_delta_df, dimension.level) {
     
     })
 
-
-
     control_df <- lapply(control_delta_df, lapply, lapply, function(mat){
         mat <- as.data.frame(mat)
         pre_mean <- mean(mat[mat$impact == 0,]$disparity, na.rm = TRUE)
@@ -583,11 +583,6 @@ bind.delta <- function(delta_df, control_delta_df, dimension.level) {
     return(full_df)
 
 }
-
-
-###@@@ see thomas photo on how to relativise, using triangle. the coefficients are extracted, the maximum change is 1 which is a straight line upwards, everything else is a proportion of that change in angle.
-
-
 
 citsa.method <- function(full_df){
 

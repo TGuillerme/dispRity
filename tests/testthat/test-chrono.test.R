@@ -750,6 +750,11 @@ test_that("chrono.test (method = `citsa`) works", {
 
 
 	out <- chrono.test(disparity, method = "citsa", changepoint = 66, nsim = 50)
+	out <- chrono.test(disparity, method = "citsa", changepoint = 66, nsim = 50, time.window = c(80,40))
+
+	expect_is(out, c("chrono.test", "dispRity"))
+	expect_named(out, c("test.output", "disparity", "call"))
+	expect_named(out$test.output, c("sig.increase", "sig.decrease", "citsa.output"))
 
 
 	## multi matrix
@@ -769,10 +774,10 @@ test_that("chrono.test (method = `citsa`) works", {
 	## Warning is for the last time slice that's 0
 	data <- dispRity(data, metric = c(sum,variances))
 
-	out <- chrono.test(data, method = "citsa", changepoint = 3.613395, nsim = 100)
+	out <- chrono.test(data, method = "citsa", changepoint = 3.613395, nsim = 10)
 
 	## test time.window
-	out <- chrono.test(data, method = "citsa", changepoint = 3.613, nsim = 10, time.window = c(5, 1))
+	out <- chrono.test(data, method = "citsa", changepoint = 3.613, nsim = 10, time.window = c(80, 40))
 
 	out <- chrono.test(data, method = "itsa", changepoint = 3.613395, nsim = 10)
 
