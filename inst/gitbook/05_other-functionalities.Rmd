@@ -792,7 +792,7 @@ To avoid treating the ancestral estimation as a point estimate (here the average
 
 ```{r}
 ## Getting 1000 samples from the distribution
-distribution_estimates <- multi.ace(data, my_tree, sample = 1000)
+distribution_estimates <- multi.ace(data, my_tree, ml.collapse = list(type = "sample", sample = 1000))
 ```
 
 This results in 1000 matrices that are sampled by default uniformaly.
@@ -818,10 +818,11 @@ We can specify this by providing a named list containing the following two eleme
 approx.sd <- function(CI)return(diff(range(CI))/4)
 
 ## Getting 1000 samples from the distribution using a normal one
-distribution_estimates <- multi.ace(data, my_tree, sample = 1000,
-                            sample.fun = list(fun = rnorm,
-                                              param = list(mean = mean,
-                                                           sd = approx.sd)))
+distribution_estimates <- multi.ace(data, my_tree,
+                            ml.collapse = list(type = "sample", sample = 1000),
+                            sample.fun  = list(fun = rnorm,
+                                               param = list(mean = mean,
+                                                            sd = approx.sd)))
 ```
 
 And again, we can visualise that:
@@ -843,7 +844,8 @@ To play around with different sampling strategies, but if your estimations take 
 raw_estimates <- multi.ace(data, my_tree, output = "multi.ace`")
 
 ## Sampling from the raw_estimates
-sampled_estimates <- multi.ace(raw_estimates, sample = 100)
+sampled_estimates <- multi.ace(raw_estimates,
+                               ml.collapse = list(type = "sample", sample = 100))
 ```
 
 #### Sampling discrete characters
