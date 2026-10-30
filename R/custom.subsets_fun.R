@@ -52,7 +52,7 @@ set.group.list <- function(group, data, group_class) {
     }
 
     ## Logical is set to factor
-    if(group_class[1] == "logical") {
+    if(group_class[1] %in% c("logical", "character", "numeric", "integer")) {
         group <- as.factor(group)
         group_class[1] <- "factor"
     }

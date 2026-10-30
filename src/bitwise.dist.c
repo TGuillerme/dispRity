@@ -70,7 +70,7 @@ static inline int bitwise_compare_ordered(int char1, int char2) {
 static double bitwise_hamming(int *x, int nr, int nc, int i1, int i2, int translate, int *order) {
 
     // Declaring variables (result is int)    
-    int vector1[nc], vector2[nc], orders[nc];
+    int vector1[nc], vector2[nc];//, orders[nc];
     int count = 0, i = 0, k = 0, diff = 0, dist = 0;
     double result = 0;
 
@@ -81,7 +81,7 @@ static double bitwise_hamming(int *x, int nr, int nc, int i1, int i2, int transl
             // Create the vectors
             vector1[count] = x[i1];
             vector2[count] = x[i2];
-            orders[count] = order[i];
+            // orders[count] = order[i];
 
             //Increment the counter
             count++;
@@ -139,7 +139,7 @@ static double bitwise_hamming(int *x, int nr, int nc, int i1, int i2, int transl
 static double bitwise_manhattan(int *x, int nr, int nc, int i1, int i2, int translate, int *order) {
 
     // Declaring variables (result is int)    
-    int vector1[nc], vector2[nc], orders[nc];
+    int vector1[nc], vector2[nc];//, orders[nc];
     int count = 0, i = 0, k = 0, diff = 0, dist = 0;
     double result = 0;
 
@@ -150,7 +150,7 @@ static double bitwise_manhattan(int *x, int nr, int nc, int i1, int i2, int tran
             // Create the vectors
             vector1[count] = x[i1];
             vector2[count] = x[i2];
-            orders[count] = order[i];
+            // orders[count] = order[i];
 
             //Increment the counter
             count++;
@@ -202,7 +202,7 @@ static double bitwise_comparable(int *x, int nr, int nc, int i1, int i2, int tra
 static double bitwise_euclidean(int *x, int nr, int nc, int i1, int i2, int translate, int *order) {
 
     // Declaring variables (result is int)    
-    int vector1[nc], vector2[nc], orders[nc];
+    int vector1[nc], vector2[nc];//, orders[nc];
     int count = 0, i = 0, k = 0, diff = 0, dist = 0;
     double result = 0;
 
@@ -213,7 +213,7 @@ static double bitwise_euclidean(int *x, int nr, int nc, int i1, int i2, int tran
             // Create the vectors
             vector1[count] = x[i1];
             vector2[count] = x[i2];
-            orders[count] = order[i];
+            // orders[count] = order[i];
 
             //Increment the counter
             count++;
@@ -282,7 +282,7 @@ static double bitwise_maximum(int *x, int nr, int nc, int i1, int i2, int transl
 static double bitwise_mord(int *x, int nr, int nc, int i1, int i2, int translate, int *order) {
 
     // Declaring variables (result is int)    
-    int vector1[nc], vector2[nc], orders[nc];
+    int vector1[nc], vector2[nc];//, orders[nc];
     int count = 0, i = 0, k = 0, diff = 0, dist = 0;
     double result = 0;
 
@@ -293,7 +293,7 @@ static double bitwise_mord(int *x, int nr, int nc, int i1, int i2, int translate
             // Create the vectors
             vector1[count] = x[i1];
             vector2[count] = x[i2];
-            orders[count] = order[i];
+            // orders[count] = order[i];
 
             //Increment the counter
             count++;

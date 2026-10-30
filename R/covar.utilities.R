@@ -45,7 +45,7 @@ get.covar <- function(data, subsets, sample, n, dimensions) {
     ## Some sanitizing on data, sample, n
     check.class(data, "dispRity")
     if(!missing(sample)) {
-        check.class(sample, c("integer", "numeric", "function", "standardGeneric"))
+        check.class(sample, c("integer", "numeric", "function", .genericFunctionName))
     }
     if(!missing(n)) {
         check.class(n, c("integer", "numeric"))
@@ -88,7 +88,7 @@ get.covar <- function(data, subsets, sample, n, dimensions) {
 
     ## Return specific samples
     if(!missing(sample)) {
-        if(is(sample, "function") || is(sample, "standardGeneric")) {
+        if(is.function(sample)) {
             ## Summarise the results
             return(lapply(lapply(sample.n(data$covar[subsets], n = data$call$bootstrap[[1]], dimensions = dimensions), summarise.fun, fun = sample), list))
         } else {
@@ -107,7 +107,7 @@ axis.covar <- function(data, subsets, sample, n, dimensions, level = 0.95, axis 
     }
 
     ## Handle sample
-    if(!missing(sample) && (is(sample, "function") || is(sample, "standardGeneric"))) {
+    if(!missing(sample) && is.function(sample)) {
         return(lapply(
                 ## Get the axes from the selected covars
                     lapply(

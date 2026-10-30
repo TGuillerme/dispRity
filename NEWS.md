@@ -1,4 +1,4 @@
-dispRity v1.9.8 (2025-12-08)
+dispRity v1.9.12 (2026-07-31)
 =========================
 
 ### NEW FEATURES
@@ -6,6 +6,14 @@ dispRity v1.9.8 (2025-12-08)
 
 ### MINOR IMPROVEMENTS
  * **Changed default argument** in `multi.ace`: `ml.collapse` default is now `list(type = "majority")` (previously `threshold = TRUE` which mapped to `"relative"`).
+ * `custom.subsets`'s `group` argument can now be a vector.
+ * Highlighted the need to use `translate = FALSE` in `char.diff` when comparing taxa (not characters).
+
+### BUG FIXES
+
+ * disparity results structure with `chrono.subsets` with multiple matrices are now handled correctly when using a list of metrics (e.g. `c(sum, variances)` now gives the same results structure as `function(x)sum(variances(x))` as expected). Thanks to Caleb Scutt for spotting this one.
+ * fixed bug with empty time subsets in `chrono.subsets` that would output the wrong dimension `NA` matrix when calculating disparity.
+ * fixed CRAN compilation warning on Fedora (gcc 16.1.1 20260515 Red Hat 16.1.1-2).
 
 dispRity v1.9.7 (2025-08-22)
 =========================
@@ -165,7 +173,7 @@ dispRity v1.7 (2022-08-08) *MacMacGlimm*
  * Fixed bug when plotting level 1 disparity metric results without bootstrapped (`observed = TRUE` is now used as the default).
  * Fixed bug when plotting `test.metric` plots with `save.steps` options with more than two types of shifts.
  * Fixed bug with `null.test` which is now correctly managing the number of dimensions inherited from `dispRity` objects (thanks to Alex Slavenko for spotting this one and the two above).
- * Fixed bug when using level 2 dimension metrics on unidimensional data (the metric is now detected as a level 2 correctly; thanks to Catherine Klein and [Rachel Warnock](https://www.gzn.nat.fau.de/palaeontologie/team/professors/rachel-warnock/) for noticing that one).
+ * Fixed bug when using level 2 dimension metrics on unidimensional data (the metric is now detected as a level 2 correctly; thanks to Catherine Klein and [Rachel Warnock](https://palaeobiology.nat.fau.de/people/instructors/warnock/) for noticing that one).
  * Update internal use of `is(data, c("array", "matrix"))` to `is.array(data)` for R 4.1.2.
 
 ### DEPRECATED AND DEFUNCT
