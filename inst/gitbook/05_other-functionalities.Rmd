@@ -760,8 +760,8 @@ data <- cbind(data, "new_char2" = as.character(sample(1:2, 15, replace = TRUE)))
 
 ## Setting up different models for each characters
 ## BM for all 5 continuous characters
-## and ER and ARD for the two discrete ones
-my_models <- c(rep("BM", 5), "ER", "ARD")
+## and ER and ARD for the four discrete ones
+my_models <- c(rep("BM", 5), rep(c("ER", "ARD"),2))
 
 ## Running the estimation with the specified models
 my_ancestral_states <- multi.ace(data, my_trees, models = my_models)
@@ -788,11 +788,11 @@ point_estimates <- multi.ace(data, my_tree, estimation.details = list("CI95"))
 ```
 
 For example for trait 1 for Node 1, the estimated trait value is `r unname(round(point_estimates$estimations[1,1], 3))` but with a confidence interval of `r unname(round(point_estimates$details[[1]]$CI95[1,1], 3))` and `r unname(round(point_estimates$details[[1]]$CI95[1,2], 3))` which is quiet the spread.
-To avoid treating the ancestral estimation as a point estimate (here the average of a large spread) we can also just get a number of samples to get an estimation of the distribution instead of the point estimate using the `sample` argument.
+To avoid treating the ancestral estimation as a point estimate (here the average of a large spread) we can also just get a number of samples to get an estimation of the distribution instead of the point estimate using the `ml.collapse` argument and `type = "sample"`.
 
 ```{r}
 ## Getting 1000 samples from the distribution
-distribution_estimates <- multi.ace(data, my_tree, sample = 1000)
+distribution_estimates <- multi.ace(data, my_tree, ml.collapse = list(type = "sample", sample = 1000))
 ```
 
 This results in 1000 matrices that are sampled by default uniformaly.
@@ -818,10 +818,10 @@ We can specify this by providing a named list containing the following two eleme
 approx.sd <- function(CI)return(diff(range(CI))/4)
 
 ## Getting 1000 samples from the distribution using a normal one
-distribution_estimates <- multi.ace(data, my_tree, sample = 1000,
+distribution_estimates <- multi.ace(data, my_tree, ml.collapse = list(type = "sample", sample = 1000,
                             sample.fun = list(fun = rnorm,
                                               param = list(mean = mean,
-                                                           sd = approx.sd)))
+                                                           sd = approx.sd))))
 ```
 
 And again, we can visualise that:
@@ -840,10 +840,10 @@ To play around with different sampling strategies, but if your estimations take 
 
 ```{r}
 ## Saving the estimation without getting any estimate (raw):
-raw_estimates <- multi.ace(data, my_tree, output = "multi.ace`")
+raw_estimates <- multi.ace(data, my_tree, output = "multi.ace")
 
 ## Sampling from the raw_estimates
-sampled_estimates <- multi.ace(raw_estimates, sample = 100)
+sampled_estimates <- multi.ace(raw_estimates, ml.collapse = list(type = "sample", sample = 100))
 ```
 
 #### Sampling discrete characters
