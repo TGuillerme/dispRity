@@ -631,3 +631,13 @@ citsa.method <- function(full_df){
 
 #     })
 # }
+
+
+
+## take a look at mvMORPH estim
+
+
+monte.carlo.p.val <- function(emp, null){
+    median_null <- median(null)
+    (1 + sum(abs(null - median_null) >= abs(emp-null)) / length(null+1))
+}
