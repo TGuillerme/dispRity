@@ -310,7 +310,7 @@ print.dispRity <- function(x, all = FALSE, ...) {
                     n_cp <- length(x$call$changepoint)
                     # n_mat <- length(x$test.output[[1]])
                     cat(paste0("CITSA parameters: ", n_cp, " changepoint(s) & ", x$call$nsim, " simulation(s)\n"))
-                    cat(paste0("Out of ", x$call$nsim,  " simulations, ",x$test.output$sig.increase,   "% of the empirical slope changes were above the 95% confidence interval ", "and ", x$test.output$sig.decrease, "% slope changes were below the 95% confidence interval.\n"))
+                    cat(paste0("Out of ", x$call$nsim,  " simulations, the median p value was ",x$test.output$median_p,   " and the fraction significant (alpha = 0.05) = ",x$test.output$frac_sig, "and the median cohen's D effect size was = ", median(x$test.output$es),"\n"))
 
                     # ex <- x$test.output[[1]][[1]][[1]]
                     # if (is.list(ex) && all(c("control_slope_change", "emp_slope_change") %in% names(ex))) {

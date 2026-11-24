@@ -165,13 +165,13 @@ chrono.test <- function(data, method, changepoint, time.window = NULL, nsim = 10
             ci_ctrl <- quantile(dist_ctrl_slopes, c(0.025, 0.975), na.rm = TRUE) ## 95% confidence interval (cone of possibility defined as control)
 
             mc_p <- sapply(dist_emp_slopes, monte.carlo.p.val, dist_ctrl_slopes)
+            cohens_d <- sapply(dist_emp_slopes, cohens.d, dist_ctrl_slopes)
 
             # prop_sig <- mean(dist_emp_slopes < ci_ctrl[1] | dist_emp_slopes > ci_ctrl[2], na.rm = TRUE) * 100
 
             # prop_sig_neg <- mean(dist_emp_slopes < ci_ctrl[1], na.rm = TRUE) * 100  # % significant drops
             # prop_sig_pos <- mean(dist_emp_slopes > ci_ctrl[2], na.rm = TRUE) * 100  # % significant jumps
-            out <- list(median_p = median(mc_p), frac_sig = mean(mc_p < 0.05), combined_p = min(1,2*median(mc_p)), citsa.output =  citsa)
-
+            out <- list(median_p = median(mc_p), frac_sig = mean(mc_p < 0.05), es = cohens_d, citsa.output =  citsa)
         },
         area={
             # if (n.matrix > 1) {

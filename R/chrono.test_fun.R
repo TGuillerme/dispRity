@@ -639,14 +639,20 @@ citsa.method <- function(full_df){
 
 
 monte.carlo.p.val <- function(emp, null) {
-    null <- null[is.finite(null)]
-    median_null <- median(null)
+    median_null <- median(null) ## 
 
     emp_distance <- abs(emp - median_null)
     null_distances <- abs(null - median_null)
 
     count <- sum(null_distances >= emp_distance)
     (1 + count) / (length(null) + 1)
+}
+
+cohens.d <- function(emp, null){
+    m_null <- mean(null, na.rm=TRUE)
+    m_emp <- mean(emp, na.rm=TRUE)
+    sd_pooled <- sd(c(emp, null), na.rm = TRUE)
+    return((m_emp - m_null) / sd_pooled)
 }
 
 
