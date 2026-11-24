@@ -637,9 +637,150 @@ citsa.method <- function(full_df){
 ## take a look at mvMORPH estim
 
 
-monte.carlo.p.val <- function(emp, null){
+
+monte.carlo.p.val <- function(emp, null) {
+    null <- null[is.finite(null)]
     median_null <- median(null)
-    (1 + sum(abs(null - median_null) >= abs(emp-null)) / length(null)+1)
+
+    emp_distance <- abs(emp - median_null)
+    null_distances <- abs(null - median_null)
+
+    count <- sum(null_distances >= emp_distance)
+    (1 + count) / (length(null) + 1)
 }
 
 
+# make.control.ridge <- function(changepoint, data, nsim = 100, slice.model = NULL, n.matrix, ...) { ## change slice.model name for clarity
+
+#     if (paint) {
+#         slice.model  <- NULL
+#     }
+
+#     if (!paint && !is.null(slice.model)) {
+#         all_models <- c("acctran", "deltran", "random", "proximity", "equal.split", "gradual.split")
+#         check.length(slice.model, 1, paste(" argument must be one of the following: ", paste(all_models, collapse = ", "), ".", sep = ""))
+#         check.method(slice.model, all_models, "slice.model argument")
+#     }
+
+#     metric <- get.metric.from.call(data, 2) ## store for later
+#     slices <- as.numeric(names(data$subsets)) # store for later
+#     slice_call <- data$call$subsets
+#     tree <- get.tree(data)
+#     mat <- list()
+#     for(i in 1:n.matrix){
+#         mat[[i]] <- get.matrix(data, matrix = i)
+#     }
+
+
+#     ## if matrix is single matrix (simple version)
+#     # simulate.control(mat, changepoint, data, nsim, paint, slice.model)
+#         # else
+#     ##  if matrices is multi.ace output (same tip data across all matrices (come up with function to detect))
+#         # simulate.control(mat[[1]], changepoint,...)
+#     ## if matrices is all different
+#         # work out how many sims per matrix to make nsims?
+#         # n_sim  <- nsim / n_matrices
+#         # simulate.control(sample(matrice, replace = FALSE) ...)
+#     ## also add toggle that takes nodes or only tips to avoid contamination.
+
+        
+
+
+#     ###@@@ need logic that can detect if its a `multi.ace` output, then it just iterates across them. if the matrices are all different (i.e. due ot intraspecific variation) then it does one per matrix.
+
+#     simulate.control <- function(mat, changepoint, nsim, paint, slice.model) {
+#         sim_parameters <- replicate(ncol(mat), list(root_value = NULL, sig_sq = NULL), simplify = FALSE) ## create empty list structure for storing trait parameters
+
+#         # if (paint) {
+#         #     painted_tree <- paint.branches(tree, changepoint)
+#         #     n <- length(tree$tip.label)
+#         #     tip_mat <- mat[tree$tip.label, , drop = FALSE]
+#         #     painted_tree <- paint.branches(tree, changepoint)
+
+#         #     for(i in 1:ncol(mat)) {
+#         #         fit_bm <- mvMORPH::mvBM(tree = painted_tree, data = tip_mat[, i], model = "BMM", echo = FALSE, diagnostic = FALSE)
+#         #         ## have a placeholder multiplier matrix that has diagonals as 1 and off-diagonals as 0. identoity matrix
+#         #         sim_parameters[[i]]$sig_sq <- fit_bm$sigma[, , "pre_impact"] * n / (n - 1) ## REML correction, see Revell http://www.phytools.org/***SanJuan2016/ex/5/Fitting-BM.html.
+#         #         sim_parameters[[i]]$root_value <- as.numeric(fit_bm$theta)
+#         #     }
+
+#         # } else { ## use tree slicing
+
+#             if (slice.model == "proximity" || slice.model == "acctran" || slice.model == "deltran") {
+#                 pre_tree <- slice.tree(tree, age = changepoint, model = slice.model, keep.all.ancestors = TRUE)
+#                 pre_mat <- mat[pre_tree$tip.label, ] ## can just prune the matrix as it is if using punctuated model
+#             }
+
+#             if (slice.model == "gradual.split" || slice.model == "equal.split") {
+#                 pre_tree <- slice.tree(tree, age = changepoint, model = "acctran", keep.all.ancestors = TRUE)
+#                 slice_vals <- slice.tree(tree, age = changepoint, model = slice.model, keep.all.ancestors = TRUE)
+#                 pre_mat <- matrix(NA, nrow = length(pre_tree$tip.label), ncol = ncol(mat))
+#                 rownames(pre_mat) <- as.character(slice_vals[, 2])
+#                 for (i in seq_along(pre_tree$tip.label)) {
+#                     if(slice_vals[i, 3] == "0"){
+#                         pre_mat[i, ] <- mat[slice_vals[i, 2], ]
+#                     } else {
+#                         t0 <- mat[slice_vals[i, 1], ]
+#                         t1 <- mat[slice_vals[i, 2], ]
+#                         slice_position <- as.numeric(slice_vals[i, 3]) ## get slice position across branch
+#                         pre_mat[i, ] <- (slice_position * t0) + ((1-slice_position) * t1) ## weighted average
+#                     }
+#                 }
+#             }
+#             n <- length(pre_tree$tip.label)
+#             for(i in 1:ncol(pre_mat)) {
+
+#                 rrphylo_fit <- RRphylo(tree = pre_tree, y = pre_mat[,1])
+
+#                 n <- length(pre_tree$tip.label)
+#                 sim_parameters[[i]]$sig_sq <- fit_bm$sigma * n / (n - 1)  ## REML correction, see Revell http://www.phytools.org/***SanJuan2016/ex/5/Fitting-BM.html.
+#                 sim_parameters[[i]]$root_value <- as.numeric(fit_bm$theta)
+#             }
+#         # }
+
+#         ## TODO use slice.tree and gradual.split. use get.tree for the tree in each subset.
+
+#         control_traits <- lapply(sim_parameters, function(axis) {
+#             root_value <- axis$root_value
+#             sig_sq <- axis$sig_sq
+#             treats::make.traits(process = treats::BM.process, start = root_value, n = 1, process.args = list(Sigma = sig_sq))
+#         })
+#         mapped_control <- replicate(nsim, {do.call(cbind, lapply(lapply(control_traits, treats::map.traits, tree = tree), function(x){x$data}))}, simplify = FALSE) ## produces however many differnt BM simulations as controls
+
+
+#         chrono <- chrono.subsets(mapped_control, tree, method = slice_call[1], model = slice_call[2], bind.data = as.logical(slice_call["bind"]), inc.nodes = TRUE, time = slices) ## slices using the slice call from empirical data curve
+
+
+        
+#         disp <- dispRity(chrono, metric = metric)
+#         # disp$disparity <- t(disp$disparity)
+#         disp$call$disparity$metrics <- data$call$disparity$metrics
+#         disp$call$disparity$metrics <- data$call$disparity$metrics ## reattach metric fun info
+#         disp$sim_params <- do.call(cbind, sim_parameters)
+#         return(disp)
+#     }
+
+#     ## check if all tips and tip values are same?
+
+#     # data$tree
+#     ## detect if it is a ancestral state sample output:
+#     if (length(mat) > 1 && length(unique(lapply(mat, rownames))) == 1) {
+#         # tree <- get.tree(data)
+#         tips <- tree$tip.label
+#         tip_mats <- lapply(mat, function(x) x[tips, ])
+#         if (length(unique(tip_mats)) == 1){ ## if TRUE is a multi.ace output
+#             mat <- list(mat[[1]]) ## you only need one matrix to estimate BM.
+#         }
+#     } 
+
+#     control <- lapply(mat, simulate.control, changepoint, nsim, paint, slice.model)
+
+#     ##@@@ if matrices is all different TODO
+#         # work out how many sims per matrix to make nsims?
+#         # n_sim  <- nsim / n_matrices
+#         # simulate.control(sample(matrice, replace = FALSE) ...)
+#     ## also add toggle that takes nodes or only tips to avoid contamination.
+
+#     return(control)
+
+# }
